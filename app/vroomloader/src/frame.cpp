@@ -22,7 +22,7 @@
 BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
     EVT_MENU(wxID_EXIT,  vroomLoaderFrame::OnQuit)
     EVT_MENU(wxID_ABOUT, vroomLoaderFrame::OnAbout)
-	EVT_MENU(wxID_OPEN, vroomLoaderFrame::OnAddLayer)
+	EVT_MENU(wxID_OPEN, vroomLoaderFrame::OnOpenLayer)
 END_EVENT_TABLE()
 IMPLEMENT_APP(vroomLoader)
 
@@ -122,11 +122,20 @@ void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 
 
 
-void vroomLoaderFrame::OnAddLayer(wxCommandEvent & event)
+void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 {
 	vrDrivers myDrivers;
-	wxLogMessage("Adding gis layer : %s", myDrivers.GetWildcards());
+	wxFileDialog myFileDlg (this, "Select GIS Layers",
+							wxEmptyString,
+							wxEmptyString,
+							myDrivers.GetWildcards(),
+							 wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE | wxFD_CHANGE_DIR);
+	myFileDlg.ShowModal();
+	wxLogMessage("%s", myDrivers.GetWildcards());
 	event.Skip();
+	
+	// try to open files
+	
 }
 
 

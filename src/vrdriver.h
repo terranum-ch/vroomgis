@@ -39,8 +39,8 @@ enum vrDRIVERS_TYPE {
 static const wxString vrDRIVERS_EXTENSION []= {
 	"*.shp",
 	wxEmptyString,
-	"*.tif,*.tiff",
-	"*.jpg, *.jpeg",
+	"*.tif;*.tiff",
+	"*.jpg;*.jpeg",
 	"*.hdr",
 	"*.c2d"
 };
