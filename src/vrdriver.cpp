@@ -24,8 +24,10 @@ wxString vrDrivers::GetWildcards()
 	for (unsigned i = 0; i< sizeof(vrDRIVERS_EXTENSION) / sizeof(wxString); i++)
 	{
 		if (vrDRIVERS_NAMES[i] != wxEmptyString)
-			myWildcards.Append(vrDRIVERS_NAMES[i] + " files ("  + vrDRIVERS_EXTENSION[i] + ")|");
+			myWildcards.Append(vrDRIVERS_NAMES[i] + " files ("  + vrDRIVERS_EXTENSION[i] + ")|"
+							   + vrDRIVERS_EXTENSION[i] + "|");
 	}
+	myWildcards.RemoveLast(1);
 	return myWildcards;
 }
 

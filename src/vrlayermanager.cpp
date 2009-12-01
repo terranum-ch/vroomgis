@@ -20,12 +20,7 @@
 
 
 
-wxArrayString vrLayerManager::GetDriversExtension() 
-{
-}
-
-
-
-wxString vrLayerManager::GetDriversWildcards() 
-{
+bool vrLayerManager::Open(const wxFileName & filename) {
+	
+	return false;
 }

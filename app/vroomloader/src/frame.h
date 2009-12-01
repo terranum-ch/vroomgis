@@ -58,7 +58,7 @@ public:
 	
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
-	void OnAddLayer(wxCommandEvent & event);
+	void OnOpenLayer(wxCommandEvent & event);
 	
 private:
     DECLARE_EVENT_TABLE()

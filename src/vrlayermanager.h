@@ -24,6 +24,8 @@
     #include <wx/wx.h>
 #endif
 
+#include <wx/filename.h>
+
 
 
 
@@ -36,17 +38,7 @@ private:
    // vrLayer * m_Layers;
 	
 public:
-    //bool Create(const wxFileName & filename);
-	
-    //bool Open(const wxFileName & filename);
-	
-    //bool Close(vrLayer * layer);
-	
-    wxArrayString GetDriversExtension();
-    wxString GetDriversWildcards();
-	
-    //bool AddViewerLayerManager(vrViewerTOC * toc = NULL, vrViewer * viewer = NULL);
-	
+     bool Open(const wxFileName & filename);	
 
 	
 };
