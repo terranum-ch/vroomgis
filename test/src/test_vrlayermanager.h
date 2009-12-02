@@ -1,5 +1,5 @@
 /***************************************************************************
-								vrlayermanager.cpp
+								test_vrlayermanager.h
 				Manage the layers. Keep a list of all opened layers
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
@@ -15,29 +15,36 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef _TEST_VR_LAYERMANAGER_H_
+#define _TEST_VR_LAYERMANAGER_H_
 
+
+#include "wx/wxprec.h"
+#ifndef WX_PRECOMP
+    #include <wx/wx.h>
+#endif
+
+#include "test_param.h"	//for test parameters
 #include "vrlayermanager.h"
 
 
 
-bool vrLayerManager::Open(const wxFileName & filename) {
-	
-	if (filename.IsOk()==false){
-		wxLogError("Filename not initialised");
-		return false;
+class TEST_vrLayerManager : public CxxTest::TestSuite
+{
+public:
+   	void testCreateLayerManager()
+	{
+		vrLayerManager myLayerManager;
+		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc))==false);
+		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP))==true);
 	}
 	
-	vrDrivers myDriver;
-	switch (myDriver.GetType(filename.GetExt())){
-		case vrDRIVER_VECTOR_SHP:
-			break;
-			
-		default:
-			wxLogError("Extension \"%s\" not supported",filename.GetExt());
-			return false;
-			break;
-	}
-	
+};
 
-	return true;
-}
+
+
+
+
+
+
+#endif

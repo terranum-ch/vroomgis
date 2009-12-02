@@ -33,7 +33,38 @@ wxString vrDrivers::GetWildcards()
 
 
 
-wxArrayString vrDrivers::GetExtension() 
-{
+vrDRIVERS_TYPE vrDrivers::GetType(const wxString & extension) {
+	
+	if (extension.IsEmpty()){
+		wxLogError("Empty extension not supported");
+		return vrDRIVER_UNKNOWN;
+	}
+	
+	if (extension.Len() < 3){
+		wxLogError("Only %d character in the extension (need 3 character)", extension.Len());
+		return vrDRIVER_UNKNOWN;
+	}
+	
+	
+	for (unsigned int i = 0; i<sizeof(vrDRIVERS_EXTENSION) / sizeof(wxString); i++){
+		
+		if (vrDRIVERS_EXTENSION[i].IsEmpty()==false){
+			if (vrDRIVERS_EXTENSION[i].Find(extension.Lower())!=wxNOT_FOUND){
+				return (vrDRIVERS_TYPE)i;
+			}
+		}
+	}
+	return vrDRIVER_UNKNOWN;
 }
+
+
+
+bool vrDrivers::IsSupported(const wxString & extension) {
+	if (GetType(extension)==vrDRIVER_UNKNOWN) {
+		return false;
+	}
+	
+	return true;
+}
+
 

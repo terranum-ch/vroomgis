@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+								test_vrdriver.h
+							Testing vrDrivers class
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
+#ifndef _TEST_VR_DRIVER_H_
+#define _TEST_VR_DRIVER_H_
 
 
 #include "wx/wxprec.h"
@@ -24,26 +24,41 @@
     #include <wx/wx.h>
 #endif
 
-#include <wx/filename.h>
-
-
+//#include "test_param.h"	//for test parameters
 #include "vrdriver.h"
 
 
 
-class vrLayerManager 
+class TEST_vrDrivers : public CxxTest::TestSuite
 {
-	
 private:
-   // vrViewerLayerManager * m_ViewerLayerManager;
-   // vrLayer * m_Layers;
-	
+	vrDrivers m_Driver;
 public:
-     bool Open(const wxFileName & filename);	
-
+		
+   	void testDriverGetWildcards()
+	{
+		TS_ASSERT(m_Driver.GetWildcards().IsEmpty()==false);
+	}
+	
+	void testDriverIsSupported(){
+		TS_ASSERT(m_Driver.IsSupported(wxEmptyString)==false);
+		TS_ASSERT(m_Driver.IsSupported("shp")==true);
+		TS_ASSERT(m_Driver.IsSupported("sh")==false);
+	}
+	
+	void testDriverGetType()
+	{
+		TS_ASSERT_EQUALS(m_Driver.GetType("shp"), vrDRIVER_VECTOR_SHP);
+		TS_ASSERT_EQUALS(m_Driver.GetType("tiff"), vrDRIVER_RASTER_TIFF);
+		TS_ASSERT_EQUALS(m_Driver.GetType(""), vrDRIVER_UNKNOWN);
+		TS_ASSERT_EQUALS(m_Driver.GetType("jpg"), vrDRIVER_RASTER_JPEG);
+		TS_ASSERT_EQUALS(m_Driver.GetType("JPEG"), vrDRIVER_RASTER_JPEG);
+		TS_ASSERT_EQUALS(m_Driver.GetType("c2d"), vrDRIVER_RASTER_C2D);
+		TS_ASSERT_EQUALS(m_Driver.GetType("hdr"), vrDRIVER_RASTER_ESRIGRID);		
+	}
+	
 	
 };
-
 
 
 
