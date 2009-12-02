@@ -26,9 +26,10 @@
 
 
 enum vrDRIVERS_TYPE {
-	vrDRIVER_VECTOR_SHP,
+	vrDRIVER_UNKNOWN = -1,
+	vrDRIVER_VECTOR_SHP = 0,
 	vrDRIVER_VECTOR_MEMORY,
-	vrDIRVER_RASTER_TIFF,
+	vrDRIVER_RASTER_TIFF,
 	vrDRIVER_RASTER_JPEG,
 	vrDRIVER_RASTER_ESRIGRID,
 	vrDRIVER_RASTER_C2D
@@ -59,7 +60,8 @@ const wxString vrDRIVERS_NAMES [] = {
 class vrDrivers {
   public:
     wxString GetWildcards();
-    wxArrayString GetExtension();
+	vrDRIVERS_TYPE GetType(const wxString & extension);
+    bool IsSupported(const wxString & extension);
 
 };
 

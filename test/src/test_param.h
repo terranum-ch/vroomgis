@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+								test_param.h
+					Manage parameters for the tests.
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_TEST_H_
-#define _VR_LAYERMANAGER_TEST_H_
+#ifndef _TEST_PARAM_H_
+#define _TEST_PARAM_H_
 
 
 #include "wx/wxprec.h"
@@ -25,27 +25,11 @@
 #endif
 
 
-#include "vrlayermanager.h"
 
+static const wxString g_TestPath = "/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data";
+static const wxString g_TestFileMisc = "gpl.txt";
+static const wxString g_TestFileSHP = "fluss_poly_combioula.shp";
 
-class vrLayerManagerTEST : public CxxTest::TestSuite
-{
-public:
-    void testDifferString()
-    {
-		wxString myTest1 = "coucou";
-		wxString myTest2 = "salut";
-		
-        TS_ASSERT_DIFFERS(myTest1, myTest2);
-    }
-	
-	void testCreateLayerManager()
-	{
-		vrLayerManager myLayerManager;
-		TS_ASSERT_EQUALS(myLayerManager.Open(wxFileName("/Users/lucien/DATA/PRJ/COLTOP-GIS/trunk_vroomgis/test/src/SimpleTest.h")), true);
-	}
-	
-};
 
 
 
