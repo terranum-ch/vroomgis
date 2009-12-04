@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+								test_vrlayervectorGDAL.h
+								Test the GDAL Layers
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,41 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
+#ifndef _TEST_VR_LAYERVECTORGDAL_H_
+#define _TEST_VR_LAYERVECTORGDAL_H_
 
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
-#include <wx/filename.h>
-
-
-#include "vrdriver.h"
-#include "vrlayervector.h"
+#include "test_param.h"	//for test parameters
 #include "vrlayerraster.h"
+#include "vrlayermanager.h"
 
 
-class vrLayerManager 
+
+class TEST_vrLayerRasterGDAL : public CxxTest::TestSuite
 {
-	
-private:
-	// vrViewerLayerManager * m_ViewerLayerManager;
-	vrArrayLayer m_Layers;
-	
 public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
+   	void testOpenLayerRasterGDAL()
+	{
+		
+		vrLayerRasterGDAL myLayer;
+		TS_ASSERT(myLayer.IsOK()==false);
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), true),true);
+		TS_ASSERT_EQUALS(myLayer.GetType(), vrDRIVER_RASTER_TIFF);
+		TS_ASSERT(myLayer.IsOK());
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), true),true);
+	}
 	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
+		
 	
 };
-
 
 
 

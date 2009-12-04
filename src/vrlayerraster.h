@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+				vrlayerraster.h
+                    
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,46 +15,49 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
+#ifndef _VRLAYERRASTER_H
+#define _VRLAYERRASTER_H
 
-
+// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+// Include wxWidgets' headers
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
-#include <wx/filename.h>
+
+#include "vrlayer.h"
 
 
-#include "vrdriver.h"
-#include "vrlayervector.h"
-#include "vrlayerraster.h"
+class vrLayerRaster : public vrLayer {
+  protected:
+    GDALDataset * m_Dataset;
 
 
-class vrLayerManager 
-{
-	
-private:
-	// vrViewerLayerManager * m_ViewerLayerManager;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	
+  public:
+    vrLayerRaster();
+    virtual ~vrLayerRaster();
+	virtual bool Create(const wxFileName & filename){return false;}
+    virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
+	virtual bool IsOK();
+
+
 };
 
 
 
 
+class vrLayerRasterGDAL : public vrLayerRaster {
+  private:
+    bool _Close();
 
 
+  public:
+    vrLayerRasterGDAL();
+    virtual ~vrLayerRasterGDAL();
+	
+	virtual bool Create(const wxFileName & filename);
+    virtual bool Open(const wxFileName & filename, bool readwrite = false);
 
-
+};
 #endif
