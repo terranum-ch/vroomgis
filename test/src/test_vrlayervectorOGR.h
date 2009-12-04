@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+								test_vrlayervectorOGR.h
+								Test the OGR Layers
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,40 +15,45 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
+#ifndef _TEST_VR_LAYERVECTOROGR_H_
+#define _TEST_VR_LAYERVECTOROGR_H_
 
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
-#include <wx/filename.h>
-
-
-#include "vrdriver.h"
+#include "test_param.h"	//for test parameters
 #include "vrlayervector.h"
+#include "vrlayermanager.h"
 
 
-class vrLayerManager 
+
+class TEST_vrLayerVectorOGR : public CxxTest::TestSuite
 {
-	
-private:
-	// vrViewerLayerManager * m_ViewerLayerManager;
-	vrArrayLayer m_Layers;
-	
 public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
+   	void testOpenLayerVectorOGR()
+	{
+		
+		vrLayerVectorOGR myLayer;
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), true),true);
+		TS_ASSERT_EQUALS(myLayer.GetType(), vrDRIVER_VECTOR_SHP);
+		TS_ASSERT(myLayer.IsOK());
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), true),true);
+	}
 	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
+	void testOpenLayerVectorOGRFailled()
+	{
+		vrLayerVectorOGR myLayer;
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileMisc), false),false);
+		TS_ASSERT_EQUALS(myLayer.IsOK(), false);
+						
+	}
+	
 	
 	
 };
-
 
 
 

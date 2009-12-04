@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+								vrlayer.cpp
+					Abstact base class for layers
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,45 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
 
+#include "vrlayer.h"
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-
-#include <wx/filename.h>
-
-
-#include "vrdriver.h"
-#include "vrlayervector.h"
-
-
-class vrLayerManager 
-{
-	
-private:
-	// vrViewerLayerManager * m_ViewerLayerManager;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	
-};
+vrLayer::vrLayer() {
+	m_DriverType = vrDRIVER_UNKNOWN;
+	m_FileName.Clear();
+}
 
 
 
+vrLayer::~vrLayer() {
+}
 
 
 
+wxFileName vrLayer::GetName() {
+	return m_FileName;
+}
 
 
-#endif
+
+vrDRIVERS_TYPE vrLayer::GetType() {
+	return m_DriverType;
+}
+
+
+
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(vrArrayLayer);
