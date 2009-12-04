@@ -37,6 +37,10 @@ ENDIF(APPLE)
  SET(WXWINDOWS_USE_GL 0) 
  INCLUDE ("cmake/Use_wxWindows.cmake")
 
+
+#GEOS - GDAL libs
+ INCLUDE ("cmake/findGISLib.cmake")
+
 ## CXXTEST LIBRARY STUFF
 # Use Python interpreter
 FIND_PACKAGE(PythonInterp)

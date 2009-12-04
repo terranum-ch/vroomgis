@@ -37,6 +37,10 @@ public:
 		vrLayerManager myLayerManager;
 		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc))==false);
 		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP))==true);
+		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
+		// opening two times the same file
+		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP))==true);
+		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
 	}
 	
 };
