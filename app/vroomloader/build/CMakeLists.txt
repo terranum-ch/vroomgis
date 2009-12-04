@@ -39,7 +39,7 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 
 
 #GEOS - GDAL libs
-# INCLUDE ("cmake/findGISLib.cmake")
+INCLUDE ("cmake/findGISLib.cmake")
  
  
 #wxTreeMultiCtrl
@@ -83,7 +83,7 @@ ENDIF (WIN32)
 
 # copy libs to bundle if we are under mac...
 # check is done internally.
-#INCLUDE ("cmake/installMacGISLIB.cmake")
+INCLUDE ("cmake/installMacGISLIB.cmake")
 
 
 #SVN NUMBERING

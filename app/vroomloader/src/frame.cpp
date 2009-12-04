@@ -131,11 +131,16 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 							myDrivers.GetWildcards(),
 							 wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE | wxFD_CHANGE_DIR);
 	myFileDlg.ShowModal();
-	wxLogMessage("%s", myDrivers.GetWildcards());
-	event.Skip();
+	//wxLogMessage("%s", myDrivers.GetWildcards());
+	
+	
+	
 	
 	// try to open files
 	
+	
+	
+	event.Skip();
 }
 
 
