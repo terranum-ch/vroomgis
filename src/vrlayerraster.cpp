@@ -73,7 +73,7 @@ bool vrLayerRasterGDAL::Create(const wxFileName & filename) {
 bool vrLayerRasterGDAL::Open(const wxFileName & filename, bool readwrite) {
 	// try to close
 	_Close();
-	wxASSERT(m_DataSet == NULL);
+	wxASSERT(m_Dataset == NULL);
 	
 	// init filename and type
 	m_FileName = filename;

@@ -28,7 +28,6 @@
 
 #include "vrlayer.h"
 
-
 class vrLayerRaster : public vrLayer {
   protected:
     GDALDataset * m_Dataset;
