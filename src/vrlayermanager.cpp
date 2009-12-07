@@ -31,7 +31,8 @@ vrLayerManager::vrLayerManager() {
 vrLayerManager::~vrLayerManager() {
 	
 	// manually clearing array, Clear() or Empty() didn't work
-	for (unsigned int i = 0; i<m_Layers.GetCount(); i++)
+	unsigned int iCount = m_Layers.GetCount();
+	for (unsigned int i = 0; i<iCount; i++)
 	{
 		vrLayer * myLayer = m_Layers.Item(0);
 		m_Layers.Detach(0);

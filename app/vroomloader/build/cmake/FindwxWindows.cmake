@@ -130,14 +130,14 @@ IF(WIN32_STYLE_FIND)
   IF (WXWINDOWS_USE_MONOLITHIC)
     
     FIND_LIBRARY(WXWINDOWS_STATIC_LIBRARY
-      NAMES wx wxmsw wxmsw26 wxmsw27 wxmsw28 wxmsw28u
+      NAMES wx wxmsw wxmsw26 wxmsw27 wxmsw28 wxmsw28u wxmsw29u
       PATHS 
       "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
       ${WXWINDOWS_POSSIBLE_LIB_PATHS}
       DOC "wxWindows static release build library" ) 
     
     FIND_LIBRARY(WXWINDOWS_STATIC_DEBUG_LIBRARY
-      NAMES wxd wxmswd wxmsw26d  wxmsw27d wxmsw28d wxmsw28ud
+      NAMES wxd wxmswd wxmsw26d  wxmsw27d wxmsw28d wxmsw28ud wxmsw29ud
       PATHS 
       "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
       ${WXWINDOWS_POSSIBLE_LIB_PATHS}       
@@ -163,14 +163,14 @@ IF(WIN32_STYLE_FIND)
     ## gl lib is always build separate:
     ##
     FIND_LIBRARY(WXWINDOWS_STATIC_LIBRARY_GL
-      NAMES wx_gl wxmsw_gl wxmsw26_gl wxmsw28u_gl wxmsw28_gl
+      NAMES wx_gl wxmsw_gl wxmsw26_gl wxmsw28u_gl wxmsw28_gl wxmsw29_gl
       PATHS 
       "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
       ${WXWINDOWS_POSSIBLE_LIB_PATHS} 
       DOC "wxWindows static release build GL library" )
 
     FIND_LIBRARY(WXWINDOWS_STATIC_DEBUG_LIBRARY_GL
-      NAMES wxd_gl wxmswd_gl wxmsw26d_gl wxmsw28ud_gl wxmsw28d_gl
+      NAMES wxd_gl wxmswd_gl wxmsw26d_gl wxmsw28ud_gl wxmsw28d_gl wxmsw29d_gl
       PATHS 
       "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
       ${WXWINDOWS_POSSIBLE_LIB_PATHS} 
@@ -609,13 +609,13 @@ ELSE(WIN32_STYLE_FIND)
       SET(WX_CONFIG_CXXFLAGS_ARGS "--cxxflags")
       
       IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        #SET(WX_CONFIG_ARGS_LIBS "${WX_CONFIG_ARGS_LIBS} --debug=yes" )
-        #SET(WX_CONFIG_CXXFLAGS_ARGS "${WX_CONFIG_CXXFLAGS_ARGS} --debug=yes")
+        SET(WX_CONFIG_ARGS_LIBS "${WX_CONFIG_ARGS_LIBS} --debug=yes" )
+        SET(WX_CONFIG_CXXFLAGS_ARGS "${WX_CONFIG_CXXFLAGS_ARGS} --debug=yes")
       ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
       IF(CMAKE_BUILD_TYPE STREQUAL "Release")
-        #SET(WX_CONFIG_ARGS_LIBS "${WX_CONFIG_ARGS_LIBS} --debug=no" )
-        #SET(WX_CONFIG_CXXFLAGS_ARGS "${WX_CONFIG_CXXFLAGS_ARGS} --debug=no")
+        SET(WX_CONFIG_ARGS_LIBS "${WX_CONFIG_ARGS_LIBS} --debug=no" )
+        SET(WX_CONFIG_CXXFLAGS_ARGS "${WX_CONFIG_CXXFLAGS_ARGS} --debug=no")
       ENDIF(CMAKE_BUILD_TYPE STREQUAL "Release")
 
       MESSAGE("DBG: WX_CONFIG_ARGS_LIBS=${WX_CONFIG_ARGS_LIBS}")
