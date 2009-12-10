@@ -22,6 +22,8 @@
 #include <wx/wx.h>
 #endif
 
+//#include <wx/font.h>
+
 
 class vrLabel {
   private:
@@ -31,7 +33,7 @@ class vrLabel {
 
 
   public:
-    vrLabel(const wxFont & font = *wxNORMAL_FONT, const wxColour & color = *wxBLACK);
+    vrLabel(const wxFont & font = wxNullFont , const wxColour & color = *wxBLACK);
 
     virtual ~vrLabel();
 

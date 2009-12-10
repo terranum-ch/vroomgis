@@ -64,7 +64,7 @@ public:
 		TS_ASSERT_EQUALS(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
 		
 		// add data to the viewermanager
-		TS_ASSERT(myManager->Add(-1, myTestSHPLayer)==true);
+		//TS_ASSERT(myManager->Add(-1, myTestSHPLayer)==true);
 	}
 	
 };
