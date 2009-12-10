@@ -18,6 +18,17 @@
 #include "vrlabel.h"
 
 vrLabel::vrLabel(const wxFont & font, const wxColour & color) {
+	
+	// create default font and color if required
+	if (font == wxNullFont){
+		m_Font = wxFont(12,wxFONTFAMILY_DEFAULT,
+						wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+	}
+	else {
+		m_Font = font;
+	}
+
+	m_Color = color;
 }
 
 vrLabel::~vrLabel() {

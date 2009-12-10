@@ -26,7 +26,7 @@
 
 
 
-static const wxString g_TestPath = "/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data";
+static const wxString g_TestPath = "/Users/lucien/Documents/PRJ/COLTOPGIS/test_data";
 static const wxString g_TestFileMisc = "gpl.txt";
 static const wxString g_TestFileSHP = "fluss_poly_combioula.shp";
 static const wxString g_TestFileTIF = "MNT.tif";
