@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+				vrrender.cpp
+                    
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,48 +15,57 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
+#include "vrrender.h"
+
+vrRender::vrRender() {
+	m_Type = vrRENDER_UNKNOWN;
+	m_Transparency = 0;
+}
 
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 
-#include <wx/filename.h>
+vrRender::~vrRender() {
+}
 
 
-#include "vrdriver.h"
-#include "vrlayervector.h"
-#include "vrlayerraster.h"
-#include "vrviewerlayermanager.h"
+
+vrRENDER_TYPE vrRender::GetType() {
+	return m_Type;
+}
 
 
-class vrLayerManager 
-{
-	
-private:
-	vrArrayViewerLayerManager m_ViewerManagers;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	
-};
 
+void vrRender::SetTransparency(int value) {
+  m_Transparency = value;
+}
+
+
+
+vrRenderVector::vrRenderVector() {
+	m_Type = vrRENDER_VECTOR;
+}
+
+
+
+vrRenderVector::~vrRenderVector() {
+}
 
 
 
 
 
+vrRenderRaster::vrRenderRaster() {
+	m_Type = vrRENDER_RASTER;
+}
+
+vrRenderRaster::~vrRenderRaster() {
+}
 
 
-#endif
+vrRenderRasterColtop::vrRenderRasterColtop() {
+	m_Type = vrRENDER_RASTER_C2D;
+}
+
+vrRenderRasterColtop::~vrRenderRasterColtop() {
+}
+

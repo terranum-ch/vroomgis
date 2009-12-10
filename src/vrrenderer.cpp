@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+				vrrenderer.cpp
+                    
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,48 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
+#include "vrrenderer.h"
+#include "vrlayer.h"
+#include "vrrender.h"
+#include "vrlabel.h"
 
+vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
+}
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
+vrRenderer::~vrRenderer() {
+}
 
-#include <wx/filename.h>
+void vrRenderer::set_m_Render(vrRender * value) {
+  m_Render = value;
+}
 
+void vrRenderer::set_m_Label(vrLabel * value) {
+  m_Label = value;
+}
 
-#include "vrdriver.h"
-#include "vrlayervector.h"
-#include "vrlayerraster.h"
-#include "vrviewerlayermanager.h"
-
-
-class vrLayerManager 
-{
-	
-private:
-	vrArrayViewerLayerManager m_ViewerManagers;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	
-};
-
-
-
-
-
-
-
-
-#endif

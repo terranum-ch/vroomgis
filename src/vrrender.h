@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+								vrrender.h
+				Decorator base class 
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,49 +14,78 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
-
+#ifndef _VRRENDER_H
+#define _VRRENDER_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include <wx/filename.h>
+
+enum vrRENDER_TYPE {
+  vrRENDER_VECTOR,
+  vrRENDER_RASTER,
+  vrRENDER_RASTER_C2D,
+  vrRENDER_UNKNOWN
+
+};
 
 
-#include "vrdriver.h"
-#include "vrlayervector.h"
-#include "vrlayerraster.h"
-#include "vrviewerlayermanager.h"
+class vrRender {
+  protected:
+    vrRENDER_TYPE  m_Type;
+
+    int m_Transparency;
 
 
-class vrLayerManager 
-{
-	
-private:
-	vrArrayViewerLayerManager m_ViewerManagers;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	
+  public:
+    vrRender();
+
+    virtual ~vrRender();
+
+    vrRENDER_TYPE GetType();
+
+    inline const int GetTransparency() const;
+
+    void SetTransparency(int value);
+
+};
+
+inline const int vrRender::GetTransparency() const {
+  return m_Transparency;
+}
+
+
+
+
+class vrRenderVector : public vrRender {
+  public:
+    vrRenderVector();
+
+    virtual ~vrRenderVector();
+
 };
 
 
 
+class vrRenderRaster : public vrRender {
+  public:
+    vrRenderRaster();
+
+    virtual ~vrRenderRaster();
+
+};
 
 
 
+class vrRenderRasterColtop : public vrRenderRaster {
+  public:
+    vrRenderRasterColtop();
+
+    virtual ~vrRenderRasterColtop();
+
+};
 
 
 #endif
