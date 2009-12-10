@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+								vrlabel.h
+				Label definition class
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,49 +14,42 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
-
+#ifndef _VRLABEL_H
+#define _VRLABEL_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include <wx/filename.h>
+
+class vrLabel {
+  private:
+    wxFont m_Font;
+
+    wxColor m_Color;
 
 
-#include "vrdriver.h"
-#include "vrlayervector.h"
-#include "vrlayerraster.h"
-#include "vrviewerlayermanager.h"
+  public:
+    vrLabel(const wxFont & font = *wxNORMAL_FONT, const wxColour & color = *wxBLACK);
 
+    virtual ~vrLabel();
 
-class vrLayerManager 
-{
-	
-private:
-	vrArrayViewerLayerManager m_ViewerManagers;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	
+    inline const wxFont GetFont() const;
+
+    inline const wxColor GetColor() const;
+
+    void SetFont(wxFont value);
+
+    void SetColor(wxColor value);
+
 };
+inline const wxFont vrLabel::GetFont() const {
+  return m_Font;
+}
 
-
-
-
-
-
-
+inline const wxColor vrLabel::GetColor() const {
+  return m_Color;
+}
 
 #endif

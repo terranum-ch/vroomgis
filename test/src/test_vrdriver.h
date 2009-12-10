@@ -49,6 +49,7 @@ public:
 		TS_ASSERT(m_Driver.IsSupported(wxEmptyString)==false);
 		TS_ASSERT(m_Driver.IsSupported("shp")==true);
 		TS_ASSERT(m_Driver.IsSupported("sh")==false);
+		TS_ASSERT_EQUALS(m_Driver.IsSupported("shpp"),false);
 	}
 	
 	void testDriverGetType()

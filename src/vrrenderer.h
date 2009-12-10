@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+								vrrenderer.h
+				Informations for drawing GIS data (render to apply, label, etc.)
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,49 +14,54 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
-
+#ifndef _VRRENDERER_H
+#define _VRRENDERER_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include <wx/filename.h>
+
+class vrLayer;
+class vrRender;
+class vrLabel;
+
+class vrRenderer {
+  private:
+    vrLayer * m_Layer;
+
+    vrRender * m_Render;
+
+    vrLabel * m_Label;
 
 
-#include "vrdriver.h"
-#include "vrlayervector.h"
-#include "vrlayerraster.h"
-#include "vrviewerlayermanager.h"
+  public:
+    vrRenderer(vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL);
 
+    virtual ~vrRenderer();
 
-class vrLayerManager 
-{
-	
-private:
-	vrArrayViewerLayerManager m_ViewerManagers;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	
+    inline const vrLayer * get_m_Layer() const;
+
+    inline const vrRender * get_m_Render() const;
+
+    inline const vrLabel * get_m_Label() const;
+
+    void set_m_Render(vrRender * value);
+
+    void set_m_Label(vrLabel * value);
+
 };
+inline const vrLayer * vrRenderer::get_m_Layer() const {
+  return m_Layer;
+}
 
+inline const vrRender * vrRenderer::get_m_Render() const {
+  return m_Render;
+}
 
-
-
-
-
-
+inline const vrLabel * vrRenderer::get_m_Label() const {
+  return m_Label;
+}
 
 #endif
