@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrrenderer.h
-				Informations for drawing GIS data (render to apply, label, etc.)
+				vrviewertoc.cpp
+                    
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,55 +14,38 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _VRRENDERER_H
-#define _VRRENDERER_H
-
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
 
 
-class vrLayer;
-class vrRender;
-class vrLabel;
+#include "vrviewertoc.h"
+#include "vrrenderer.h"
 
-class vrRenderer {
-private:
-    vrLayer * m_Layer;
-	
-    vrRender * m_Render;
-	
-    vrLabel * m_Label;
-	
-	bool _IsCorrectRender();
-	
-public:
-    vrRenderer(vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL);
-	
-    virtual ~vrRenderer();
-	
-    inline  vrLayer * GetLayer() ;
-	
-    inline  vrRender * GetRender() ;
-	
-    inline  vrLabel * GetLabel() ;
-	
-    void SetRender(vrRender * value);
-	
-    void SetLabel(vrLabel * value);
-	
-};
-inline  vrLayer * vrRenderer::GetLayer() {
-	return m_Layer;
+vrViewerTOC::vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos,
+						 const wxSize & size, long style):
+wxDataViewTreeCtrl(parent, id, pos, size, style){	
+	m_ParentItem = AppendContainer(wxDataViewItem(NULL),"Table of content");
 }
 
-inline  vrRender * vrRenderer::GetRender()  {
-	return m_Render;
+vrViewerTOC::~vrViewerTOC() {
 }
 
-inline  vrLabel * vrRenderer::GetLabel()  {
-	return m_Label;
+bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
+	AppendItem(m_ParentItem, renderer->GetLayer()->GetName().GetFullName());
+	
+	if(IsFrozen()==false){
+		if(IsExpanded(m_ParentItem)==false){
+			Expand(m_ParentItem);
+		}
+	}
+	return false;
 }
-WX_DECLARE_OBJARRAY(vrRenderer*, vrArrayRenderer);
-#endif
+
+bool vrViewerTOC::Remove(int index) {
+	return false;
+}
+
+void vrViewerTOC::FreezeBegin() {
+}
+
+void vrViewerTOC::FreezeEnd() {
+}
+

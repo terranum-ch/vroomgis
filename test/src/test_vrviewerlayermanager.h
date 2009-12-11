@@ -32,39 +32,54 @@
 class TEST_vrViewerLayerManager : public CxxTest::TestSuite
 {
 private:
+	vrLayerManager * m_LayerManager;
+	vrViewerLayerManager * m_ViewManager;
 	
 public:
 	void setUp()
 	{
+		m_LayerManager = new vrLayerManager();
+		m_ViewManager = NULL;
+		vrViewerDisplay * myDisplay = NULL;
+		// will be destroyed by layermanager.
+		m_ViewManager = new vrViewerLayerManager(m_LayerManager, myDisplay);
+		TS_ASSERT_EQUALS(m_LayerManager->AddViewerLayerManager(m_ViewManager),true);
 	}
 	
-    void testCreatevrViewerLayerManager()
+	void tearDown()
 	{
-		vrLayerManager myLayerManager;
-		vrViewerDisplay * myDisplay = NULL;
-		vrViewerLayerManager * myManager = new vrViewerLayerManager(&myLayerManager, myDisplay);
-		TS_ASSERT(myLayerManager.AddViewerLayerManager(myManager)==true);
-		// adding same manager is permitted only once
-		TS_ASSERT(myLayerManager.AddViewerLayerManager(myManager)==false);
-		vrViewerLayerManager * myManager2 = new vrViewerLayerManager(&myLayerManager, myDisplay);
-		TS_ASSERT(myLayerManager.AddViewerLayerManager(myManager2)==true);
+		delete m_LayerManager;
+	}
+	
+    void testAddViewerLayerManager()
+	{
+		// adding two times the same viewermanager is not permitted
+		TS_ASSERT(m_LayerManager->AddViewerLayerManager(m_ViewManager)==false);
+		vrViewerLayerManager * myManager2 = new vrViewerLayerManager(m_LayerManager, NULL);
+		TS_ASSERT(m_LayerManager->AddViewerLayerManager(myManager2)==true);
 	}
 	
 	void testOpenGISDataViewerManager()
 	{
-		vrLayerManager myLayerManager;
-		vrViewerLayerManager * myManager = new vrViewerLayerManager(&myLayerManager, NULL);
-		TS_ASSERT(myLayerManager.AddViewerLayerManager(myManager)==true);
-		
 		// open data
-		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP)));
+		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
 		vrLayer * myTestSHPLayer = NULL;
-		myTestSHPLayer = myLayerManager.GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
+		myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
 		TS_ASSERT(myTestSHPLayer != NULL);
 		TS_ASSERT_EQUALS(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
 		
+		// open data 2
+		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileJPEG)));
+		vrLayer * myTestJpegLayer = NULL;
+		myTestJpegLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileJPEG));
+		TS_ASSERT(myTestJpegLayer != NULL);
+		TS_ASSERT_EQUALS(myTestJpegLayer->GetType(), vrDRIVER_RASTER_JPEG);
+		
+		
+		
 		// add data to the viewermanager
-		//TS_ASSERT(myManager->Add(-1, myTestSHPLayer)==true);
+		TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer)==true);
+		TS_ASSERT(m_ViewManager->Add(0, myTestJpegLayer)==true);
 	}
 	
 };

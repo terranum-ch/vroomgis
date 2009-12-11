@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrrenderer.h
-				Informations for drawing GIS data (render to apply, label, etc.)
+								vroomgis.h
+                    Main include for VROOMGIS engine
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,55 +14,28 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _VRRENDERER_H
-#define _VRRENDERER_H
 
+#ifndef _VROOMGIS_H_
+#define _VROOMGIS_H_
+
+// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+// Include wxWidgets' headers
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 
-class vrLayer;
-class vrRender;
-class vrLabel;
+#include "vrdriver.h"
+#include "vrlabel.h"
+#include "vrlayer.h"
+#include "vrlayermanager.h"
+#include "vrlayerraster.h"
+#include "vrlayervector.h"
+#include "vrrender.h"
+#include "vrrenderer.h"
+#include "vrviewerlayermanager.h"
+#include "vrviewertoc.h"
 
-class vrRenderer {
-private:
-    vrLayer * m_Layer;
-	
-    vrRender * m_Render;
-	
-    vrLabel * m_Label;
-	
-	bool _IsCorrectRender();
-	
-public:
-    vrRenderer(vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL);
-	
-    virtual ~vrRenderer();
-	
-    inline  vrLayer * GetLayer() ;
-	
-    inline  vrRender * GetRender() ;
-	
-    inline  vrLabel * GetLabel() ;
-	
-    void SetRender(vrRender * value);
-	
-    void SetLabel(vrLabel * value);
-	
-};
-inline  vrLayer * vrRenderer::GetLayer() {
-	return m_Layer;
-}
 
-inline  vrRender * vrRenderer::GetRender()  {
-	return m_Render;
-}
-
-inline  vrLabel * vrRenderer::GetLabel()  {
-	return m_Label;
-}
-WX_DECLARE_OBJARRAY(vrRenderer*, vrArrayRenderer);
 #endif

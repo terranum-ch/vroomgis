@@ -32,9 +32,11 @@
 #include "sample.xpm"
 #endif
 
+#include <wx/splitter.h>	//splitter bar
+//#include <wx/treectrl.h>	// temp treectrl
 
-#include "../../../src/vrdriver.h"
 
+#include "../../../src/vroomgis.h"
 
 class vroomLoader : public wxApp
 {
@@ -49,7 +51,20 @@ public:
 class vroomLoaderFrame : public wxFrame
 {
 private:
-	wxScrolledWindow* m_Scrolled;
+	wxTextCtrl* m_LogCtrl;
+	
+	// controls (vroomgis)
+	vrViewerTOC * m_TocCtrl;
+	
+	// vroomgis engine
+	vrLayerManager m_LayerManager;
+	vrViewerLayerManager * m_ViewerLayerManager;
+	
+	wxScrolledWindow* m_DisplayCtrl;
+	
+	
+	void _CreateControls();
+	
 	virtual void OnRightClick( wxMouseEvent& event ){ wxLogMessage("right clicked"); event.Skip(); }
 	
 public:

@@ -34,12 +34,56 @@ bool vroomLoader::OnInit()
         return false;
 
     vroomLoaderFrame *frame = new vroomLoaderFrame("vroomLoader");
-    frame->Show(true);
-
+    //frame->CenterOnScreen(wxBOTH);
+	frame->SetSize(50, 50, 800, 500);
+	frame->Show(true);
+	
     return true;
 }
 
+void  vroomLoaderFrame::_CreateControls()
+{
+	wxBoxSizer* bSizer1;
+	bSizer1 = new wxBoxSizer( wxVERTICAL );
+	
+	wxSplitterWindow* m_splitter2;
+	m_splitter2 = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_LIVE_UPDATE );
+	//m_splitter2->Connect( wxEVT_IDLE, wxIdleEventHandler( MyPanel1::m_splitter2OnIdle ), NULL, this );
+	wxPanel* m_panel1;
+	m_panel1 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxVERTICAL );
+	
+	m_TocCtrl = new vrViewerTOC( m_panel1, wxID_ANY);
+	bSizer4->Add( m_TocCtrl, 2, wxEXPAND, 5 );
+	
+	m_LogCtrl = new wxTextCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
+	bSizer4->Add( m_LogCtrl, 1, wxEXPAND, 5 );
 
+	
+	m_panel1->SetSizer( bSizer4 );
+	m_panel1->Layout();
+	bSizer4->Fit( m_panel1 );
+	wxPanel* m_panel2;
+	m_panel2 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxBoxSizer* bSizer5;
+	bSizer5 = new wxBoxSizer( wxVERTICAL );
+	
+	m_DisplayCtrl = new wxScrolledWindow( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
+	m_DisplayCtrl->SetScrollRate( 5, 5 );
+	m_DisplayCtrl->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+	
+	bSizer5->Add( m_DisplayCtrl, 1, wxEXPAND, 5 );
+	
+	m_panel2->SetSizer( bSizer5 );
+	m_panel2->Layout();
+	bSizer5->Fit( m_panel2 );
+	m_splitter2->SplitVertically( m_panel1, m_panel2, 300 );
+	bSizer1->Add( m_splitter2, 1, wxEXPAND, 5 );
+	
+	this->SetSizer( bSizer1 );
+	//this->Layout();
+}
 
 
 vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
@@ -70,20 +114,16 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	
 	
 	// CONTROLS
-	wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxVERTICAL );
-	
-	m_Scrolled = new wxScrolledWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
-	m_Scrolled->SetScrollRate( 5, 5 );
-	m_Scrolled->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-	bSizer1->Add( m_Scrolled, 1, wxEXPAND | wxALL, 0 );
-	
-	this->SetSizer( bSizer1 );
-	this->Layout();
-	
+	_CreateControls();
+	wxLog::SetActiveTarget(new wxLogTextCtrl (m_LogCtrl));
 	
 	// Connect Events
-	m_Scrolled->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
+	m_DisplayCtrl->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
+
+
+	// VROOMGIS
+	m_ViewerLayerManager = new vrViewerLayerManager(&m_LayerManager, NULL, m_TocCtrl);
+	
 }
 
 
@@ -91,7 +131,10 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 vroomLoaderFrame::~vroomLoaderFrame()
 {
 	// Disconnect Events
-	m_Scrolled->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
+	m_DisplayCtrl->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
+
+
+	
 }
 
 
@@ -99,7 +142,8 @@ vroomLoaderFrame::~vroomLoaderFrame()
 
 void vroomLoaderFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    Close(true);
+	wxLog::SetActiveTarget (NULL);
+	Close(true);
 }
 
 
@@ -130,13 +174,33 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 							wxEmptyString,
 							myDrivers.GetWildcards(),
 							 wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE | wxFD_CHANGE_DIR);
-	myFileDlg.ShowModal();
-	//wxLogMessage("%s", myDrivers.GetWildcards());
 	
+	wxArrayString myPathsFileName;
 	
-	
-	
-	// try to open files
+	if(myFileDlg.ShowModal()==wxID_OK){
+		// try to open files
+
+		myFileDlg.GetPaths(myPathsFileName);
+		wxASSERT(myPathsFileName.GetCount() > 0);
+		
+		
+		for (unsigned int i = 0; i< myPathsFileName.GetCount(); i++) {
+			// open files
+			bool myOpen = m_LayerManager.Open(wxFileName(myPathsFileName.Item(i)));
+			wxASSERT(myOpen);
+		}
+		
+		for (unsigned int j = 0; j< myPathsFileName.GetCount(); j++) {
+			// get files
+			vrLayer * myLayer = m_LayerManager.GetLayer( wxFileName(myPathsFileName.Item(j)));
+			wxASSERT(myLayer);
+			
+			// add files to the viewer
+			m_ViewerLayerManager->Add(-1, myLayer);
+		}
+		
+		
+	}
 	
 	
 	

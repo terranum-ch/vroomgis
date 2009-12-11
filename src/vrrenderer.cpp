@@ -113,3 +113,9 @@ void vrRenderer::SetLabel(vrLabel * value) {
 	m_Label = value;
 }
 
+
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(vrArrayRenderer);
+
+
+

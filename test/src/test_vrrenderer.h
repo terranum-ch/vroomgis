@@ -66,7 +66,7 @@ public:
 	void testRenderCreate()
 	{
 		
-		vrRenderRaster * myRenderRaster = new vrRenderRaster();
+		//vrRenderRaster * myRenderRaster = new vrRenderRaster();
 		vrRenderVector * myRenderVector = new vrRenderVector();
 		
 		// crash
