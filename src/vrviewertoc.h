@@ -1,6 +1,6 @@
 /***************************************************************************
-								vrrenderer.h
-				Informations for drawing GIS data (render to apply, label, etc.)
+								vrviewertoc.h
+				Default TOC
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _VRRENDERER_H
-#define _VRRENDERER_H
+#ifndef _VRVIEWERTOC_H
+#define _VRVIEWERTOC_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
@@ -23,46 +23,29 @@
 #endif
 
 
-class vrLayer;
-class vrRender;
-class vrLabel;
+#include <wx/dataview.h>
+#include "vrlayer.h"
 
-class vrRenderer {
+
+
+class vrRenderer;
+
+class vrViewerTOC : public wxDataViewTreeCtrl {
 private:
-    vrLayer * m_Layer;
+	wxDataViewItem m_ParentItem;
 	
-    vrRender * m_Render;
-	
-    vrLabel * m_Label;
-	
-	bool _IsCorrectRender();
-	
-public:
-    vrRenderer(vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL);
-	
-    virtual ~vrRenderer();
-	
-    inline  vrLayer * GetLayer() ;
-	
-    inline  vrRender * GetRender() ;
-	
-    inline  vrLabel * GetLabel() ;
-	
-    void SetRender(vrRender * value);
-	
-    void SetLabel(vrLabel * value);
-	
+  public:
+    vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, long style = wxDV_NO_HEADER);
+
+    virtual ~vrViewerTOC();
+
+    bool Add(int index, vrRenderer * renderer, int control);
+
+    bool Remove(int index);
+
+    void FreezeBegin();
+
+    void FreezeEnd();
+
 };
-inline  vrLayer * vrRenderer::GetLayer() {
-	return m_Layer;
-}
-
-inline  vrRender * vrRenderer::GetRender()  {
-	return m_Render;
-}
-
-inline  vrLabel * vrRenderer::GetLabel()  {
-	return m_Label;
-}
-WX_DECLARE_OBJARRAY(vrRenderer*, vrArrayRenderer);
 #endif

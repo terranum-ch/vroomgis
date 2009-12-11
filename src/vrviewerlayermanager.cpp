@@ -23,15 +23,21 @@
 
 
 //if toc is null, we use the default vrViewerTOC. if  viewer is null, we use the default vrViewer.
-vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, vrViewerDisplay * viewer){//, vrViewerTOC * toc) {
+vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent,
+										   vrViewerDisplay * viewer,vrViewerTOC * toc) {
 	
 	//wxASSERT(viewer);
 	wxASSERT(parent);
 	m_Display = viewer;
+	m_Toc = toc;
 	m_LayerManager = parent;
 	
 	if (m_Display==NULL){
 		wxLogError("No display attached");
+	}
+	
+	if (m_Toc == NULL){
+		wxLogError("No toc defined");
 	}
 
 }
@@ -40,16 +46,49 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, vrViewerDisp
 
 vrViewerLayerManager::~vrViewerLayerManager() {
 	wxLogMessage("ViewerLayerManager Dtor called");
-	if(m_Display)
+	if(m_Display){
 		delete m_Display;
+		m_Display = NULL;
+	}
+	
+	if (m_Toc) {
+		delete m_Toc;
+		m_Toc = NULL;
+	}
+	
+	// delete renderers
+	unsigned int iCount = m_Renderers.GetCount();
+	for (unsigned int i = 0; i<iCount; i++) {
+		vrRenderer * myRenderer = m_Renderers.Item(0);
+		wxASSERT(myRenderer);
+		m_Renderers.Detach(0);
+		delete myRenderer;
+	}
 	
 }
 
 
 
-bool vrViewerLayerManager::Add(long pos, vrLayer * layer){//, vrRender * render, vrLabel * label) {
-	return false;
+bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrLabel * label) {
+	wxASSERT(layer);
+	vrRenderer * myRenderer = new vrRenderer(layer, render, label);
+	
+	if (pos == -1){
+		m_Renderers.Add(myRenderer);
+	}
+	else {
+		m_Renderers.Insert(myRenderer, pos);
+	}
+	
+	if (m_Toc) {
+		m_Toc->Add(pos, myRenderer, m_Renderers.GetCount());
+	}
+	
+	return true;
 }
+
+
+
 
 bool vrViewerLayerManager::Remove(const wxFileName & filename) {
 	return false;

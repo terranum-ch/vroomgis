@@ -23,6 +23,8 @@
 #endif
 
 #include <wx/filename.h> // for filename usage
+#include "vrrenderer.h"
+#include "vrviewertoc.h"
 
 
 class vrLayerManager;
@@ -34,20 +36,20 @@ class vrViewerLayerManager {
   private:
     vrLayerManager * m_LayerManager;
 
-    //vrRenderer * m_Renderers;
+    vrArrayRenderer m_Renderers;
 
     vrViewerDisplay * m_Display;
 
-    //vrViewerTOC * m_Toc;
+    vrViewerTOC * m_Toc;
 
 
   public:
     //if toc is null, we use the default vrViewerTOC. if  viewer is null, we use the default vrViewer.
-	vrViewerLayerManager(vrLayerManager * parent, vrViewerDisplay * viewer); //, vrViewerTOC * toc = NULL);
+	vrViewerLayerManager(vrLayerManager * parent, vrViewerDisplay * viewer, vrViewerTOC * toc = NULL);
 
     virtual ~vrViewerLayerManager();
 
-    bool Add(long pos, vrLayer * layer);//, vrRender * render, vrLabel * label); 
+    bool Add(long pos, vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL); 
     bool Remove(const wxFileName & filename);
 
     void FreezeBegin();

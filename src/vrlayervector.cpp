@@ -67,6 +67,7 @@ bool vrLayerVectorOGR::Open(const wxFileName & filename, bool readwrite){
 
 	// open datasource
 	m_Dataset = OGRSFDriverRegistrar::Open( filename.GetFullPath(), readwrite);
+	wxLogMessage(filename.GetFullPath());
     if( m_Dataset == NULL ){
 		wxLogError("Unable to open %s, maybe driver not registred - OGRRegisterAll()", filename.GetFullName());
 		return false;
