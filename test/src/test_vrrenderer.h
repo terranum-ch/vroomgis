@@ -30,11 +30,11 @@
 
 class TEST_vrRenderer : public CxxTest::TestSuite
 {
-private:
+public:
 	vrLayerManager * m_Manager;
 	vrLayer * m_LayerShp;
 	
-public:
+
 	void setUp()
 	{
 		m_LayerShp = NULL;

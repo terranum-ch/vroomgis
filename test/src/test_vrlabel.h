@@ -18,32 +18,32 @@
 #ifndef _TEST_VR_LABEL_H_
 #define _TEST_VR_LABEL_H_
 
-
+#include <cxxtest/TestSuite.h>
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
 
-//#include "test_param.h"	//for test parameters
+
 #include "vrlabel.h"
-#include "wx/font.h"
+
+
 
 class TEST_vrLabel : public CxxTest::TestSuite
 {
-private:
-	wxFont m_Fontt;	
 public:
+	wxFont m_Fontt;
 	
 	void setUp()
 	{
-	m_Fontt	= wxFont(12,wxFONTFAMILY_DEFAULT, 
-				 wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
+		m_Fontt = wxFont(12,wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
 	}
 	
 	void testLabelCreate()
 	{
 		// using *wxNORMAL_FONT crash !!!
 		vrLabel myLabel;
+		wxLogError("Label passing...");
 		
 		// getting font is strange...
 		// lot of mac alert ???, to be tested on windows
@@ -55,7 +55,7 @@ public:
 	
 	void testLabelCreate2()
 	{
-		wxFont myFont2 = wxFont(m_Fontt);
+		wxFont myFont2 = m_Fontt;
 		myFont2.SetUnderlined(true);
 		
 		vrLabel myLabel(myFont2, wxColour(255,0,0));
