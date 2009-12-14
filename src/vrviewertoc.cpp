@@ -21,15 +21,38 @@
 
 vrViewerTOC::vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos,
 						 const wxSize & size, long style):
-wxDataViewTreeCtrl(parent, id, pos, size, style){	
-	m_ParentItem = AppendContainer(wxDataViewItem(NULL),"Table of content");
+wxDataViewListCtrl(parent, id, pos, size, style){	
+	AppendToggleColumn("Visible", wxDATAVIEW_CELL_INERT, 50, 	
+					   wxALIGN_CENTER);
+	wxSize iCtrlSize = GetSize();
+	AppendTextColumn("Name", wxDATAVIEW_CELL_INERT, 200);
+	//m_ParentItem = AppendContainer(wxDataViewItem(NULL),"Table of content");
+	
 }
 
 vrViewerTOC::~vrViewerTOC() {
 }
 
+
+
 bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
-	AppendItem(m_ParentItem, renderer->GetLayer()->GetName().GetFullName());
+	
+	 wxVector<wxVariant> data;
+	data.push_back(false);
+	data.push_back(renderer->GetLayer()->GetName().GetFullName());
+	
+	
+	// prepending item to the list
+	if (index == -1) {
+		
+		PrependItem(data);
+		
+		//PrependItem(m_ParentItem, renderer->GetLayer()->GetName().GetFullName());
+	}
+	
+	// inserting item
+	// TODO: is really usefull to add item not at the begining ?
+	
 	
 	if(IsFrozen()==false){
 		if(IsExpanded(m_ParentItem)==false){
@@ -38,6 +61,8 @@ bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
 	}
 	return false;
 }
+
+
 
 bool vrViewerTOC::Remove(int index) {
 	return false;
