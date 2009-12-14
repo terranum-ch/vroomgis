@@ -35,7 +35,9 @@ class TEST_vrLayerVectorOGR : public CxxTest::TestSuite
 public:
    	void testOpenLayerVectorOGR()
 	{
-		
+		//init lib.
+		vrLayerManager myManager;		
+
 		vrLayerVectorOGR myLayer;
 		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), true),true);
 		TS_ASSERT_EQUALS(myLayer.GetType(), vrDRIVER_VECTOR_SHP);

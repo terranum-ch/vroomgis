@@ -41,6 +41,16 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 #GEOS - GDAL libs
  INCLUDE ("cmake/findGISLib.cmake")
 
+# GTK LIB IF LINUX
+MESSAGE(${CMAKE_SYSTEM_NAME})
+#IF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+MESSAGE("Systeme linux detecte")
+
+	INCLUDE ("cmake/FindGTK2.cmake")
+	INCLUDE_DIRECTORIES(${GTK2_INCLUDE_DIRS})
+	MESSAGE("Gtk include is " ${GTK2_INCLUDE_DIRS})
+#ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+
 ## CXXTEST LIBRARY STUFF
 # Use Python interpreter
 FIND_PACKAGE(PythonInterp)

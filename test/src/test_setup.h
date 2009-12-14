@@ -1,6 +1,6 @@
 /***************************************************************************
-								test_vrlayervectorGDAL.h
-								Test the GDAL Layers
+								test_setup.h
+							Setup tests 
                              -------------------
     copyright            : (C) 2009 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _TEST_VR_LAYERVECTORGDAL_H_
-#define _TEST_VR_LAYERVECTORGDAL_H_
+#ifndef _TEST_SETUP_H_
+#define _TEST_SETUP_H_
 
 
 #include "wx/wxprec.h"
@@ -24,35 +24,51 @@
     #include <wx/wx.h>
 #endif
 
-#include "test_param.h"	//for test parameters
-#include "vrlayerraster.h"
-#include "vrlayermanager.h"
+//#include "test_param.h"	//for test parameters
+//#include "wx/font.h"
+
+//#include "gtk/gtk.h"
+#include <cxxtest/TestSuite.h>
+#include <cxxtest/GlobalFixture.h>
+
+#ifdef __LINUX__
+#include "gtk/gtk.h"	
+#endif
 
 
-
-class TEST_vrLayerRasterGDAL : public CxxTest::TestSuite
+class Fixture1 : public CxxTest::GlobalFixture
 {
+	
 public:
-   	void testOpenLayerRasterGDAL()
-	{
-		//init lib.
-		vrLayerManager myManager;		
-		
-		vrLayerRasterGDAL myLayer;
-		TS_ASSERT(myLayer.IsOK()==false);
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), true),true);
-		TS_ASSERT_EQUALS(myLayer.GetType(), vrDRIVER_RASTER_TIFF);
-		TS_ASSERT(myLayer.IsOK());
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), true),true);
-	}
-	
-		
-	
+	bool setUpWorld(){
+	wxLogError("main setup called");
+	wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");	
+ 	wxInitializer initializer;
+       	 if ( !initializer )
+        {
+        	fprintf(stderr, "Failed to initialize the wxWidgets library, aborting.");
+            	TS_FAIL("Unable to init the wxWigets library");
+        }
+
+#ifdef __LINUX__
+	TS_ASSERT(gtk_init_check(NULL,NULL));
+#endif
+
+	return true;
+	}	
+
+
 };
 
+static Fixture1 fixture1;
 
 
-
+ 
+class Suite : public CxxTest::TestSuite
+{
+public:
+    void testOne() {wxLogError("Main file processed ");}
+};
 
 
 
