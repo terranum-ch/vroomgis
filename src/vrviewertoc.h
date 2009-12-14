@@ -30,12 +30,12 @@
 
 class vrRenderer;
 
-class vrViewerTOC : public wxDataViewTreeCtrl {
+class vrViewerTOC : public wxDataViewListCtrl {
 private:
 	wxDataViewItem m_ParentItem;
 	
   public:
-    vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, long style = wxDV_NO_HEADER);
+    vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, long style = wxDV_ROW_LINES);
 
     virtual ~vrViewerTOC();
 
