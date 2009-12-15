@@ -33,12 +33,6 @@ class TEST_vrDrivers : public CxxTest::TestSuite
 private:
 	vrDrivers m_Driver;
 public:
-	// setting output to the std err (otherwise log into windows)
-	void testOutputToWindows()
-	{
-		wxLog::SetActiveTarget(new wxLogStderr());
-	}
-
 		
    	void testDriverGetWildcards()
 	{

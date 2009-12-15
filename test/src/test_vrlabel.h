@@ -43,8 +43,7 @@ public:
 	{
 		// using *wxNORMAL_FONT crash !!!
 		vrLabel myLabel;
-		wxLogError("Label passing...");
-		
+
 		// getting font is strange...
 		// lot of mac alert ???, to be tested on windows
 #ifndef __WXMAC__

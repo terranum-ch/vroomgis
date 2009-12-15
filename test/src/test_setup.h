@@ -21,13 +21,11 @@
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
-//#include "test_param.h"	//for test parameters
-//#include "wx/font.h"
 
-//#include "gtk/gtk.h"
+
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>
 
@@ -38,36 +36,39 @@
 
 class Fixture1 : public CxxTest::GlobalFixture
 {
-	
+
 public:
 	bool setUpWorld(){
-	wxLogError("main setup called");
-	wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");	
- 	wxInitializer initializer;
-       	 if ( !initializer )
-        {
-        	fprintf(stderr, "Failed to initialize the wxWidgets library, aborting.");
-            	TS_FAIL("Unable to init the wxWigets library");
-        }
+		wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");	
+		wxInitializer initializer;
+		if ( !initializer )
+		{
+			fprintf(stderr, "Failed to initialize the wxWidgets library, aborting.");
+			TS_FAIL("Unable to init the wxWigets library");
+		}
 
 #ifdef __LINUX__
-	TS_ASSERT(gtk_init_check(NULL,NULL));
+		TS_ASSERT(gtk_init_check(NULL,NULL));
 #endif
 
-	return true;
+		return true;
 	}	
 
 
 };
 
-static Fixture1 fixture1;
 
+static Fixture1 fixture1;
 
  
 class Suite : public CxxTest::TestSuite
 {
 public:
-    void testOne() {wxLogError("Main file processed ");}
+	void testOne() {
+		//setting output to the std err (otherwise log into windows)
+		wxLog::SetActiveTarget(new wxLogStderr());
+		wxLogMessage ("Setup file processed ");
+	}
 };
 
 
