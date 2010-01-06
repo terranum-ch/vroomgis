@@ -21,34 +21,11 @@ SOURCE_GROUP (source FILES ${SRC_FILES})
 FILE (GLOB_RECURSE HEAD_FILES "../src/*.h")
 SOURCE_GROUP (header FILES ${HEAD_FILES})
 
-## search files for vroomgis engine
-FILE (GLOB_RECURSE VRSRC_FILES ../../../src/*.cpp)
-SOURCE_GROUP (vroomgis_source FILES ${VRSRC_FILES})
-FILE (GLOB_RECURSE VRHEAD_FILES "../../../src/*.h")
-SOURCE_GROUP (vroomgis_header FILES ${VRHEAD_FILES})
-
-
 MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 
-# WXWIDGETS
-# DEFINE ALL INCLUDES AND SO ON
- SET(WXWINDOWS_USE_GL 0)
- 
- 
- INCLUDE ("cmake/Use_wxWindows.cmake")
 
-
-#GEOS - GDAL libs
-INCLUDE ("cmake/findGISLib.cmake")
- 
- 
-#wxTreeMultiCtrl
-# INCLUDE ("${PROJECT_SOURCE_DIR}/../src/components/wxtreemultictrl/wxtreectrloptions.cmake")
- 
-
-#CURL
-#INCLUDE ("cmake/FindCURL.cmake")
-	
+#CREATE VROOMGIS LIBRARY AND WXWIDGETS - GDAL LIB
+INCLUDE("../../../build/cmake/Use_vroomGISlib.cmake")	
 
 
 IF( APPLE )
@@ -64,8 +41,10 @@ IF( APPLE )
 	SET(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) CREALP 2009")
 	
 	# Need to copy the icon file
-	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app/Contents/Resources")
-	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../../../art/${APP_ICON} ${PROJECT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/${PROGNAME}.app/Contents/Resources")
+	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/Debug/${PROGNAME}.app/Contents/Resources")
+	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../../../art/${APP_ICON} ${PROJECT_BINARY_DIR}/Debug/${PROGNAME}.app/Contents/Resources")
+	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/Release/${PROGNAME}.app/Contents/Resources")
+	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../../../art/${APP_ICON} ${PROJECT_BINARY_DIR}/Release/${PROGNAME}.app/Contents/Resources")
 ENDIF (APPLE)
 
 
@@ -81,34 +60,19 @@ ELSE (WIN32)
  	ADD_EXECUTABLE (${PROGNAME} MACOSX_BUNDLE ${SRC_FILES} ${HEAD_FILES} ${VRSRC_FILES} ${VRHEAD_FILES} )
 ENDIF (WIN32)
 
+
+# USE VROOMGIS LIBRARY
+TARGET_LINK_LIBRARIES(${PROGNAME} ${VR_LIBRARY_NAME})
+
 # copy libs to bundle if we are under mac...
 # check is done internally.
-INCLUDE ("cmake/installMacGISLIB.cmake")
+INCLUDE ("../../../build/cmake/installMacGISLIB.cmake")
 
-
-#SVN NUMBERING
-#INCLUDE ("cmake/use_svnnumber.cmake")
-
-
-
-#SOULD WE ADD THE LIBTIFF INTO BUNDLE
-# ONLY FOR CERTAIN MAC WITH PPC 
-# CHECK ARE DONE INTERNALLY YOU 
-# CAN CALL THIS WITHOUT FEAR...
-#INCLUDE ("cmake/installMacLibTiff.cmake")
-
-
-#SOULD WE ADD THE GDIPLUS.dll INTO project
-# ONLY FOR Windows, do nothing under other 
-# OS. 
-# CHECK ARE DONE INTERNALLY YOU 
-# CAN CALL THIS WITHOUT FEAR...
-INCLUDE ("cmake/Use_wingdiplus.cmake")
 
 # SHOULD WE USE THE MT VERSION FOR DEFAULT 
 # COMPATIBILITY WITH < WINXP
 IF (WIN32)
-	INCLUDE ("cmake/Use_visualstudioMT.cmake")
+	INCLUDE ("../../../build/cmake/Use_visualstudioMT.cmake")
 ENDIF (WIN32)
 
 
