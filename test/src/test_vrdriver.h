@@ -36,7 +36,9 @@ public:
 		
    	void testDriverGetWildcards()
 	{
+		
 		TS_ASSERT(m_Driver.GetWildcards().IsEmpty()==false);
+		wxLogDebug(m_Driver.GetWildcards());
 	}
 	
 	void testDriverIsSupported(){
