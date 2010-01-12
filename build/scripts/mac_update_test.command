@@ -41,7 +41,7 @@ cmake $TRUNKDIR/test/build -DCXXTEST_DIRECTORY:PATH="/Users/lucien/Documents/PRO
 
 echo $VARLINE
 echo "4) Making the tests"
-make
+xcodebuild
 echo "4) Making the tests ... DONE"
 
 echo $VARLINE

@@ -1,8 +1,8 @@
 /***************************************************************************
-				vrlayervector.h
-                    
+								vrviewerdisplay.h
+								Default display
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2010 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -14,47 +14,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef _VRVIEWERDISPLAY_H
+#define _VRVIEWERDISPLAY_H
 
-#ifndef _VRLAYERVECTOR_H
-#define _VRLAYERVECTOR_H
-
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 
-#include "vrlayer.h"
-
-class vrLayerVector : public vrLayer {
-protected:
-    OGRDataSource * m_Dataset;
-	OGRLayer * m_Layer;
+class vrViewerDisplay : public wxScrolledCanvas {
+private:
+    //vrCoordinate * m_Coordinate;
 	
-
+	
 public:
-	vrLayerVector();
-    virtual ~vrLayerVector();
-    virtual bool Create(const wxFileName & filename){return false;}
-    virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
-	 bool IsOK();
+    vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, long style = wxHSCROLL | wxVSCROLL);
+	
+    virtual ~vrViewerDisplay();
+	
+    void Refresh();
 	
 };
 
-
-class vrLayerVectorOGR : public vrLayerVector {
-protected:
-	
-    virtual bool _Close();
-	
-public:
-	vrLayerVectorOGR();
-    virtual ~vrLayerVectorOGR();
-	
-    virtual bool Open(const wxFileName & filename, bool readwrite = false);
-    virtual bool Create(const wxFileName & filename);
-	
-};
 #endif

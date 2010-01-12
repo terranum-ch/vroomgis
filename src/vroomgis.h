@@ -25,7 +25,7 @@
     #include <wx/wx.h>
 #endif
 
-
+//FIXME: REMOVE UNNEEDED HEADER
 #include "vrdriver.h"
 #include "vrlabel.h"
 #include "vrlayer.h"

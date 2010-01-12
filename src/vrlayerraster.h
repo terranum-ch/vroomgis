@@ -25,7 +25,6 @@
     #include <wx/wx.h>
 #endif
 
-
 #include "vrlayer.h"
 
 class vrLayerRaster : public vrLayer {

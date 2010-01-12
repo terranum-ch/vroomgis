@@ -22,7 +22,6 @@
 #include <wx/wx.h>
 #endif
 
-//#include <wx/font.h>
 
 
 class vrLabel {

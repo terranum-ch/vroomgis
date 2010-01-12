@@ -19,16 +19,18 @@
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+	#include <wx/wx.h>
+	#include <wx/dataview.h>
 #endif
 
 
-#include <wx/dataview.h>
-#include "vrlayer.h"
+
+//#include "vrlayer.h"
 
 
 
 class vrRenderer;
+
 
 class vrViewerTOC : public wxDataViewListCtrl {
 private:

@@ -1,8 +1,8 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+								vrviewerdisplay.cpp
+								Default display
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2010 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -15,47 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
+#include "vrviewerdisplay.h"
 
+vrViewerDisplay::vrViewerDisplay(wxWindow * parent, wxWindowID id, long style) :
+wxScrolledCanvas(parent, id, wxDefaultPosition, wxDefaultSize, style){
+}
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-	#include <wx/filename.h>
-#endif
+vrViewerDisplay::~vrViewerDisplay() {
+}
 
+void vrViewerDisplay::Refresh() {
+}
 
-#include "vrlayer.h"
-#include "vrlayervector.h"
-#include "vrlayerraster.h"
-#include "vrviewerlayermanager.h"
-
-
-class vrLayerManager 
-{
-	
-private:
-	vrArrayViewerLayerManager m_ViewerManagers;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	
-};
-
-
-
-
-
-
-
-
-#endif

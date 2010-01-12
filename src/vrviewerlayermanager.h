@@ -19,16 +19,17 @@
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+	#include <wx/wx.h>
+	#include <wx/filename.h>
 #endif
 
-#include <wx/filename.h> // for filename usage
 #include "vrrenderer.h"
-#include "vrviewertoc.h"
 
 
 class vrLayerManager;
 class vrLayer;
+class vrViewerDisplay;
+class vrViewerTOC;
 class vrViewerDisplay;
 
 
@@ -45,6 +46,7 @@ class vrViewerLayerManager {
 
   public:
     //if toc is null, we use the default vrViewerTOC. if  viewer is null, we use the default vrViewer.
+	//FIXME: Viewer should not be null
 	vrViewerLayerManager(vrLayerManager * parent, vrViewerDisplay * viewer, vrViewerTOC * toc = NULL);
 
     virtual ~vrViewerLayerManager();
@@ -62,18 +64,5 @@ WX_DECLARE_OBJARRAY(vrViewerLayerManager*, vrArrayViewerLayerManager);
 
 
 
-class vrViewerDisplay : public wxScrolledCanvas {
-  private:
-    //vrCoordinate * m_Coordinate;
-
-
-  public:
-    vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, long style = wxHSCROLL | wxVSCROLL);
-
-    virtual ~vrViewerDisplay();
-
-    void Refresh();
-
-};
 
 #endif
