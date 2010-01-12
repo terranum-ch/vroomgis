@@ -60,7 +60,7 @@ private:
 	vrLayerManager m_LayerManager;
 	vrViewerLayerManager * m_ViewerLayerManager;
 	
-	wxScrolledWindow* m_DisplayCtrl;
+	vrViewerDisplay * m_DisplayCtrl;
 	
 	
 	void _CreateControls();

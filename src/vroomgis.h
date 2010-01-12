@@ -25,17 +25,19 @@
     #include <wx/wx.h>
 #endif
 
-//FIXME: REMOVE UNNEEDED HEADER
-#include "vrdriver.h"
-#include "vrlabel.h"
-#include "vrlayer.h"
-#include "vrlayermanager.h"
-#include "vrlayerraster.h"
-#include "vrlayervector.h"
-#include "vrrender.h"
-#include "vrrenderer.h"
-#include "vrviewerlayermanager.h"
 #include "vrviewertoc.h"
+#include "vrlayermanager.h"
+#include "vrviewerdisplay.h"
+
+//#include "vrdriver.h"
+//#include "vrlabel.h"
+//#include "vrlayer.h"
+//#include "vrlayerraster.h"
+//#include "vrlayervector.h"
+//#include "vrrender.h"
+//#include "vrrenderer.h"
+//#include "vrviewerlayermanager.h"
+
 
 
 #endif
