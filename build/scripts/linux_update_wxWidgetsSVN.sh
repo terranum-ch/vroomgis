@@ -18,6 +18,18 @@ echo "   Creating wxWidgets SVN library"
 echo "  (c) Lucien Schreiber CREALP"
 echo $VARLINE
 
+
+echo $VARLINE
+echo "removing old installed / configuration files"
+rm -rvf $VARBINDIR
+mkdir $VARBINDIR
+
+rm -rvf $VARTRUNKDIR/build64
+mkdir $VARTRUNKDIR/build64
+echo "removing old installed / configuration files ... DONE"
+echo $VARLINE
+
+
 #updating svn
 echo "1) Getting last SVN version..."
 cd $VARTRUNKDIR
@@ -44,6 +56,7 @@ echo $VARLINE
 echo "4) Installing library"
 make install
 echo "4) Installing library... DONE"
+
 
 
 
