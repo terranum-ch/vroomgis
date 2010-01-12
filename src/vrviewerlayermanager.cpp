@@ -19,6 +19,9 @@
 #include "vrviewerlayermanager.h"
 #include "vrlayermanager.h"
 #include "vrlayer.h"
+#include "vrviewertoc.h"
+#include "vrviewerdisplay.h"
+
 
 
 
@@ -105,17 +108,4 @@ WX_DEFINE_OBJARRAY(vrArrayViewerLayerManager);
 
 
 
-
-
-
-
-vrViewerDisplay::vrViewerDisplay(wxWindow * parent, wxWindowID id, long style) :
-wxScrolledCanvas(parent, id, wxDefaultPosition, wxDefaultSize, style){
-}
-
-vrViewerDisplay::~vrViewerDisplay() {
-}
-
-void vrViewerDisplay::Refresh() {
-}
 
