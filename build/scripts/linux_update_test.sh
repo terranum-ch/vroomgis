@@ -33,6 +33,12 @@ echo $VARLINE
 
 echo "2) REMOVING MAIN.CPP, will be generated again"
 rm $BINDIR/main.cpp
+cd ..
+cd .. 
+
+echo "2b) REMOVING build directory"
+rm -rvf $BINDIR
+mkdir $BINDIR
 
 echo "3) configuring ..."
 cd $BINDIR

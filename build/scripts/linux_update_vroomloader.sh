@@ -30,6 +30,10 @@ echo '1) Updating SVN .... DONE (\c'
 echo  $VARSVNNUMBER ')'	
 echo $VARLINE
 
+echo "Removing binary files"
+rm -rvf $BINDIR
+mkdir $BINDIR
+
 
 echo "3) configuring ..."
 cd $BINDIR
