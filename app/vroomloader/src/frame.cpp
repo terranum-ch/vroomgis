@@ -69,8 +69,8 @@ void  vroomLoaderFrame::_CreateControls()
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 	
-	m_DisplayCtrl = new wxScrolledWindow( m_panel2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxHSCROLL|wxVSCROLL );
-	m_DisplayCtrl->SetScrollRate( 5, 5 );
+	m_DisplayCtrl = new vrViewerDisplay( m_panel2, wxID_ANY);
+	//m_DisplayCtrl->SetScrollRate( 5, 5 );
 	m_DisplayCtrl->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 	
 	bSizer5->Add( m_DisplayCtrl, 1, wxEXPAND, 5 );
@@ -122,7 +122,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 
 
 	// VROOMGIS
-	m_ViewerLayerManager = new vrViewerLayerManager(&m_LayerManager, NULL, m_TocCtrl);
+	m_ViewerLayerManager = new vrViewerLayerManager(&m_LayerManager, m_DisplayCtrl , m_TocCtrl);
 	
 }
 

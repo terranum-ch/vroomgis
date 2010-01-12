@@ -19,7 +19,8 @@
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
-#include <wx/wx.h>
+	#include <wx/wx.h>
+	#include <wx/dcbuffer.h>
 #endif
 
 
@@ -27,6 +28,9 @@ class vrViewerDisplay : public wxScrolledCanvas {
 private:
     //vrCoordinate * m_Coordinate;
 	
+	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
+	
+	 void OnPaint(wxPaintEvent & event);
 	
 public:
     vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, long style = wxHSCROLL | wxVSCROLL);

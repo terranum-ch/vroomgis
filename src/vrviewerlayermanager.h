@@ -46,7 +46,6 @@ class vrViewerLayerManager {
 
   public:
     //if toc is null, we use the default vrViewerTOC. if  viewer is null, we use the default vrViewer.
-	//FIXME: Viewer should not be null
 	vrViewerLayerManager(vrLayerManager * parent, vrViewerDisplay * viewer, vrViewerTOC * toc = NULL);
 
     virtual ~vrViewerLayerManager();
