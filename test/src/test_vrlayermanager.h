@@ -85,6 +85,8 @@ public:
 		TS_ASSERT_EQUALS(myLayerManager.GetLayer(m_TiffName)->GetType(),vrDRIVER_RASTER_TIFF);	
 	}
 	
+	
+	
 };
 
 

@@ -36,6 +36,11 @@ class vrViewerTOC : public wxDataViewListCtrl {
 private:
 	wxDataViewItem m_ParentItem;
 	
+	
+	void OnVisibleStatusChanged(wxDataViewEvent & event);
+	
+	DECLARE_EVENT_TABLE();
+	
   public:
     vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, long style = wxDV_ROW_LINES);
 

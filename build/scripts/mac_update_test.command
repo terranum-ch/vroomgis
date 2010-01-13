@@ -47,7 +47,7 @@ echo "4) Making the tests ... DONE"
 echo $VARLINE
 echo "5) Running the tests"
 ctest
-/Applications/Smultron.app/Contents/MacOS/Smultron $BINDIR/Testing/Temporary/LastTest.log &
+open -a "Snultron" $BINDIR/Testing/Temporary/LastTest.log &
 echo "5) Running the tests... DONE"
 
 

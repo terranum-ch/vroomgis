@@ -57,6 +57,9 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 	wxASSERT(layer);
 	m_Layer = layer;
 	
+	// setting visible status on true
+	SetVisible(true);
+	
 	// create default render and label if null
 	if (render == NULL){
 		switch (m_Layer->GetType()){
@@ -111,6 +114,11 @@ void vrRenderer::SetRender(vrRender * value) {
 
 void vrRenderer::SetLabel(vrLabel * value) {
 	m_Label = value;
+}
+
+
+void vrRenderer::SetVisible(bool value) {
+	m_Visible = value;
 }
 
 

@@ -53,5 +53,4 @@ echo "4) Making RELEASE ... DONE"
 
 echo $VARLINE
 echo "Starting Debug vroomloader"
-$BINDIR/Debug/vroomLoader.app/Contents/MacOS/vroomLoader &
-
+open $BINDIR/Debug/vroomLoader.app

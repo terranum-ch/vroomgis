@@ -30,19 +30,24 @@ bool vrViewerDisplay::_DrawRoundedMessage(const wxString & text, const wxColour 
 	int width = 0;
 	int height = 0;
 	dc.GetSize(&width, &height);
-	if (width < 20 && height < 20) {
+	if (width < 20 || height < 20) {
 		wxLogError("Windows size is too small for drawing");
 		return false;
 	}
+	// erase screen 
 	bdc.Clear();
+	bdc.SetBrush(*wxWHITE_BRUSH);
 	bdc.SetPen(*wxWHITE_PEN);
+	bdc.DrawRectangle(0,0,width,height);
+	
+	// draw rectangle
 	bdc.SetBrush(wxBrush(colour));
 	wxRect myRect (width / 4, height / 3, width / 2, height / 3);
 	bdc.DrawRoundedRectangle(myRect, height / 20);
 	
 	
 	
-	// width allowed for text
+	// draw text
 	wxFont myFont(myRect.GetWidth() / text.Len() , wxFONTFAMILY_DEFAULT, 
 				  wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 	wxASSERT(myFont.IsOk());
