@@ -97,6 +97,21 @@ bool vrViewerLayerManager::Remove(const wxFileName & filename) {
 	return false;
 }
 
+
+
+vrRenderer * vrViewerLayerManager::GetRenderer(const unsigned int & index) {
+	// check index into limits
+	if (index > m_Renderers.GetCount()-1) {
+		wxLogError("Trying to Get Renderer out of bounds");
+		return NULL;
+	}
+	
+	vrRenderer * renderer = m_Renderers.Item(index);
+	wxASSERT(renderer);
+	return renderer;
+}
+
+
 void vrViewerLayerManager::FreezeBegin() {
 }
 

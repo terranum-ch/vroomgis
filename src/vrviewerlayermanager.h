@@ -52,7 +52,9 @@ class vrViewerLayerManager {
 
     bool Add(long pos, vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL); 
     bool Remove(const wxFileName & filename);
+	vrRenderer * GetRenderer(const unsigned int & index);
 
+	
     void FreezeBegin();
 
     void FreezeEnd();

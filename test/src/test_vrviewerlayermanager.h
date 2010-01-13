@@ -26,7 +26,7 @@
 
 #include "test_param.h"	//for test parameters
 #include "../../src/vroomgis.h"
-//#include "vrviewerlayermanager.h"
+
 
 
 
@@ -54,15 +54,17 @@ public:
 	
     void testAddViewerLayerManager()
 	{
-		/* adding two times the same viewermanager is not permitted
+		// adding two times the same viewermanager is not permitted
 		TS_ASSERT(m_LayerManager->AddViewerLayerManager(m_ViewManager)==false);
 		vrViewerLayerManager * myManager2 = new vrViewerLayerManager(m_LayerManager, NULL);
-		TS_ASSERT(m_LayerManager->AddViewerLayerManager(myManager2)==true);*/
+		TS_ASSERT(m_LayerManager->AddViewerLayerManager(myManager2)==true);
 	}
 	
 	void testOpenGISDataViewerManager()
 	{
-		/* open data
+		
+		
+		// open data
 		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
 		vrLayer * myTestSHPLayer = NULL;
 		myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
@@ -76,13 +78,43 @@ public:
 		TS_ASSERT(myTestJpegLayer != NULL);
 		TS_ASSERT_EQUALS(myTestJpegLayer->GetType(), vrDRIVER_RASTER_JPEG);
 		
+			
+		// add data to the viewermanager
+		TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer)==true);
+		TS_ASSERT(m_ViewManager->Add(0, myTestJpegLayer)==true);
+			
+	}
+	
+	void testGetRenderer() {
+		wxLogMessage("Testing getting renderer");
 		
+		// open data
+		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
+		vrLayer * myTestSHPLayer = NULL;
+		myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
+		TS_ASSERT(myTestSHPLayer != NULL);
+		TS_ASSERT_EQUALS(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
 		
 		// add data to the viewermanager
 		TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer)==true);
-		TS_ASSERT(m_ViewManager->Add(0, myTestJpegLayer)==true);*/
+		
+		// renderer should be accessible
+		vrRenderer * myRenderer = m_ViewManager->GetRenderer(0);
+		TS_ASSERT(myRenderer != NULL);
+		TS_ASSERT_EQUALS(myRenderer->GetLayer(), myTestSHPLayer);
+		
+		// when adding, status should be visible
+		TS_ASSERT(myRenderer->GetVisible());
+		
+		
+		// trying to get out bounds renderer
+		myRenderer = m_ViewManager->GetRenderer(12);
+		TS_ASSERT(myRenderer == NULL);
+		
 	}
 	
+
+
 };
 
 

@@ -30,10 +30,10 @@ class vrLabel;
 class vrRenderer {
 private:
     vrLayer * m_Layer;
-	
     vrRender * m_Render;
-	
     vrLabel * m_Label;
+	bool m_Visible;
+
 	
 	bool _IsCorrectRender();
 	
@@ -43,16 +43,17 @@ public:
     virtual ~vrRenderer();
 	
     inline  vrLayer * GetLayer() ;
-	
     inline  vrRender * GetRender() ;
-	
     inline  vrLabel * GetLabel() ;
+	inline const bool GetVisible() const;
 	
     void SetRender(vrRender * value);
-	
     void SetLabel(vrLabel * value);
-	
+	void SetVisible(bool value);
+
 };
+
+
 inline  vrLayer * vrRenderer::GetLayer() {
 	return m_Layer;
 }
@@ -64,5 +65,10 @@ inline  vrRender * vrRenderer::GetRender()  {
 inline  vrLabel * vrRenderer::GetLabel()  {
 	return m_Label;
 }
+
+inline const bool vrRenderer::GetVisible() const {
+	return m_Visible;
+}
+
 WX_DECLARE_OBJARRAY(vrRenderer*, vrArrayRenderer);
 #endif

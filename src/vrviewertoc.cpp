@@ -20,6 +20,23 @@
 #include "vrrenderer.h"
 #include "vrlayer.h"
 
+
+BEGIN_EVENT_TABLE(vrViewerTOC, wxDataViewListCtrl)
+	EVT_DATAVIEW_ITEM_VALUE_CHANGED(wxID_ANY, vrViewerTOC::OnVisibleStatusChanged)
+END_EVENT_TABLE()
+
+void vrViewerTOC::OnVisibleStatusChanged(wxDataViewEvent & event) {
+	wxASSERT(event.GetColumn() == 0);
+	wxString myText = event.GetValue().MakeString();
+	//bool bStatus = event.GetValue().GetBool();
+	
+	wxLogMessage("Value is %d - text = %s", event.GetItem().GetID(), myText );
+	
+}
+
+
+
+
 vrViewerTOC::vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos,
 						 const wxSize & size, long style):
 wxDataViewListCtrl(parent, id, pos, size, style){	
@@ -38,8 +55,11 @@ vrViewerTOC::~vrViewerTOC() {
 
 bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
 	
-	 wxVector<wxVariant> data;
-	data.push_back(false);
+	// TODO: is really usefull to add item not at the begining ?
+	wxASSERT(index == -1);
+	
+	wxVector<wxVariant> data;
+	data.push_back(renderer->GetVisible()); // is layer visible
 	data.push_back(renderer->GetLayer()->GetName().GetFullName());
 	
 	
@@ -52,7 +72,7 @@ bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
 	}
 	
 	// inserting item
-	// TODO: is really usefull to add item not at the begining ?
+	
 	
 	
 	if(IsFrozen()==false){
