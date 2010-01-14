@@ -27,10 +27,14 @@ END_EVENT_TABLE()
 
 void vrViewerTOC::OnVisibleStatusChanged(wxDataViewEvent & event) {
 	wxASSERT(event.GetColumn() == 0);
-	wxString myText = event.GetValue().MakeString();
-	//bool bStatus = event.GetValue().GetBool();
 	
-	wxLogMessage("Value is %d - text = %s", event.GetItem().GetID(), myText );
+	const wxDataViewListStore * myModel = GetStore();
+	int myRow = myModel->GetRow(event.GetItem());
+	
+	wxVariant myCheck;
+	GetValue(myCheck, myRow, 0);
+	
+	wxLogMessage("Value is %d - row = %d", myCheck.GetBool(), myRow);
 	
 }
 
@@ -75,11 +79,11 @@ bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
 	
 	
 	
-	if(IsFrozen()==false){
+	/*if(IsFrozen()==false){
 		if(IsExpanded(m_ParentItem)==false){
 			Expand(m_ParentItem);
 		}
-	}
+	}*/
 	return false;
 }
 

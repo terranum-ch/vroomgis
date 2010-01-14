@@ -34,7 +34,7 @@ class vrRenderer;
 
 class vrViewerTOC : public wxDataViewListCtrl {
 private:
-	wxDataViewItem m_ParentItem;
+	//wxDataViewItem m_ParentItem;
 	
 	
 	void OnVisibleStatusChanged(wxDataViewEvent & event);
