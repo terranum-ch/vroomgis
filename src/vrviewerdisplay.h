@@ -23,20 +23,22 @@
 #endif
 #include <wx/dcbuffer.h>
 
-class vrViewerDisplay : public wxScrolledCanvas {
+class vrViewerDisplay : public wxPanel{
 private:
     //vrCoordinate * m_Coordinate;
 	
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
+	void _InvalidateView();
 	
-	 void OnPaint(wxPaintEvent & event);
+	void OnPaint(wxPaintEvent & event);
+	void OnSizeChange(wxSizeEvent & event);
+
 	
 public:
-    vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, long style = wxHSCROLL | wxVSCROLL);
+    vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, const wxColour & colour = *wxWHITE);
 	
     virtual ~vrViewerDisplay();
 	
-    void Refresh();
 	
 };
 

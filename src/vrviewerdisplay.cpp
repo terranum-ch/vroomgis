@@ -68,28 +68,40 @@ void vrViewerDisplay::OnPaint(wxPaintEvent & event) {
 }
 
 
-vrViewerDisplay::vrViewerDisplay(wxWindow * parent, wxWindowID id, long style) :
-wxScrolledCanvas(parent, id, wxDefaultPosition, wxDefaultSize, style){
+void vrViewerDisplay::OnSizeChange(wxSizeEvent & event) {
+	_InvalidateView();
+}
+
+
+
+vrViewerDisplay::vrViewerDisplay(wxWindow * parent, wxWindowID id, const wxColour & colour) :
+wxPanel(parent, id){
+	
+	SetBackgroundColour(colour);
 	
 	// connect event
+	Connect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),
+			NULL,this);
+	
 	Connect( wxEVT_PAINT, 
-						   wxPaintEventHandler( vrViewerDisplay::OnPaint ),
-						   NULL, this );
+			wxPaintEventHandler( vrViewerDisplay::OnPaint ),
+			NULL, this );
 }
 
 vrViewerDisplay::~vrViewerDisplay() {
 	// disconnect event
+	Disconnect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),
+			NULL,this);
 	Disconnect( wxEVT_PAINT, 
-							  wxPaintEventHandler( vrViewerDisplay::OnPaint ),
-							  NULL, this );
+			   wxPaintEventHandler( vrViewerDisplay::OnPaint ),
+			   NULL, this );
 
 }
 
 
-//BUG: Recursive, rename this function.
-void vrViewerDisplay::Refresh() {
-	Refresh();
-	Update();
+void vrViewerDisplay::_InvalidateView() {
+	this->Refresh();
+	this->Update();
 }
 
 
