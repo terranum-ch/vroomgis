@@ -69,9 +69,13 @@ void vrViewerDisplay::OnPaint(wxPaintEvent & event) {
 
 
 void vrViewerDisplay::OnSizeChange(wxSizeEvent & event) {
-	_InvalidateView();
+	_InvalidateView(false);
+	event.Skip();
 }
 
+void vrViewerDisplay::OnEraseBackground (wxPaintEvent & event){
+	// this is used to avoid flickering 
+}
 
 
 vrViewerDisplay::vrViewerDisplay(wxWindow * parent, wxWindowID id, const wxColour & colour) :
@@ -80,6 +84,8 @@ wxPanel(parent, id){
 	SetBackgroundColour(colour);
 	
 	// connect event
+	Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),
+		NULL,this);
 	Connect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),
 			NULL,this);
 	
@@ -90,6 +96,8 @@ wxPanel(parent, id){
 
 vrViewerDisplay::~vrViewerDisplay() {
 	// disconnect event
+	Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),
+		NULL,this);
 	Disconnect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),
 			NULL,this);
 	Disconnect( wxEVT_PAINT, 
@@ -99,9 +107,12 @@ vrViewerDisplay::~vrViewerDisplay() {
 }
 
 
-void vrViewerDisplay::_InvalidateView() {
+void vrViewerDisplay::_InvalidateView(bool updatenow) {
 	this->Refresh();
-	this->Update();
+	
+	if (updatenow){
+		this->Update();
+	}
 }
 
 
