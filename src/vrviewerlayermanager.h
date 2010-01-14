@@ -20,9 +20,9 @@
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 	#include <wx/wx.h>
-	#include <wx/filename.h>
+	
 #endif
-
+#include <wx/filename.h>
 #include "vrrenderer.h"
 
 

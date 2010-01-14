@@ -23,8 +23,8 @@
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
-	#include <wx/filename.h>
 #endif
+#include <wx/filename.h>
 
 #include "ogrsf_frmts.h"	// ogr include
 #include "gdal_priv.h"		// gdal include

@@ -86,6 +86,7 @@ vrViewerDisplay::~vrViewerDisplay() {
 }
 
 
+//BUG: Recursive, rename this function.
 void vrViewerDisplay::Refresh() {
 	Refresh();
 	Update();
