@@ -20,9 +20,8 @@
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 	#include <wx/wx.h>
-	#include <wx/dcbuffer.h>
 #endif
-
+#include <wx/dcbuffer.h>
 
 class vrViewerDisplay : public wxScrolledCanvas {
 private:

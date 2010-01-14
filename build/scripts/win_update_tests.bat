@@ -36,6 +36,12 @@ del %bindir%\main.cpp
 
 ECHO 2) Making Visual studio solution...
 cd %bindir%
+REM set wait2=
+REM set /p wait2=Please Run cmake manually. Is cmake ready ? (Y/N)
+REM IF /i %wait2% EQU n (
+REM echo Then run cmake manually and come back
+REM goto :WaitForEnter
+REM ) 
 cmake %trunkdir%\test\build
 ECHO 2) Making Visual studio solution... DONE
 
