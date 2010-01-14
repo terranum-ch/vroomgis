@@ -21,28 +21,22 @@
 #ifndef WX_PRECOMP
 	#include <wx/wx.h>
 #endif
-#include <wx/dataview.h>
-
-
-//#include "vrlayer.h"
 
 
 
 class vrRenderer;
 
 
-class vrViewerTOC : public wxDataViewListCtrl {
+class vrViewerTOC : public wxCheckListBox {
 private:
-	//wxDataViewItem m_ParentItem;
 	
-	
-	void OnVisibleStatusChanged(wxDataViewEvent & event);
-	void OnItemActivated(wxDataViewEvent & event);
+	void OnVisibleStatusChanged(wxCommandEvent & event);
 	
 	DECLARE_EVENT_TABLE();
 	
   public:
-    vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize, long style = wxDV_ROW_LINES);
+    vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition,
+				const wxSize & size = wxDefaultSize);
 
     virtual ~vrViewerTOC();
 
