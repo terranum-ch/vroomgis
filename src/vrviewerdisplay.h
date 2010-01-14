@@ -28,10 +28,11 @@ private:
     //vrCoordinate * m_Coordinate;
 	
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
-	void _InvalidateView();
+	void _InvalidateView(bool updatenow);
 	
 	void OnPaint(wxPaintEvent & event);
 	void OnSizeChange(wxSizeEvent & event);
+	void OnEraseBackground (wxPaintEvent & event);
 
 	
 public:
