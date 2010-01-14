@@ -50,9 +50,14 @@ ECHO 3) BUILDING VROOMLOADER APP (MAY TAKE SOME TIMES)-----
 ECHO -----------------------------------------------
 
 cd %BINDIR%
-"%vsdir%\VCExpress.exe" vroomLoader.sln /Out solution.log /Build
+"%vsdir%\VCExpress.exe" vroomLoader.sln /Out solution.log /Build Debug
 echo %ERRORLEVEL%
 IF ERRORLEVEL 1 goto QuitErrorBuildScript
+
+"%vsdir%\VCExpress.exe" vroomLoader.sln /Out solution.log /Build Release
+echo %ERRORLEVEL%
+IF ERRORLEVEL 1 goto QuitErrorBuildScript
+
 ECHO 3) BUILDING VROOMLOADER APP DONE
 
 
