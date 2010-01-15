@@ -43,8 +43,10 @@ public:
 		m_ViewManager = NULL;
 		vrViewerDisplay * myDisplay = NULL;
 		// will be destroyed by layermanager.
-		m_ViewManager = new vrViewerLayerManager(m_LayerManager, myDisplay);
-		TS_ASSERT_EQUALS(m_LayerManager->AddViewerLayerManager(m_ViewManager),true);
+		m_ViewManager = new vrViewerLayerManager(m_LayerManager, NULL, myDisplay);
+		
+		// try to add the viewer. But was allready added by ctor.
+		TS_ASSERT_EQUALS(m_LayerManager->AddViewerLayerManager(m_ViewManager),false);
 	}
 	
 	void tearDown()
@@ -56,8 +58,10 @@ public:
 	{
 		// adding two times the same viewermanager is not permitted
 		TS_ASSERT(m_LayerManager->AddViewerLayerManager(m_ViewManager)==false);
-		vrViewerLayerManager * myManager2 = new vrViewerLayerManager(m_LayerManager, NULL);
-		TS_ASSERT(m_LayerManager->AddViewerLayerManager(myManager2)==true);
+		vrViewerLayerManager * myManager2 = new vrViewerLayerManager(m_LayerManager,NULL, NULL);
+		
+		// allready added by ctor
+		TS_ASSERT(m_LayerManager->AddViewerLayerManager(myManager2)==false);
 	}
 	
 	void testOpenGISDataViewerManager()

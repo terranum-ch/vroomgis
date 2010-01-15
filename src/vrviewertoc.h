@@ -25,10 +25,15 @@
 
 
 class vrRenderer;
+class vrViewerLayerManager;
 
 
 class vrViewerTOC : public wxCheckListBox {
 private:
+
+	vrViewerLayerManager * m_ViewerManager;
+	bool m_FreezeStatus;
+	
 	
 	void OnVisibleStatusChanged(wxCommandEvent & event);
 	
@@ -47,6 +52,9 @@ private:
     void FreezeBegin();
 
     void FreezeEnd();
+	
+	void SetViewerLayerManager(vrViewerLayerManager * value);
+
 
 };
 #endif

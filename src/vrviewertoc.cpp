@@ -17,7 +17,7 @@
 
 
 #include "vrviewertoc.h"
-#include "vrrenderer.h"
+#include "vrviewerlayermanager.h"
 #include "vrlayer.h"
 
 
@@ -27,8 +27,15 @@ END_EVENT_TABLE()
 
 void vrViewerTOC::OnVisibleStatusChanged(wxCommandEvent & event) {
 	
-	
 	wxLogMessage("Value changed for item : %d value is %d", event.GetInt(), IsChecked(event.GetInt()));
+	
+	// change visibility status for layer
+	wxASSERT(m_ViewerManager);
+	vrRenderer * myItemRenderer = m_ViewerManager->GetRenderer(event.GetInt());
+	wxASSERT(myItemRenderer);
+	myItemRenderer->SetVisible(IsChecked(event.GetInt()));
+	
+	// ask for reloading data
 	
 }
 
@@ -39,6 +46,7 @@ vrViewerTOC::vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos,
 						 const wxSize & size):
 wxCheckListBox(parent, id, pos, size){	
 
+	m_FreezeStatus = false;
 	
 }
 
@@ -79,8 +87,21 @@ bool vrViewerTOC::Remove(int index) {
 }
 
 void vrViewerTOC::FreezeBegin() {
+	wxASSERT(m_FreezeStatus==false);
+	m_FreezeStatus = true;
+	Freeze();
 }
 
 void vrViewerTOC::FreezeEnd() {
+	wxASSERT(m_FreezeStatus == true);
+	m_FreezeStatus = true;
+	Thaw();
 }
+
+void vrViewerTOC::SetViewerLayerManager(vrViewerLayerManager * value) {
+	wxASSERT(value);
+	m_ViewerManager = value;
+}
+
+
 

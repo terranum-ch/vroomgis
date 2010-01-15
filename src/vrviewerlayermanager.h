@@ -33,20 +33,30 @@ class vrViewerTOC;
 class vrViewerDisplay;
 
 
-class vrViewerLayerManager {
+class vrViewerLayerManager : public wxEvtHandler {
   private:
     vrLayerManager * m_LayerManager;
-
     vrArrayRenderer m_Renderers;
-
     vrViewerDisplay * m_Display;
-
     vrViewerTOC * m_Toc;
+	wxWindow * m_WindowParent;
+	
+	bool m_FreezeStatus;
+
+	
+	// Member function for loading data 
+	bool _BitmapArrayInit();
+    void _BitmapArrayDelete();
+    bool _GetLayersData();
+    bool _MergeBitmapData();
+    void OnReload(wxCommandEvent & event);
+	
 
 
   public:
-    //if toc is null, we use the default vrViewerTOC. if  viewer is null, we use the default vrViewer.
-	vrViewerLayerManager(vrLayerManager * parent, vrViewerDisplay * viewer, vrViewerTOC * toc = NULL);
+    //if wxWindow is null we cannot link to event handling
+	vrViewerLayerManager(vrLayerManager * parent,wxWindow * window, 
+						 vrViewerDisplay * viewer, vrViewerTOC * toc = NULL);
 
     virtual ~vrViewerLayerManager();
 

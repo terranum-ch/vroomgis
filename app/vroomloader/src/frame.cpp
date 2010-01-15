@@ -122,19 +122,21 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 
 
 	// VROOMGIS
-	m_ViewerLayerManager = new vrViewerLayerManager(&m_LayerManager, m_DisplayCtrl , m_TocCtrl);
+	m_LayerManager = new vrLayerManager();
+	m_ViewerLayerManager = new vrViewerLayerManager(m_LayerManager, this, m_DisplayCtrl , m_TocCtrl);
 	
 }
 
 
 
 vroomLoaderFrame::~vroomLoaderFrame()
-{
+{	
 	// Disconnect Events
 	m_DisplayCtrl->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
 
-
-	
+	// don't delete m_ViewerLayerManager, will be deleted by the manager
+	delete m_LayerManager;
+	wxLog::SetActiveTarget (NULL);
 }
 
 
@@ -142,7 +144,6 @@ vroomLoaderFrame::~vroomLoaderFrame()
 
 void vroomLoaderFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-	wxLog::SetActiveTarget (NULL);
 	Close(true);
 }
 
@@ -186,18 +187,20 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 		
 		for (unsigned int i = 0; i< myPathsFileName.GetCount(); i++) {
 			// open files
-			bool myOpen = m_LayerManager.Open(wxFileName(myPathsFileName.Item(i)));
+			bool myOpen = m_LayerManager->Open(wxFileName(myPathsFileName.Item(i)));
 			wxASSERT(myOpen);
 		}
 		
+		m_ViewerLayerManager->FreezeBegin();
 		for (unsigned int j = 0; j< myPathsFileName.GetCount(); j++) {
 			// get files
-			vrLayer * myLayer = m_LayerManager.GetLayer( wxFileName(myPathsFileName.Item(j)));
+			vrLayer * myLayer = m_LayerManager->GetLayer( wxFileName(myPathsFileName.Item(j)));
 			wxASSERT(myLayer);
 			
 			// add files to the viewer
 			m_ViewerLayerManager->Add(-1, myLayer);
 		}
+		m_ViewerLayerManager->FreezeEnd();
 		
 		
 	}
