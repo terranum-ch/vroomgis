@@ -25,30 +25,50 @@
 
 
 
-//if toc is null, we use the default vrViewerTOC. if  viewer is null, we use the default vrViewer.
-vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent,
+vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * window,
 										   vrViewerDisplay * viewer,vrViewerTOC * toc) {
 	
 	//wxASSERT(viewer);
 	wxASSERT(parent);
+	m_WindowParent = NULL;
 	m_Display = viewer;
 	m_Toc = toc;
 	m_LayerManager = parent;
+	m_FreezeStatus = false;
+	
+	if (window) {
+		m_WindowParent = window;
+		m_WindowParent->PushEventHandler(this);
+	}
 	
 	if (m_Display==NULL){
 		wxLogError("No display attached");
 	}
 	
+	
 	if (m_Toc == NULL){
 		wxLogError("No toc defined");
 	}
+	else {
+		m_Toc->SetViewerLayerManager(this);
+	}
 
+
+	// add this viewer layer manager to the vrLayerManager
+	m_LayerManager->AddViewerLayerManager(this);
 }
 
 
 
 vrViewerLayerManager::~vrViewerLayerManager() {
 	wxLogMessage("ViewerLayerManager Dtor called");
+	
+	if (m_WindowParent) {
+		m_WindowParent->PopEventHandler(false);
+		//m_WindowParent->SetEventHandler(m_WindowParent);
+	}
+	
+	
 	if(m_Display){
 		delete m_Display;
 		m_Display = NULL;
@@ -113,10 +133,42 @@ vrRenderer * vrViewerLayerManager::GetRenderer(const unsigned int & index) {
 
 
 void vrViewerLayerManager::FreezeBegin() {
+	wxASSERT(m_Toc);
+	wxASSERT(m_FreezeStatus==false);
+	m_FreezeStatus = true;
+	m_Toc->FreezeBegin();
 }
 
 void vrViewerLayerManager::FreezeEnd() {
+	wxASSERT(m_Toc);
+	wxASSERT(m_FreezeStatus==true);
+	m_FreezeStatus = false;
+	m_Toc->FreezeEnd();
 }
+
+
+bool vrViewerLayerManager::_BitmapArrayInit() {
+	return false;
+}
+
+void vrViewerLayerManager::_BitmapArrayDelete() {
+
+}
+
+bool vrViewerLayerManager::_GetLayersData() {
+	return false;
+}
+
+bool vrViewerLayerManager::_MergeBitmapData() {
+	return false;
+}
+
+void vrViewerLayerManager::OnReload(wxCommandEvent & event) {
+	event.Skip();
+}
+
+
+
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(vrArrayViewerLayerManager);

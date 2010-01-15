@@ -132,6 +132,7 @@ bool vrLayerManager::AddViewerLayerManager(vrViewerLayerManager * manager){
 		}
 	}
 	
+	
 	m_ViewerManagers.Add(manager);
 	return true;
 }
