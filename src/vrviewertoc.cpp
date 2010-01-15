@@ -36,7 +36,8 @@ void vrViewerTOC::OnVisibleStatusChanged(wxCommandEvent & event) {
 	myItemRenderer->SetVisible(IsChecked(event.GetInt()));
 	
 	// ask for reloading data
-	
+	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
+	ProcessWindowEvent(myEvt);
 }
 
 
@@ -94,7 +95,7 @@ void vrViewerTOC::FreezeBegin() {
 
 void vrViewerTOC::FreezeEnd() {
 	wxASSERT(m_FreezeStatus == true);
-	m_FreezeStatus = true;
+	m_FreezeStatus = false;
 	Thaw();
 }
 

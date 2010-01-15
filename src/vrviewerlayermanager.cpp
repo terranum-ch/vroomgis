@@ -23,6 +23,12 @@
 #include "vrviewerdisplay.h"
 
 
+wxDEFINE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
+
+
+BEGIN_EVENT_TABLE(vrViewerLayerManager, wxEvtHandler)
+	EVT_COMMAND(wxID_ANY, vrEVT_VLM_RELOAD, vrViewerLayerManager::OnReload)
+END_EVENT_TABLE()
 
 
 vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * window,
@@ -107,6 +113,12 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 		m_Toc->Add(pos, myRenderer, m_Renderers.GetCount());
 	}
 	
+	// if not freezed, refresh imediatelly.
+	if (m_FreezeStatus==false) {
+		wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
+		m_WindowParent->ProcessWindowEvent(myEvt);
+	}
+	
 	return true;
 }
 
@@ -144,16 +156,60 @@ void vrViewerLayerManager::FreezeEnd() {
 	wxASSERT(m_FreezeStatus==true);
 	m_FreezeStatus = false;
 	m_Toc->FreezeEnd();
+	
+	// reloading data
+	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
+	m_WindowParent->ProcessWindowEvent(myEvt);
+
 }
+
 
 
 bool vrViewerLayerManager::_BitmapArrayInit() {
-	return false;
+	wxASSERT(m_Images == NULL);
+	if (m_Renderers.GetCount()== 0) {
+		wxLogError("Unable to create images, no layer opened");
+		return false;
+	}
+	
+	m_Images = new wxArrayImage();
+	wxSize myDisplaySize = m_Display->GetSize();
+	
+	for (unsigned int i = 0; i<m_Renderers.GetCount(); i++) {
+		
+		// create image only for visible layers
+		if (m_Renderers.Item(i)->GetVisible()) {
+			
+			//TODO : Add bitmap size here;
+			wxImage * myImage = new wxImage(myDisplaySize);
+			m_Images->Add(myImage);
+			
+		}
+	}
+	wxLogMessage("Created %d images", m_Images->GetCount());
+	return true;
 }
+
+
 
 void vrViewerLayerManager::_BitmapArrayDelete() {
-
+	if (m_Images) {
+		wxLogMessage("Deleting %d images", m_Images->GetCount());
+		
+		unsigned int iCountImg = m_Images->GetCount();
+		for (unsigned j = 0; j<iCountImg; j++){
+			wxImage * myImage = m_Images->Item(0);
+			wxASSERT(myImage);
+			m_Images->Detach(0);
+			delete myImage;
+		}
+		wxASSERT(m_Images->GetCount()==0);
+		delete m_Images;
+		m_Images = NULL;
+	}
 }
+
+
 
 bool vrViewerLayerManager::_GetLayersData() {
 	return false;
@@ -164,14 +220,23 @@ bool vrViewerLayerManager::_MergeBitmapData() {
 }
 
 void vrViewerLayerManager::OnReload(wxCommandEvent & event) {
+	
+	_BitmapArrayInit();
+	
+	
+	_BitmapArrayDelete();
+	
 	event.Skip();
 }
 
 
-
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY(wxArrayImage);
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(vrArrayViewerLayerManager);
+
+
 
 
 

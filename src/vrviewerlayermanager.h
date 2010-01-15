@@ -33,6 +33,15 @@ class vrViewerTOC;
 class vrViewerDisplay;
 
 
+// Event definition. If needed, move to an other global event file
+wxDECLARE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
+
+
+// Array of images (bitmaps arn't thread safe)
+WX_DECLARE_OBJARRAY(wxImage*, wxArrayImage);
+
+
+
 class vrViewerLayerManager : public wxEvtHandler {
   private:
     vrLayerManager * m_LayerManager;
@@ -40,6 +49,7 @@ class vrViewerLayerManager : public wxEvtHandler {
     vrViewerDisplay * m_Display;
     vrViewerTOC * m_Toc;
 	wxWindow * m_WindowParent;
+	wxArrayImage * m_Images;
 	
 	bool m_FreezeStatus;
 
@@ -51,7 +61,7 @@ class vrViewerLayerManager : public wxEvtHandler {
     bool _MergeBitmapData();
     void OnReload(wxCommandEvent & event);
 	
-
+	DECLARE_EVENT_TABLE();
 
   public:
     //if wxWindow is null we cannot link to event handling
@@ -66,7 +76,6 @@ class vrViewerLayerManager : public wxEvtHandler {
 
 	
     void FreezeBegin();
-
     void FreezeEnd();
 
 };
