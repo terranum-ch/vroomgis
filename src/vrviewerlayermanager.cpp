@@ -41,6 +41,7 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 	m_Toc = toc;
 	m_LayerManager = parent;
 	m_FreezeStatus = false;
+	m_Images = NULL;
 	
 	if (window) {
 		m_WindowParent = window;
@@ -115,8 +116,10 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	
 	// if not freezed, refresh imediatelly.
 	if (m_FreezeStatus==false) {
-		wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
-		m_WindowParent->ProcessWindowEvent(myEvt);
+		if(m_WindowParent){
+			wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
+			m_WindowParent->ProcessWindowEvent(myEvt);
+		}
 	}
 	
 	return true;
