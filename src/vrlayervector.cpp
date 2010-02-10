@@ -107,3 +107,23 @@ bool vrLayerVectorOGR::Create(const wxFileName & filename) {
 	return false;
 }
 
+
+bool vrLayerVectorOGR::GetExtent(wxRect2DDouble & rect) {
+	if (m_Layer == NULL) {
+		wxLogError("Layer isn't inited");
+		return false;
+	}
+	
+	wxASSERT(m_Layer);
+	rect = wxRect2DDouble();
+	OGREnvelope myEnveloppe;
+	if (m_Layer->GetExtent(&myEnveloppe, true)==OGRERR_FAILURE) {
+		wxLogError("Unable to compute extent for layer %s", m_FileName.GetFullName());
+		return false;
+	}
+	
+	rect.SetLeftBottom(wxPoint2DDouble(myEnveloppe.MinX, myEnveloppe.MinY));
+	rect.SetRightTop(wxPoint2DDouble(myEnveloppe.MaxX, myEnveloppe.MaxY));
+	return true;
+}
+

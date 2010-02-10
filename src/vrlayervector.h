@@ -39,7 +39,10 @@ public:
     virtual ~vrLayerVector();
     virtual bool Create(const wxFileName & filename){return false;}
     virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
-	 bool IsOK();
+	
+	virtual bool GetExtent(wxRect2DDouble & rect){return false;}
+	
+	bool IsOK();
 	
 };
 
@@ -55,6 +58,9 @@ public:
 	
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
     virtual bool Create(const wxFileName & filename);
+	
+	virtual bool GetExtent(wxRect2DDouble & rect);
+
 	
 };
 #endif

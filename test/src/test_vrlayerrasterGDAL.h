@@ -46,7 +46,29 @@ public:
 		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), true),true);
 	}
 	
+	
+	void testGetExtentRasterGDAL(){
+		wxLogMessage("Testing getting extent for GDAL extent");
+		wxRect2DDouble myExtent;
+		TS_ASSERT(myExtent.IsEmpty()==true);
 		
+		// extent failed, layer not opened
+		vrLayerRasterGDAL myLayer;
+		TS_ASSERT(myLayer.GetExtent(myExtent)==false);
+		
+		// extent ok for layer GDAL
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), false),true);
+		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
+		TS_ASSERT(myLayer.GetExtent(myExtent)==true);
+		TS_ASSERT_EQUALS((int) myExtent.GetLeft(), 598000);
+		TS_ASSERT_EQUALS((int) myExtent.GetTop(), 116000);
+		TS_ASSERT_EQUALS((int) myExtent.GetRight(), 599000);
+		TS_ASSERT_EQUALS((int) myExtent.GetBottom(), 114000);
+		
+		
+		
+	}
+	
 	
 };
 

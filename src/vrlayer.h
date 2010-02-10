@@ -25,6 +25,7 @@
     #include <wx/wx.h>
 #endif
 #include <wx/filename.h>
+#include <wx/geometry.h>
 
 #include "ogrsf_frmts.h"	// ogr include
 #include "gdal_priv.h"		// gdal include
@@ -44,8 +45,11 @@ public:
 	virtual ~vrLayer();
 	virtual bool Create(const wxFileName & filename){return false;}
     virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
+
 	wxFileName GetName();
     virtual vrDRIVERS_TYPE GetType();
+	virtual bool GetExtent(wxRect2DDouble & rect){return false;}
+
 	virtual bool IsOK(){return false;}
 	
 };

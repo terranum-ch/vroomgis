@@ -41,14 +41,11 @@ public:
     vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, const wxColour & colour = *wxWHITE);
     virtual ~vrViewerDisplay();
 	
-	inline const vrCoordinate * GetCoordinate() const;
+	vrCoordinate * GetCoordinate() {return m_Coordinate;}
 	
 	
 };
 
 
-inline const vrCoordinate * vrViewerDisplay::GetCoordinate() const {
-	return m_Coordinate;
-}
 
 #endif

@@ -53,6 +53,28 @@ public:
 						
 	}
 	
+	void testGetExtentVectorOGR(){
+		wxLogMessage("Testing getting extent for layer");
+		wxRect2DDouble myExtent;
+		TS_ASSERT(myExtent.IsEmpty()==true);
+		
+		// extent failed, layer not opened
+		vrLayerVectorOGR myLayer;
+		TS_ASSERT(myLayer.GetExtent(myExtent)==false);
+		
+		// extent ok for layer ogr
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false),true);
+		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
+		TS_ASSERT(myLayer.GetExtent(myExtent)==true);
+		TS_ASSERT_EQUALS((int) myExtent.GetLeft(), 598000);
+		TS_ASSERT_EQUALS((int) myExtent.GetTop(), 117200);
+		TS_ASSERT_EQUALS((int) myExtent.GetRight(), 598662);
+		TS_ASSERT_EQUALS((int) myExtent.GetBottom(), 114173);
+		
+		
+
+	}
+	
 	
 	
 };
