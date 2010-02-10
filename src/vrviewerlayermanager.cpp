@@ -21,6 +21,7 @@
 #include "vrlayer.h"
 #include "vrviewertoc.h"
 #include "vrviewerdisplay.h"
+#include "vrcoordinate.h"
 
 
 wxDEFINE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
@@ -240,8 +241,30 @@ bool vrViewerLayerManager::_GetLayersData() {
 
 
 bool vrViewerLayerManager::_GetLayersExtent() {
-	return false;
+	wxLogDebug("Getting layers extent");
+	
+	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
+	wxASSERT(myCoordinate);
+	
+	// clear actual layer extent
+	myCoordinate->ClearLayersExtent();
+	
+	wxRect2DDouble myLayerExtent;
+	for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
+		if (m_Renderers.Item(i)->GetLayer()->GetExtent(myLayerExtent)==true) {
+			myCoordinate->AddLayersExtent(myLayerExtent);
+		}
+	}
+	
+	if ( myCoordinate->ComputeFullExtent()==false){
+		return false;
+	}
+	
+	
+	return true;
 }
+
+
 
 bool vrViewerLayerManager::_MergeBitmapData() {
 	return false;

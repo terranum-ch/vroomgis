@@ -27,17 +27,27 @@
 
 class vrViewerDisplay;
 
+
+const int vrCOORDINATE_MARGIN = 5;
+
 class vrCoordinate {
   private:
     vrViewerDisplay * m_Viewer;
-    wxRect2DDouble m_WndReal;
-
+	
+	wxRect2DDouble m_WndExtent;
+    wxRect2DDouble m_LayersExtent;
+	
 
   public:
     vrCoordinate(vrViewerDisplay * viewer);
     ~vrCoordinate();
 
-    wxRect2DDouble GetExtentReal();
+	wxRect2DDouble GetExtent();
+	
+    void ClearLayersExtent();
+    void AddLayersExtent(const wxRect2DDouble & rect);
+    bool ComputeFullExtent();
+	
 
 };
 #endif
