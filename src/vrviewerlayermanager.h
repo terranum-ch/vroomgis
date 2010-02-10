@@ -1,9 +1,9 @@
 /***************************************************************************
-								vrviewerlayermanager.h
-				List of supported drivers and misc function for them
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrviewerlayermanager.h
+ List of supported drivers and misc function for them
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,8 +19,8 @@
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
-	#include <wx/wx.h>
-	
+#include <wx/wx.h>
+
 #endif
 #include <wx/filename.h>
 #include "vrrenderer.h"
@@ -52,13 +52,18 @@ class vrViewerLayerManager : public wxEvtHandler {
 	wxArrayImage * m_Images;
 	
 	bool m_FreezeStatus;
+	bool m_ComputeExtentStatus;
+
 
 	
 	// Member function for loading data 
 	bool _BitmapArrayInit();
     void _BitmapArrayDelete();
     bool _GetLayersData();
+	bool _GetLayersExtent();
     bool _MergeBitmapData();
+	
+	// event function
     void OnReload(wxCommandEvent & event);
 	
 	DECLARE_EVENT_TABLE();

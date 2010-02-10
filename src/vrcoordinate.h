@@ -1,6 +1,6 @@
 /***************************************************************************
- vrviewerdisplay.h
- Default display
+ vrcoordinate.h
+
  -------------------
  copyright            : (C) 2010 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,41 +14,30 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _VRVIEWERDISPLAY_H
-#define _VRVIEWERDISPLAY_H
+#ifndef _VRCOORDINATE_H
+#define _VRCOORDINATE_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-#include <wx/dcbuffer.h>
 
-class vrCoordinate;
 
-class vrViewerDisplay : public wxPanel{
-private:
-    vrCoordinate * m_Coordinate;
-	
-	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
-	void _InvalidateView(bool updatenow);
-	
-	void OnPaint(wxPaintEvent & event);
-	void OnSizeChange(wxSizeEvent & event);
-	void OnEraseBackground (wxPaintEvent & event);
-	
-	
-public:
-    vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, const wxColour & colour = *wxWHITE);
-    virtual ~vrViewerDisplay();
-	
-	inline const vrCoordinate * GetCoordinate() const;
-	
-	
+#include <wx/geometry.h>
+
+class vrViewerDisplay;
+
+class vrCoordinate {
+  private:
+    vrViewerDisplay * m_Viewer;
+    wxRect2DDouble m_WndReal;
+
+
+  public:
+    vrCoordinate(vrViewerDisplay * viewer);
+    ~vrCoordinate();
+
+    wxRect2DDouble GetExtentReal();
+
 };
-
-
-inline const vrCoordinate * vrViewerDisplay::GetCoordinate() const {
-	return m_Coordinate;
-}
-
 #endif
