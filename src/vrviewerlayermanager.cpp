@@ -41,6 +41,7 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 	m_Toc = toc;
 	m_LayerManager = parent;
 	m_FreezeStatus = false;
+	m_ComputeExtentStatus = false;
 	m_Images = NULL;
 	
 	if (window) {
@@ -103,6 +104,12 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	wxASSERT(layer);
 	vrRenderer * myRenderer = new vrRenderer(layer, render, label);
 	
+	// need to compute coordinate ?
+	if (m_Renderers.GetCount() == 0) {
+		m_ComputeExtentStatus = true;
+	}
+	
+	
 	if (pos == -1){
 		m_Renderers.Add(myRenderer);
 	}
@@ -117,6 +124,11 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	// if not freezed, refresh imediatelly.
 	if (m_FreezeStatus==false) {
 		if(m_WindowParent){
+			if (m_ComputeExtentStatus == true) {
+				_GetLayersExtent();
+				m_ComputeExtentStatus = false;
+			}
+			
 			wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
 			m_WindowParent->ProcessWindowEvent(myEvt);
 		}
@@ -159,6 +171,13 @@ void vrViewerLayerManager::FreezeEnd() {
 	wxASSERT(m_FreezeStatus==true);
 	m_FreezeStatus = false;
 	m_Toc->FreezeEnd();
+	
+	// compute layers extent
+	if (m_ComputeExtentStatus == true) {
+		_GetLayersExtent();
+		m_ComputeExtentStatus = false;
+	}
+	
 	
 	// reloading data
 	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
@@ -215,6 +234,12 @@ void vrViewerLayerManager::_BitmapArrayDelete() {
 
 
 bool vrViewerLayerManager::_GetLayersData() {
+	
+	return false;
+}
+
+
+bool vrViewerLayerManager::_GetLayersExtent() {
 	return false;
 }
 

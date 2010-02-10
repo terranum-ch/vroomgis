@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "vrviewerdisplay.h"
+#include "vrcoordinate.h"
 
 
 bool vrViewerDisplay::_DrawRoundedMessage(const wxString & text, const wxColour & colour) {
@@ -81,6 +82,8 @@ void vrViewerDisplay::OnEraseBackground (wxPaintEvent & event){
 vrViewerDisplay::vrViewerDisplay(wxWindow * parent, wxWindowID id, const wxColour & colour) :
 wxPanel(parent, id){
 	
+	m_Coordinate = new vrCoordinate(this);
+	
 	SetBackgroundColour(colour);
 	
 	// connect event
@@ -95,6 +98,10 @@ wxPanel(parent, id){
 }
 
 vrViewerDisplay::~vrViewerDisplay() {
+	
+	wxASSERT(m_Coordinate);
+	delete m_Coordinate;
+	
 	// disconnect event
 	Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),
 		NULL,this);
