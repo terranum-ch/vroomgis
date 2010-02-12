@@ -28,7 +28,7 @@
 class vrViewerDisplay;
 
 
-const int vrCOORDINATE_MARGIN = 5;
+const int vrCOORDINATE_MARGIN = 10;
 
 class vrCoordinate {
   private:
