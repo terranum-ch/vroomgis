@@ -70,6 +70,28 @@ public:
 	}
 	
 	
+	void testGettingExtentGDAL2(){
+		
+		// GETTING EXTENT ISN'T WORKING FOR ROTATED RASTERS
+		/*
+		wxRect2DDouble myExtent;
+		TS_ASSERT(myExtent.IsEmpty()==true);
+		
+		// extent failed, layer not opened
+		vrLayerRasterGDAL myLayer;
+		TS_ASSERT(myLayer.GetExtent(myExtent)==false);
+		
+		// extent ok for layer GDAL
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileJPEG), false),true);
+		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
+		TS_ASSERT(myLayer.GetExtent(myExtent)==true);
+		TS_ASSERT_EQUALS(myExtent.GetLeft(), 575148);
+		TS_ASSERT_EQUALS(myExtent.GetTop(), 169103);
+		TS_ASSERT_EQUALS((int) myExtent.GetRight(), 613455);
+		TS_ASSERT_EQUALS((int) myExtent.GetBottom(), 141898);*/
+	}
+	
+	
 };
 
 

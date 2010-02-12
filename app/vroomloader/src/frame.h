@@ -52,6 +52,7 @@ class vroomLoaderFrame : public wxFrame
 {
 private:
 	wxTextCtrl* m_LogCtrl;
+	wxLogWindow * m_LogWnd;
 	
 	// controls (vroomgis)
 	vrViewerTOC * m_TocCtrl;
@@ -74,6 +75,7 @@ public:
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 	void OnOpenLayer(wxCommandEvent & event);
+	void OnShowLog (wxCommandEvent & event);
 	
 private:
     DECLARE_EVENT_TABLE()
