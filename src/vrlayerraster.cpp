@@ -108,15 +108,26 @@ bool vrLayerRasterGDAL::GetExtent(wxRect2DDouble & rect) {
 				   m_FileName.GetFullName());
 		return false;
 	}
-		
+	
+	if (adfGeoTransform[5] > 0) {
+		wxLogError("vertical pixel size is Wrong (should be negative) : %.2f",
+				   adfGeoTransform[5]);
+	}
 	rect.SetLeft(adfGeoTransform[0]);
 	rect.SetTop(adfGeoTransform[3]);
+	
+	rect.m_height = adfGeoTransform[5]*m_Dataset->GetRasterYSize();	
 	rect.m_width = adfGeoTransform[1]*m_Dataset->GetRasterXSize();
-	rect.m_height = adfGeoTransform[5]*m_Dataset->GetRasterYSize();
+	
+
+	
+	
 	
 	if (adfGeoTransform[2] != 0 || adfGeoTransform[4] != 0) {
-		wxLogError("Layer %s seams to contain rotation informations will not be displayed correctly",
-				   m_FileName.GetFullName());
+		wxLogError("Layer %s seams to contain rotation informations (%.2f, %.2f) will not be displayed correctly",
+				   m_FileName.GetFullName(),
+				   adfGeoTransform[2],
+				   adfGeoTransform[4]);
 	}
 
 	return true;

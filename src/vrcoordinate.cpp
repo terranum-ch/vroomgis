@@ -62,31 +62,54 @@ bool vrCoordinate::ComputeFullExtent() {
 	wxRect2DDouble myLayerExtent = m_LayersExtent;
 	
 	double dWndwidth = myWndSizePx.GetWidth() - vrCOORDINATE_MARGIN;
-	double dWndheight = myWndSizePx.GetHeight() - vrCOORDINATE_MARGIN;
+	double dWndheight = myWndSizePx.GetHeight()  - vrCOORDINATE_MARGIN;
 	
 	// compute shape 
 	double dpixelx = myLayerExtent.m_width / dWndwidth;
 	double dpixely = myLayerExtent.m_height / dWndheight;
 	double myDivFactor = 0.0;
 	
-	if (abs(dpixelx) >= abs(dpixely)) {
+	if (fabs(dpixelx) >= fabs(dpixely)) {
 		myDivFactor = dpixelx;
 	}
 	else {
 		myDivFactor = dpixely;
 	}
 	
+	
+	double myDivFactorX = myDivFactor;
+	double myDivFactorY = myDivFactor;
+	
+	if (dpixelx >= 0) {
+		myDivFactorX = fabs(myDivFactorX);
+	}
+	
+	if (dpixely >= 0) {
+		myDivFactorY = fabs(myDivFactorY);
+	}
+	
+	
+	
 	m_WndExtent = wxRect2DDouble();
 	m_WndExtent.m_width = myWndSizePx.GetWidth();
 	m_WndExtent.m_height = myWndSizePx.GetHeight();
 	
-	m_WndExtent.Scale(myDivFactor);
+	// scale
+	m_WndExtent.m_width *= myDivFactorX;
+	m_WndExtent.m_height *= myDivFactorY;
 	
 	
 	// center rect
 	wxPoint2DDouble myCenter = myLayerExtent.GetCentre();
 	m_WndExtent.SetCentre(myCenter);
 
+	// TODO: Remove this 4 lines bellow, only used for debuging
+	double dbottom = m_LayersExtent.GetBottom();
+	double dTop = m_LayersExtent.GetTop();
+	
+	double ddbottom = m_WndExtent.GetBottom();
+	double ddTop = m_WndExtent.GetTop();
+	
 	return true;
 }
 
