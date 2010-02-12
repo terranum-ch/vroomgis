@@ -23,6 +23,7 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
     EVT_MENU(wxID_EXIT,  vroomLoaderFrame::OnQuit)
     EVT_MENU(wxID_ABOUT, vroomLoaderFrame::OnAbout)
 	EVT_MENU(wxID_OPEN, vroomLoaderFrame::OnOpenLayer)
+EVT_MENU (wxID_INFO, vroomLoaderFrame::OnShowLog)
 END_EVENT_TABLE()
 IMPLEMENT_APP(vroomLoader)
 
@@ -97,6 +98,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	wxMenu *layermenu = new wxMenu;
     
 	helpMenu->Append(wxID_ABOUT, "&About...\tF1", "Show about dialog");
+	helpMenu->Append(wxID_INFO, "Show Log Window", "Show log window");
     fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O","Open a GIS layer");
 	fileMenu->Append(wxID_EXIT, "E&xit\tAlt-X", "Quit this program");
 	
@@ -115,7 +117,9 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	
 	// CONTROLS
 	_CreateControls();
-	wxLog::SetActiveTarget(new wxLogTextCtrl (m_LogCtrl));
+	m_LogWnd = new wxLogWindow(this, "VroomLoader Log", true, true);
+	wxLog::SetActiveTarget(m_LogWnd);
+	
 	
 	// Connect Events
 	m_DisplayCtrl->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
@@ -137,6 +141,7 @@ vroomLoaderFrame::~vroomLoaderFrame()
 	// don't delete m_ViewerLayerManager, will be deleted by the manager
 	delete m_LayerManager;
 	wxLog::SetActiveTarget (NULL);
+	delete m_LogWnd;
 }
 
 
@@ -209,5 +214,13 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 	
 	event.Skip();
 }
+
+
+
+void vroomLoaderFrame::OnShowLog (wxCommandEvent & event)
+{
+	m_LogWnd->Show(true);	
+}
+
 
 

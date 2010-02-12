@@ -241,8 +241,7 @@ bool vrViewerLayerManager::_GetLayersData() {
 
 
 bool vrViewerLayerManager::_GetLayersExtent() {
-	wxLogDebug("Getting layers extent");
-	
+		
 	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
 	wxASSERT(myCoordinate);
 	
@@ -260,6 +259,14 @@ bool vrViewerLayerManager::_GetLayersExtent() {
 		return false;
 	}
 	
+	// TODO: Remove Temp logging code
+	myLayerExtent = myCoordinate->GetExtent();
+	wxLogMessage("Windows extent is :\n left : %.3f\nright : %.3f\ntop : %.3f\nbottom : %.3f",
+				 myLayerExtent.GetLeft(),
+				 myLayerExtent.GetRight(),
+				 myLayerExtent.GetTop(),
+				 myLayerExtent.GetBottom())
+	;
 	
 	return true;
 }
