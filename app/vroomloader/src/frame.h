@@ -51,7 +51,7 @@ public:
 class vroomLoaderFrame : public wxFrame
 {
 private:
-	wxTextCtrl* m_LogCtrl;
+	//wxTextCtrl* m_LogCtrl;
 	wxLogWindow * m_LogWnd;
 	
 	// controls (vroomgis)
