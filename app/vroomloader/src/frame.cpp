@@ -128,9 +128,12 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	
 	// CONTROLS
 	_CreateControls();
-	m_LogWnd = new wxLogWindow(this, "VroomLoader Log", true, true);
+	m_LogWnd = new wxLogWindow(this, "vroomLoader Log", true, true);
 	wxLog::SetActiveTarget(m_LogWnd);
-	
+	//wxLogChain *logChain = new wxLogChain(new wxLogStderr());//new wxLogWindow(this, "vroomLoader log", true, true));
+	//wxLogGui * myLogGui = new wxLogGui();
+	//wxLog::SetActiveTarget(myLogGui);
+	//wxLogChain * logChain = new wxLogChain(m_LogWnd);
 	
 	// Connect Events
 	m_DisplayCtrl->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
@@ -151,8 +154,9 @@ vroomLoaderFrame::~vroomLoaderFrame()
 
 	// don't delete m_ViewerLayerManager, will be deleted by the manager
 	delete m_LayerManager;
-	wxLog::SetActiveTarget (NULL);
-	delete m_LogWnd;
+	
+	delete wxLog::SetActiveTarget (NULL);
+	//delete m_LogWnd;
 }
 
 

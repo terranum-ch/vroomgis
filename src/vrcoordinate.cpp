@@ -77,15 +77,15 @@ bool vrCoordinate::ComputeFullExtent() {
 	}
 	
 	
-	double myDivFactorX = myDivFactor;
-	double myDivFactorY = myDivFactor;
+	double myDivFactorX = fabs(myDivFactor);
+	double myDivFactorY = fabs(myDivFactor);
 	
-	if (dpixelx >= 0) {
-		myDivFactorX = fabs(myDivFactorX);
+	if (dpixelx <= 0) {
+		myDivFactorX = myDivFactorX * -1;
 	}
 	
-	if (dpixely >= 0) {
-		myDivFactorY = fabs(myDivFactorY);
+	if (dpixely <= 0) {
+		myDivFactorY = myDivFactorY * -1;
 	}
 	
 	
