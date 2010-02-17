@@ -108,6 +108,18 @@ vrRenderer::~vrRenderer() {
 	delete m_Label;
 }
 
+
+
+bool vrRenderer::GetBitmapData(wxImage * bmp, const wxRect2DDouble & coord) {
+	wxASSERT(bmp);
+	wxASSERT(GetVisible());
+	
+	// TODO: GetRender and GetLabel aren't working in thread mode
+	// we should create copy and send them to the get layer function
+	return GetLayer()->GetData(bmp, coord, GetRender(), GetLabel());
+}
+
+
 void vrRenderer::SetRender(vrRender * value) {
 	m_Render = value;
 }

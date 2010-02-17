@@ -23,6 +23,16 @@ vrCoordinate::vrCoordinate(vrViewerDisplay * viewer) {
 	m_Viewer = viewer;
 }
 
+
+
+vrCoordinate::vrCoordinate(const vrCoordinate & source) {
+	m_Viewer = source.m_Viewer;
+	m_WndExtent = source.m_WndExtent;
+	m_LayersExtent = source.m_LayersExtent;
+}
+
+
+
 vrCoordinate::~vrCoordinate() {
 }
 

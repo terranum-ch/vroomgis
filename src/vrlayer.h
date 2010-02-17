@@ -34,6 +34,9 @@
 #include "vrdriver.h" // Forward declaration not possible
 
 
+class vrRender;
+class vrLabel;
+
 //Abstact base class for layers
 class vrLayer { 
 protected:
@@ -49,6 +52,8 @@ public:
 	wxFileName GetName();
     virtual vrDRIVERS_TYPE GetType();
 	virtual bool GetExtent(wxRect2DDouble & rect){return false;}
+	virtual bool GetData(wxImage * bmp, const wxRect2DDouble & coord, const vrRender * render = NULL, const vrLabel * label = NULL){return false;}
+
 
 	virtual bool IsOK(){return false;}
 	

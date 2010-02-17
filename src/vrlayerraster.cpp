@@ -17,6 +17,7 @@
 
 
 #include "vrlayerraster.h"
+#include "vrrender.h"	// for symbology;
 
 vrLayerRaster::vrLayerRaster() {
 	m_Dataset = NULL;
@@ -177,4 +178,18 @@ bool vrLayerRasterGDAL::GetExtent(wxRect2DDouble & rect) {
 	return true;
 	
 }
+
+
+
+
+bool vrLayerRasterGDAL::GetData(wxImage * bmp, const wxRect2DDouble & coord,
+								const vrRender * render, const vrLabel * label) {
+	
+	// TODO: Add code for getting raster data into bitmap.
+	// there is now way to grab data with real coordinates. Thus we need to convert
+	// real data to row and cols to fetch from data.
+	
+	return false;
+}
+
 

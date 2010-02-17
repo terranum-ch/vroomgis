@@ -40,7 +40,9 @@ class vrCoordinate {
 
   public:
     vrCoordinate(vrViewerDisplay * viewer);
-    ~vrCoordinate();
+	vrCoordinate(const vrCoordinate & source);
+	~vrCoordinate();
+	
 
 	wxRect2DDouble GetExtent();
 	

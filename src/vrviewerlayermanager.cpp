@@ -202,8 +202,6 @@ bool vrViewerLayerManager::_BitmapArrayInit() {
 		
 		// create image only for visible layers
 		if (m_Renderers.Item(i)->GetVisible()) {
-			
-			//TODO : Add bitmap size here;
 			wxImage * myImage = new wxImage(myDisplaySize);
 			m_Images->Add(myImage);
 			
@@ -236,7 +234,32 @@ void vrViewerLayerManager::_BitmapArrayDelete() {
 
 bool vrViewerLayerManager::_GetLayersData() {
 	
-	return false;
+	// gettting display coordinates
+	wxASSERT(m_Display);
+	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
+	wxASSERT(myCoordinate);
+	//vrCoordinate myCopyCoord (*myCoordinate);
+	
+	
+	
+	// getting data from vrRenderer -> vrLayer
+	bool bReturn = true;
+	int iImageIndex = 0;
+	wxASSERT(m_Images);
+	
+	int iTotLayers = m_Renderers.GetCount();
+	for (int i = iTotLayers-1; i>= 0; i--) {
+		if (m_Renderers.Item(i)->GetVisible() == true) {
+			if (m_Renderers.Item(i)->GetBitmapData( m_Images->Item(iImageIndex),
+												   myCoordinate->GetExtent())==false) {
+				wxLogError("Getting data for %s failed !",
+						   m_Renderers.Item(i)->GetLayer()->GetName().GetFullName());
+				bReturn = false;
+			}
+		}
+	}
+	
+	return bReturn;
 }
 
 
@@ -281,6 +304,7 @@ void vrViewerLayerManager::OnReload(wxCommandEvent & event) {
 	
 	_BitmapArrayInit();
 	
+	_GetLayersData();
 	
 	_BitmapArrayDelete();
 	

@@ -127,3 +127,41 @@ bool vrLayerVectorOGR::GetExtent(wxRect2DDouble & rect) {
 	return true;
 }
 
+
+
+
+bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
+							   const vrRender * render, const vrLabel * label) {
+	wxASSERT(m_Layer);
+	
+	
+	// spatial filter
+	m_Layer->SetSpatialFilterRect(coord.GetLeft(), coord.GetBottom(),
+								  coord.GetRight(), coord.GetTop());
+	m_Layer->ResetReading();
+	
+	
+	
+	// drawing
+	// FIXME: Need to pass wxBitmap not wxImage because DC isn't able to draw
+	// on wxImage. 
+	// wxMemoryDC dc (bmp);
+	
+	OGRFeature * poFeature;
+	long lFeatureDrawed = 0;
+	while ((poFeature = m_Layer->GetNextFeature()) != NULL) {
+		lFeatureDrawed++;
+		
+		
+		OGRFeature::DestroyFeature(poFeature);
+	}
+	
+	
+	
+	//dc.SelectObject(wxNullBitmap);
+	
+	wxLogMessage("%d features drawed", lFeatureDrawed);
+	return true;
+}
+
+

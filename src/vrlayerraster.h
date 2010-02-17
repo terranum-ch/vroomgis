@@ -61,6 +61,9 @@ class vrLayerRasterGDAL : public vrLayerRaster {
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
 	
 	virtual bool GetExtent(wxRect2DDouble & rect);
+	virtual bool GetData(wxImage * bmp, const wxRect2DDouble & coord,
+						 const vrRender * render = NULL, const vrLabel * label = NULL);
+
 
 
 };
