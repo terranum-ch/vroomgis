@@ -72,8 +72,8 @@ public:
 	
 	void testGettingExtentGDAL2(){
 		
-		// GETTING EXTENT ISN'T WORKING FOR ROTATED RASTERS
-		/*
+		// GETTING EXTENT FOR ROTATED RASTERS RETURN MAX EXTENT
+		
 		wxRect2DDouble myExtent;
 		TS_ASSERT(myExtent.IsEmpty()==true);
 		
@@ -85,10 +85,17 @@ public:
 		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileJPEG), false),true);
 		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
 		TS_ASSERT(myLayer.GetExtent(myExtent)==true);
-		TS_ASSERT_EQUALS(myExtent.GetLeft(), 575148);
-		TS_ASSERT_EQUALS(myExtent.GetTop(), 169103);
-		TS_ASSERT_EQUALS((int) myExtent.GetRight(), 613455);
-		TS_ASSERT_EQUALS((int) myExtent.GetBottom(), 141898);*/
+		TS_ASSERT_DELTA(myExtent.GetLeft(), 575147.743, 0.001);
+		TS_ASSERT_DELTA(myExtent.GetTop(), 169147.080, 0.001);
+		TS_ASSERT_DELTA(myExtent.GetRight(), 613503.148, 0.001);
+		TS_ASSERT_DELTA(myExtent.GetBottom(), 141898.483, 0.001);
+		
+		wxLogMessage("Windows extent is :\nleft : \t%.3f\nright : \t%.3f\ntop : \t%.3f\nbottom : \t%.3f",
+					 myExtent.GetLeft(),
+					 myExtent.GetRight(),
+					 myExtent.GetTop(),
+					 myExtent.GetBottom());
+		
 	}
 	
 	

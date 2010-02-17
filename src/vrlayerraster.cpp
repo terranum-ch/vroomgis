@@ -113,23 +113,67 @@ bool vrLayerRasterGDAL::GetExtent(wxRect2DDouble & rect) {
 		wxLogError("vertical pixel size is Wrong (should be negative) : %.2f",
 				   adfGeoTransform[5]);
 	}
-	rect.SetLeft(adfGeoTransform[0]);
-	rect.SetTop(adfGeoTransform[3]);
 	
-	rect.m_height = adfGeoTransform[5]*m_Dataset->GetRasterYSize();	
-	rect.m_width = adfGeoTransform[1]*m_Dataset->GetRasterXSize();
 	
-
+	// top left corner
+	wxPoint2DDouble mytopleft;
+	mytopleft.m_x = adfGeoTransform[0] + adfGeoTransform[1] * 0.0 + adfGeoTransform[2] * 0.0;
+	mytopleft.m_y = adfGeoTransform[3] + adfGeoTransform[4] * 0.0 + adfGeoTransform[5] * 0.0;
+	
+	// bottom left corner
+	wxPoint2DDouble mybottomleft;
+	mybottomleft.m_x = adfGeoTransform[0] + adfGeoTransform[1] * 0.0 + adfGeoTransform[2] * m_Dataset->GetRasterYSize();
+	mybottomleft.m_y = adfGeoTransform[3] + adfGeoTransform[4] * 0.0 + adfGeoTransform[5] * m_Dataset->GetRasterYSize();
+	
+	
+	// top right corner
+	wxPoint2DDouble mytopright;
+	mytopright.m_x = adfGeoTransform[0] + adfGeoTransform[1] * m_Dataset->GetRasterXSize() + adfGeoTransform[2] * 0.0;
+	mytopright.m_y = adfGeoTransform[3] + adfGeoTransform[4] * m_Dataset->GetRasterXSize() + adfGeoTransform[5] * 0.0;
+	
+	// bottom right corner
+	wxPoint2DDouble mybottomright;
+	mybottomright.m_x = adfGeoTransform[0] + adfGeoTransform[1] * m_Dataset->GetRasterXSize() + adfGeoTransform[2] * m_Dataset->GetRasterYSize();
+	mybottomright.m_y = adfGeoTransform[3] + adfGeoTransform[4] * m_Dataset->GetRasterXSize() + adfGeoTransform[5] * m_Dataset->GetRasterYSize();
+	
+	// compute extent
+	// left
+	double myleft = mytopleft.m_x;
+	if (mybottomleft.m_x < mytopleft.m_x) {
+		myleft = mybottomleft.m_x;
+	}
+	rect.SetLeft(myleft);
+	
+	// right
+	double myright = mytopright.m_x;
+	if (mybottomright.m_x > mytopright.m_x) {
+		myright = mybottomright.m_x;
+	}
+	rect.SetRight(myright);
+	
+	// top
+	double mytop = mytopleft.m_y;
+	if (mytopright.m_y > mytopleft.m_y) {
+		mytop = mytopright.m_y;
+	}
+	rect.SetTop(mytop);
+	
+	// bottom
+	double mybottom = mybottomleft.m_y;
+	if (mybottomright.m_y < mybottomleft.m_y) {
+		mybottom = mybottomright.m_y;
+	}
+	rect.SetBottom(mybottom);
 	
 	
 	
 	if (adfGeoTransform[2] != 0 || adfGeoTransform[4] != 0) {
-		wxLogError("Layer %s seams to contain rotation informations (%.2f, %.2f) will not be displayed correctly",
-				   m_FileName.GetFullName(),
-				   adfGeoTransform[2],
-				   adfGeoTransform[4]);
+		wxLogWarning("Layer %s contain following rotation informations (%.4f, %.4f). It may not be displayed correctly",
+					 m_FileName.GetFullName(),
+					 adfGeoTransform[2],
+					 adfGeoTransform[4]);
 	}
-
+	
 	return true;
 	
 }
