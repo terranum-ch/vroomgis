@@ -60,6 +60,9 @@ public:
     virtual bool Create(const wxFileName & filename);
 	
 	virtual bool GetExtent(wxRect2DDouble & rect);
+	virtual bool GetData(wxImage * bmp, const wxRect2DDouble & coord, 
+						 const vrRender * render = NULL, const vrLabel * label = NULL);
+
 
 	
 };
