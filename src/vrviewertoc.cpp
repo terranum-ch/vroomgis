@@ -17,6 +17,7 @@
 
 
 #include "vrviewertoc.h"
+#include "vrevent.h"
 #include "vrviewerlayermanager.h"
 #include "vrlayer.h"
 

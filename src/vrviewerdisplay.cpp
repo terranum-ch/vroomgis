@@ -17,6 +17,7 @@
 
 #include "vrviewerdisplay.h"
 #include "vrcoordinate.h"
+#include "vrevent.h"
 
 
 bool vrViewerDisplay::_DrawRoundedMessage(const wxString & text, const wxColour & colour) {
@@ -85,7 +86,10 @@ void vrViewerDisplay::OnPaint(wxPaintEvent & event) {
 
 
 void vrViewerDisplay::OnSizeChange(wxSizeEvent & event) {
-	_InvalidateView(false);
+	
+	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
+	ProcessWindowEvent(myEvt);
+	//_InvalidateView(false);
 	event.Skip();
 }
 

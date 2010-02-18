@@ -17,6 +17,7 @@
 
 
 #include "vrviewerlayermanager.h"
+#include "vrevent.h"
 #include "vrlayermanager.h"
 #include "vrlayer.h"
 #include "vrviewertoc.h"
@@ -191,7 +192,7 @@ void vrViewerLayerManager::FreezeEnd() {
 bool vrViewerLayerManager::_BitmapArrayInit() {
 	wxASSERT(m_Images == NULL);
 	if (m_Renderers.GetCount()== 0) {
-		wxLogError("Unable to create images, no layer opened");
+		//wxLogError("Unable to create images, no layer opened");
 		return false;
 	}
 	
@@ -245,7 +246,10 @@ bool vrViewerLayerManager::_GetLayersData() {
 	// getting data from vrRenderer -> vrLayer
 	bool bReturn = true;
 	int iImageIndex = 0;
-	wxASSERT(m_Images);
+	if(m_Images==NULL)
+	{
+		return false;
+	}
 	
 	int iTotLayers = m_Renderers.GetCount();
 	for (int i = iTotLayers-1; i>= 0; i--) {
