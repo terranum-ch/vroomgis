@@ -49,6 +49,10 @@ class vrViewerLayerManager : public wxEvtHandler {
     vrViewerDisplay * m_Display;
     vrViewerTOC * m_Toc;
 	wxWindow * m_WindowParent;
+	
+	
+	// using array of wxImages instead of array of wxBitmap because bitmap are
+	// limited ressources on some systems
 	wxArrayImage * m_Images;
 	
 	bool m_FreezeStatus;
@@ -61,7 +65,7 @@ class vrViewerLayerManager : public wxEvtHandler {
     void _BitmapArrayDelete();
     bool _GetLayersData();
 	bool _GetLayersExtent();
-    bool _MergeBitmapData();
+    wxBitmap * _MergeBitmapData();
 	
 	// event function
     void OnReload(wxCommandEvent & event);

@@ -28,6 +28,7 @@ class vrCoordinate;
 class vrViewerDisplay : public wxPanel{
 private:
     vrCoordinate * m_Coordinate;
+	wxBitmap * m_bmp;
 	
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
 	void _InvalidateView(bool updatenow);
@@ -41,7 +42,9 @@ public:
     vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, const wxColour & colour = *wxWHITE);
     virtual ~vrViewerDisplay();
 	
+	void SetBitmap(wxBitmap * bmp);
 	vrCoordinate * GetCoordinate() {return m_Coordinate;}
+	
 	
 	
 };

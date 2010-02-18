@@ -143,9 +143,8 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 	
 	
 	// drawing
-	// FIXME: Need to pass wxBitmap not wxImage because DC isn't able to draw
-	// on wxImage. 
-	// wxMemoryDC dc (bmp);
+	wxBitmap myBmp(bmp->GetSize());
+	wxMemoryDC dc (myBmp);
 	
 	OGRFeature * poFeature;
 	long lFeatureDrawed = 0;
@@ -156,11 +155,21 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 		OGRFeature::DestroyFeature(poFeature);
 	}
 	
+	// FIXME: THIS IS TEMP CODE FOR DRAWING LINE
+	dc.Clear();
+	dc.SetBrush(*wxWHITE_BRUSH);
+	dc.SetPen(*wxWHITE_PEN);
+	dc.DrawRectangle(0,0,myBmp.GetWidth(), myBmp.GetHeight());
+	
+	dc.SetPen(*wxRED_PEN);
+	dc.DrawLine(0,0, myBmp.GetWidth(), myBmp.GetHeight());
+
+	dc.SelectObject(wxNullBitmap);
+	*bmp = myBmp.ConvertToImage();
 	
 	
-	//dc.SelectObject(wxNullBitmap);
-	
-	wxLogMessage("%d features drawed", lFeatureDrawed);
+	wxLogMessage("%s : %d features drawed",GetName().GetFullName(),
+				lFeatureDrawed);
 	return true;
 }
 

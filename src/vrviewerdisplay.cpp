@@ -65,7 +65,22 @@ bool vrViewerDisplay::_DrawRoundedMessage(const wxString & text, const wxColour 
 
 void vrViewerDisplay::OnPaint(wxPaintEvent & event) {
 	wxPaintDC dc(this);
-	_DrawRoundedMessage("No GIS Data");
+	
+	if (m_bmp == NULL) {
+		_DrawRoundedMessage("No GIS Data");
+		return;
+	}
+	
+	/*wxMemoryDC memDC(m_bmp);
+	dc.Blit(0,0,m_bmp->GetWidth(), m_bmp->GetHeight(),
+			&memDC,
+			0,0,
+			wxCOPY,
+			true);
+	memDC.SelectObject(wxNullBitmap);*/
+	dc.DrawBitmap(*m_bmp, 0,0, true);
+	
+	
 }
 
 
@@ -83,6 +98,7 @@ vrViewerDisplay::vrViewerDisplay(wxWindow * parent, wxWindowID id, const wxColou
 wxPanel(parent, id){
 	
 	m_Coordinate = new vrCoordinate(this);
+	m_bmp = NULL;
 	
 	SetBackgroundColour(colour);
 	
@@ -110,7 +126,30 @@ vrViewerDisplay::~vrViewerDisplay() {
 	Disconnect( wxEVT_PAINT, 
 			   wxPaintEventHandler( vrViewerDisplay::OnPaint ),
 			   NULL, this );
+	
+	
+	if (m_bmp != NULL) {
+		wxLogMessage("Deleting viewer image");
+		delete m_bmp;
+		m_bmp = NULL;
+	}
+}
 
+
+void vrViewerDisplay::SetBitmap(wxBitmap * bmp) {
+	
+	if (m_bmp != NULL) {
+		wxLogMessage("Deleting viewer image");
+		delete m_bmp;
+		m_bmp = NULL;
+	}
+	
+	// reference copy, this isn't expensive
+	if (bmp != NULL) {
+		wxLogMessage("Creating viewer image");
+		m_bmp = new wxBitmap(*bmp);
+	}
+	_InvalidateView(true);
 }
 
 
