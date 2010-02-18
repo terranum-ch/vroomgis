@@ -36,7 +36,7 @@ vrLayerManager::~vrLayerManager() {
 	{
 		vrLayer * myLayer = m_Layers.Item(0);
 		m_Layers.Detach(0);
-		delete myLayer;
+		wxDELETE(myLayer);
 	}
 	wxASSERT(m_Layers.GetCount()==0);
 	
@@ -45,7 +45,7 @@ vrLayerManager::~vrLayerManager() {
 	for (unsigned j = 0; j<iCountVM; j++){
 		vrViewerLayerManager * myManager = m_ViewerManagers.Item(0);
 		m_ViewerManagers.Detach(0);
-		delete myManager;
+		wxDELETE(myManager);
 	}
 	wxASSERT(m_ViewerManagers.GetCount()==0);
 }

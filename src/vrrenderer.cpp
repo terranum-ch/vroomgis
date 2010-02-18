@@ -104,8 +104,8 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 vrRenderer::~vrRenderer() {
 	wxASSERT(m_Render);
 	wxASSERT(m_Label);
-	delete m_Render;
-	delete m_Label;
+	wxDELETE(m_Render);
+	wxDELETE(m_Label);
 }
 
 

@@ -79,15 +79,9 @@ vrViewerLayerManager::~vrViewerLayerManager() {
 	}
 	
 	
-	if(m_Display){
-		delete m_Display;
-		m_Display = NULL;
-	}
-	
-	if (m_Toc) {
-		delete m_Toc;
-		m_Toc = NULL;
-	}
+	wxDELETE(m_Display);
+	wxDELETE(m_Toc);
+
 	
 	// delete renderers
 	unsigned int iCount = m_Renderers.GetCount();
@@ -95,7 +89,7 @@ vrViewerLayerManager::~vrViewerLayerManager() {
 		vrRenderer * myRenderer = m_Renderers.Item(0);
 		wxASSERT(myRenderer);
 		m_Renderers.Detach(0);
-		delete myRenderer;
+		wxDELETE(myRenderer);
 	}
 	
 }
@@ -223,11 +217,10 @@ void vrViewerLayerManager::_BitmapArrayDelete() {
 			wxImage * myImage = m_Images->Item(0);
 			wxASSERT(myImage);
 			m_Images->Detach(0);
-			delete myImage;
+			wxDELETE(myImage);
 		}
 		wxASSERT(m_Images->GetCount()==0);
-		delete m_Images;
-		m_Images = NULL;
+		wxDELETE(m_Images);
 	}
 }
 
@@ -326,10 +319,7 @@ void vrViewerLayerManager::OnReload(wxCommandEvent & event) {
 	wxASSERT(m_Display);
 	m_Display->SetBitmap(myFinalBmp);
 	
-	if (myFinalBmp != NULL) {
-		delete myFinalBmp;
-	}
-	
+	wxDELETE(myFinalBmp);
 	event.Skip();
 }
 

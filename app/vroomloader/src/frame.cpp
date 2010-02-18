@@ -153,10 +153,9 @@ vroomLoaderFrame::~vroomLoaderFrame()
 	m_DisplayCtrl->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
 
 	// don't delete m_ViewerLayerManager, will be deleted by the manager
-	delete m_LayerManager;
+	wxDELETE(m_LayerManager);
 	
 	delete wxLog::SetActiveTarget (NULL);
-	//delete m_LogWnd;
 }
 
 
