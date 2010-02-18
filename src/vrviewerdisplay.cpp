@@ -120,7 +120,7 @@ wxPanel(parent, id){
 vrViewerDisplay::~vrViewerDisplay() {
 	
 	wxASSERT(m_Coordinate);
-	delete m_Coordinate;
+	wxDELETE(m_Coordinate);
 	
 	// disconnect event
 	Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),
@@ -132,25 +132,16 @@ vrViewerDisplay::~vrViewerDisplay() {
 			   NULL, this );
 	
 	
-	if (m_bmp != NULL) {
-		wxLogMessage("Deleting viewer image");
-		delete m_bmp;
-		m_bmp = NULL;
-	}
+	wxDELETE(m_bmp);
 }
 
 
 void vrViewerDisplay::SetBitmap(wxBitmap * bmp) {
 	
-	if (m_bmp != NULL) {
-		wxLogMessage("Deleting viewer image");
-		delete m_bmp;
-		m_bmp = NULL;
-	}
+	wxDELETE(m_bmp);
 	
 	// reference copy, this isn't expensive
 	if (bmp != NULL) {
-		wxLogMessage("Creating viewer image");
 		m_bmp = new wxBitmap(*bmp);
 	}
 	_InvalidateView(true);
