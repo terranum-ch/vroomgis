@@ -296,17 +296,35 @@ bool vrViewerLayerManager::_GetLayersExtent() {
 
 
 
-bool vrViewerLayerManager::_MergeBitmapData() {
-	return false;
+wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
+	
+	if (m_Images != NULL && m_Images->GetCount() > 0) {
+		
+		wxBitmap * myDisplayBmp = new wxBitmap(*(m_Images->Item(0)), wxBITMAP_SCREEN_DEPTH);
+		return myDisplayBmp;
+		
+	}
+	
+	return NULL;
 }
+
+
 
 void vrViewerLayerManager::OnReload(wxCommandEvent & event) {
 	
 	_BitmapArrayInit();
 	
 	_GetLayersData();
-	
+	wxBitmap * myFinalBmp = _MergeBitmapData();
 	_BitmapArrayDelete();
+	
+	// pass bitmap to dispaly
+	wxASSERT(m_Display);
+	m_Display->SetBitmap(myFinalBmp);
+	
+	if (myFinalBmp != NULL) {
+		delete myFinalBmp;
+	}
 	
 	event.Skip();
 }
