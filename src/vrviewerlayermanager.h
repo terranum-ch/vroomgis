@@ -33,9 +33,6 @@ class vrViewerTOC;
 class vrViewerDisplay;
 
 
-// Event definition. If needed, move to an other global event file
-wxDECLARE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
-
 
 // Array of images (bitmaps arn't thread safe)
 WX_DECLARE_OBJARRAY(wxImage*, wxArrayImage);
