@@ -189,6 +189,22 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 	// there is now way to grab data with real coordinates. Thus we need to convert
 	// real data to row and cols to fetch from data.
 	
+	//FIXME: remove this temp code used only to draw something into a bitmap
+	wxBitmap myBmp(bmp->GetSize());
+	wxMemoryDC dc (myBmp);
+	
+	dc.Clear();
+	dc.SetBrush(*wxWHITE_BRUSH);
+	dc.SetPen(*wxWHITE_PEN);
+	dc.DrawRectangle(0,0,myBmp.GetWidth(), myBmp.GetHeight());
+	
+	dc.SetPen(*wxBLUE_PEN);
+	dc.DrawLine(myBmp.GetWidth(),0,0, myBmp.GetHeight());
+	
+	dc.SelectObject(wxNullBitmap);
+	*bmp = myBmp.ConvertToImage();
+	
+	
 	return false;
 }
 
