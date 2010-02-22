@@ -107,7 +107,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	
 	
 	if (pos == -1){
-		m_Renderers.Add(myRenderer);
+		m_Renderers.Insert(myRenderer, 0);
 	}
 	else {
 		m_Renderers.Insert(myRenderer, pos);
@@ -129,6 +129,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 			m_WindowParent->ProcessWindowEvent(myEvt);
 		}
 	}
+	
 	
 	return true;
 }
@@ -256,6 +257,18 @@ bool vrViewerLayerManager::_GetLayersData() {
 		}
 	}
 	
+	/*for (unsigned int i = 0 ; i< m_Renderers.GetCount(); i++) {
+		if (m_Renderers.Item(i)->GetVisible() == true) {
+			if (m_Renderers.Item(i)->GetBitmapData( m_Images->Item(iImageIndex),
+												   myCoordinate->GetExtent())==false) {
+				wxLogError("Getting data for %s failed !",
+						   m_Renderers.Item(i)->GetLayer()->GetName().GetFullName());
+				bReturn = false;
+			}
+			iImageIndex++;
+		}
+	}*/
+	
 	return bReturn;
 }
 
@@ -285,8 +298,7 @@ bool vrViewerLayerManager::_GetLayersExtent() {
 				 myLayerExtent.GetLeft(),
 				 myLayerExtent.GetRight(),
 				 myLayerExtent.GetTop(),
-				 myLayerExtent.GetBottom())
-	;
+				 myLayerExtent.GetBottom());
 	
 	return true;
 }
@@ -295,14 +307,39 @@ bool vrViewerLayerManager::_GetLayersExtent() {
 
 wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 	
-	if (m_Images != NULL && m_Images->GetCount() > 0) {
-		
-		wxBitmap * myDisplayBmp = new wxBitmap(*(m_Images->Item(0)), wxBITMAP_SCREEN_DEPTH);
-		return myDisplayBmp;
-		
+	if (m_Images == NULL){
+		return NULL;
 	}
 	
-	return NULL;
+	if (m_Images->GetCount() == 0) {
+		return NULL;
+	}
+	
+	int iTotalImg = m_Images->GetCount() -1;
+	wxBitmap * myAggregatedBmp = new wxBitmap(*m_Images->Item(iTotalImg));
+	wxMemoryDC myDC(*myAggregatedBmp);
+	
+	// first image used as background
+	
+	for (int i = iTotalImg -1 ; i >= 0 ; i--) {
+		//wxBitmap myTempBmp (*m_Images->Item(i));
+		//wxMemoryDC myTempDC(myTempBmp);
+		//myDC.Blit(0,0,myTempBmp.GetWidth(),myTempBmp.GetHeight(),
+		//		  &myTempDC,0,0,wxCOPY);
+				  
+		//myTempDC.SelectObject(wxNullBitmap);
+		
+		
+		
+		myDC.DrawBitmap(*(m_Images->Item(i)),0,0,true);
+		myDC.SetTextForeground(*wxRED);
+		myDC.DrawText(wxString::Format("%d",i), 0, i * 50);
+	}
+	//wxImage
+	
+	myDC.SelectObject(wxNullBitmap);
+	return myAggregatedBmp;	
+	
 }
 
 
