@@ -72,16 +72,7 @@ void vrViewerDisplay::OnPaint(wxPaintEvent & event) {
 		return;
 	}
 	
-	/*wxMemoryDC memDC(m_bmp);
-	dc.Blit(0,0,m_bmp->GetWidth(), m_bmp->GetHeight(),
-			&memDC,
-			0,0,
-			wxCOPY,
-			true);
-	memDC.SelectObject(wxNullBitmap);*/
 	dc.DrawBitmap(*m_bmp, 0,0, true);
-	
-	
 }
 
 

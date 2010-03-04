@@ -46,6 +46,15 @@ echo "4) Making DEBUG"
 xcodebuild -configuration Debug
 echo "4) Making DEBUG ... DONE"
 
+echo -n "Build release version (y/n) ?"
+read value
+
+if [ "$value" == "n" ]  
+then 
+exit 0 
+fi
+
+
 echo $VARLINE
 echo "4) Making RELEASE"
 xcodebuild -configuration Release

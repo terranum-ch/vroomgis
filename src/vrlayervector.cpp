@@ -140,8 +140,6 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 								  coord.GetRight(), coord.GetTop());
 	m_Layer->ResetReading();
 	
-	
-	
 	// drawing
 	wxBitmap myBmp(bmp->GetSize());
 	wxMemoryDC dc (myBmp);
@@ -166,6 +164,30 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 
 	dc.SelectObject(wxNullBitmap);
 	*bmp = myBmp.ConvertToImage();
+	
+	
+	// FIXME: Add transparency should go somewhere else
+	/*unsigned char * alphachar = NULL;
+	int translucencypercent = 50;
+	unsigned int myimglen = bmp->GetSize().GetWidth() * bmp->GetSize().GetHeight();
+	alphachn= (unsigned char*)CPLMalloc(myimglen);
+	if (alphachar == NULL)
+	{
+		wxLogError(_T("Error creating translucency"));
+		return false;
+	}
+	
+	// convert percent to 0-255 and invert 
+	int myTransValue = translucencypercent * 255 / 100;
+	myTransValue = 255 - myTransValue;
+	
+	
+	for (unsigned int i = 0; i < myimglen;i ++)
+	{
+		*(alphachar + i) =  (char) myTransValue;
+	}
+	bmp->SetAlpha(alphachar);*/
+	
 	
 	
 	wxLogMessage("%s : %d features drawed",GetName().GetFullName(),

@@ -199,6 +199,9 @@ bool vrViewerLayerManager::_BitmapArrayInit() {
 		// create image only for visible layers
 		if (m_Renderers.Item(i)->GetVisible()) {
 			wxImage * myImage = new wxImage(myDisplaySize);
+			/*if (myImage->HasAlpha() == false) {
+				myImage->InitAlpha();
+			}*/
 			m_Images->Add(myImage);
 			
 		}
@@ -233,9 +236,6 @@ bool vrViewerLayerManager::_GetLayersData() {
 	wxASSERT(m_Display);
 	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
 	wxASSERT(myCoordinate);
-	//vrCoordinate myCopyCoord (*myCoordinate);
-	
-	
 	
 	// getting data from vrRenderer -> vrLayer
 	bool bReturn = true;
@@ -256,18 +256,6 @@ bool vrViewerLayerManager::_GetLayersData() {
 			}
 		}
 	}
-	
-	/*for (unsigned int i = 0 ; i< m_Renderers.GetCount(); i++) {
-		if (m_Renderers.Item(i)->GetVisible() == true) {
-			if (m_Renderers.Item(i)->GetBitmapData( m_Images->Item(iImageIndex),
-												   myCoordinate->GetExtent())==false) {
-				wxLogError("Getting data for %s failed !",
-						   m_Renderers.Item(i)->GetLayer()->GetName().GetFullName());
-				bReturn = false;
-			}
-			iImageIndex++;
-		}
-	}*/
 	
 	return bReturn;
 }
@@ -315,28 +303,96 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 		return NULL;
 	}
 	
+
 	int iTotalImg = m_Images->GetCount() -1;
-	wxBitmap * myAggregatedBmp = new wxBitmap(*m_Images->Item(iTotalImg));
+	wxSize mySize = m_Images->Item(0)->GetSize();
+	wxASSERT(mySize != wxDefaultSize);
+	
+	//m_Images->Item(iTotalImg)->SetMaskColour(0, 0, 0);
+	
+	wxBitmap * myAggregatedBmp = new wxBitmap(mySize);
 	wxMemoryDC myDC(*myAggregatedBmp);
 	
+	// paint to white the background
+	myDC.SetBrush(*wxWHITE_BRUSH);
+	myDC.Clear();
+
+	
+	/*wxImage myImgOne ("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/one.png", wxBITMAP_TYPE_PNG);
+	wxImage myImgTwo ("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/two.png", wxBITMAP_TYPE_PNG);
+	
+	myImgOne.SetMaskColour(0, 0, 0);
+
+	//myImgTwo.SetMaskColour(0, 0, 0);
+	
+	
+	
+	bool bVal = myImgTwo.HasAlpha();
+	if (bVal == false) {
+		myImgTwo.InitAlpha();
+		bVal = true;
+	}
+	if (bVal) {
+		// FIXME: Add transparency should go somewhere else
+		unsigned char * alphachar = NULL;
+		 int translucencypercent = 100;
+		 unsigned int myimglen = mySize.GetWidth() * mySize.GetHeight();
+		 alphachar= (unsigned char*)CPLMalloc(myimglen);
+		 if (alphachar == NULL)
+		 {
+		 wxLogError(_T("Error creating translucency"));
+		 return false;
+		 }
+		 
+		 // convert percent to 0-255 and invert 
+		 int myTransValue = translucencypercent * 255 / 100;
+		 myTransValue = 255 - myTransValue;
+		 
+		 
+		 for (unsigned int i = 0; i < myimglen;i ++)
+		 {
+		 *(alphachar + i) =  (char) myTransValue;
+		 }
+		 myImgTwo.SetAlpha(alphachar);
+	}
+	
+	
+	for (int x = 0; x<50; x++) {
+		for (int y = 0; y < 50; y++) {
+			myImgTwo.SetAlpha(x, y, 120);
+		}
+	}
+	
+	
+	wxBitmap myOne (myImgOne);
+	wxBitmap myTwo (myImgTwo);
+
+	myDC.DrawBitmap(myOne,0,0,true);
+	myDC.DrawBitmap(myTwo,0,0,true);*/
+
+
 	// first image used as background
 	
-	for (int i = iTotalImg -1 ; i >= 0 ; i--) {
-		//wxBitmap myTempBmp (*m_Images->Item(i));
-		//wxMemoryDC myTempDC(myTempBmp);
-		//myDC.Blit(0,0,myTempBmp.GetWidth(),myTempBmp.GetHeight(),
-		//		  &myTempDC,0,0,wxCOPY);
+	for (int i = iTotalImg ; i >= 0 ; i--) {
+		
+		//m_Images->Item(i)->SetMaskColour(0, 0, 0);
+		
+		/*wxBitmap myTempBmp (*m_Images->Item(i));
+		wxMemoryDC myTempDC(myTempBmp);
+		myDC.Blit(0,0,myTempBmp.GetWidth(),myTempBmp.GetHeight(),
+				  &myTempDC,0,0,wxCOPY,true);
 				  
-		//myTempDC.SelectObject(wxNullBitmap);
+		myTempDC.SelectObject(wxNullBitmap);*/
 		
 		
-		
-		myDC.DrawBitmap(*(m_Images->Item(i)),0,0,true);
-		myDC.SetTextForeground(*wxRED);
-		myDC.DrawText(wxString::Format("%d",i), 0, i * 50);
+		wxBitmap myBmp (*m_Images->Item(i));
+		myDC.DrawBitmap(myBmp,0,0,true);
+		//myDC.SetTextForeground(*wxRED);
+		//myDC.DrawText(wxString::Format("%d",i), 0, i * 50);
 	}
 	//wxImage
 	
+
 	myDC.SelectObject(wxNullBitmap);
 	return myAggregatedBmp;	
 	

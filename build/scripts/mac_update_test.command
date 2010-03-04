@@ -37,7 +37,7 @@ rm $BINDIR/main.cpp
 echo "3) configuring ..."
 cd $BINDIR
 
-cmake $TRUNKDIR/test/build -DCXXTEST_DIRECTORY:PATH="/Users/lucien/Documents/PROGRAMMATION/cxxtest" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/Users/lucien/Documents/PROGRAMMATION/64/_LIBGIS" -DUNIT_TESTING_PATH:PATH="/Users/lucien/Documents/PRJ/COLTOPGIS/test_data" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/Users/lucien/Documents/PROGRAMMATION/64/_LIBWXSVN/bin/wx-config"
+cmake -GXcode $TRUNKDIR/test/build -DCMAKE_OSX_ARCHITECTURES:TEXT="x86_64" -DCXXTEST_DIRECTORY:PATH="/Users/lucien/Documents/PROGRAMMATION/cxxtest" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/Users/lucien/Documents/PROGRAMMATION/64/_LIBGIS" -DUNIT_TESTING_PATH:PATH="/Users/lucien/Documents/PRJ/COLTOPGIS/test_data" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/Users/lucien/Documents/PROGRAMMATION/64/_LIBWXSVN/bin/wx-config"
 
 echo $VARLINE
 echo "4) Making the tests"
@@ -47,7 +47,7 @@ echo "4) Making the tests ... DONE"
 echo $VARLINE
 echo "5) Running the tests"
 ctest
-open -a "Snultron" $BINDIR/Testing/Temporary/LastTest.log &
+open -a "MacVim" $BINDIR/Testing/Temporary/LastTest.log &
 echo "5) Running the tests... DONE"
 
 
