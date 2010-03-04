@@ -154,6 +154,7 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 	}
 	
 	// FIXME: THIS IS TEMP CODE FOR DRAWING LINE
+	dc.SetBrush(*wxWHITE_BRUSH);
 	dc.Clear();
 	dc.SetBrush(*wxWHITE_BRUSH);
 	dc.SetPen(*wxWHITE_PEN);
