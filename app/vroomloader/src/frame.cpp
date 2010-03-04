@@ -18,6 +18,7 @@
 #include "frame.h"
 #include <wx/filepicker.h>
 
+#include "tmlog.h"	// for double logging process
 
 
 
@@ -36,7 +37,7 @@ bool vroomLoader::OnInit()
 {
     if ( !wxApp::OnInit() )
         return false;
-
+	
     vroomLoaderFrame *frame = new vroomLoaderFrame("vroomLoader");
     //frame->CenterOnScreen(wxBOTH);
 	frame->SetSize(50, 50, 800, 500);
@@ -128,12 +129,11 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	
 	// CONTROLS
 	_CreateControls();
+	
+	wxLog * myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
+	delete wxLog::SetActiveTarget(myDlgLog);
 	m_LogWnd = new wxLogWindow(this, "vroomLoader Log", true, true);
-	wxLog::SetActiveTarget(m_LogWnd);
-	//wxLogChain *logChain = new wxLogChain(new wxLogStderr());//new wxLogWindow(this, "vroomLoader log", true, true));
-	//wxLogGui * myLogGui = new wxLogGui();
-	//wxLog::SetActiveTarget(myLogGui);
-	//wxLogChain * logChain = new wxLogChain(m_LogWnd);
+	
 	
 	// Connect Events
 	m_DisplayCtrl->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
