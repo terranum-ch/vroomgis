@@ -60,6 +60,10 @@ inline const int vrRender::GetTransparency() const {
 
 
 class vrRenderVector : public vrRender {
+private:
+    const int m_BgMaskColor[3];
+
+	
   public:
     vrRenderVector();
 

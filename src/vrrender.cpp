@@ -41,8 +41,10 @@ void vrRender::SetTransparency(int value) {
 
 
 
+
 vrRenderVector::vrRenderVector() {
 	m_Type = vrRENDER_VECTOR;
+	m_BgMaskColor = {160,60,190};
 }
 
 
