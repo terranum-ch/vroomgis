@@ -54,6 +54,12 @@ vrRenderVector::~vrRenderVector() {
 }
 
 
+const wxColour vrRenderVector::GetBackgroundMaskColour() 
+{
+	wxColour myColour (m_BgMaskColor[0], m_BgMaskColor[1], m_BgMaskColor[2]);
+	return myColour;
+}
+
 
 
 

@@ -66,8 +66,9 @@ private:
 	
   public:
     vrRenderVector();
-
     virtual ~vrRenderVector();
+	
+	static const wxColour GetBackgroundMaskColour();
 
 };
 

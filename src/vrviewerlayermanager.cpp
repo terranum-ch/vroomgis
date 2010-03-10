@@ -202,6 +202,9 @@ bool vrViewerLayerManager::_BitmapArrayInit() {
 			/*if (myImage->HasAlpha() == false) {
 				myImage->InitAlpha();
 			}*/
+			
+			wxLogMessage("Creation des images : %p", myImage);
+			
 			m_Images->Add(myImage);
 			
 		}
@@ -239,7 +242,7 @@ bool vrViewerLayerManager::_GetLayersData() {
 	
 	// getting data from vrRenderer -> vrLayer
 	bool bReturn = true;
-	int iImageIndex = 0;
+	//int iImageIndex = 0;
 	if(m_Images==NULL)
 	{
 		return false;
@@ -248,7 +251,7 @@ bool vrViewerLayerManager::_GetLayersData() {
 	int iTotLayers = m_Renderers.GetCount();
 	for (int i = iTotLayers-1; i>= 0; i--) {
 		if (m_Renderers.Item(i)->GetVisible() == true) {
-			if (m_Renderers.Item(i)->GetBitmapData( m_Images->Item(iImageIndex),
+			if (m_Renderers.Item(i)->GetBitmapData( m_Images->Item(i),
 												   myCoordinate->GetExtent())==false) {
 				wxLogError("Getting data for %s failed !",
 						   m_Renderers.Item(i)->GetLayer()->GetName().GetFullName());
@@ -314,8 +317,10 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 	wxMemoryDC myDC(*myAggregatedBmp);
 	
 	// paint to white the background
-	myDC.SetBrush(*wxWHITE_BRUSH);
+	myDC.SetBrush(*wxGREY_BRUSH);
 	myDC.Clear();
+	myDC.DrawRectangle(0,0,mySize.GetWidth(), mySize.GetHeight());
+	
 
 	
 	/*wxImage myImgOne ("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/one.png", wxBITMAP_TYPE_PNG);
@@ -371,27 +376,10 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 	myDC.DrawBitmap(myTwo,0,0,true);*/
 
 
-	// first image used as background
-	
 	for (int i = iTotalImg ; i >= 0 ; i--) {
-		
-		//m_Images->Item(i)->SetMaskColour(0, 0, 0);
-		
-		/*wxBitmap myTempBmp (*m_Images->Item(i));
-		wxMemoryDC myTempDC(myTempBmp);
-		myDC.Blit(0,0,myTempBmp.GetWidth(),myTempBmp.GetHeight(),
-				  &myTempDC,0,0,wxCOPY,true);
-				  
-		myTempDC.SelectObject(wxNullBitmap);*/
-		
-		
 		wxBitmap myBmp (*m_Images->Item(i));
 		myDC.DrawBitmap(myBmp,0,0,true);
-		//myDC.SetTextForeground(*wxRED);
-		//myDC.DrawText(wxString::Format("%d",i), 0, i * 50);
 	}
-	//wxImage
-	
 
 	myDC.SelectObject(wxNullBitmap);
 	return myAggregatedBmp;	
