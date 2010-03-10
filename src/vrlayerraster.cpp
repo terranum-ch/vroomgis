@@ -190,6 +190,15 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 	// real data to row and cols to fetch from data.
 	
 	//FIXME: remove this temp code used only to draw something into a bitmap
+	wxInitAllImageHandlers();
+	wxImage myImgTwo ("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/two.png", wxBITMAP_TYPE_PNG);
+	if (myImgTwo.IsOk()==false) {
+		return false;
+	}
+	
+	wxBitmap myBmpTwo (myImgTwo);
+	wxPoint myImgPosition (50,50);
+	
 	wxBitmap myBmp(bmp->GetSize());
 	wxMemoryDC dc (myBmp);
 	
@@ -198,14 +207,43 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 	dc.SetPen(*wxWHITE_PEN);
 	dc.DrawRectangle(0,0,myBmp.GetWidth(), myBmp.GetHeight());
 	
-	dc.SetPen(*wxBLUE_PEN);
-	dc.DrawLine(myBmp.GetWidth(),0,0, myBmp.GetHeight());
+	//dc.SetPen(*wxBLUE_PEN);
+	//dc.DrawLine(myBmp.GetWidth(),0,0, myBmp.GetHeight());
+	dc.DrawBitmap(myBmpTwo, myImgPosition.x, myImgPosition.y, false);
 	
 	dc.SelectObject(wxNullBitmap);
 	*bmp = myBmp.ConvertToImage();
 	
 	
-	return false;
+	// set image transparency. Image is fully transparent, except for pixels where bitmap 
+	// was drawn. Those are set the the user defined transparency
+	char myBackgroundTransparency = 0;
+	int myUserTransparency = 255 - (render->GetTransparency() * 255 / 100);
+	
+	
+	unsigned char * alphachar = NULL;
+	unsigned int myimglen = bmp->GetWidth() * bmp->GetHeight();
+	alphachar= (unsigned char*)CPLMalloc(myimglen);
+	if (alphachar == NULL)
+	{
+		wxLogError(_T("Error creating translucency"));
+		return false;
+	}
+	
+	
+	for ( unsigned int i = 0; i< myimglen; i++) {
+		*(alphachar + i) =  myBackgroundTransparency;
+	}
+	bmp->SetAlpha(alphachar);
+	
+	for (int x = myImgPosition.x; x< myImgTwo.GetWidth() + myImgPosition.x ; x++) {
+		for (int y = myImgPosition.y; y < myImgTwo.GetHeight() + myImgPosition.y ; y++) {
+			bmp->SetAlpha(x, y, (char) myUserTransparency);
+		}
+	}
+	
+	
+	return true;
 }
 
 
