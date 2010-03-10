@@ -242,7 +242,7 @@ bool vrViewerLayerManager::_GetLayersData() {
 	
 	// getting data from vrRenderer -> vrLayer
 	bool bReturn = true;
-	//int iImageIndex = 0;
+	int iImageIndex = 0;
 	if(m_Images==NULL)
 	{
 		return false;
@@ -251,12 +251,13 @@ bool vrViewerLayerManager::_GetLayersData() {
 	int iTotLayers = m_Renderers.GetCount();
 	for (int i = iTotLayers-1; i>= 0; i--) {
 		if (m_Renderers.Item(i)->GetVisible() == true) {
-			if (m_Renderers.Item(i)->GetBitmapData( m_Images->Item(i),
+			if (m_Renderers.Item(i)->GetBitmapData( m_Images->Item(iImageIndex),
 												   myCoordinate->GetExtent())==false) {
 				wxLogError("Getting data for %s failed !",
 						   m_Renderers.Item(i)->GetLayer()->GetName().GetFullName());
 				bReturn = false;
 			}
+			iImageIndex++;
 		}
 	}
 	
@@ -306,18 +307,16 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 		return NULL;
 	}
 	
-
-	int iTotalImg = m_Images->GetCount() -1;
 	wxSize mySize = m_Images->Item(0)->GetSize();
 	wxASSERT(mySize != wxDefaultSize);
 	
-	//m_Images->Item(iTotalImg)->SetMaskColour(0, 0, 0);
 	
 	wxBitmap * myAggregatedBmp = new wxBitmap(mySize);
 	wxMemoryDC myDC(*myAggregatedBmp);
 	
 	// paint to white the background
-	myDC.SetBrush(*wxGREY_BRUSH);
+	myDC.SetBrush(*wxWHITE_BRUSH);
+	myDC.SetPen(*wxWHITE_PEN);
 	myDC.Clear();
 	myDC.DrawRectangle(0,0,mySize.GetWidth(), mySize.GetHeight());
 	
@@ -376,7 +375,7 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 	myDC.DrawBitmap(myTwo,0,0,true);*/
 
 
-	for (int i = iTotalImg ; i >= 0 ; i--) {
+	for (int i = 0 ; i < m_Images->GetCount(); i++ ) {
 		wxBitmap myBmp (*m_Images->Item(i));
 		myDC.DrawBitmap(myBmp,0,0,true);
 	}
