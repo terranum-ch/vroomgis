@@ -18,6 +18,7 @@
 //
 
 #include "vrlayervector.h"
+#include "vrrender.h"
 
 
 
@@ -133,6 +134,7 @@ bool vrLayerVectorOGR::GetExtent(wxRect2DDouble & rect) {
 bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 							   const vrRender * render, const vrLabel * label) {
 	wxASSERT(m_Layer);
+	wxASSERT(render);
 	
 	
 	// spatial filter
@@ -153,11 +155,16 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 		OGRFeature::DestroyFeature(poFeature);
 	}
 	
+	// get transparent colour
+	const wxColour myTransparentColour = vrRenderVector::GetBackgroundMaskColour();
+	
+	
 	// FIXME: THIS IS TEMP CODE FOR DRAWING LINE
-	dc.SetBrush(*wxWHITE_BRUSH);
+	
+	//dc.SetBrush(wxBrush(myTransparentColour));
+	dc.SetBrush(wxBrush(myTransparentColour));
 	dc.Clear();
-	dc.SetBrush(*wxWHITE_BRUSH);
-	dc.SetPen(*wxWHITE_PEN);
+	dc.SetPen(wxPen (myTransparentColour));
 	dc.DrawRectangle(0,0,myBmp.GetWidth(), myBmp.GetHeight());
 	
 	dc.SetPen(*wxRED_PEN);
@@ -165,6 +172,10 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 
 	dc.SelectObject(wxNullBitmap);
 	*bmp = myBmp.ConvertToImage();
+	bmp->SetMaskColour(myTransparentColour.Red(),
+					   myTransparentColour.Green(),
+					   myTransparentColour.Blue());
+	bool bmask = bmp->HasMask();
 	
 	
 	// FIXME: Add transparency should go somewhere else
