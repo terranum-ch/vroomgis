@@ -123,3 +123,23 @@ bool vrCoordinate::ComputeFullExtent() {
 	return true;
 }
 
+
+double vrCoordinate::GetPixelSize() {
+	wxASSERT(m_Viewer);
+	wxSize mySize = m_Viewer->GetSize();
+	double myPxWidth = 1;
+	
+	if(m_WndExtent.m_width <= 0){
+		wxLogError("Extent not defined, computing pixel size not possible");
+		return wxNOT_FOUND;
+	}
+	
+	double myPixelSize = m_WndExtent.m_width / myPxWidth;
+	if (myPixelSize <= 0) {
+		wxLogError("Error computing pixel size. It is bellow 0 : %.f", myPixelSize);
+		return wxNOT_FOUND;
+	}
+	
+	return myPixelSize;
+}
+

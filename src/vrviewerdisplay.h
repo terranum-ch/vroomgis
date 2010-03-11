@@ -39,6 +39,7 @@ private:
 	
 	
 public:
+	vrViewerDisplay();
     vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, const wxColour & colour = *wxWHITE);
     virtual ~vrViewerDisplay();
 	
