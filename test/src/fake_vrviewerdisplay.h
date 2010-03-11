@@ -26,8 +26,10 @@
 #include "../../src/vrviewerdisplay.h"
 
 class FakevrViewerDisplay : public vrViewerDisplay {
+	wxSize m_WndSize;
+	
   public:
-    FakevrViewerDisplay(const wxSize & size = wxDefaultSize);
+    FakevrViewerDisplay(const wxSize & size = wxSize(600,400));
 
     virtual ~FakevrViewerDisplay();
 
