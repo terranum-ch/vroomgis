@@ -191,7 +191,8 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 	
 	//FIXME: remove this temp code used only to draw something into a bitmap
 	wxInitAllImageHandlers();
-	wxImage myImgTwo ("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/two.png", wxBITMAP_TYPE_PNG);
+
+	wxImage myImgTwo ("D:\\LS\\PRJ\\COLTOPGIS\\test-data\\two.png", wxBITMAP_TYPE_PNG);
 	if (myImgTwo.IsOk()==false) {
 		return false;
 	}
@@ -223,7 +224,7 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 	
 	unsigned char * alphachar = NULL;
 	unsigned int myimglen = bmp->GetWidth() * bmp->GetHeight();
-	alphachar= (unsigned char*)CPLMalloc(myimglen);
+	alphachar= (unsigned char*)malloc(myimglen);
 	if (alphachar == NULL)
 	{
 		wxLogError(_T("Error creating translucency"));
@@ -234,7 +235,11 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const wxRect2DDouble & coord,
 	for ( unsigned int i = 0; i< myimglen; i++) {
 		*(alphachar + i) =  myBackgroundTransparency;
 	}
-	bmp->SetAlpha(alphachar);
+	if (bmp->HasAlpha() == false){
+		bmp->InitAlpha();
+		wxLogMessage("Initing alpha");
+	}
+	bmp->SetAlpha(alphachar, false);
 	
 	for (int x = myImgPosition.x; x< myImgTwo.GetWidth() + myImgPosition.x ; x++) {
 		for (int y = myImgPosition.y; y < myImgTwo.GetHeight() + myImgPosition.y ; y++) {
