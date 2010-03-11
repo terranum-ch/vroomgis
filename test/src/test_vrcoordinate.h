@@ -102,6 +102,60 @@ public:
 		
 		TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10, 0.000001);
 	}
+	
+	void testForRasterIO(){
+		// this code is for testing how to get data ready 
+		// for RasterIO function
+		
+		//Param
+		wxRect2DDouble myWndExtent (0, 1000, 4000, -1000);
+		wxRect2DDouble myImgExtent (1000, 800, 2000, -600);
+		
+		wxSize myImgPxSize (200, 60);
+		
+		
+		// code
+		// get intersection between display and img
+		bool bInvertHeight = false;
+		if (myWndExtent.m_height < 0) {
+			bInvertHeight = true;
+			wxASSERT(myImgExtent.m_height < 0);
+			
+			myWndExtent.m_height = myWndExtent.m_height * -1;
+			myImgExtent.m_height = myImgExtent.m_height * -1;
+		}
+		
+	
+		bool bInvertWidth = false;
+		if (myWndExtent.m_width < 0) {
+			bInvertWidth = true;
+			wxASSERT(myImgExtent.m_width < 0);
+			
+			myWndExtent.m_width = myWndExtent.m_width * -1;
+			myImgExtent.m_width = myImgExtent.m_width * -1;
+
+		}
+			
+		wxRect2DDouble myIntersect;
+		wxRect2DDouble::Intersect (myWndExtent, myImgExtent, &myIntersect);
+		
+		// part of image to display 
+		double vx = myIntersect.GetLeft() - myImgExtent.GetLeft();
+		double vy = myIntersect.GetTop() - myImgExtent.GetTop();
+		
+		double vw = myWndExtent.GetRight() - myIntersect.GetRight();
+		double vh = fabs(myWndExtent.m_height) - fabs(myImgExtent.m_height);
+		if (myImgExtent.m_height < 0) {
+			vh = vh * -1;
+		}
+		
+		// where to display the image
+		
+		
+		
+	}
+	
+	
 
 };
 
