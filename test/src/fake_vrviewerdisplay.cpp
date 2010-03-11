@@ -19,6 +19,7 @@
 #include "fake_vrviewerdisplay.h"
 
 FakevrViewerDisplay::FakevrViewerDisplay(const wxSize & size) {
+	m_WndSize = size;
 }
 
 FakevrViewerDisplay::~FakevrViewerDisplay() {
@@ -26,7 +27,7 @@ FakevrViewerDisplay::~FakevrViewerDisplay() {
 }
 
 void FakevrViewerDisplay::DoGetSize(int * w, int *h) const{
-	* w = 600;
-	* h = 400;
+	* w = m_WndSize.GetWidth();
+	* h = m_WndSize.GetHeight();
 }
 

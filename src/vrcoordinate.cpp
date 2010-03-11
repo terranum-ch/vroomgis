@@ -126,8 +126,7 @@ bool vrCoordinate::ComputeFullExtent() {
 
 double vrCoordinate::GetPixelSize() {
 	wxASSERT(m_Viewer);
-	wxSize mySize = m_Viewer->GetSize();
-	double myPxWidth = 1;
+	double myPxWidth = m_Viewer->GetSize().GetWidth();
 	
 	if(m_WndExtent.m_width <= 0){
 		wxLogError("Extent not defined, computing pixel size not possible");

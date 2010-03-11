@@ -36,9 +36,6 @@ Testing the coordinate system
 class TEST_vrCoordinate : public CxxTest::TestSuite
 {
 public:
-	
-	
-	
 	void testCreateCoordinate(){
 		
 		FakevrViewerDisplay myDisplay;
@@ -56,14 +53,55 @@ public:
 		TS_ASSERT_DELTA(myCoord.GetExtent().GetBottom(), 0, 0.000001);
 	}
 	
-	void testComputePixelSize(){
+	
+	
+	void testComputePixelSizeFailed(){
 		FakevrViewerDisplay myNewDisplay;
 		vrCoordinate myCoord (&myNewDisplay);
 		
 		TS_ASSERT(myCoord.GetPixelSize() == wxNOT_FOUND);
 	}
-    	
+    
+	
 
+	void testComputeGetExtent(){
+		FakevrViewerDisplay myNewDisplay;
+		vrCoordinate myCoord (&myNewDisplay);
+		
+		// computing full extent without adding extent return false
+		TS_ASSERT(myCoord.ComputeFullExtent()==false);
+		
+		
+		// creating false extent
+		wxRect2DDouble myTestExtent (598000, 116000, 1000, -2000);
+		myCoord.AddLayersExtent(myTestExtent);
+		TS_ASSERT(myCoord.ComputeFullExtent()==true);
+		
+		wxLogMessage("Extent is %.2f %.2f, %.2f, %.2f",
+					 myCoord.GetExtent().GetLeft(),
+					 myCoord.GetExtent().GetTop(),
+					 myCoord.GetExtent().GetRight(),
+					 myCoord.GetExtent().GetBottom());
+		
+	}
+	
+	
+	
+	void testExtentAndPixSize(){
+		FakevrViewerDisplay myNewDisplay (wxSize(610, 410)); // to take into accout the margin
+		vrCoordinate myCoord (&myNewDisplay);
+		
+		wxRect2DDouble myTestExtent (0, 4000, 6000, -4000);
+		myCoord.AddLayersExtent(myTestExtent);
+		TS_ASSERT(myCoord.ComputeFullExtent()==true);
+		TS_ASSERT_DELTA(myCoord.GetExtent().GetLeft(), -50, 0.0001);
+		TS_ASSERT_DELTA(myCoord.GetExtent().GetTop(), 4050, 0.0001);
+		TS_ASSERT_DELTA(myCoord.GetExtent().GetRight(), 6050, 0.0001);
+		TS_ASSERT_DELTA(myCoord.GetExtent().GetBottom(), -50, 0.0001);
+		
+		
+		TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10, 0.000001);
+	}
 
 };
 
