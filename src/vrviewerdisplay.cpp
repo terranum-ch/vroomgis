@@ -89,6 +89,15 @@ void vrViewerDisplay::OnEraseBackground (wxPaintEvent & event){
 }
 
 
+
+vrViewerDisplay::vrViewerDisplay(){
+	m_Coordinate = NULL;
+	m_bmp = NULL;
+	wxLogError("Don't use this vrViewerDisplay ctor, only here for tests");
+}
+
+
+
 vrViewerDisplay::vrViewerDisplay(wxWindow * parent, wxWindowID id, const wxColour & colour) :
 wxPanel(parent, id){
 	
@@ -109,8 +118,6 @@ wxPanel(parent, id){
 }
 
 vrViewerDisplay::~vrViewerDisplay() {
-	
-	wxASSERT(m_Coordinate);
 	wxDELETE(m_Coordinate);
 	
 	// disconnect event

@@ -1,5 +1,5 @@
 /***************************************************************************
- vrcoordinate.h
+ fake_vrviewerdisplay.h
 
  -------------------
  copyright            : (C) 2010 CREALP Lucien Schreiber 
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _VRCOORDINATE_H
-#define _VRCOORDINATE_H
+#ifndef _FAKE_VRVIEWERDISPLAY_H
+#define _FAKE_VRVIEWERDISPLAY_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
@@ -23,33 +23,19 @@
 #endif
 
 
-#include <wx/geometry.h>
+#include "../../src/vrviewerdisplay.h"
 
-class vrViewerDisplay;
-
-
-const int vrCOORDINATE_MARGIN = 10;
-
-class vrCoordinate {
-  private:
-    vrViewerDisplay * m_Viewer;
-	
-	wxRect2DDouble m_WndExtent;
-    wxRect2DDouble m_LayersExtent;
-	
-
+class FakevrViewerDisplay : public vrViewerDisplay {
   public:
-    vrCoordinate(vrViewerDisplay * viewer);
-	vrCoordinate(const vrCoordinate & source);
-	~vrCoordinate();
-	
+    FakevrViewerDisplay(const wxSize & size = wxDefaultSize);
 
-	wxRect2DDouble GetExtent();
-	
-    void ClearLayersExtent();
-    void AddLayersExtent(const wxRect2DDouble & rect);
-    bool ComputeFullExtent();
-	
-	double GetPixelSize();
+    virtual ~FakevrViewerDisplay();
+
+    virtual  void DoGetSize(int * w, int *h) const;
+	virtual wxSize GetSize(){
+		int w, h;
+		DoGetSize(&w, &h);
+		return wxSize(w,h);}
+
 };
 #endif
