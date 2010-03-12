@@ -98,6 +98,130 @@ public:
 		
 	}
 	
+	bool _ComputeDisplayPosSize(const wxSize & pximgsize, 
+								const vrRealRect & imgextent, 
+								const vrRealRect & wndextent,
+								double pxsize,
+								wxRect & pximginfo, wxPoint & pximgpos){
+		
+		// get intersection between display and img
+		vrRealRect myWndExtentTemp = wndextent;
+		wxASSERT(myWndExtentTemp == wndextent);
+	
+		vrRealRect myIntersect = myWndExtentTemp.Intersect(imgextent);
+		if (myIntersect.IsOk() == false) {
+			wxLogMessage("Image out of the dislay, intersection is null");
+			return false;
+		}
+		
+		
+		// width of image to display (in pixels)
+		int pxWidthVisible = myIntersect.m_width * pximgsize.GetWidth() / imgextent.m_width;
+		int pxHeightVisible = myIntersect.m_height * pximgsize.GetHeight() / imgextent.m_height;
+		
+		// starting position from where we get image data (px)
+		int ximg = (myIntersect.GetLeft() - imgextent.GetLeft())  * pximgsize.GetWidth() / imgextent.m_width;
+		int yimg = (myIntersect.GetTop() - imgextent.GetTop()) * pximgsize.GetHeight() / imgextent.m_height;
+		
+		// position for displaying the bitmap (in pixels)
+		int vx = (myIntersect.GetLeft() - wndextent.GetLeft()) / pxsize;
+		int vy = (wndextent.GetTop()- myIntersect.GetTop()) / pxsize;
+		
+		// returning values
+		pximginfo.SetTopLeft(wxPoint(ximg, yimg));
+		pximginfo.width = pxWidthVisible;
+		pximginfo.height = pxHeightVisible;
+		
+		pximgpos.x = vx;
+		pximgpos.y = vy;
+		
+		if (pximginfo.IsEmpty()) {
+			wxLogMessage("Image is outside the display.");
+			return false;
+			
+		}
+		
+		return true;
+	}
+	
+	void testForRasterIO1(){
+		// this code is for testing how to get data ready 
+		// for RasterIO function
+		
+		//Param
+		vrRealRect myWndExtent (0, 1000, 4000, -1000);
+		vrRealRect myImgExtent (1000, 800, 2000, -600);
+		
+		wxSize myImgPxSize (200, 60);
+		double pixelsize = 10;
+		
+		
+		// tests
+		wxRect myImgInfo;
+		wxPoint myImgPos;
+		TS_ASSERT(_ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
+										 myImgInfo, myImgPos)==true);
+		TS_ASSERT_EQUALS(myImgInfo.GetX(), 0);
+		TS_ASSERT_EQUALS(myImgInfo.GetY(), 0);
+		TS_ASSERT_EQUALS(myImgInfo.GetWidth(), 200);
+		TS_ASSERT_EQUALS(myImgInfo.GetHeight(), 60);
+		
+		TS_ASSERT_EQUALS(myImgPos.x, 100);
+		TS_ASSERT_EQUALS(myImgPos.y, 20);
+	}
+	
+	void testForRasterIO2(){
+		// this code is for testing how to get data ready 
+		// for RasterIO function
+		
+		//Param
+		vrRealRect myWndExtent (0, 1000, 4000, -1000);
+		vrRealRect myImgExtent (2000, 1500, 4000, -1000);
+		
+		wxSize myImgPxSize (200, 100);
+		double pixelsize = 10;
+		
+		
+		// tests
+		wxRect myImgInfo;
+		wxPoint myImgPos;
+		TS_ASSERT(_ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
+										 myImgInfo, myImgPos)==true);
+		TS_ASSERT_EQUALS(myImgInfo.GetX(), 0);
+		TS_ASSERT_EQUALS(myImgInfo.GetY(), 50);
+		TS_ASSERT_EQUALS(myImgInfo.GetWidth(), 100);
+		TS_ASSERT_EQUALS(myImgInfo.GetHeight(), 50);
+		
+		TS_ASSERT_EQUALS(myImgPos.x, 200);
+		TS_ASSERT_EQUALS(myImgPos.y, 0);
+	}
+	
+	void testForRasterIO3(){
+		// this code is for testing how to get data ready 
+		// for RasterIO function
+		
+		//Param
+		vrRealRect myWndExtent (1000, 1500, 4000, -1000);
+		vrRealRect myImgExtent (0, 1000, 2000, -1000);
+		
+		wxSize myImgPxSize (200, 100);
+		double pixelsize = 10;
+		
+		
+		// tests
+		wxRect myImgInfo;
+		wxPoint myImgPos;
+		TS_ASSERT(_ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
+										 myImgInfo, myImgPos)==true);
+		TS_ASSERT_EQUALS(myImgInfo.GetX(), 100);
+		TS_ASSERT_EQUALS(myImgInfo.GetY(), 0);
+		TS_ASSERT_EQUALS(myImgInfo.GetWidth(), 100);
+		TS_ASSERT_EQUALS(myImgInfo.GetHeight(), 50);
+		
+		TS_ASSERT_EQUALS(myImgPos.x, 0);
+		TS_ASSERT_EQUALS(myImgPos.y, 50);
+	}
+	
 	
 };
 
