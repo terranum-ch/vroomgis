@@ -38,7 +38,7 @@ class vrLayerRaster : public vrLayer {
 	virtual bool Create(const wxFileName & filename){return false;}
     virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
 	
-	virtual bool GetExtent(wxRect2DDouble & rect){return false;}
+	virtual bool GetExtent(vrRealRect & rect){return false;}
 	
 	virtual bool IsOK();
 
@@ -60,8 +60,8 @@ class vrLayerRasterGDAL : public vrLayerRaster {
 	virtual bool Create(const wxFileName & filename);
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
 	
-	virtual bool GetExtent(wxRect2DDouble & rect);
-	virtual bool GetData(wxImage * bmp, const wxRect2DDouble & coord,
+	virtual bool GetExtent(vrRealRect & rect);
+	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,
 						 const vrRender * render = NULL, const vrLabel * label = NULL);
 
 

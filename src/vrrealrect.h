@@ -33,6 +33,7 @@ class vrRealRect : public wxRect2DDouble {
     vrRealRect(double left, double top, double width, double height);
     virtual ~vrRealRect();
 
+
     virtual vrRealRect Intersect(const vrRealRect & rect1);
     bool IsOk();
 

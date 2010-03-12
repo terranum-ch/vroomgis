@@ -105,6 +105,21 @@ public:
 		TS_ASSERT(myIntersect == myResult);
 		
 	}
+	
+	
+	void testEquality(){
+		vrRealRect myRect(10,10,10,10);
+		vrRealRect myRect2;
+		TS_ASSERT(myRect2.IsOk() == false);
+		
+		myRect2 = myRect;
+		TS_ASSERT(myRect2.IsOk() == true);
+		TS_ASSERT(myRect2 == myRect);
+		
+		vrRealRect myRect3 = myRect;
+		TS_ASSERT(myRect3.IsOk());
+		TS_ASSERT(myRect3 == myRect2);
+	}
 
 };
 

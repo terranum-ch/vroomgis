@@ -22,7 +22,7 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/geometry.h>
+#include "vrrealrect.h"
 
 
 class vrLayer;
@@ -48,7 +48,7 @@ public:
     inline  vrRender * GetRender() ;
     inline  vrLabel * GetLabel() ;
 	inline const bool GetVisible() const;
-	bool GetBitmapData(wxImage * bmp, const wxRect2DDouble & coord);
+	bool GetBitmapData(wxImage * bmp, const vrRealRect & coord);
 
 	
     void SetRender(vrRender * value);

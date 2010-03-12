@@ -73,7 +73,7 @@ public:
 		
 		
 		// creating false extent
-		wxRect2DDouble myTestExtent (598000, 116000, 1000, -2000);
+		vrRealRect myTestExtent (598000, 116000, 1000, -2000);
 		myCoord.AddLayersExtent(myTestExtent);
 		TS_ASSERT(myCoord.ComputeFullExtent()==true);
 		
@@ -91,7 +91,7 @@ public:
 		FakevrViewerDisplay myNewDisplay (wxSize(610, 410)); // to take into accout the margin
 		vrCoordinate myCoord (&myNewDisplay);
 		
-		wxRect2DDouble myTestExtent (0, 4000, 6000, -4000);
+		vrRealRect myTestExtent (0, 4000, 6000, -4000);
 		myCoord.AddLayersExtent(myTestExtent);
 		TS_ASSERT(myCoord.ComputeFullExtent()==true);
 		TS_ASSERT_DELTA(myCoord.GetExtent().GetLeft(), -50, 0.0001);
@@ -108,8 +108,8 @@ public:
 		// for RasterIO function
 		
 		//Param
-		wxRect2DDouble myWndExtent (0, 1000, 4000, -1000);
-		wxRect2DDouble myImgExtent (1000, 800, 2000, -600);
+		vrRealRect myWndExtent (0, 1000, 4000, -1000);
+		vrRealRect myImgExtent (1000, 800, 2000, -600);
 		
 		wxSize myImgPxSize (200, 60);
 		
@@ -136,8 +136,7 @@ public:
 
 		}
 			
-		wxRect2DDouble myIntersect;
-		wxRect2DDouble::Intersect (myWndExtent, myImgExtent, &myIntersect);
+		vrRealRect myIntersect = myWndExtent.Intersect(myImgExtent);
 		
 		// part of image to display 
 		double vx = myIntersect.GetLeft() - myImgExtent.GetLeft();

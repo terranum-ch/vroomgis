@@ -110,7 +110,7 @@ vrRenderer::~vrRenderer() {
 
 
 
-bool vrRenderer::GetBitmapData(wxImage * bmp, const wxRect2DDouble & coord) {
+bool vrRenderer::GetBitmapData(wxImage * bmp, const vrRealRect & coord) {
 	wxASSERT(bmp);
 	wxASSERT(GetVisible());
 	
