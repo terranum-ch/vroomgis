@@ -22,8 +22,7 @@
 #include <wx/wx.h>
 #endif
 
-
-#include <wx/geometry.h>
+#include "vrrealrect.h"
 
 class vrViewerDisplay;
 
@@ -34,8 +33,8 @@ class vrCoordinate {
   private:
     vrViewerDisplay * m_Viewer;
 	
-	wxRect2DDouble m_WndExtent;
-    wxRect2DDouble m_LayersExtent;
+	vrRealRect m_WndExtent;
+    vrRealRect m_LayersExtent;
 	
 
   public:
@@ -44,10 +43,10 @@ class vrCoordinate {
 	~vrCoordinate();
 	
 
-	wxRect2DDouble GetExtent();
+	vrRealRect GetExtent();
 	
     void ClearLayersExtent();
-    void AddLayersExtent(const wxRect2DDouble & rect);
+    void AddLayersExtent(const vrRealRect & rect);
     bool ComputeFullExtent();
 	
 	double GetPixelSize();

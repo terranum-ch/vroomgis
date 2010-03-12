@@ -95,7 +95,7 @@ bool vrLayerRasterGDAL::Open(const wxFileName & filename, bool readwrite) {
 }
 
 
-bool vrLayerRasterGDAL::GetExtent(wxRect2DDouble & rect) {
+bool vrLayerRasterGDAL::GetExtent(vrRealRect & rect) {
 	
 	if (m_Dataset == NULL) {
 		wxLogError("No layer opened");
@@ -182,7 +182,7 @@ bool vrLayerRasterGDAL::GetExtent(wxRect2DDouble & rect) {
 
 
 
-bool vrLayerRasterGDAL::GetData(wxImage * bmp, const wxRect2DDouble & coord,
+bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,
 								const vrRender * render, const vrLabel * label) {
 	
 	// TODO: Add code for getting raster data into bitmap.

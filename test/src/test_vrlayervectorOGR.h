@@ -55,7 +55,7 @@ public:
 	
 	void testGetExtentVectorOGR(){
 		wxLogMessage("Testing getting extent for layer");
-		wxRect2DDouble myExtent;
+		vrRealRect myExtent;
 		TS_ASSERT(myExtent.IsEmpty()==true);
 		
 		// extent failed, layer not opened

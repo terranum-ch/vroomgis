@@ -49,7 +49,7 @@ public:
 	
 	void testGetExtentRasterGDAL(){
 		wxLogMessage("Testing getting extent for GDAL extent");
-		wxRect2DDouble myExtent;
+		vrRealRect myExtent;
 		TS_ASSERT(myExtent.IsEmpty()==true);
 		
 		// extent failed, layer not opened
@@ -74,7 +74,7 @@ public:
 		
 		// GETTING EXTENT FOR ROTATED RASTERS RETURN MAX EXTENT
 		
-		wxRect2DDouble myExtent;
+		vrRealRect myExtent;
 		TS_ASSERT(myExtent.IsEmpty()==true);
 		
 		// extent failed, layer not opened

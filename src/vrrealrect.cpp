@@ -23,7 +23,10 @@ vrRealRect::vrRealRect() {
 
 
 vrRealRect::vrRealRect(const vrRealRect & source) {
-	vrRealRect(source.m_x, source.m_y, source.m_width, source.m_height);
+	m_x = source.m_x;
+	m_y = source.m_y;
+	m_width = source.m_width;
+	m_height = source.m_height;
 }
 
 vrRealRect::vrRealRect(double left, double top, double width, double height) {

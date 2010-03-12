@@ -25,7 +25,7 @@
     #include <wx/wx.h>
 #endif
 #include <wx/filename.h>
-#include <wx/geometry.h>
+#include "vrrealrect.h"
 
 #include "ogrsf_frmts.h"	// ogr include
 #include "gdal_priv.h"		// gdal include
@@ -51,8 +51,8 @@ public:
 
 	wxFileName GetName();
     virtual vrDRIVERS_TYPE GetType();
-	virtual bool GetExtent(wxRect2DDouble & rect){return false;}
-	virtual bool GetData(wxImage * bmp, const wxRect2DDouble & coord, const vrRender * render = NULL, const vrLabel * label = NULL){return false;}
+	virtual bool GetExtent(vrRealRect & rect){return false;}
+	virtual bool GetData(wxImage * bmp, const vrRealRect & coord, const vrRender * render = NULL, const vrLabel * label = NULL){return false;}
 
 
 	virtual bool IsOK(){return false;}

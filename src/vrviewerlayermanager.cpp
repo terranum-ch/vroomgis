@@ -273,7 +273,7 @@ bool vrViewerLayerManager::_GetLayersExtent() {
 	// clear actual layer extent
 	myCoordinate->ClearLayersExtent();
 	
-	wxRect2DDouble myLayerExtent;
+	vrRealRect myLayerExtent;
 	for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
 		if (m_Renderers.Item(i)->GetLayer()->GetExtent(myLayerExtent)==true) {
 			myCoordinate->AddLayersExtent(myLayerExtent);

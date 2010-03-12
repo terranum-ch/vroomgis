@@ -109,14 +109,14 @@ bool vrLayerVectorOGR::Create(const wxFileName & filename) {
 }
 
 
-bool vrLayerVectorOGR::GetExtent(wxRect2DDouble & rect) {
+bool vrLayerVectorOGR::GetExtent(vrRealRect & rect) {
 	if (m_Layer == NULL) {
 		wxLogError("Layer isn't inited");
 		return false;
 	}
 	
 	wxASSERT(m_Layer);
-	rect = wxRect2DDouble();
+	rect = vrRealRect();
 	OGREnvelope myEnveloppe;
 	if (m_Layer->GetExtent(&myEnveloppe, true)==OGRERR_FAILURE) {
 		wxLogError("Unable to compute extent for layer %s", m_FileName.GetFullName());
@@ -131,7 +131,7 @@ bool vrLayerVectorOGR::GetExtent(wxRect2DDouble & rect) {
 
 
 
-bool vrLayerVectorOGR::GetData(wxImage * bmp, const wxRect2DDouble & coord,
+bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,
 							   const vrRender * render, const vrLabel * label) {
 	wxASSERT(m_Layer);
 	wxASSERT(render);
