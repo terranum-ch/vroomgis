@@ -23,7 +23,7 @@ FakevrViewerDisplay::FakevrViewerDisplay(const wxSize & size) {
 }
 
 FakevrViewerDisplay::~FakevrViewerDisplay() {
-	int i = 0;
+	//int i = 0;
 }
 
 void FakevrViewerDisplay::DoGetSize(int * w, int *h) const{
