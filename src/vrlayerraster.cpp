@@ -54,40 +54,69 @@ bool vrLayerRasterGDAL::_Close() {
 
 
 
-vrLayerRasterGDAL::vrLayerRasterGDAL() {
+bool vrLayerRasterGDAL::_ComputeDisplayPosSize(const wxSize & pximgsize, 
+							const vrRealRect & imgextent, 
+							const vrRealRect & wndextent,
+							double pxsize,
+							wxRect & pximginfo, wxPoint & pximgpos){
+	
+	// get intersection between display and img
+	vrRealRect myWndExtentTemp = wndextent;
+	wxASSERT(myWndExtentTemp == wndextent);
+	
+	vrRealRect myIntersect = myWndExtentTemp.Intersect(imgextent);
+	if (myIntersect.IsOk() == false) {
+		wxLogMessage("Image out of the dislay, intersection is null");
+		return false;
+	}
+	
+	
+	// width of image to display (in pixels)
+	int pxWidthVisible = myIntersect.m_width * pximgsize.GetWidth() / imgextent.m_width;
+	int pxHeightVisible = myIntersect.m_height * pximgsize.GetHeight() / imgextent.m_height;
+	
+	// starting position from where we get image data (px)
+	int ximg = (myIntersect.GetLeft() - imgextent.GetLeft())  * pximgsize.GetWidth() / imgextent.m_width;
+	int yimg = (myIntersect.GetTop() - imgextent.GetTop()) * pximgsize.GetHeight() / imgextent.m_height;
+	
+	// position for displaying the bitmap (in pixels)
+	int vx = (myIntersect.GetLeft() - wndextent.GetLeft()) / pxsize;
+	int vy = (wndextent.GetTop()- myIntersect.GetTop()) / pxsize;
+	
+	// returning values
+	pximginfo.SetTopLeft(wxPoint(ximg, yimg));
+	pximginfo.width = pxWidthVisible;
+	pximginfo.height = pxHeightVisible;
+	
+	pximgpos.x = vx;
+	pximgpos.y = vy;
+	
+	if (pximginfo.IsEmpty()) {
+		wxLogMessage("Image is outside the display.");
+		return false;
+		
+	}
+	
+	return true;
 }
 
 
+bool vrLayerRasterGDAL::_HasExtent() {
 
-vrLayerRasterGDAL::~vrLayerRasterGDAL() {
-	_Close();
-}
-
-
-
-bool vrLayerRasterGDAL::Create(const wxFileName & filename) {
-	return false;
-}
-
-
-
-bool vrLayerRasterGDAL::Open(const wxFileName & filename, bool readwrite) {
-	// try to close
-	_Close();
-	wxASSERT(m_Dataset == NULL);
+	if (m_Dataset == NULL) {
+		wxLogError("No layer opened");
+		return false;
+	}
+		
 	
-	// init filename and type
-	m_FileName = filename;
-	vrDrivers myDriver;
-	m_DriverType = myDriver.GetType(filename.GetExt());
+	if (m_ImgExtent.IsOk() == false) {
+		wxLogError("Extent isn't defined, use GetExtent() to define the extent");
+		return false;
+	}
 	
-	GDALAccess myAcces = GA_ReadOnly;
-	if (readwrite)
-		myAcces = GA_Update;
 	
-	m_Dataset = (GDALDataset *) GDALOpen( filename.GetFullPath(), GA_ReadOnly );
-	if(m_Dataset == NULL){
-		wxLogError("Unable to open %s, maybe driver not regristred -  GDALAllRegister()", filename.GetFullName());
+	if (m_ImgPxSize == wxDefaultSize) {
+		wxLogError("Image size (pixels) isn't defined correctly");
 		return false;
 	}
 	
@@ -95,8 +124,8 @@ bool vrLayerRasterGDAL::Open(const wxFileName & filename, bool readwrite) {
 }
 
 
-bool vrLayerRasterGDAL::GetExtent(vrRealRect & rect) {
-	
+
+bool vrLayerRasterGDAL::_ComputeExtent() {
 	if (m_Dataset == NULL) {
 		wxLogError("No layer opened");
 		return false;
@@ -143,29 +172,32 @@ bool vrLayerRasterGDAL::GetExtent(vrRealRect & rect) {
 	if (mybottomleft.m_x < mytopleft.m_x) {
 		myleft = mybottomleft.m_x;
 	}
-	rect.SetLeft(myleft);
+	m_ImgExtent.SetLeft(myleft);
 	
 	// right
 	double myright = mytopright.m_x;
 	if (mybottomright.m_x > mytopright.m_x) {
 		myright = mybottomright.m_x;
 	}
-	rect.SetRight(myright);
+	m_ImgExtent.SetRight(myright);
 	
 	// top
 	double mytop = mytopleft.m_y;
 	if (mytopright.m_y > mytopleft.m_y) {
 		mytop = mytopright.m_y;
 	}
-	rect.SetTop(mytop);
+	m_ImgExtent.SetTop(mytop);
 	
 	// bottom
 	double mybottom = mybottomleft.m_y;
 	if (mybottomright.m_y < mybottomleft.m_y) {
 		mybottom = mybottomright.m_y;
 	}
-	rect.SetBottom(mybottom);
+	m_ImgExtent.SetBottom(mybottom);
 	
+
+	m_ImgPxSize = wxSize(m_Dataset->GetRasterXSize(),
+						 m_Dataset->GetRasterYSize());
 	
 	
 	if (adfGeoTransform[2] != 0 || adfGeoTransform[4] != 0) {
@@ -176,14 +208,98 @@ bool vrLayerRasterGDAL::GetExtent(vrRealRect & rect) {
 	}
 	
 	return true;
-	
 }
 
 
 
 
-bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,
+vrLayerRasterGDAL::vrLayerRasterGDAL() {
+}
+
+
+
+vrLayerRasterGDAL::~vrLayerRasterGDAL() {
+	_Close();
+}
+
+
+
+bool vrLayerRasterGDAL::Create(const wxFileName & filename) {
+	return false;
+}
+
+
+
+bool vrLayerRasterGDAL::Open(const wxFileName & filename, bool readwrite) {
+	// try to close
+	_Close();
+	wxASSERT(m_Dataset == NULL);
+	
+	// init filename and type
+	m_FileName = filename;
+	vrDrivers myDriver;
+	m_DriverType = myDriver.GetType(filename.GetExt());
+	
+	GDALAccess myAcces = GA_ReadOnly;
+	if (readwrite)
+		myAcces = GA_Update;
+	
+	m_Dataset = (GDALDataset *) GDALOpen( filename.GetFullPath(), GA_ReadOnly );
+	if(m_Dataset == NULL){
+		wxLogError("Unable to open %s, maybe driver not regristred -  GDALAllRegister()", filename.GetFullName());
+		return false;
+	}
+	
+	return true;
+}
+
+
+bool vrLayerRasterGDAL::GetExtent(vrRealRect & rect) {
+	
+	// if extent exist : return it. otherwise, compute it
+	if (_HasExtent() == true) {
+		rect = m_ImgExtent;
+		return true;
+	}
+	
+	if (_ComputeExtent() == true) {
+		rect = m_ImgExtent;
+		return true;
+	}
+	
+	wxLogError("Unable to compute the layer %s extent", m_FileName.GetFullName());
+	return false;
+}
+
+
+
+
+bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 								const vrRender * render, const vrLabel * label) {
+	
+	// get extent of raster
+	vrRealRect myImgExtent;
+	if (GetExtent(myImgExtent) == false) {
+		return false;
+	}
+	
+	
+	// compute visible part, position for raster
+	wxRect myImgInfo;
+	wxPoint myImgPos;
+	
+	if(_ComputeDisplayPosSize(m_ImgPxSize, myImgExtent, coord, 
+							  pxsize, myImgInfo, myImgPos)==false){
+		wxLogError("Computing Raster position and size failed");
+		return false;
+	}
+	
+	
+	return true;
+	
+	/*
+	
+	
 	
 	// TODO: Add code for getting raster data into bitmap.
 	// there is now way to grab data with real coordinates. Thus we need to convert
@@ -248,7 +364,8 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,
 	}
 	
 	
-	return true;
+	return true;*/
+	
 }
 
 

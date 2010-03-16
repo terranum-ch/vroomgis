@@ -52,7 +52,8 @@ public:
 	wxFileName GetName();
     virtual vrDRIVERS_TYPE GetType();
 	virtual bool GetExtent(vrRealRect & rect){return false;}
-	virtual bool GetData(wxImage * bmp, const vrRealRect & coord, const vrRender * render = NULL, const vrLabel * label = NULL){return false;}
+	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
+						 const vrRender * render = NULL, const vrLabel * label = NULL){return false;}
 
 
 	virtual bool IsOK(){return false;}

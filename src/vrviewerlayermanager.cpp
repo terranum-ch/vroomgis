@@ -252,7 +252,8 @@ bool vrViewerLayerManager::_GetLayersData() {
 	for (int i = iTotLayers-1; i>= 0; i--) {
 		if (m_Renderers.Item(i)->GetVisible() == true) {
 			if (m_Renderers.Item(i)->GetBitmapData( m_Images->Item(iImageIndex),
-												   myCoordinate->GetExtent())==false) {
+												   myCoordinate->GetExtent(),
+												   myCoordinate->GetPixelSize())==false) {
 				wxLogError("Getting data for %s failed !",
 						   m_Renderers.Item(i)->GetLayer()->GetName().GetFullName());
 				bReturn = false;

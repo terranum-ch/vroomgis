@@ -50,7 +50,16 @@ class vrLayerRaster : public vrLayer {
 
 class vrLayerRasterGDAL : public vrLayerRaster {
   private:
+	vrRealRect m_ImgExtent;
+    wxSize m_ImgPxSize;	
+	
     bool _Close();
+	bool _ComputeDisplayPosSize(const wxSize & pximgsize, const vrRealRect & imgextent,
+								const vrRealRect & wndextent, double pxsize,
+								wxRect & pximginfo, wxPoint & pximgpos);
+	bool _ComputeExtent();
+	bool _HasExtent();
+
 
 
   public:
@@ -61,7 +70,7 @@ class vrLayerRasterGDAL : public vrLayerRaster {
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
 	
 	virtual bool GetExtent(vrRealRect & rect);
-	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,
+	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 						 const vrRender * render = NULL, const vrLabel * label = NULL);
 
 
