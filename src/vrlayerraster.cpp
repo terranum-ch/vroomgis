@@ -153,7 +153,9 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
 		return false;
 	}
 	
+	//
 	// one band is either a palette based image, or greyscale
+	//
 	if (myRasterCount == 1) {
 		double myRange = 0;
 		GDALDataType myDataType;
@@ -247,7 +249,52 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
 	}
 
 	
-	
+	//
+    // if there are three or more banm_DataSet assume that the first three
+    // are for RGB, unless told otherwise
+    //
+    if (myRasterCount >= 3)
+    {
+        for (int i=1; i <= 3; i++)
+        {
+            int offs = 0;
+            GDALRasterBand *band = m_Dataset->GetRasterBand(i);
+			
+            switch (band->GetColorInterpretation())
+            {
+                case GCI_Undefined: offs = i-1; break;
+				case GCI_RedBand:   offs = 0; break;
+				case GCI_GreenBand: offs = 1; break;
+				case GCI_BlueBand:  offs = 2; break;
+                default:            offs = -1; break;
+            }
+			
+            //
+            // copy the image into the buffer using the proper offset
+            // so we first copy over all Red values, then all Green
+            // values, and then all Blue values
+            //
+			
+            if (0 <= offs && offs < 3)
+            {
+                if ( band->RasterIO(GF_Read, 
+									 readimgpxinfo.GetX(), readimgpxinfo.GetY(),
+                                     readimgpxinfo.GetWidth(), readimgpxinfo.GetHeight(), 
+                                     *imgdata + offs,
+									 outimgpxsize.GetWidth(), outimgpxsize.GetHeight(),
+                                     GDT_Byte, 3, 0) != CE_None){
+					wxLogError(_T( "Unknown error while reading band %i from %s"),
+							   i, m_FileName.GetFullName());
+					if (*imgdata != NULL) {
+						CPLFree(*imgdata);
+						*imgdata = NULL;
+					}
+					return false;
+				}
+            }
+        }
+    }
+		
 	
 	
 	return true;
@@ -303,8 +350,6 @@ bool vrLayerRasterGDAL::_ComputeStat() {
 	m_OneBandMin = myRasterBand->GetMinimum(&bResult);
 	if (bResult == false)
 	{
-		wxLogError("Error computing minimum statistics for raster %s", m_FileName.GetFullName());
-		m_OneBandMin = 0;
 		bReturn = false;
 	}
 	
@@ -312,8 +357,6 @@ bool vrLayerRasterGDAL::_ComputeStat() {
 	m_OneBandMax = myRasterBand->GetMaximum(&bResult);
 	if (bResult == false)
 	{
-		wxLogError("Error computing maximum statistics for raster %s", m_FileName.GetFullName());
-		m_OneBandMax = 255;
 		bReturn = false;
 	}
 	
@@ -321,11 +364,15 @@ bool vrLayerRasterGDAL::_ComputeStat() {
 	m_OneBandNoData = myRasterBand->GetNoDataValue(&bResult);
 	if (bResult == false)
 	{
-		wxLogWarning("Computing NoData failed for raster %s", m_FileName.GetFullName());
 		m_OneBandNoData = 0;
 	}
 	
-	return bReturn;
+	if (bReturn == false) {
+		wxLogWarning("Computing minimum statistics for raster %s isn't accurate", m_FileName.GetFullName());
+	}
+	
+	
+	return true;
 }
 
 
