@@ -53,12 +53,28 @@ class vrLayerRasterGDAL : public vrLayerRaster {
 	vrRealRect m_ImgExtent;
     wxSize m_ImgPxSize;	
 	
+	// stat for one band data (Greyscale, MNT, etc)
+	double m_OneBandMin;
+    double m_OneBandMax;
+    double m_OneBandNoData;
+	
+	
+	
     bool _Close();
 	bool _ComputeDisplayPosSize(const wxSize & pximgsize, const vrRealRect & imgextent,
 								const vrRealRect & wndextent, double pxsize,
-								wxRect & pximginfo, wxPoint & pximgpos);
+								wxRect & pximginfo, wxRect & pximgpos);
+	bool _GetRasterData(unsigned char ** imgdata, const wxSize & outimgpxsize,
+						const wxRect & readimgpxinfo);
+	double _ReadGDALValueToDouble(void* & data, const GDALDataType & type, int index);
+
+	
+	bool _ComputeStat();
+    bool _HasStat();
 	bool _ComputeExtent();
 	bool _HasExtent();
+
+	
 
 
 

@@ -42,6 +42,11 @@ bool vrLayerRaster::IsOK() {
 
 
 bool vrLayerRasterGDAL::_Close() {
+	m_OneBandMin = 0;
+	m_OneBandMax = 0;
+	m_OneBandNoData = 0;
+	
+	
 	if (m_Dataset==NULL){
 		return false;
 	}
@@ -54,11 +59,25 @@ bool vrLayerRasterGDAL::_Close() {
 
 
 
+
+
+/***************************************************************************//**
+@brief Compute all position info for displaying a raster
+@param pximgsize Size of image in pixels stored on disk
+@param imgextent Coordinate Extent of the raster
+@param wndextent Coordinate extent of the Window
+@param pxsize Pixel conversion Reality - Window
+@param pximginfo Part of the raster to read in pixels
+@param pximgpos Position and size of the raster for displaying it on the window
+@return  true if computing was successfull
+@author Lucien Schreiber (c) CREALP 2010
+@date 17 mars 2010
+ *******************************************************************************/
 bool vrLayerRasterGDAL::_ComputeDisplayPosSize(const wxSize & pximgsize, 
 							const vrRealRect & imgextent, 
 							const vrRealRect & wndextent,
 							double pxsize,
-							wxRect & pximginfo, wxPoint & pximgpos){
+							wxRect & pximginfo, wxRect & pximgpos){
 	
 	// get intersection between display and img
 	vrRealRect myWndExtentTemp = wndextent;
@@ -83,6 +102,11 @@ bool vrLayerRasterGDAL::_ComputeDisplayPosSize(const wxSize & pximgsize,
 	int vx = (myIntersect.GetLeft() - wndextent.GetLeft()) / pxsize;
 	int vy = (wndextent.GetTop()- myIntersect.GetTop()) / pxsize;
 	
+	//pixels size of displayed bitmap
+	int vw = fabs(myIntersect.m_width / pxsize);
+	int vh = fabs(myIntersect.m_height / pxsize);
+	
+	
 	// returning values
 	pximginfo.SetTopLeft(wxPoint(ximg, yimg));
 	pximginfo.width = pxWidthVisible;
@@ -90,6 +114,9 @@ bool vrLayerRasterGDAL::_ComputeDisplayPosSize(const wxSize & pximgsize,
 	
 	pximgpos.x = vx;
 	pximgpos.y = vy;
+	pximgpos.SetWidth(vw);
+	pximgpos.SetHeight(vh);
+	
 	
 	if (pximginfo.IsEmpty()) {
 		wxLogMessage("Image is outside the display.");
@@ -101,6 +128,220 @@ bool vrLayerRasterGDAL::_ComputeDisplayPosSize(const wxSize & pximgsize,
 }
 
 
+
+bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata, 
+									   const wxSize & outimgpxsize,
+									   const wxRect & readimgpxinfo) {
+	
+	wxASSERT(m_Dataset);
+	m_Dataset->FlushCache();
+    int myRasterCount  = m_Dataset->GetRasterCount();
+	
+	// check image size bigger than 0
+	if (outimgpxsize.GetWidth() <= 0 || outimgpxsize.GetHeight() <= 0) {
+		wxLogError("Dimentions of the image are invalid (%d, %d)",
+				   outimgpxsize.GetWidth(),
+				   outimgpxsize.GetHeight());
+		return false;
+	}
+	
+	// create array for image data (RGBRGBRGB...)
+	unsigned int myimgRGBLen = outimgpxsize.GetWidth() * outimgpxsize.GetHeight() * 3;
+	*imgdata = (unsigned char *) CPLMalloc(myimgRGBLen);
+	if (*imgdata == NULL) {
+		wxLogError("Image creation failed, out of memory");
+		return false;
+	}
+	
+	// one band is either a palette based image, or greyscale
+	if (myRasterCount == 1) {
+		double myRange = 0;
+		GDALDataType myDataType;
+		int myScanSize = 0;
+		void * myScanData = NULL;
+		GDALRasterBand *band = m_Dataset->GetRasterBand(1);
+		
+		switch (band->GetColorInterpretation()) {
+			
+			case GCI_Undefined: // can we try to make a greyscale image?
+            case GCI_GrayIndex:
+				
+				// computing statistics if not existing
+				if (_HasStat() == false) {
+					if (_ComputeStat() == false) {
+						if (*imgdata != NULL) {
+							CPLFree(*imgdata);
+							*imgdata = NULL;
+						}
+						return false;
+					}
+				}
+				
+				myRange = m_OneBandMax - m_OneBandMin;
+				wxASSERT(myRange > 0);
+				myDataType = band->GetRasterDataType();
+				
+				// getting monoband image
+				myScanSize = GDALGetDataTypeSize(myDataType) / 8;
+				myScanData = CPLMalloc(myScanSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight());
+				wxASSERT(myScanData);
+				if (band->RasterIO(GF_Read,
+								   readimgpxinfo.GetX(), readimgpxinfo.GetY(),
+								   readimgpxinfo.GetWidth(), readimgpxinfo.GetHeight(), 
+								   myScanData,
+								   outimgpxsize.GetWidth(), outimgpxsize.GetHeight(),
+								   myDataType, 0, 0) != CE_None) {
+					
+					// if reading doesn't work, clean and exit.
+					wxLogError("Error gettign monoband raster, maybe out of memory");
+					if (myScanData != NULL) {
+						CPLFree(myScanData);
+						myScanData = NULL;
+					}
+					if (*imgdata != NULL) {
+						CPLFree(*imgdata);
+						*imgdata = NULL;
+					}
+					return false;
+				}
+					
+				
+				// transform monoband in RGB
+				for (unsigned int i = 0; i< myimgRGBLen ; i += 3)
+                {
+					
+					double myGrayValDouble = _ReadGDALValueToDouble(myScanData,myDataType, i / 3);
+					
+					int myGrayValInt = static_cast < int >((myGrayValDouble - m_OneBandMin) * (255 / myRange));
+					
+					wxASSERT(myGrayValInt >= 0);
+					wxASSERT(myGrayValInt <= 255);
+					//if (myGrayValInt < 0) myGrayValInt = 0;
+					//if (myGrayValInt > 255) myGrayValInt = 255;
+					
+					*(*imgdata + i)		= myGrayValInt;
+					*(*imgdata + i + 1) = myGrayValInt;
+					*(*imgdata + i + 2) = myGrayValInt;
+					
+				}
+				wxASSERT(myScanData != NULL);
+				CPLFree (myScanData);
+				myScanData = NULL;
+				break;
+			
+				
+			
+			default: // unsupported case
+				
+				
+				wxLogError("Unsupported color interpretation %s",
+						   GDALGetColorInterpretationName(band->GetColorInterpretation()));
+				if (*imgdata != NULL) {
+					CPLFree(*imgdata);
+					*imgdata = NULL;
+				}
+				return false;
+				break;
+		}
+		
+	}
+
+	
+	
+	
+	
+	return true;
+}
+
+
+
+double vrLayerRasterGDAL::_ReadGDALValueToDouble(void* & data, const GDALDataType & type, int index) {
+	double val;
+	
+	switch ( type )
+	{
+		case GDT_Byte:
+			return (double) ((GByte *)data)[index];
+			break;
+		case GDT_UInt16:
+			return (double) ((GUInt16 *)data)[index];
+			break;
+		case GDT_Int16:
+			return (double) ((GInt16 *)data)[index];
+			break;
+		case GDT_UInt32:
+			return (double) ((GUInt32 *)data)[index];
+			break;
+		case GDT_Int32:
+			return (double) ((GInt32 *)data)[index];
+			break;
+		case GDT_Float32:
+			return (double) ((float *)data)[index];
+			break;
+		case GDT_Float64:
+			val = ((double *)data)[index];
+			return (double) ((double *)data)[index];
+			break;
+		default:
+			wxLogError("GDAL data type is not supported");
+	}
+	return 0.0;
+}
+
+
+
+bool vrLayerRasterGDAL::_ComputeStat() {
+	int bResult = false;
+	bool bReturn = true;
+
+	m_OneBandMin = 0;
+	m_OneBandMax = 0;
+	m_OneBandNoData = 0;
+	
+	
+	GDALRasterBand * myRasterBand = m_Dataset->GetRasterBand(1);
+	m_OneBandMin = myRasterBand->GetMinimum(&bResult);
+	if (bResult == false)
+	{
+		wxLogError("Error computing minimum statistics for raster %s", m_FileName.GetFullName());
+		m_OneBandMin = 0;
+		bReturn = false;
+	}
+	
+	
+	m_OneBandMax = myRasterBand->GetMaximum(&bResult);
+	if (bResult == false)
+	{
+		wxLogError("Error computing maximum statistics for raster %s", m_FileName.GetFullName());
+		m_OneBandMax = 255;
+		bReturn = false;
+	}
+	
+	
+	m_OneBandNoData = myRasterBand->GetNoDataValue(&bResult);
+	if (bResult == false)
+	{
+		wxLogWarning("Computing NoData failed for raster %s", m_FileName.GetFullName());
+		m_OneBandNoData = 0;
+	}
+	
+	return bReturn;
+}
+
+
+
+bool vrLayerRasterGDAL::_HasStat() {
+	
+	if (m_OneBandMin == 0 || 
+		m_OneBandMax == 0) {
+		return false;
+	}
+	
+	return true;
+}
+
+
+
 bool vrLayerRasterGDAL::_HasExtent() {
 
 	if (m_Dataset == NULL) {
@@ -110,7 +351,6 @@ bool vrLayerRasterGDAL::_HasExtent() {
 		
 	
 	if (m_ImgExtent.IsOk() == false) {
-		wxLogError("Extent isn't defined, use GetExtent() to define the extent");
 		return false;
 	}
 	
@@ -213,6 +453,9 @@ bool vrLayerRasterGDAL::_ComputeExtent() {
 
 
 
+
+
+
 vrLayerRasterGDAL::vrLayerRasterGDAL() {
 }
 
@@ -286,7 +529,7 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 	
 	// compute visible part, position for raster
 	wxRect myImgInfo;
-	wxPoint myImgPos;
+	wxRect myImgPos;
 	
 	if(_ComputeDisplayPosSize(m_ImgPxSize, myImgExtent, coord, 
 							  pxsize, myImgInfo, myImgPos)==false){
@@ -294,40 +537,28 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 		return false;
 	}
 	
-	
-	return true;
-	
-	/*
-	
-	
-	
-	// TODO: Add code for getting raster data into bitmap.
-	// there is now way to grab data with real coordinates. Thus we need to convert
-	// real data to row and cols to fetch from data.
-	
-	//FIXME: remove this temp code used only to draw something into a bitmap
-	wxInitAllImageHandlers();
-
-	wxImage myImgTwo ("D:\\LS\\PRJ\\COLTOPGIS\\test-data\\two.png", wxBITMAP_TYPE_PNG);
-	if (myImgTwo.IsOk()==false) {
+	unsigned char * myimgdata = NULL;
+	if (_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
+					   myImgInfo) == false) {
+		wxASSERT(myimgdata == NULL);
 		return false;
 	}
 	
-	wxBitmap myBmpTwo (myImgTwo);
-	wxPoint myImgPosition (50,50);
+	wxImage myImg (myImgPos.GetWidth(), myImgPos.GetHeight());
+	myImg.SetData(myimgdata, false);
+	if (myImg.IsOk() == false) {
+		wxLogError("Creating raster failed");
+		return false;
+	}
 	
+	
+	// drawing the image on the passed bmp
 	wxBitmap myBmp(bmp->GetSize());
 	wxMemoryDC dc (myBmp);
-	
 	dc.Clear();
-	dc.SetBrush(*wxWHITE_BRUSH);
-	dc.SetPen(*wxWHITE_PEN);
-	dc.DrawRectangle(0,0,myBmp.GetWidth(), myBmp.GetHeight());
 	
-	//dc.SetPen(*wxBLUE_PEN);
-	//dc.DrawLine(myBmp.GetWidth(),0,0, myBmp.GetHeight());
-	dc.DrawBitmap(myBmpTwo, myImgPosition.x, myImgPosition.y, false);
-	
+	dc.DrawBitmap(myImg, myImgPos.GetX(), myImgPos.GetY(), false);
+		
 	dc.SelectObject(wxNullBitmap);
 	*bmp = myBmp.ConvertToImage();
 	
@@ -336,9 +567,8 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 	// was drawn. Those are set the the user defined transparency
 	char myBackgroundTransparency = 0;
 	int myUserTransparency = 255 - (render->GetTransparency() * 255 / 100);
-	
-	
 	unsigned char * alphachar = NULL;
+
 	unsigned int myimglen = bmp->GetWidth() * bmp->GetHeight();
 	alphachar= (unsigned char*)malloc(myimglen);
 	if (alphachar == NULL)
@@ -357,15 +587,14 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 	}
 	bmp->SetAlpha(alphachar, false);
 	
-	for (int x = myImgPosition.x; x< myImgTwo.GetWidth() + myImgPosition.x ; x++) {
-		for (int y = myImgPosition.y; y < myImgTwo.GetHeight() + myImgPosition.y ; y++) {
+	
+	for (int x = myImgPos.GetX(); x< myImgPos.GetWidth() + myImgPos.GetX() ; x++) {
+		for (int y = myImgPos.y; y < myImgPos.GetHeight() + myImgPos.y ; y++) {
 			bmp->SetAlpha(x, y, (char) myUserTransparency);
 		}
 	}
 	
-	
-	return true;*/
-	
+	return true;
 }
 
 
