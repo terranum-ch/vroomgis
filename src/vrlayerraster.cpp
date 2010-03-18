@@ -161,9 +161,63 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
 		GDALDataType myDataType;
 		int myScanSize = 0;
 		void * myScanData = NULL;
+		GDALColorTable *pal = NULL;
+		GDALPaletteInterp pal_interp;
 		GDALRasterBand *band = m_Dataset->GetRasterBand(1);
 		
 		switch (band->GetColorInterpretation()) {
+				
+			case GCI_PaletteIndex:
+				
+                pal = band->GetColorTable();
+                if (pal == NULL){
+					wxLogError("Couldn't find a palette for palette-based image");                  
+					if (*imgdata != NULL) {
+						CPLFree(*imgdata);
+						*imgdata = NULL;
+					}
+					return false;
+                }
+				
+				pal_interp = pal->GetPaletteInterpretation();
+
+				//
+				// copy over all the palette indices and then
+				// loop through the buffer replacing the values
+				// with the correct RGB triples.
+				//
+				if (band->RasterIO(GF_Read, readimgpxinfo.GetX(), readimgpxinfo.GetY(),
+								   readimgpxinfo.GetWidth(), readimgpxinfo.GetHeight(),
+								   *imgdata,
+								   outimgpxsize.GetWidth(), outimgpxsize.GetHeight(),
+								   GDT_UInt16, 3, 0) != CE_None){
+					wxLogError("Unknown error occured while reading palette based raster %s",
+							   m_FileName.GetFullName());
+					if (*imgdata != NULL) {
+						CPLFree(*imgdata);
+						*imgdata = NULL;
+					}
+					return false;
+				}
+				
+					
+				for (unsigned char *data = *imgdata; data != (*imgdata + myimgRGBLen);data += 3){
+					unsigned short int val = *((unsigned short int *)data);
+					const GDALColorEntry *color = pal->GetColorEntry(val);
+					if (pal_interp == GPI_Gray){
+						*(data + 0) = color->c1;
+						*(data + 1) = color->c1;
+						*(data + 2) = color->c1;
+					}
+					else{
+						*(data + 0) = color->c1;
+						*(data + 1) = color->c2;
+						*(data + 2) = color->c3;
+					}
+				}
+                
+                break;
+				
 			
 			case GCI_Undefined: // can we try to make a greyscale image?
             case GCI_GrayIndex:
