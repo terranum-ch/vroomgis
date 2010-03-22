@@ -47,11 +47,86 @@ bool vrLayerVector::IsOK() {
 
 
 
+OGRGeometry * vrLayerVector::GetGeometry(long fid) {
+	
+	if (IsOK() == false){
+		return NULL;
+	}
+		
+	OGRFeature * myFeature = m_Layer->GetFeature(fid);
+	
+	if (myFeature == NULL) {
+		wxLogError("Unable to get feature with fid %d", fid);
+		return NULL;
+	}
+	
+	OGRGeometry * myGeom = myFeature->GetGeometryRef();
+	OGRFeature::DestroyFeature(myFeature);
+	return myGeom;
+}
+
+OGRGeometry * vrLayerVector::GetNextGeometry(long & oid, bool restart) {
+	if (IsOK() == false) {
+		return NULL;
+	}
+	
+	if (restart == true) {
+		m_Layer->ResetReading();
+	}
+	
+	oid = wxNOT_FOUND;
+	
+	OGRFeature * myFeature = m_Layer->GetNextFeature();
+	if (myFeature == NULL) {
+		return NULL;
+	}
+	
+	oid = myFeature->GetFID();
+	OGRGeometry * myGeom = myFeature->GetGeometryRef();
+	OGRFeature::DestroyFeature(myFeature);	
+	
+	return myGeom;
+}
+
+
+
+
+OGRwkbGeometryType  vrLayerVector::GetGeometryType() {
+	
+	// geometry type exists, return it. 
+	if (m_GeometryType != wkbUnknown) {
+		return m_GeometryType;
+	}
+	
+	// geometry type doesn't exists try to get it from feature 0;
+	if (m_Layer == NULL) {
+		wxLogError("Layer not inited, call open() first");
+		return wkbUnknown;
+	}
+	
+	OGRFeature * myFeature = m_Layer->GetFeature(0);
+	
+	if (myFeature == NULL) {
+		wxLogError("Unable to get feature with fid %d", 0);
+		return wkbUnknown;
+	}
+	
+	m_GeometryType = myFeature->GetGeometryRef()->getGeometryType();
+	OGRFeature::DestroyFeature(myFeature);
+	return m_GeometryType;
+}
+
+
+
+
+
+
 
 
 
 vrLayerVectorOGR::vrLayerVectorOGR() {
 	m_DriverType = vrDRIVER_VECTOR_SHP;
+	m_GeometryType = wkbUnknown;
 }
 
 vrLayerVectorOGR::~vrLayerVectorOGR() {
@@ -90,6 +165,7 @@ bool vrLayerVectorOGR::Open(const wxFileName & filename, bool readwrite){
 
 
 bool vrLayerVectorOGR::_Close() {
+	m_GeometryType = wkbUnknown;
 	if(m_Dataset==NULL){
 		return false;
 	}
@@ -178,27 +254,7 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	bool bmask = bmp->HasMask();
 	
 	
-	// FIXME: Add transparency should go somewhere else
-	/*unsigned char * alphachar = NULL;
-	int translucencypercent = 50;
-	unsigned int myimglen = bmp->GetSize().GetWidth() * bmp->GetSize().GetHeight();
-	alphachn= (unsigned char*)CPLMalloc(myimglen);
-	if (alphachar == NULL)
-	{
-		wxLogError(_T("Error creating translucency"));
-		return false;
-	}
 	
-	// convert percent to 0-255 and invert 
-	int myTransValue = translucencypercent * 255 / 100;
-	myTransValue = 255 - myTransValue;
-	
-	
-	for (unsigned int i = 0; i < myimglen;i ++)
-	{
-		*(alphachar + i) =  (char) myTransValue;
-	}
-	bmp->SetAlpha(alphachar);*/
 	
 	
 	
