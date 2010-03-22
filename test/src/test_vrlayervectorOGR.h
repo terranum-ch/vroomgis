@@ -54,7 +54,7 @@ public:
 	}
 	
 	void testGetExtentVectorOGR(){
-		wxLogMessage("Testing getting extent for layer");
+		
 		vrRealRect myExtent;
 		TS_ASSERT(myExtent.IsEmpty()==true);
 		
@@ -70,9 +70,79 @@ public:
 		TS_ASSERT_EQUALS((int) myExtent.GetTop(), 117200);
 		TS_ASSERT_EQUALS((int) myExtent.GetRight(), 598662);
 		TS_ASSERT_EQUALS((int) myExtent.GetBottom(), 114173);
+	}
+	
+	
+	void testGettingGeometry(){
+			vrLayerVectorOGR myLayer;
+		
+		// layer not opened
+		TS_ASSERT(myLayer.GetGeometry(0) == NULL);
 		
 		
-
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false),true);
+		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
+		
+		OGRGeometry * myGeom = NULL;
+		myGeom = myLayer.GetGeometry(0);
+		TS_ASSERT(myGeom != NULL);
+		
+		
+		OGRLineString * myLine = (OGRLineString*) myGeom;
+		wxLogMessage("line returned start here : %.4f | %.4f and contain %d vertex",
+					 myLine->getX(0),
+					 myLine->getY(0),
+					 myLine->getNumPoints());
+		
+	}
+	
+	
+	void testGettingGeometryType(){
+			vrLayerVectorOGR myLayer;
+		
+		// layer not opened
+		TS_ASSERT(myLayer.GetGeometryType() == wkbUnknown);
+		
+		
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false),true);
+		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
+		TS_ASSERT_EQUALS(myLayer.GetGeometryType(), wkbLineString);
+		
+		
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false),true);
+		TS_ASSERT_EQUALS(myLayer.GetGeometryType(), wkbPolygon);
+	}
+	
+	
+	void testGettingNextGeometry(){
+		wxLogMessage("Testing getting next data for layer");
+		
+		vrLayerVectorOGR myLayer;
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false),true);
+		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
+		
+		long oid = wxNOT_FOUND;
+		bool restart = true;
+		OGRGeometry * myGeom = NULL;
+		int iCount = 0;
+		
+		while (1) {
+			myGeom = myLayer.GetNextGeometry(oid, restart);
+			restart = false;
+			if (myGeom == NULL) {
+				break;
+			}
+			
+			wxLogMessage("oid : %d contain %d vertex",
+						 oid,
+						 ((OGRLineString*) myGeom)->getNumPoints());
+			iCount++;
+			
+		}
+		wxLogMessage("%d feature readed", iCount);
+		TS_ASSERT_EQUALS(iCount, 45);
+		
+		
 	}
 	
 	

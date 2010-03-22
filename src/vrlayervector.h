@@ -32,7 +32,8 @@ class vrLayerVector : public vrLayer {
 protected:
     OGRDataSource * m_Dataset;
 	OGRLayer * m_Layer;
-	
+	OGRwkbGeometryType m_GeometryType;
+
 
 public:
 	vrLayerVector();
@@ -41,6 +42,12 @@ public:
     virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
 	
 	virtual bool GetExtent(vrRealRect & rect){return false;}
+	
+	OGRGeometry * GetGeometry(long fid);
+    OGRGeometry * GetNextGeometry(long & oid, bool restart);
+	OGRwkbGeometryType GetGeometryType();
+
+	
 	
 	bool IsOK();
 	
