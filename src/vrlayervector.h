@@ -27,6 +27,7 @@
 
 
 #include "vrlayer.h"
+#include <wx/graphics.h>
 
 class vrLayerVector : public vrLayer {
 protected:
@@ -34,6 +35,8 @@ protected:
 	OGRLayer * m_Layer;
 	OGRwkbGeometryType m_GeometryType;
 
+	wxPoint _GetPointFromReal(const wxPoint2DDouble & realpt, 
+							  const wxPoint2DDouble & origin, double pxsize);
 
 public:
 	vrLayerVector();
@@ -43,11 +46,10 @@ public:
 	
 	virtual bool GetExtent(vrRealRect & rect){return false;}
 	
-	OGRGeometry * GetGeometry(long fid);
-    OGRGeometry * GetNextGeometry(long & oid, bool restart);
+	OGRFeature * GetFeature(long fid);
+    OGRFeature * GetNextFeature(bool restart);
 	OGRwkbGeometryType GetGeometryType();
 
-	
 	
 	bool IsOK();
 	
@@ -55,8 +57,11 @@ public:
 
 
 class vrLayerVectorOGR : public vrLayerVector {
-protected:
+private:
+	virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+							const vrRender * render, const vrLabel * label, double pxsize);
 	
+protected:
     virtual bool _Close();
 	
 public:

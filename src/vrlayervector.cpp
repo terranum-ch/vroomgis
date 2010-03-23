@@ -21,6 +21,14 @@
 #include "vrrender.h"
 
 
+wxPoint vrLayerVector::_GetPointFromReal(const wxPoint2DDouble & realpt, 
+										 const wxPoint2DDouble & origin, double pxsize) {
+	wxPoint myPt;
+	myPt.x = (realpt.m_x - origin.m_x) / pxsize;
+	myPt.y = (origin.m_y - realpt.m_y) / pxsize;
+	return myPt;
+}
+
 
 vrLayerVector::vrLayerVector() {
 	m_Dataset = NULL;
@@ -47,7 +55,7 @@ bool vrLayerVector::IsOK() {
 
 
 
-OGRGeometry * vrLayerVector::GetGeometry(long fid) {
+OGRFeature * vrLayerVector::GetFeature(long fid) {
 	
 	if (IsOK() == false){
 		return NULL;
@@ -60,12 +68,10 @@ OGRGeometry * vrLayerVector::GetGeometry(long fid) {
 		return NULL;
 	}
 	
-	OGRGeometry * myGeom = myFeature->GetGeometryRef();
-	OGRFeature::DestroyFeature(myFeature);
-	return myGeom;
+	return myFeature;
 }
 
-OGRGeometry * vrLayerVector::GetNextGeometry(long & oid, bool restart) {
+OGRFeature * vrLayerVector::GetNextFeature(bool restart) {
 	if (IsOK() == false) {
 		return NULL;
 	}
@@ -74,18 +80,13 @@ OGRGeometry * vrLayerVector::GetNextGeometry(long & oid, bool restart) {
 		m_Layer->ResetReading();
 	}
 	
-	oid = wxNOT_FOUND;
 	
 	OGRFeature * myFeature = m_Layer->GetNextFeature();
 	if (myFeature == NULL) {
 		return NULL;
 	}
 	
-	oid = myFeature->GetFID();
-	OGRGeometry * myGeom = myFeature->GetGeometryRef();
-	OGRFeature::DestroyFeature(myFeature);	
-	
-	return myGeom;
+	return myFeature;
 }
 
 
@@ -164,6 +165,58 @@ bool vrLayerVectorOGR::Open(const wxFileName & filename, bool readwrite){
 
 
 
+bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+								  const vrRender * render, const vrLabel * label, double pxsize) {
+	wxASSERT(gdc);
+	// creating pen
+	// TODO: Update this code for reflecting the vrRender code
+	wxPen myPen (wxColour(0,0,255, 150), 2); 
+	gdc->SetPen(myPen);
+	
+	
+	// iterating and drawing geometries
+	OGRLineString * myGeom = NULL;
+	long iCount = 0;
+	while (1) {
+		OGRFeature * myFeat = GetNextFeature(false);
+		if (myFeat == NULL) {
+			break;
+		}
+		iCount++;
+		
+		myGeom = NULL;
+		myGeom = (OGRLineString*) myFeat->GetGeometryRef();
+		wxASSERT(myGeom);
+		
+		
+		int iNumVertex = myGeom->getNumPoints();
+		wxASSERT(iNumVertex >= 2); // line cannot exists with only one vertex
+		
+		// draw geometry
+		wxGraphicsPath myPath = gdc->CreatePath();
+		myPath.MoveToPoint(_GetPointFromReal(wxPoint2DDouble(myGeom->getX(0),
+															 myGeom->getY(0)),
+						   coord.GetLeftTop(),
+						   pxsize));
+		for (int i = 1; i< iNumVertex; i++) {
+			myPath.AddLineToPoint(_GetPointFromReal(wxPoint2DDouble(myGeom->getX(i),
+																	myGeom->getY(i)),
+								  coord.GetLeftTop(),
+								  pxsize));
+		}
+		gdc->StrokePath(myPath);
+		OGRFeature::DestroyFeature(myFeat);
+		myFeat = NULL;
+	}
+	
+	if (iCount == 0) {
+		wxLogWarning("No data drawn.");
+	}
+	return true;
+}
+
+
+
 bool vrLayerVectorOGR::_Close() {
 	m_GeometryType = wkbUnknown;
 	if(m_Dataset==NULL){
@@ -206,17 +259,61 @@ bool vrLayerVectorOGR::GetExtent(vrRealRect & rect) {
 
 
 
-
 bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 							   const vrRender * render, const vrLabel * label) {
 	wxASSERT(m_Layer);
 	wxASSERT(render);
 	
 	
-	// spatial filter
+	// setting spatial filter
 	m_Layer->SetSpatialFilterRect(coord.GetLeft(), coord.GetBottom(),
 								  coord.GetRight(), coord.GetTop());
 	m_Layer->ResetReading();
+	
+	
+	// prepare bitmap for drawing
+	wxBitmap myBmp(bmp->GetSize());
+	wxASSERT(myBmp.IsOk());
+	wxMemoryDC dc;
+	dc.SelectObject(myBmp);
+	const wxColour myTransparentColour = vrRenderVector::GetBackgroundMaskColour();
+	dc.SetBrush(wxBrush(myTransparentColour));
+	dc.Clear();
+	dc.SetPen(wxPen (myTransparentColour));
+	dc.DrawRectangle(0,0,myBmp.GetWidth(), myBmp.GetHeight());
+	
+	
+	// draw
+	wxGraphicsContext * pgdc = wxGraphicsContext::Create(dc);
+	bool bReturn = true;
+	OGRwkbGeometryType myGeomType = GetGeometryType();
+	switch (myGeomType) {
+		case wkbLineString:
+			bReturn = _DrawLines(pgdc, coord, render, label, pxsize);
+			break;
+		
+		
+		default: // unsupported case
+			wxLogError("Geometry type of %s isn't supported (%d)",
+					   m_FileName.GetFullName(), myGeomType);
+			bReturn = false;
+			break;
+	}
+	
+	if (bReturn == false) {
+		return false;
+	}
+	
+	wxDELETE(pgdc);
+	dc.SelectObject(wxNullBitmap);
+	*bmp = myBmp.ConvertToImage();
+	bmp->SetMaskColour(myTransparentColour.Red(),
+					   myTransparentColour.Green(),
+					   myTransparentColour.Blue());
+	bool bmask = bmp->HasMask();
+	
+	
+	/*
 	
 	// drawing
 	wxBitmap myBmp(bmp->GetSize());
@@ -259,8 +356,12 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	
 	
 	wxLogMessage("%s : %d features drawed",GetName().GetFullName(),
-				lFeatureDrawed);
+				lFeatureDrawed);*/
 	return true;
 }
+
+
+
+
 
 
