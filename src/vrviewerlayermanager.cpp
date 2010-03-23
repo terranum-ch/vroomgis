@@ -321,66 +321,14 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 	myDC.Clear();
 	myDC.DrawRectangle(0,0,mySize.GetWidth(), mySize.GetHeight());
 	
-
-	
-	/*wxImage myImgOne ("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/one.png", wxBITMAP_TYPE_PNG);
-	wxImage myImgTwo ("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/two.png", wxBITMAP_TYPE_PNG);
-	
-	myImgOne.SetMaskColour(0, 0, 0);
-
-	//myImgTwo.SetMaskColour(0, 0, 0);
-	
-	
-	
-	bool bVal = myImgTwo.HasAlpha();
-	if (bVal == false) {
-		myImgTwo.InitAlpha();
-		bVal = true;
-	}
-	if (bVal) {
-		// FIXME: Add transparency should go somewhere else
-		unsigned char * alphachar = NULL;
-		 int translucencypercent = 100;
-		 unsigned int myimglen = mySize.GetWidth() * mySize.GetHeight();
-		 alphachar= (unsigned char*)CPLMalloc(myimglen);
-		 if (alphachar == NULL)
-		 {
-		 wxLogError(_T("Error creating translucency"));
-		 return false;
-		 }
-		 
-		 // convert percent to 0-255 and invert 
-		 int myTransValue = translucencypercent * 255 / 100;
-		 myTransValue = 255 - myTransValue;
-		 
-		 
-		 for (unsigned int i = 0; i < myimglen;i ++)
-		 {
-		 *(alphachar + i) =  (char) myTransValue;
-		 }
-		 myImgTwo.SetAlpha(alphachar);
-	}
-	
-	
-	for (int x = 0; x<50; x++) {
-		for (int y = 0; y < 50; y++) {
-			myImgTwo.SetAlpha(x, y, 120);
-		}
-	}
-	
-	
-	wxBitmap myOne (myImgOne);
-	wxBitmap myTwo (myImgTwo);
-
-	myDC.DrawBitmap(myOne,0,0,true);
-	myDC.DrawBitmap(myTwo,0,0,true);*/
-
-
-	for (int i = 0 ; i < m_Images->GetCount(); i++ ) {
+	wxStopWatch sw;
+	for (unsigned int i = 0 ; i < m_Images->GetCount(); i++ ) {
 		wxBitmap myBmp (*m_Images->Item(i));
 		myDC.DrawBitmap(myBmp,0,0,true);
 	}
 
+	wxLogMessage("Merging bitmaps with mask took : %ldms", sw.Time());
+	
 	myDC.SelectObject(wxNullBitmap);
 	return myAggregatedBmp;	
 	

@@ -168,6 +168,7 @@ bool vrLayerVectorOGR::Open(const wxFileName & filename, bool readwrite){
 bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 								  const vrRender * render, const vrLabel * label, double pxsize) {
 	wxASSERT(gdc);
+	wxStopWatch sw;
 	// creating pen
 	// TODO: Update this code for reflecting the vrRender code
 	wxPen myPen (wxColour(0,0,255, 150), 2); 
@@ -204,7 +205,15 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 								  coord.GetLeftTop(),
 								  pxsize));
 		}
-		gdc->StrokePath(myPath);
+		double myWidth = 0, myHeight = 0;
+		gdc->GetSize(&myWidth, &myHeight);
+		wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
+		wxRect2DDouble myPathRect = myPath.GetBox();
+		
+		if (myPathRect.Intersects(myWndRect)) {
+			gdc->StrokePath(myPath);
+		}
+		
 		OGRFeature::DestroyFeature(myFeat);
 		myFeat = NULL;
 	}
@@ -212,6 +221,7 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 	if (iCount == 0) {
 		wxLogWarning("No data drawn.");
 	}
+	wxLogMessage("%d lines drawed in %ldms", iCount, sw.Time());
 	return true;
 }
 
@@ -264,7 +274,7 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	wxASSERT(m_Layer);
 	wxASSERT(render);
 	
-	
+	wxStopWatch sw;
 	// setting spatial filter
 	m_Layer->SetSpatialFilterRect(coord.GetLeft(), coord.GetBottom(),
 								  coord.GetRight(), coord.GetTop());
@@ -287,6 +297,9 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	wxGraphicsContext * pgdc = wxGraphicsContext::Create(dc);
 	bool bReturn = true;
 	OGRwkbGeometryType myGeomType = GetGeometryType();
+	
+	wxLogMessage("Preparing data took %ldms", sw.Time());
+		
 	switch (myGeomType) {
 		case wkbLineString:
 			bReturn = _DrawLines(pgdc, coord, render, label, pxsize);
@@ -304,13 +317,16 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 		return false;
 	}
 	
+	
+	
 	wxDELETE(pgdc);
 	dc.SelectObject(wxNullBitmap);
 	*bmp = myBmp.ConvertToImage();
 	bmp->SetMaskColour(myTransparentColour.Red(),
 					   myTransparentColour.Green(),
 					   myTransparentColour.Blue());
-	bool bmask = bmp->HasMask();
+	//bool bmask = bmp->HasMask();
+	
 	
 	
 	/*
