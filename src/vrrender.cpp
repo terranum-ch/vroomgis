@@ -42,7 +42,6 @@ void vrRender::SetTransparency(int value) {
 
 
 
-const int vrRenderVector::m_BgMaskColor[3] = {160,90,190};
 
 vrRenderVector::vrRenderVector() {
 	m_Type = vrRENDER_VECTOR;
@@ -53,12 +52,6 @@ vrRenderVector::vrRenderVector() {
 vrRenderVector::~vrRenderVector() {
 }
 
-
-const wxColour vrRenderVector::GetBackgroundMaskColour() 
-{
-	wxColour myColour (m_BgMaskColor[0], m_BgMaskColor[1], m_BgMaskColor[2]);
-	return myColour;
-}
 
 
 

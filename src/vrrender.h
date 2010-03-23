@@ -61,14 +61,11 @@ inline const int vrRender::GetTransparency() const {
 
 class vrRenderVector : public vrRender {
 private:
-   static const int m_BgMaskColor[3];
-
 	
   public:
     vrRenderVector();
     virtual ~vrRenderVector();
 	
-	static const wxColour GetBackgroundMaskColour();
 
 };
 

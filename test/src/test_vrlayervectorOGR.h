@@ -77,18 +77,20 @@ public:
 			vrLayerVectorOGR myLayer;
 		
 		// layer not opened
-		TS_ASSERT(myLayer.GetGeometry(0) == NULL);
+		OGRFeature * myFeat = myLayer.GetFeature(0);
+		TS_ASSERT(myFeat == NULL);
 		
 		
 		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false),true);
 		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
 		
-		OGRGeometry * myGeom = NULL;
-		myGeom = myLayer.GetGeometry(0);
+		OGRFeature * myGeom = NULL;
+		myGeom = myLayer.GetFeature(0);
 		TS_ASSERT(myGeom != NULL);
+		OGRFeature::DestroyFeature(myGeom);
 		
 		
-		OGRLineString * myLine = (OGRLineString*) myGeom;
+		OGRLineString * myLine = (OGRLineString*) myGeom->GetGeometryRef();
 		wxLogMessage("line returned start here : %.4f | %.4f and contain %d vertex",
 					 myLine->getX(0),
 					 myLine->getY(0),
@@ -121,22 +123,22 @@ public:
 		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false),true);
 		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
 		
-		long oid = wxNOT_FOUND;
 		bool restart = true;
-		OGRGeometry * myGeom = NULL;
+		OGRFeature * myFeat = NULL;
 		int iCount = 0;
 		
 		while (1) {
-			myGeom = myLayer.GetNextGeometry(oid, restart);
+			myFeat = myLayer.GetNextFeature(restart);
 			restart = false;
-			if (myGeom == NULL) {
+			if (myFeat == NULL) {
 				break;
 			}
 			
 			wxLogMessage("oid : %d contain %d vertex",
-						 oid,
-						 ((OGRLineString*) myGeom)->getNumPoints());
+						 myFeat->GetFID(),
+						 (((OGRLineString*) myFeat->GetGeometryRef())->getNumPoints()));
 			iCount++;
+			OGRFeature::DestroyFeature(myFeat);
 			
 		}
 		wxLogMessage("%d feature readed", iCount);
