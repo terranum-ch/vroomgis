@@ -58,7 +58,7 @@ public:
 
 class vrLayerVectorOGR : public vrLayerVector {
 private:
-	virtual bool _DrawLines(wxMemoryDC * mdc, const wxRect2DDouble & coord,
+	virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							const vrRender * render, const vrLabel * label, double pxsize);
 	
 protected:
