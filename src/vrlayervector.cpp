@@ -275,17 +275,35 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	
 	// prepare bitmap for drawing
 	wxBitmap myBmp(bmp->GetSize());
-	wxASSERT(myBmp.IsOk());
-	wxMemoryDC dc;
-	dc.SelectObject(myBmp);
-	const wxColour myTransparentColour = vrRenderVector::GetBackgroundMaskColour();
-	dc.SetBrush(wxBrush(myTransparentColour));
-	dc.Clear();
-	dc.SetPen(wxPen (myTransparentColour));
-	dc.DrawRectangle(0,0,myBmp.GetWidth(), myBmp.GetHeight());
+	char myBackgroundTransparency = 0;
+	unsigned char * alphachar = NULL;
+	unsigned int myimglen = bmp->GetWidth() * bmp->GetHeight();
+	alphachar= (unsigned char*)malloc(myimglen);
+	if (alphachar == NULL)
+	{
+		wxLogError(_T("Error creating transparency bitmap"));
+		return false;
+	}
 	
+	
+	for ( unsigned int i = 0; i< myimglen; i++) {
+		*(alphachar + i) =  myBackgroundTransparency;
+	}
+	if (bmp->HasAlpha() == false){
+		bmp->InitAlpha();
+		wxLogMessage("Initing alpha");
+	}
+	bmp->SetAlpha(alphachar, false);
+	wxASSERT(myBmp.IsOk());
 	
 	// draw
+<<<<<<< .mine
+	wxMemoryDC dc;
+	dc.SelectObject(myBmp);
+	wxGraphicsContext * pgdc = wxGraphicsContext::Create(dc);
+=======
+>>>>>>> .r71
+	
 	bool bReturn = true;
 	OGRwkbGeometryType myGeomType = GetGeometryType();
 	
@@ -311,57 +329,7 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	
 	dc.SelectObject(wxNullBitmap);
 	*bmp = myBmp.ConvertToImage();
-	bmp->SetMaskColour(myTransparentColour.Red(),
-					   myTransparentColour.Green(),
-					   myTransparentColour.Blue());
-	//bool bmask = bmp->HasMask();
-	
-	
-	
-	/*
-	
-	// drawing
-	wxBitmap myBmp(bmp->GetSize());
-	wxMemoryDC dc (myBmp);
-	
-	OGRFeature * poFeature;
-	long lFeatureDrawed = 0;
-	while ((poFeature = m_Layer->GetNextFeature()) != NULL) {
-		lFeatureDrawed++;
-		
-		
-		OGRFeature::DestroyFeature(poFeature);
-	}
-	
-	// get transparent colour
-	const wxColour myTransparentColour = vrRenderVector::GetBackgroundMaskColour();
-	
-	
-	// FIXME: THIS IS TEMP CODE FOR DRAWING LINE
-	
-	//dc.SetBrush(wxBrush(myTransparentColour));
-	dc.SetBrush(wxBrush(myTransparentColour));
-	dc.Clear();
-	dc.SetPen(wxPen (myTransparentColour));
-	dc.DrawRectangle(0,0,myBmp.GetWidth(), myBmp.GetHeight());
-	
-	dc.SetPen(*wxRED_PEN);
-	dc.DrawLine(0,0, myBmp.GetWidth(), myBmp.GetHeight());
 
-	dc.SelectObject(wxNullBitmap);
-	*bmp = myBmp.ConvertToImage();
-	bmp->SetMaskColour(myTransparentColour.Red(),
-					   myTransparentColour.Green(),
-					   myTransparentColour.Blue());
-	bool bmask = bmp->HasMask();
-	
-	
-	
-	
-	
-	
-	wxLogMessage("%s : %d features drawed",GetName().GetFullName(),
-				lFeatureDrawed);*/
 	return true;
 }
 
