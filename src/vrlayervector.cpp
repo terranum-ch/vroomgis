@@ -165,14 +165,14 @@ bool vrLayerVectorOGR::Open(const wxFileName & filename, bool readwrite){
 
 
 
-bool vrLayerVectorOGR::_DrawLines(wxMemoryDC * mdc, const wxRect2DDouble & coord,
+bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 								  const vrRender * render, const vrLabel * label, double pxsize) {
-	wxASSERT(mdc);
+	wxASSERT(gdc);
 	wxStopWatch sw;
 	// creating pen
 	// TODO: Update this code for reflecting the vrRender code
-	wxPen myPen (wxColour(0,0,255), 2); 
-	mdc->SetPen(myPen);
+	wxPen myPen (wxColour(0,0,255, 150), 2); 
+	gdc->SetPen(myPen);
 	
 	
 	// iterating and drawing geometries
@@ -193,19 +193,27 @@ bool vrLayerVectorOGR::_DrawLines(wxMemoryDC * mdc, const wxRect2DDouble & coord
 		int iNumVertex = myGeom->getNumPoints();
 		wxASSERT(iNumVertex >= 2); // line cannot exists with only one vertex
 		
-		
-		wxPoint * myPts = new wxPoint[iNumVertex];
-		for (int i = 0; i< iNumVertex; i++) {
-		myPts[i] = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(i),
-													 myGeom->getY(i)),
-									 coord.GetLeftTop(),
-									 pxsize);
+		// draw geometry
+		wxGraphicsPath myPath = gdc->CreatePath();
+		myPath.MoveToPoint(_GetPointFromReal(wxPoint2DDouble(myGeom->getX(0),
+															 myGeom->getY(0)),
+											 coord.GetLeftTop(),
+											 pxsize));
+		for (int i = 1; i< iNumVertex; i++) {
+			myPath.AddLineToPoint(_GetPointFromReal(wxPoint2DDouble(myGeom->getX(i),
+																	myGeom->getY(i)),
+													coord.GetLeftTop(),
+													pxsize));
 		}
-		mdc->DrawLines(iNumVertex, myPts);
-		delete [] myPts;
+		double myWidth = 0, myHeight = 0;
+		gdc->GetSize(&myWidth, &myHeight);
+		wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
+		wxRect2DDouble myPathRect = myPath.GetBox();
 		
-		// intersection ???
-				
+		if (myPathRect.Intersects(myWndRect)) {
+			gdc->StrokePath(myPath);
+		}
+		
 		OGRFeature::DestroyFeature(myFeat);
 		myFeat = NULL;
 	}
@@ -216,6 +224,7 @@ bool vrLayerVectorOGR::_DrawLines(wxMemoryDC * mdc, const wxRect2DDouble & coord
 	wxLogMessage("%d lines drawed in %ldms", iCount, sw.Time());
 	return true;
 }
+
 
 
 
@@ -297,12 +306,10 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	wxASSERT(myBmp.IsOk());
 	
 	// draw
-<<<<<<< .mine
 	wxMemoryDC dc;
 	dc.SelectObject(myBmp);
 	wxGraphicsContext * pgdc = wxGraphicsContext::Create(dc);
-=======
->>>>>>> .r71
+
 	
 	bool bReturn = true;
 	OGRwkbGeometryType myGeomType = GetGeometryType();
@@ -311,7 +318,7 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 		
 	switch (myGeomType) {
 		case wkbLineString:
-			bReturn = _DrawLines(&dc, coord, render, label, pxsize);
+			bReturn = _DrawLines(pgdc, coord, render, label, pxsize);
 			break;
 		
 		
