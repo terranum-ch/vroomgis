@@ -76,8 +76,6 @@ class vrLayerRasterGDAL : public vrLayerRaster {
 
 	
 
-
-
   public:
     vrLayerRasterGDAL();
     virtual ~vrLayerRasterGDAL();

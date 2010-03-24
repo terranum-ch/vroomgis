@@ -120,6 +120,42 @@ public:
 		TS_ASSERT(myRect3.IsOk());
 		TS_ASSERT(myRect3 == myRect2);
 	}
+	
+	
+	void testOutsideIntersectRight(){
+		vrRealRect myRectWnd(0,10,10,-10);
+		vrRealRect myRectImg(11,10,10,-10);
+		
+		vrRealRect myResult = myRectWnd.Intersect(myRectImg);
+		TS_ASSERT(myResult.IsOk()==false);
+	}
+	
+	void testOutsideIntersectTop(){
+		vrRealRect myRectWnd(0,10,10,-10);
+		vrRealRect myRectImg(5,20,20,-9);
+		
+		vrRealRect myResult = myRectWnd.Intersect(myRectImg);
+		TS_ASSERT(myResult.IsOk()==false);
+	}
+	
+	void testOutsideIntersectLeft(){
+		vrRealRect myRectWnd(10,10,10,-10);
+		vrRealRect myRectImg(0,10,5,-10);
+		
+		vrRealRect myResult = myRectWnd.Intersect(myRectImg);
+		TS_ASSERT(myResult.IsOk()==false);
+	}
+	
+	void testOutsideIntersectBottom(){
+		vrRealRect myRectWnd(0,20,20,-10);
+		vrRealRect myRectImg(0,9,9,-9);
+		
+		vrRealRect myResult = myRectWnd.Intersect(myRectImg);
+		TS_ASSERT(myResult.IsOk()==false);
+	}
+	
+	
+	
 
 };
 

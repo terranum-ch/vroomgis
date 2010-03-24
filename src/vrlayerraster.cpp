@@ -693,11 +693,20 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 	}
 	bmp->SetAlpha(alphachar, false);
 	
-	wxSize myBmpSize = bmp->GetSize();
+	
+	if (myImgPos.GetHeight() + myImgPos.GetY() > bmp->GetHeight()) {
+		myImgPos.height = bmp->GetHeight() - bmp->GetHeight();
+		//wxLogMessage("Height wasn't correct... saving situation");
+	}
+	
+	if (myImgPos.GetWidth() + myImgPos.GetX() > bmp->GetWidth()) {
+		myImgPos.width = bmp->GetWidth() - bmp->GetWidth();
+		//wxLogMessage("Width wasn't correct... saving situation");
+	}	
+	
+	
 	wxASSERT(myImgPos.GetWidth() + myImgPos.GetX() <= bmp->GetWidth());
 	wxASSERT(myImgPos.GetHeight() + myImgPos.GetY() <= bmp->GetHeight());
-	
-	
 	
 	for (int x = myImgPos.GetX(); x< myImgPos.GetWidth() + myImgPos.GetX() ; x++) {
 		for (int y = myImgPos.y; y < myImgPos.GetHeight() + myImgPos.y ; y++) {

@@ -24,7 +24,8 @@
 #include <wx/wx.h>
 #endif
 
-
+#define private public
+#define protected public
 
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>

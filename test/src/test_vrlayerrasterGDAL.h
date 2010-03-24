@@ -19,6 +19,8 @@
 #define _TEST_VR_LAYERVECTORGDAL_H_
 
 
+
+
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
@@ -73,8 +75,7 @@ public:
 	void testGettingExtentGDAL2(){
 		
 		// GETTING EXTENT FOR ROTATED RASTERS RETURN MAX EXTENT
-		
-		vrRealRect myExtent;
+			vrRealRect myExtent;
 		TS_ASSERT(myExtent.IsEmpty()==true);
 		
 		// extent failed, layer not opened
@@ -98,51 +99,29 @@ public:
 		
 	}
 	
-	bool _ComputeDisplayPosSize(const wxSize & pximgsize, 
-								const vrRealRect & imgextent, 
-								const vrRealRect & wndextent,
-								double pxsize,
-								wxRect & pximginfo, wxPoint & pximgpos){
+
+	void testRasterOutside(){
+		vrRealRect myWndExtent (0, 1000, 4000, -1000);
+		vrRealRect myImgExtent (5000, 800, 1000, -600);
 		
-		// get intersection between display and img
-		vrRealRect myWndExtentTemp = wndextent;
-		wxASSERT(myWndExtentTemp == wndextent);
-	
-		vrRealRect myIntersect = myWndExtentTemp.Intersect(imgextent);
-		if (myIntersect.IsOk() == false) {
-			wxLogMessage("Image out of the dislay, intersection is null");
-			return false;
-		}
+		wxSize myImgPxSize (200, 60);
+		double pixelsize = 10;
 		
 		
-		// width of image to display (in pixels)
-		int pxWidthVisible = myIntersect.m_width * pximgsize.GetWidth() / imgextent.m_width;
-		int pxHeightVisible = myIntersect.m_height * pximgsize.GetHeight() / imgextent.m_height;
+		// tests
+		wxRect myImgInfo;
+		wxRect myImgPos;
+		vrLayerRasterGDAL myLayer;
+		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
+												 myImgInfo, myImgPos)==false);
 		
-		// starting position from where we get image data (px)
-		int ximg = (myIntersect.GetLeft() - imgextent.GetLeft())  * pximgsize.GetWidth() / imgextent.m_width;
-		int yimg = (myIntersect.GetTop() - imgextent.GetTop()) * pximgsize.GetHeight() / imgextent.m_height;
+		TS_ASSERT(myImgInfo.IsEmpty());
+		TS_ASSERT(myImgPos == wxRect(0,0,0,0));
 		
-		// position for displaying the bitmap (in pixels)
-		int vx = (myIntersect.GetLeft() - wndextent.GetLeft()) / pxsize;
-		int vy = (wndextent.GetTop()- myIntersect.GetTop()) / pxsize;
 		
-		// returning values
-		pximginfo.SetTopLeft(wxPoint(ximg, yimg));
-		pximginfo.width = pxWidthVisible;
-		pximginfo.height = pxHeightVisible;
-		
-		pximgpos.x = vx;
-		pximgpos.y = vy;
-		
-		if (pximginfo.IsEmpty()) {
-			wxLogMessage("Image is outside the display.");
-			return false;
-			
-		}
-		
-		return true;
 	}
+	
+	
 	
 	void testForRasterIO1(){
 		// this code is for testing how to get data ready 
@@ -158,16 +137,17 @@ public:
 		
 		// tests
 		wxRect myImgInfo;
-		wxPoint myImgPos;
-		TS_ASSERT(_ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
+		wxRect myImgPos;
+		vrLayerRasterGDAL myLayer;
+		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
 										 myImgInfo, myImgPos)==true);
 		TS_ASSERT_EQUALS(myImgInfo.GetX(), 0);
 		TS_ASSERT_EQUALS(myImgInfo.GetY(), 0);
 		TS_ASSERT_EQUALS(myImgInfo.GetWidth(), 200);
 		TS_ASSERT_EQUALS(myImgInfo.GetHeight(), 60);
 		
-		TS_ASSERT_EQUALS(myImgPos.x, 100);
-		TS_ASSERT_EQUALS(myImgPos.y, 20);
+		TS_ASSERT_EQUALS(myImgPos.GetX(), 100);
+		TS_ASSERT_EQUALS(myImgPos.GetY(), 20);
 	}
 	
 	void testForRasterIO2(){
@@ -184,16 +164,17 @@ public:
 		
 		// tests
 		wxRect myImgInfo;
-		wxPoint myImgPos;
-		TS_ASSERT(_ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
+		wxRect myImgPos;
+		vrLayerRasterGDAL myLayer;
+		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
 										 myImgInfo, myImgPos)==true);
 		TS_ASSERT_EQUALS(myImgInfo.GetX(), 0);
 		TS_ASSERT_EQUALS(myImgInfo.GetY(), 50);
 		TS_ASSERT_EQUALS(myImgInfo.GetWidth(), 100);
 		TS_ASSERT_EQUALS(myImgInfo.GetHeight(), 50);
 		
-		TS_ASSERT_EQUALS(myImgPos.x, 200);
-		TS_ASSERT_EQUALS(myImgPos.y, 0);
+		TS_ASSERT_EQUALS(myImgPos.GetX(), 200);
+		TS_ASSERT_EQUALS(myImgPos.GetY(), 0);
 	}
 	
 	void testForRasterIO3(){
@@ -210,18 +191,43 @@ public:
 		
 		// tests
 		wxRect myImgInfo;
-		wxPoint myImgPos;
-		TS_ASSERT(_ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
+		wxRect myImgPos;
+		vrLayerRasterGDAL myLayer;
+		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
 										 myImgInfo, myImgPos)==true);
 		TS_ASSERT_EQUALS(myImgInfo.GetX(), 100);
 		TS_ASSERT_EQUALS(myImgInfo.GetY(), 0);
 		TS_ASSERT_EQUALS(myImgInfo.GetWidth(), 100);
 		TS_ASSERT_EQUALS(myImgInfo.GetHeight(), 50);
 		
-		TS_ASSERT_EQUALS(myImgPos.x, 0);
-		TS_ASSERT_EQUALS(myImgPos.y, 50);
+		TS_ASSERT_EQUALS(myImgPos.GetX(), 0);
+		TS_ASSERT_EQUALS(myImgPos.GetY(), 50);
 	}
 	
+	
+	void testRasterIntersection(){
+		//Param
+		vrRealRect myWndExtent (0, 2000, 2000, -1000);
+		vrRealRect myImgExtent (1000, 1500, 1000, -1000);
+		
+		wxSize myImgPxSize (200, 100);
+		double pixelsize = 10;
+		
+		
+		// tests
+		wxRect myImgInfo;
+		wxRect myImgPos;
+		vrLayerRasterGDAL myLayer;
+		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
+												 myImgInfo, myImgPos)==true);
+		
+		TS_ASSERT_EQUALS(myImgPos.GetX(), 100);
+		TS_ASSERT_EQUALS(myImgPos.GetY(), 50);
+		TS_ASSERT_EQUALS(myImgPos.GetWidth(), 100);
+		TS_ASSERT_EQUALS(myImgPos.GetHeight(), 50);
+		
+		
+	}
 	
 };
 
