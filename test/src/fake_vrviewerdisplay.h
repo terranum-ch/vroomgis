@@ -30,8 +30,9 @@ class FakevrViewerDisplay : public vrViewerDisplay {
 	
   public:
     FakevrViewerDisplay(const wxSize & size = wxSize(600,400));
-
     virtual ~FakevrViewerDisplay();
+	
+	void SetFakeSize(const wxSize & size){m_WndSize = size;}
 
     virtual  void DoGetSize(int * w, int *h) const;
 	virtual wxSize GetSize(){

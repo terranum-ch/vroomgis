@@ -83,6 +83,10 @@ bool vrLayerRasterGDAL::_ComputeDisplayPosSize(const wxSize & pximgsize,
 	vrRealRect myWndExtentTemp = wndextent;
 	wxASSERT(myWndExtentTemp == wndextent);
 	
+	
+	pximginfo = wxRect(0,0,0,0);
+	pximgpos = wxRect(0,0,0,0);
+	
 	vrRealRect myIntersect = myWndExtentTemp.Intersect(imgextent);
 	if (myIntersect.IsOk() == false) {
 		wxLogMessage("Image out of the dislay, intersection is null");
@@ -634,34 +638,35 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 	
 	if(_ComputeDisplayPosSize(m_ImgPxSize, myImgExtent, coord, 
 							  pxsize, myImgInfo, myImgPos)==false){
-		wxLogError("Computing Raster position and size failed");
-		return false;
+		wxLogMessage("Raster %s invalid. Maybe outside the display", m_FileName.GetFullName());
 	}
-	
-	unsigned char * myimgdata = NULL;
-	if (_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
-					   myImgInfo) == false) {
-		wxASSERT(myimgdata == NULL);
-		return false;
-	}
-	
-	wxImage myImg (myImgPos.GetWidth(), myImgPos.GetHeight());
-	myImg.SetData(myimgdata, false);
-	if (myImg.IsOk() == false) {
-		wxLogError("Creating raster failed");
-		return false;
-	}
-	
-	
-	// drawing the image on the passed bmp
-	wxBitmap myBmp(bmp->GetSize());
-	wxMemoryDC dc (myBmp);
-	dc.Clear();
-	
-	dc.DrawBitmap(myImg, myImgPos.GetX(), myImgPos.GetY(), false);
+	else { // raster inside display
 		
-	dc.SelectObject(wxNullBitmap);
-	*bmp = myBmp.ConvertToImage();
+		unsigned char * myimgdata = NULL;
+		if (_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
+						   myImgInfo) == false) {
+			wxASSERT(myimgdata == NULL);
+			return false;
+		}
+		
+		wxImage myImg (myImgPos.GetWidth(), myImgPos.GetHeight());
+		myImg.SetData(myimgdata, false);
+		if (myImg.IsOk() == false) {
+			wxLogError("Creating raster failed");
+			return false;
+		}
+		
+		
+		// drawing the image on the passed bmp
+		wxBitmap myBmp(bmp->GetSize());
+		wxMemoryDC dc (myBmp);
+		dc.Clear();
+		
+		dc.DrawBitmap(myImg, myImgPos.GetX(), myImgPos.GetY(), false);
+		
+		dc.SelectObject(wxNullBitmap);
+		*bmp = myBmp.ConvertToImage();
+	}
 	
 	
 	// set image transparency. Image is fully transparent, except for pixels where bitmap 
@@ -687,6 +692,11 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 		wxLogMessage("Initing alpha");
 	}
 	bmp->SetAlpha(alphachar, false);
+	
+	wxSize myBmpSize = bmp->GetSize();
+	wxASSERT(myImgPos.GetWidth() + myImgPos.GetX() <= bmp->GetWidth());
+	wxASSERT(myImgPos.GetHeight() + myImgPos.GetY() <= bmp->GetHeight());
+	
 	
 	
 	for (int x = myImgPos.GetX(); x< myImgPos.GetWidth() + myImgPos.GetX() ; x++) {
