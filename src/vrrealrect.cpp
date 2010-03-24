@@ -45,6 +45,7 @@ vrRealRect vrRealRect::Intersect(const vrRealRect & rect1) {
     
 	left = wxMax ( rect1.m_x , m_x );
     right = wxMin ( rect1.m_x+rect1.m_width, m_x + m_width );
+	
     if (m_height < 0) {
 		wxASSERT(rect1.m_height < 0);
 		top = wxMin (rect1.m_y, m_y);
@@ -55,8 +56,19 @@ vrRealRect vrRealRect::Intersect(const vrRealRect & rect1) {
 		bottom = wxMin ( rect1.m_y+rect1.m_height, m_y + m_height );
 	}
 	
+	
   	
 	vrRealRect myIntersect;
+	if (right < left) {
+		// invalid rect (negative width)
+		return myIntersect;
+	}
+	
+	if (top < bottom) {
+		// invalid rect (negative height)
+		return myIntersect;
+	}
+	
 	myIntersect.SetLeftTop(wxPoint2DDouble(left, top));
 	myIntersect.SetRightBottom(wxPoint2DDouble(right, bottom));
 	
