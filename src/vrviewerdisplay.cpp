@@ -78,9 +78,22 @@ void vrViewerDisplay::OnPaint(wxPaintEvent & event) {
 
 void vrViewerDisplay::OnSizeChange(wxSizeEvent & event) {
 	
+	if (event.GetSize().GetWidth() < 2 && event.GetSize().GetHeight() < 2) {
+		event.Skip();
+		return;
+	}
+	
+	
 	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
 	ProcessWindowEvent(myEvt);
+	
+	wxASSERT(m_Coordinate);
+	if (m_Coordinate->IsOk() == true) {
+		m_Coordinate->UpdateExtent();
+	}
+	
 	//_InvalidateView(false);
+	
 	event.Skip();
 }
 

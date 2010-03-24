@@ -18,9 +18,33 @@
 #include "vrcoordinate.h"
 #include "vrviewerdisplay.h"
 
+
+bool vrCoordinate::_ComputePixelSize() {
+
+	wxASSERT(m_Viewer);
+	m_PxSize = wxNOT_FOUND;
+	double myPxWidth = m_Viewer->GetSize().GetWidth();
+	
+	if(m_WndExtent.m_width <= 0){
+		wxLogError("Extent not defined, computing pixel size not possible");
+		return false;
+	}
+	
+	double myPixelSize = m_WndExtent.m_width / myPxWidth;
+	if (myPixelSize <= 0) {
+		wxLogError("Error computing pixel size. It is bellow 0 : %.f", myPixelSize);
+		return false;
+	}
+	
+	m_PxSize = myPixelSize;
+	return true;
+}
+
+
 vrCoordinate::vrCoordinate(vrViewerDisplay * viewer) {
 	wxASSERT(viewer);
 	m_Viewer = viewer;
+	m_PxSize = wxNOT_FOUND;
 }
 
 
@@ -29,6 +53,7 @@ vrCoordinate::vrCoordinate(const vrCoordinate & source) {
 	m_Viewer = source.m_Viewer;
 	m_WndExtent = source.m_WndExtent;
 	m_LayersExtent = source.m_LayersExtent;
+	m_PxSize = source.m_PxSize;
 }
 
 
@@ -41,6 +66,31 @@ vrRealRect vrCoordinate::GetExtent() {
 	return m_WndExtent;
 }
 
+
+bool vrCoordinate::UpdateExtent() {
+	wxASSERT(m_Viewer);
+	if (m_WndExtent.IsOk() == false) {
+		wxLogError("Window real extent isn't defined, updating not possible");
+		return false;
+	}
+	
+	// ensure sign is kept when size is updated
+	double xpositive = 1, ypositive =1; 
+	if (m_WndExtent.m_width < 0){
+		xpositive = -1;
+	}	
+	
+	if (m_WndExtent.m_height < 0) {
+		ypositive = -1;
+	}
+
+	wxSize myViewSize = m_Viewer->GetSize();
+	wxASSERT(myViewSize.IsFullySpecified());
+	
+	m_WndExtent.m_width = myViewSize.GetWidth() * fabs(GetPixelSize()) * xpositive;
+	m_WndExtent.m_height = myViewSize.GetHeight() * fabs(GetPixelSize()) * ypositive;
+	return true;
+}
 
 
 void vrCoordinate::ClearLayersExtent() {
@@ -113,32 +163,27 @@ bool vrCoordinate::ComputeFullExtent() {
 	wxPoint2DDouble myCenter = myLayerExtent.GetCentre();
 	m_WndExtent.SetCentre(myCenter);
 
-	// TODO: Remove this 4 lines bellow, only used for debuging
-	double dbottom = m_LayersExtent.GetBottom();
-	double dTop = m_LayersExtent.GetTop();
-	
-	double ddbottom = m_WndExtent.GetBottom();
-	double ddTop = m_WndExtent.GetTop();
-	
 	return true;
 }
 
 
 double vrCoordinate::GetPixelSize() {
-	wxASSERT(m_Viewer);
-	double myPxWidth = m_Viewer->GetSize().GetWidth();
 	
-	if(m_WndExtent.m_width <= 0){
-		wxLogError("Extent not defined, computing pixel size not possible");
-		return wxNOT_FOUND;
+	if (m_PxSize == wxNOT_FOUND) {
+		if (_ComputePixelSize() == false) {
+			wxLogError("Error computing pixel size");
+			return wxNOT_FOUND;
+		}
 	}
 	
-	double myPixelSize = m_WndExtent.m_width / myPxWidth;
-	if (myPixelSize <= 0) {
-		wxLogError("Error computing pixel size. It is bellow 0 : %.f", myPixelSize);
-		return wxNOT_FOUND;
-	}
-	
-	return myPixelSize;
+	return m_PxSize;
 }
+
+
+bool vrCoordinate::IsOk() {
+	wxASSERT(m_Viewer);
+	
+	return m_WndExtent.IsOk();
+}
+
 

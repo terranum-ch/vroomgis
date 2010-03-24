@@ -35,7 +35,11 @@ class vrCoordinate {
 	
 	vrRealRect m_WndExtent;
     vrRealRect m_LayersExtent;
+	double m_PxSize;
 	
+
+    bool _ComputePixelSize();
+		
 
   public:
     vrCoordinate(vrViewerDisplay * viewer);
@@ -44,11 +48,15 @@ class vrCoordinate {
 	
 
 	vrRealRect GetExtent();
+	bool UpdateExtent();
+
 	
     void ClearLayersExtent();
     void AddLayersExtent(const vrRealRect & rect);
     bool ComputeFullExtent();
 	
 	double GetPixelSize();
+	bool IsOk();
+
 };
 #endif

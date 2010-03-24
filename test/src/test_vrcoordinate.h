@@ -32,7 +32,6 @@ Testing the coordinate system
 
 
 
-
 class TEST_vrCoordinate : public CxxTest::TestSuite
 {
 public:
@@ -103,6 +102,56 @@ public:
 		TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10, 0.000001);
 	}
 	
+	
+	void testUpdateExtent(){
+		FakevrViewerDisplay myNewDisplay (wxSize(610, 410)); 
+		vrCoordinate myCoord (&myNewDisplay);
+		
+		TS_ASSERT(myCoord.UpdateExtent() == false);
+		
+		vrRealRect myTestExtent (0, 4000, 6000, -4000);
+		myCoord.AddLayersExtent(myTestExtent);
+		TS_ASSERT(myCoord.ComputeFullExtent()==true);
+		TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10, 0.00000001);
+		
+		
+		// this is the real test, before was just initialisation
+		TS_ASSERT(myCoord.UpdateExtent() == true);
+		TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10,0.00000001);
+		
+	
+		// viewer size increase but px size doesn't change
+		myNewDisplay.SetFakeSize(wxSize(1220, 820));
+		TS_ASSERT(myCoord.UpdateExtent() == true);
+		TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10,0.00000001);
+		wxLogMessage("---- pixel size is %.f", myCoord.GetPixelSize());
+
+		
+		// left and top doesn't change too
+		TS_ASSERT_DELTA(myCoord.GetExtent().GetLeft(), -50, 0.0001);
+		TS_ASSERT_DELTA(myCoord.GetExtent().GetTop(), 4050, 0.0001);
+		
+		TS_ASSERT_DELTA(myCoord.GetExtent().GetRight(), 12150, 0.0001);
+		TS_ASSERT_DELTA(myCoord.GetExtent().GetBottom(), -4150, 0.0001);
+		
+		
+		
+
+	}
+	
+	void testIsOk(){
+		FakevrViewerDisplay myNewDisplay (wxSize(610, 410)); 
+		vrCoordinate myCoord (&myNewDisplay);
+		
+		TS_ASSERT(myCoord.IsOk() == false);
+		
+		vrRealRect myTestExtent (0, 4000, 6000, -4000);
+		myCoord.AddLayersExtent(myTestExtent);
+		TS_ASSERT(myCoord.ComputeFullExtent()==true);
+		TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10, 0.00000001);
+		
+		TS_ASSERT(myCoord.IsOk() == true);		
+	}
 	
 
 };
