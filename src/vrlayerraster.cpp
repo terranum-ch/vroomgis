@@ -151,7 +151,7 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
 	
 	// create array for image data (RGBRGBRGB...)
 	unsigned int myimgRGBLen = outimgpxsize.GetWidth() * outimgpxsize.GetHeight() * 3;
-	*imgdata = (unsigned char *) CPLMalloc(myimgRGBLen);
+	*imgdata = (unsigned char *) malloc(myimgRGBLen);
 	if (*imgdata == NULL) {
 		wxLogError("Image creation failed, out of memory");
 		return false;
