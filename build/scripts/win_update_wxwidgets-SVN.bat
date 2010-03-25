@@ -42,6 +42,10 @@ ECHO -----------------------------------------------
 ECHO 3) BUILDING TOOLMAP2 (MAY TAKE SOME TIMES)-----
 ECHO -----------------------------------------------
 
+ECHO COPYING setup.h
+copy  /Y %trunkdir%\include\wx\msw\setup0.h %trunkdir%\include\wx\setup.h 
+copy  /Y %trunkdir%\include\wx\msw\setup0.h %trunkdir%\include\wx\msw\setup.h
+
 ECHO 3a) BUILDING DEBUG VERSION
 cd %builddir%
 nmake -f makefile.vc BUILD=debug CPPFLAGS="/MTd" UNICODE=1 MONOLITHIC=1
