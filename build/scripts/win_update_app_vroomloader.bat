@@ -15,6 +15,7 @@ REM 4) Launch the app
 @SET PARAMCXX=D:/LS/PROGRAMATION/LIB/cxxtest
 @SET PARAMGIS=D:/LS/PROGRAMATION/LIB/LIB_GDAL
 @SET PARAMGEOS=D:/LS/PROGRAMATION/LIB/geos-3.2.0
+@SET PARAMWXWIN=D:/LS/PROGRAMATION/LIB/wxMSW-SVN
 
 
 
@@ -35,7 +36,8 @@ REM ECHO  #define SVN_VERSION _T(^"%REV%^")
 
 ECHO 1) Updating repositories ... DONE (version is : %REV%)
 
-
+SET WXWIN=%PARAMWXWIN%
+echo %WXWIN%
 
 
 ECHO 2) Making Visual studio solution...
