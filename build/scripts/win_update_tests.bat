@@ -12,6 +12,11 @@ REM 4) Launch the tests
 @SET BINDIR=D:\LS\PRJ\COLTOPGIS\bin\vroomgistest
 @SET VSDIR=C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE
 
+@SET UNIT_TESTING_PATH=D:\LS\PRJ\COLTOPGIS\test-data
+@SET PARAMCXX=D:/LS/PROGRAMATION/LIB/cxxtest
+@SET PARAMGIS=D:/LS/PROGRAMATION/LIB/LIB_GDAL
+@SET PARAMGEOS=D:/LS/PROGRAMATION/LIB/geos-3.2.0
+@SET PARAMWXWIN=D:/LS/PROGRAMATION/LIB/wxMSW-SVN
 
 ECHO ----------------------------------------
 ECHO         UPDATE VROOMGIS TESTS
@@ -42,7 +47,9 @@ REM IF /i %wait2% EQU n (
 REM echo Then run cmake manually and come back
 REM goto :WaitForEnter
 REM ) 
-cmake %trunkdir%\test\build
+SET WXWIN=%PARAMWXWIN%
+echo %WXWIN%
+cmake %trunkdir%\test\build %trunkdir%\test\build -G "Visual Studio 9 2008" -DCXXTEST_DIRECTORY:PATH=%PARAMCXX% -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH=%PARAMGIS% -DSEARCH_GEOS_LIB_PATH:PATH=%PARAMGEOS% -DUSE_MT_LIBRARY:BOOL=1 -DUNIT_TESTING_PATH:PATH=%UNIT_TESTING_PATH%
 ECHO 2) Making Visual studio solution... DONE
 
 ECHO -----------------------------------------------

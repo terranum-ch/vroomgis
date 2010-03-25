@@ -25,7 +25,6 @@ Testing the coordinate system
 #endif
 
 #include "test_param.h"	//for test parameters
-#include "../../src/vroomgis.h"
 #include "../../src/vrrealrect.h"
 
 
