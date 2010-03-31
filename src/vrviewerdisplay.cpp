@@ -18,6 +18,7 @@
 #include "vrviewerdisplay.h"
 #include "vrcoordinate.h"
 #include "vrevent.h"
+#include "vrdisplaytool.h"
 
 
 bool vrViewerDisplay::_DrawRoundedMessage(const wxString & text, const wxColour & colour) {
@@ -106,6 +107,7 @@ void vrViewerDisplay::OnEraseBackground (wxPaintEvent & event){
 vrViewerDisplay::vrViewerDisplay(){
 	m_Coordinate = NULL;
 	m_bmp = NULL;
+	m_Tool = NULL;
 	wxLogError("Don't use this vrViewerDisplay ctor, only here for tests");
 }
 
@@ -116,6 +118,7 @@ wxPanel(parent, id){
 	
 	m_Coordinate = new vrCoordinate(this);
 	m_bmp = NULL;
+	m_Tool = NULL;
 	
 	SetBackgroundColour(colour);
 	
@@ -132,6 +135,7 @@ wxPanel(parent, id){
 
 vrViewerDisplay::~vrViewerDisplay() {
 	wxDELETE(m_Coordinate);
+	wxDELETE(m_Tool);
 	
 	// disconnect event
 	Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),
@@ -166,5 +170,28 @@ void vrViewerDisplay::_InvalidateView(bool updatenow) {
 		this->Update();
 	}
 }
+
+
+void vrViewerDisplay::SetToolDefault() {
+	SetTool(new vrDisplayToolDefault());
+}
+
+void vrViewerDisplay::SetToolZoom() {
+	SetTool(new vrDisplayToolZoom());
+}
+
+void vrViewerDisplay::SetTool(vrDisplayTool * tool) {
+	wxDELETE(m_Tool);
+	
+	wxASSERT(m_Tool);
+	if (tool == NULL) {
+		return;
+	}
+	m_Tool = tool;
+	SetCursor(m_Tool->GetCursor());
+}
+
+
+
 
 
