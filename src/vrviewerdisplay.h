@@ -24,11 +24,14 @@
 #include <wx/dcbuffer.h>
 
 class vrCoordinate;
+class vrDisplayTool;
 
 class vrViewerDisplay : public wxPanel{
 private:
     vrCoordinate * m_Coordinate;
 	wxBitmap * m_bmp;
+	vrDisplayTool * m_Tool;
+
 	
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
 	void _InvalidateView(bool updatenow);
@@ -46,10 +49,16 @@ public:
 	void SetBitmap(wxBitmap * bmp);
 	vrCoordinate * GetCoordinate() {return m_Coordinate;}
 	
-	
+	void SetToolDefault();
+    void SetToolZoom();
+    void SetTool(vrDisplayTool * tool);
+    inline const vrDisplayTool * GetTool() const;
 	
 };
 
+inline const vrDisplayTool * vrViewerDisplay::GetTool() const {
+	return m_Tool;
+}
 
 
 #endif
