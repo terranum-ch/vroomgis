@@ -103,6 +103,28 @@ void vrViewerDisplay::OnEraseBackground (wxPaintEvent & event){
 }
 
 
+void vrViewerDisplay::OnMouseDown(wxMouseEvent & event) {
+	if (m_Tool != NULL) {
+		m_Tool->MouseDown(event);
+	}
+}
+
+
+void vrViewerDisplay::OnMouseUp(wxMouseEvent & event) {
+	if (m_Tool != NULL) {
+		m_Tool->MouseUp(event);
+	}
+}
+
+
+void vrViewerDisplay::OnMouseMove(wxMouseEvent & event) {
+	if (m_Tool != NULL) {
+		m_Tool->MouseMove(event);
+	}
+}
+
+
+
 
 vrViewerDisplay::vrViewerDisplay(){
 	m_Coordinate = NULL;
@@ -123,30 +145,32 @@ wxPanel(parent, id){
 	SetBackgroundColour(colour);
 	
 	// connect event
-	Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),
-		NULL,this);
-	Connect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),
-			NULL,this);
+	Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),NULL,this);
+	Connect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),NULL,this);
+	Connect( wxEVT_PAINT, wxPaintEventHandler( vrViewerDisplay::OnPaint ),NULL, this );
 	
-	Connect( wxEVT_PAINT, 
-			wxPaintEventHandler( vrViewerDisplay::OnPaint ),
-			NULL, this );
+	// connect mouse event
+	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown),NULL,this);
+	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(vrViewerDisplay::OnMouseUp),NULL,this);
+	Connect(wxEVT_MOTION, wxMouseEventHandler(vrViewerDisplay::OnMouseMove),NULL,this);
+	
 }
 
 vrViewerDisplay::~vrViewerDisplay() {
-	wxDELETE(m_Coordinate);
-	wxDELETE(m_Tool);
+
 	
 	// disconnect event
-	Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),
-		NULL,this);
-	Disconnect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),
-			NULL,this);
-	Disconnect( wxEVT_PAINT, 
-			   wxPaintEventHandler( vrViewerDisplay::OnPaint ),
-			   NULL, this );
+	Disconnect (wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),NULL,this);
+	Disconnect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),NULL,this);
+	Disconnect( wxEVT_PAINT,wxPaintEventHandler( vrViewerDisplay::OnPaint ),NULL, this );
 	
+	// disconnect mouse event
+	Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown),NULL,this);
+	Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(vrViewerDisplay::OnMouseUp),NULL,this);
+	Disconnect(wxEVT_MOTION, wxMouseEventHandler(vrViewerDisplay::OnMouseMove),NULL,this);
 	
+	wxDELETE(m_Coordinate);
+	wxDELETE(m_Tool);
 	wxDELETE(m_bmp);
 }
 
@@ -173,17 +197,17 @@ void vrViewerDisplay::_InvalidateView(bool updatenow) {
 
 
 void vrViewerDisplay::SetToolDefault() {
-	SetTool(new vrDisplayToolDefault());
+	SetTool(new vrDisplayToolDefault(this));
 }
 
 void vrViewerDisplay::SetToolZoom() {
-	SetTool(new vrDisplayToolZoom());
+	SetTool(new vrDisplayToolZoom(this));
 }
 
 void vrViewerDisplay::SetTool(vrDisplayTool * tool) {
 	wxDELETE(m_Tool);
 	
-	wxASSERT(m_Tool);
+	wxASSERT(m_Tool==NULL);
 	if (tool == NULL) {
 		return;
 	}

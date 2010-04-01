@@ -77,6 +77,9 @@ public:
 	void OnOpenLayer(wxCommandEvent & event);
 	void OnShowLog (wxCommandEvent & event);
 	
+	void OnToolSelect (wxCommandEvent & event);
+	void OnToolZoom (wxCommandEvent & event);
+	
 private:
     DECLARE_EVENT_TABLE()
 };
