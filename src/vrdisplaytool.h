@@ -23,6 +23,8 @@
 #endif
 
 class vrViewerDisplay;
+class vrRubberBand;
+
 
 class vrDisplayTool {
 private:
@@ -31,8 +33,10 @@ private:
     wxCursor m_Cursor;
     vrViewerDisplay * m_Display;
 	
+	
 protected:
-    inline const vrViewerDisplay * GetDisplay() const;
+	vrRubberBand * m_Rubber;
+    inline vrViewerDisplay * GetDisplay() const;
 	
 	
 public:
@@ -52,7 +56,7 @@ public:
 	
 };
 
-inline const vrViewerDisplay * vrDisplayTool::GetDisplay() const {
+inline vrViewerDisplay * vrDisplayTool::GetDisplay() const {
 	return m_Display;
 }
 
