@@ -22,29 +22,40 @@
 #include <wx/wx.h>
 #endif
 
+class vrViewerDisplay;
 
 class vrDisplayTool {
-  private:
+private:
     wxString m_Name;
     int m_ID;
     wxCursor m_Cursor;
-
-
-  public:
+    vrViewerDisplay * m_Display;
+	
+protected:
+    inline const vrViewerDisplay * GetDisplay() const;
+	
+	
+public:
     vrDisplayTool();
-    vrDisplayTool(int id, wxString name, wxCursor cursor);
-    void Create(int id, wxString name, wxCursor cursor);
+    vrDisplayTool(vrViewerDisplay * display, int id, wxString name, wxCursor cursor);
+    void Create(vrViewerDisplay * display, int id, wxString name, wxCursor cursor);
     virtual ~vrDisplayTool();
-
+	
     inline const wxString GetName() const;
     inline const int GetID() const;
     inline const wxCursor GetCursor() const;
-
-    virtual bool MouseDown();
-    virtual bool MouseUp();
-    virtual bool MouseMove();
-
+	
+    virtual bool MouseDown(const wxMouseEvent & event);
+    virtual bool MouseUp(const wxMouseEvent & event);
+    virtual bool MouseMove(const wxMouseEvent & event);
+	
+	
 };
+
+inline const vrViewerDisplay * vrDisplayTool::GetDisplay() const {
+	return m_Display;
+}
+
 inline const wxString vrDisplayTool::GetName() const {
   return m_Name;
 }
@@ -63,12 +74,12 @@ inline const wxCursor vrDisplayTool::GetCursor() const {
 
 class vrDisplayToolDefault : public vrDisplayTool {
   public:
-    vrDisplayToolDefault();
+    vrDisplayToolDefault(vrViewerDisplay * display);
     virtual ~vrDisplayToolDefault();
 
-    virtual bool MouseDown();
-    virtual bool MouseUp();
-    virtual bool MouseMove();
+	virtual bool MouseDown(const wxMouseEvent & event);
+    virtual bool MouseUp(const wxMouseEvent & event);
+    virtual bool MouseMove(const wxMouseEvent & event);
 
 };
 
@@ -77,12 +88,12 @@ class vrDisplayToolDefault : public vrDisplayTool {
 
 class vrDisplayToolZoom : public vrDisplayTool {
   public:
-    vrDisplayToolZoom();
+    vrDisplayToolZoom(vrViewerDisplay * display);
     virtual ~vrDisplayToolZoom();
 
-    virtual bool MouseDown();
-    virtual bool MouseUp();
-    virtual bool MouseMove();
+	virtual bool MouseDown(const wxMouseEvent & event);
+    virtual bool MouseUp(const wxMouseEvent & event);
+    virtual bool MouseMove(const wxMouseEvent & event);
 
 };
 #endif

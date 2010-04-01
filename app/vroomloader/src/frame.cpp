@@ -27,7 +27,9 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
     EVT_MENU(wxID_EXIT,  vroomLoaderFrame::OnQuit)
     EVT_MENU(wxID_ABOUT, vroomLoaderFrame::OnAbout)
 	EVT_MENU(wxID_OPEN, vroomLoaderFrame::OnOpenLayer)
-EVT_MENU (wxID_INFO, vroomLoaderFrame::OnShowLog)
+	EVT_MENU (wxID_INFO, vroomLoaderFrame::OnShowLog)
+	EVT_MENU (wxID_DEFAULT, vroomLoaderFrame::OnToolSelect)
+	EVT_MENU (wxID_ZOOM_IN, vroomLoaderFrame::OnToolZoom)
 END_EVENT_TABLE()
 IMPLEMENT_APP(vroomLoader)
 
@@ -107,16 +109,18 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	// MENU
     wxMenu *fileMenu = new wxMenu;
 	wxMenu *helpMenu = new wxMenu;
-	wxMenu *layermenu = new wxMenu;
+	wxMenu *toolMenu = new wxMenu;
     
 	helpMenu->Append(wxID_ABOUT, "&About...\tF1", "Show about dialog");
 	helpMenu->Append(wxID_INFO, "Show Log Window", "Show log window");
     fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O","Open a GIS layer");
 	fileMenu->Append(wxID_EXIT, "E&xit\tAlt-X", "Quit this program");
+	toolMenu->Append(wxID_DEFAULT, "Select\tCtrl+S", "Select the selection tool");
+	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
 	
-     wxMenuBar *menuBar = new wxMenuBar();
+    wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
-	menuBar->Append(layermenu, "&Layers");
+	menuBar->Append(toolMenu, "&Tools");
 	menuBar->Append(helpMenu, "&Help");
 	
     SetMenuBar(menuBar);
@@ -236,5 +240,15 @@ void vroomLoaderFrame::OnShowLog (wxCommandEvent & event)
 	m_LogWnd->Show(true);	
 }
 
+
+
+void vroomLoaderFrame::OnToolSelect (wxCommandEvent & event){
+	m_DisplayCtrl->SetToolDefault();
+}
+
+
+void vroomLoaderFrame::OnToolZoom (wxCommandEvent & event){
+	m_DisplayCtrl->SetToolZoom();
+}
 
 

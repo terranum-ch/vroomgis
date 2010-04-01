@@ -40,6 +40,11 @@ private:
 	void OnSizeChange(wxSizeEvent & event);
 	void OnEraseBackground (wxPaintEvent & event);
 	
+	// mouse event functions
+	void OnMouseDown(wxMouseEvent & event);
+    void OnMouseUp(wxMouseEvent & event);
+    void OnMouseMove(wxMouseEvent & event);
+	
 	
 public:
 	vrViewerDisplay();
