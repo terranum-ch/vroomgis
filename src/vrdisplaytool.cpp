@@ -18,10 +18,12 @@
 
 #include "vrdisplaytool.h"
 #include "vrviewerdisplay.h"
+#include "vrrubberband.h"
 
 vrDisplayTool::vrDisplayTool() {
 	m_ID = wxNOT_FOUND;
 	m_Name = wxEmptyString;
+	m_Rubber = NULL;
 }
 
 
@@ -41,12 +43,13 @@ void vrDisplayTool::Create(vrViewerDisplay * display, int id, wxString name, wxC
 	m_Name = name;
 	m_Cursor = cursor;
 	m_Display = display;
+	m_Rubber = NULL;
 }
 
 
 
 vrDisplayTool::~vrDisplayTool() {
-	
+	wxDELETE(m_Rubber);
 }
 
 
@@ -98,25 +101,54 @@ bool vrDisplayToolDefault::MouseMove(const wxMouseEvent & event) {
 
 vrDisplayToolZoom::vrDisplayToolZoom(vrViewerDisplay * display) {
 	Create(display, wxID_ZOOM_100, "Zoom", wxCursor(wxCURSOR_MAGNIFIER));
+	
 }
 
 vrDisplayToolZoom::~vrDisplayToolZoom() {
+
 }
 
 bool vrDisplayToolZoom::MouseDown(const wxMouseEvent & event) {
-	wxLogMessage("Zoom down");
+	wxASSERT(m_Rubber == NULL);
+	m_Rubber = new vrRubberBand(GetDisplay());
+	wxASSERT(m_Rubber);
+	m_Rubber->SetPointFirst(event.GetPosition());
 	return false;
 }
 
 bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
-	wxLogMessage("Zoom up");
-	return false;
+	m_Rubber->SetPointLast(event.GetPosition());
+	if (m_Rubber->IsValid()==false) {
+		wxDELETE(m_Rubber);
+		return false;
+	}
+	
+	wxRect myRect = m_Rubber->GetRect();
+	wxDELETE(m_Rubber);
+	
+	wxLogMessage("Selection rect is %d, %d, %d, %d",
+				 myRect.GetLeft(),
+				 myRect.GetTop(),
+				 myRect.GetWidth(),
+				 myRect.GetHeight());
+	return true;
 }
 
 bool vrDisplayToolZoom::MouseMove(const wxMouseEvent & event) {
-	if (event.Dragging()==true) {
-		wxLogMessage("Zoom dragged");
+	
+
+	wxClientDC dc (GetDisplay());
+	dc.DrawRectangle(0,0,event.GetPosition().x, event.GetPosition().y);	
+	
+	/*if (event.Dragging()==true) {
+		
+		m_Rubber->SetPointLast(event.GetPosition());
+		m_Rubber->Update();
+		
+		//wxASSERT(m_Rubber);
+		//m_Rubber->SetPointLast(event.GetPosition());
+		//m_Rubber->Update();
 	}
-	return false;
+	return false;*/
 }
 

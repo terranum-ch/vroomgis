@@ -105,6 +105,7 @@ void vrViewerDisplay::OnEraseBackground (wxPaintEvent & event){
 
 void vrViewerDisplay::OnMouseDown(wxMouseEvent & event) {
 	if (m_Tool != NULL) {
+		CaptureMouse();
 		m_Tool->MouseDown(event);
 	}
 }
@@ -112,6 +113,7 @@ void vrViewerDisplay::OnMouseDown(wxMouseEvent & event) {
 
 void vrViewerDisplay::OnMouseUp(wxMouseEvent & event) {
 	if (m_Tool != NULL) {
+		ReleaseMouse();
 		m_Tool->MouseUp(event);
 	}
 }
@@ -120,6 +122,9 @@ void vrViewerDisplay::OnMouseUp(wxMouseEvent & event) {
 void vrViewerDisplay::OnMouseMove(wxMouseEvent & event) {
 	if (m_Tool != NULL) {
 		m_Tool->MouseMove(event);
+		//wxClientDC dc (this);
+		//dc.DrawRectangle(0,0,event.GetPosition().x, event.GetPosition().y);
+
 	}
 }
 
@@ -145,9 +150,9 @@ wxPanel(parent, id){
 	SetBackgroundColour(colour);
 	
 	// connect event
-	Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),NULL,this);
-	Connect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),NULL,this);
-	Connect( wxEVT_PAINT, wxPaintEventHandler( vrViewerDisplay::OnPaint ),NULL, this );
+	//Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),NULL,this);
+	//Connect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),NULL,this);
+	//Connect( wxEVT_PAINT, wxPaintEventHandler( vrViewerDisplay::OnPaint ),NULL, this );
 	
 	// connect mouse event
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown),NULL,this);
@@ -160,9 +165,9 @@ vrViewerDisplay::~vrViewerDisplay() {
 
 	
 	// disconnect event
-	Disconnect (wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),NULL,this);
-	Disconnect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),NULL,this);
-	Disconnect( wxEVT_PAINT,wxPaintEventHandler( vrViewerDisplay::OnPaint ),NULL, this );
+	//Disconnect (wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground),NULL,this);
+	//Disconnect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange),NULL,this);
+	//Disconnect( wxEVT_PAINT,wxPaintEventHandler( vrViewerDisplay::OnPaint ),NULL, this );
 	
 	// disconnect mouse event
 	Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown),NULL,this);
