@@ -1,9 +1,9 @@
 /***************************************************************************
-				vrrubberband.cpp
-                    
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrrubberband.cpp
+ 
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,14 +27,21 @@ vrRubberBand::vrRubberBand(wxWindow * window) {
 
 
 vrRubberBand::~vrRubberBand() {
+	// during unit testing, m_Window is allways null otherwise
+	// m_Window should be valid
+	if (m_Window == NULL) {
+		wxLogError("Window object is NULL in rubberband (normal for unit testing)");
+		return;
+	}
+	
 	// brakets are needed to destroy wxClientDC before reseting
 	// m_Overlay.
-	/*{
+	{
 		wxClientDC dc( m_Window );
 		wxDCOverlay overlaydc( m_Overlay, &dc );
 		overlaydc.Clear();
 	}
-	m_Overlay.Reset();*/
+	m_Overlay.Reset();
 }
 
 
@@ -120,20 +127,6 @@ bool vrRubberBand::IsValid() {
 
 void vrRubberBand::Update() {
 	
-	/*wxClientDC dc ( m_Window);
-	dc.DrawRectangle(0,0,m_PointEnd.x, m_PointEnd.y);*/
-	
-	/*
-	if (IsValid() == false) {
-		wxLogMessage("Update isn't valid");
-		return;
-	}
-	
-	if (m_Window == NULL) {
-		wxLogError("No Window defined, drawing isn't possible");
-		return;
-	}*/
-	wxLogMessage("Update called");
 	wxClientDC dc( m_Window ) ;
 	wxDCOverlay overlaydc( m_Overlay, &dc );
 	overlaydc.Clear();
@@ -144,7 +137,7 @@ void vrRubberBand::Update() {
 	dc.SetPen( wxPen( *wxLIGHT_GREY, 2, wxSOLID ) );
 	dc.SetBrush( *wxTRANSPARENT_BRUSH );
 #endif
-	//dc.DrawRectangle( GetRect() );
-	dc.DrawRectangle(0 , 0 ,m_PointEnd.x, m_PointEnd.y);
+	dc.DrawRectangle( GetRect() );
+	
 }
 

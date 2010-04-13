@@ -135,20 +135,12 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 }
 
 bool vrDisplayToolZoom::MouseMove(const wxMouseEvent & event) {
-	
 
-	wxClientDC dc (GetDisplay());
-	dc.DrawRectangle(0,0,event.GetPosition().x, event.GetPosition().y);	
-	
-	/*if (event.Dragging()==true) {
-		
+	if (event.Dragging()==true) {
+		wxASSERT(m_Rubber);
 		m_Rubber->SetPointLast(event.GetPosition());
 		m_Rubber->Update();
-		
-		//wxASSERT(m_Rubber);
-		//m_Rubber->SetPointLast(event.GetPosition());
-		//m_Rubber->Update();
 	}
-	return false;*/
+	return false;
 }
 
