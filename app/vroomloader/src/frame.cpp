@@ -55,7 +55,6 @@ void  vroomLoaderFrame::_CreateControls()
 	
 	wxSplitterWindow* m_splitter2;
 	m_splitter2 = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_LIVE_UPDATE );
-	//m_splitter2->Connect( wxEVT_IDLE, wxIdleEventHandler( MyPanel1::m_splitter2OnIdle ), NULL, this );
 	wxPanel* m_panel1;
 	m_panel1 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer4;
@@ -64,7 +63,6 @@ void  vroomLoaderFrame::_CreateControls()
 	m_TocCtrl = new vrViewerTOC( m_panel1, wxID_ANY);
 	bSizer4->Add( m_TocCtrl, 2, wxEXPAND, 5 );
 	
-	//m_LogCtrl = new wxTextCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
 	wxFilePickerCtrl * myPicker = new wxFilePickerCtrl(m_panel1, wxID_ANY,wxEmptyString, 
 													   wxFileSelectorPromptStr,
 													   wxFileSelectorDefaultWildcardStr,
@@ -72,7 +70,6 @@ void  vroomLoaderFrame::_CreateControls()
 													   wxDefaultSize,
 													   wxFLP_SAVE | wxFLP_USE_TEXTCTRL);
 													   
-	//bSizer4->Add( m_LogCtrl, 1, wxEXPAND, 5 );
 	bSizer4->Add(myPicker, 0, wxEXPAND | wxALL, 5);
 	
 	
@@ -85,7 +82,6 @@ void  vroomLoaderFrame::_CreateControls()
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 	
 	m_DisplayCtrl = new vrViewerDisplay( m_panel2, wxID_ANY);
-	//m_DisplayCtrl->SetScrollRate( 5, 5 );
 	m_DisplayCtrl->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 	
 	bSizer5->Add( m_DisplayCtrl, 1, wxEXPAND, 5 );
@@ -227,10 +223,7 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 		
 		
 	}
-	
-	
-	
-	event.Skip();
+	//event.Skip();
 }
 
 
