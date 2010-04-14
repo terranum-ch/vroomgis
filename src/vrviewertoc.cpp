@@ -22,11 +22,23 @@
 #include "vrlayer.h"
 #include "vrrender.h"
 
+#include <wx/colordlg.h>	// colour dialog
+#include <wx/numdlg.h>		// number entry dialog
+
+
+
 
 BEGIN_EVENT_TABLE(vrViewerTOC, wxCheckListBox)
 	EVT_CHECKLISTBOX(wxID_ANY, vrViewerTOC::OnVisibleStatusChanged)
 	EVT_RIGHT_DOWN(vrViewerTOC::OnMouseRightDown)
+	// POPUP EVENT
+	EVT_MENU(vrID_POPUP_PEN_COLOR, vrViewerTOC::OnSetColorPen)
+	EVT_MENU(vrID_POPUP_BRUSH_COLOR, vrViewerTOC::OnSetColorBrush)
+	EVT_MENU(vrID_POPUP_TRANSPARENCY, vrViewerTOC::OnSetTransparency)
+	EVT_MENU(vrID_POPUP_DRAWING_WIDTH, vrViewerTOC::OnSetWidth)
 END_EVENT_TABLE()
+
+
 
 void vrViewerTOC::OnVisibleStatusChanged(wxCommandEvent & event) {
 	
@@ -38,11 +50,100 @@ void vrViewerTOC::OnVisibleStatusChanged(wxCommandEvent & event) {
 	wxASSERT(myItemRenderer);
 	myItemRenderer->SetVisible(IsChecked(event.GetInt()));
 	
-	// ask for reloading data
-	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
-	ProcessWindowEvent(myEvt);
+	_ReloadData();
 }
-				   
+		
+
+
+void vrViewerTOC::OnSetColorPen(wxCommandEvent & event) {
+	int mySelItem = GetSelection();
+	wxASSERT(mySelItem != wxNOT_FOUND);
+	wxASSERT(m_ViewerManager);
+	
+	vrRenderVector * myRenderVector = (vrRenderVector*) m_ViewerManager->GetRenderer(mySelItem)->GetRender();
+	wxASSERT(myRenderVector);
+	
+	// displaying colour dialog
+	wxColourData myActualCol;
+	myActualCol.SetColour(myRenderVector->GetColorPen());
+	wxColourDialog myColDlg (this, &myActualCol);
+	if (myColDlg.ShowModal() == wxID_OK) {
+		myRenderVector->SetColorPen(myColDlg.GetColourData().GetColour());
+		_ReloadData();
+	}
+		
+}
+
+
+
+void vrViewerTOC::OnSetColorBrush(wxCommandEvent & event) {
+	int mySelItem = GetSelection();
+	wxASSERT(mySelItem != wxNOT_FOUND);
+	wxASSERT(m_ViewerManager);
+	
+	vrRenderVector * myRenderVector = (vrRenderVector*) m_ViewerManager->GetRenderer(mySelItem)->GetRender();
+	wxASSERT(myRenderVector);
+	
+	// displaying colour dialog
+	wxColourData myActualCol;
+	myActualCol.SetColour(myRenderVector->GetColorBrush());
+	wxColourDialog myColDlg (this, &myActualCol);
+	if (myColDlg.ShowModal() == wxID_OK) {
+		myRenderVector->SetColorBrush(myColDlg.GetColourData().GetColour());
+		_ReloadData();
+	}
+	
+	
+}
+
+
+
+void vrViewerTOC::OnSetTransparency(wxCommandEvent & event) {
+	int mySelItem = GetSelection();
+	wxASSERT(mySelItem != wxNOT_FOUND);
+	wxASSERT(m_ViewerManager);
+	
+	vrRender * myRender = m_ViewerManager->GetRenderer(mySelItem)->GetRender();
+	wxASSERT(myRender);
+	
+	wxNumberEntryDialog myNumDlg(this,
+								 "Adjust the transparency percent\n0 is fully transparent, 100 is fully opaque",
+								 "Transparency percent:",
+								 "Adjust Opacity",
+								 myRender->GetTransparency(),
+								 0,
+								 100);
+	if (myNumDlg.ShowModal()==wxID_OK) {
+		myRender->SetTransparency(myNumDlg.GetValue());
+		_ReloadData();
+	}
+}
+
+
+
+void vrViewerTOC::OnSetWidth(wxCommandEvent & event) {
+	int mySelItem = GetSelection();
+	wxASSERT(mySelItem != wxNOT_FOUND);
+	wxASSERT(m_ViewerManager);
+	
+	vrRenderVector * myRenderVector = (vrRenderVector*) m_ViewerManager->GetRenderer(mySelItem)->GetRender();
+	wxASSERT(myRenderVector);
+	
+	wxNumberEntryDialog myNumDlg(this,
+								 "Adjust the pen's width\nAllowed widths are between 0 and 50 pixels",
+								 "Width:",
+								 "Adjust pen's width",
+								 myRenderVector->GetSize(),
+								 1,
+								 50);
+	if (myNumDlg.ShowModal()==wxID_OK) {
+		myRenderVector->SetSize(myNumDlg.GetValue());
+		_ReloadData();
+	}
+}
+
+
+
 void vrViewerTOC::OnMouseRightDown(wxMouseEvent & event) {
 	if (GetCount() == 0) {
 		return;
@@ -69,27 +170,38 @@ void vrViewerTOC::OnMouseRightDown(wxMouseEvent & event) {
 }
 
 
+
 void vrViewerTOC::_ShowMenuContextual(int id, vrRenderer * renderer) {
 	wxASSERT(renderer);
 	wxASSERT(id != wxNOT_FOUND);
 	
 	wxMenu myPopMenu;
-	myPopMenu.Append(vrID_POPUP_REMOVE, "Remove Layer");
+	myPopMenu.Append(vrID_POPUP_REMOVE, "Remove Layer (not implemented)");
+	myPopMenu.Enable(vrID_POPUP_REMOVE, false);
 	myPopMenu.AppendSeparator();
-	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, "Set transparency...");
+	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, "Set Transparency...");
 	myPopMenu.AppendSeparator();
 	
 	switch (renderer->GetRender()->GetType()) {
 		case vrRENDER_VECTOR:
-			myPopMenu.Append(vrID_POPUP_PEN_COLOR, "Set pen color...");
-			myPopMenu.Append(vrID_POPUP_BRUSH_COLOR, "Set brush color...");
-			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, "Set drawing width...");
+			myPopMenu.Append(vrID_POPUP_PEN_COLOR, "Set Pen color...");	
+			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, "Set Pen width...");
+			myPopMenu.AppendSeparator();
+			myPopMenu.Append(vrID_POPUP_BRUSH_COLOR, "Set Brush color...");
+
 			break;
 		default:
 			break;
 	}
 	
 	PopupMenu(&myPopMenu);	
+}
+
+
+void vrViewerTOC::_ReloadData() {
+	// ask for reloading data
+	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
+	ProcessWindowEvent(myEvt);
 }
 
 
@@ -101,6 +213,8 @@ wxCheckListBox(parent, id, pos, size){
 	m_FreezeStatus = false;
 	
 }
+
+
 
 vrViewerTOC::~vrViewerTOC() {
 }

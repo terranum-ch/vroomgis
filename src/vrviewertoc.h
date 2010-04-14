@@ -38,34 +38,42 @@ const int vrID_POPUP_DRAWING_WIDTH = wxID_HIGHEST +	5 + vrID_VIEWERTOC_BASE;
 
 class vrViewerTOC : public wxCheckListBox {
 private:
-
+	
 	vrViewerLayerManager * m_ViewerManager;
 	bool m_FreezeStatus;
 	
 	// event function
 	void OnVisibleStatusChanged(wxCommandEvent & event);
 	void OnMouseRightDown(wxMouseEvent & event);
-
-	
-	virtual void _ShowMenuContextual(int id, vrRenderer * renderer);
-
+	// event function popup
+	void OnSetColorPen(wxCommandEvent & event);
+    void OnSetColorBrush(wxCommandEvent & event);
+    void OnSetTransparency(wxCommandEvent & event);
+    void OnSetWidth(wxCommandEvent & event);
 	
 	DECLARE_EVENT_TABLE();
 	
-  public:
+	
+protected:
+    void _ReloadData();
+	virtual void _ShowMenuContextual(int id, vrRenderer * renderer);
+	
+	
+	
+public:
     vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition,
 				const wxSize & size = wxDefaultSize);
-
+	
     virtual ~vrViewerTOC();
-
+	
     bool Add(int index, vrRenderer * renderer, int control);
     bool Remove(int index);
-
+	
     void FreezeBegin();
     void FreezeEnd();
 	
 	void SetViewerLayerManager(vrViewerLayerManager * value);
-
-
+	
+	
 };
 #endif

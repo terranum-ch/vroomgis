@@ -349,7 +349,7 @@ void vrViewerLayerManager::OnReload(wxCommandEvent & event) {
 	m_Display->SetBitmap(myFinalBmp);
 	
 	wxDELETE(myFinalBmp);
-	event.Skip();
+	//event.Skip();
 }
 
 

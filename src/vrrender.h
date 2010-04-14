@@ -37,7 +37,7 @@ class vrRender {
     vrRENDER_TYPE  m_Type;
 
     int m_Transparency;
-
+    unsigned char GetTransparencyChar();
 
   public:
     vrRender();
@@ -45,7 +45,7 @@ class vrRender {
     virtual ~vrRender();
 	virtual vrRENDER_TYPE GetType() const;
 
-    inline const int GetTransparency() const;
+    inline const int GetTransparency() const;	
     void SetTransparency(int value);
 
 };
@@ -68,24 +68,16 @@ private:
     vrRenderVector();
     virtual ~vrRenderVector();
 	
-	inline const wxColour GetColorPen() const;
+	wxColour GetColorPen();
     void SetColorPen(const wxColour & color);
 	
-    inline const wxColour GetColorBrush() const;
+    wxColour GetColorBrush();
     void SetColorBrush(const wxColour & color);
 		
     inline const int GetSize() const;
     void SetSize(int value);
 	
 };
-
-inline const wxColour vrRenderVector::GetColorPen() const {
-	return m_ColorPen;
-}
-
-inline const wxColour vrRenderVector::GetColorBrush() const {
-	return m_ColorBrush;
-}
 
 inline const int vrRenderVector::GetSize() const {
 	return m_Size;
