@@ -29,7 +29,7 @@ vrRender::~vrRender() {
 
 
 
-vrRENDER_TYPE vrRender::GetType() {
+vrRENDER_TYPE vrRender::GetType() const{
 	return m_Type;
 }
 
@@ -45,6 +45,9 @@ void vrRender::SetTransparency(int value) {
 
 vrRenderVector::vrRenderVector() {
 	m_Type = vrRENDER_VECTOR;
+	m_Size = 1;
+	m_ColorPen = *wxBLACK;
+	m_ColorBrush = *wxBLACK;
 }
 
 
@@ -53,7 +56,18 @@ vrRenderVector::~vrRenderVector() {
 }
 
 
+void vrRenderVector::SetColorPen(const wxColour & color) {
+	m_ColorPen = color;
+}
 
+void vrRenderVector::SetColorBrush(const wxColour & color) {
+	m_ColorBrush = color;
+}
+
+
+void vrRenderVector::SetSize(int value) {
+	m_Size = value;
+}
 
 
 vrRenderRaster::vrRenderRaster() {
