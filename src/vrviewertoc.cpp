@@ -20,10 +20,12 @@
 #include "vrevent.h"
 #include "vrviewerlayermanager.h"
 #include "vrlayer.h"
+#include "vrrender.h"
 
 
 BEGIN_EVENT_TABLE(vrViewerTOC, wxCheckListBox)
 	EVT_CHECKLISTBOX(wxID_ANY, vrViewerTOC::OnVisibleStatusChanged)
+	EVT_RIGHT_DOWN(vrViewerTOC::OnMouseRightDown)
 END_EVENT_TABLE()
 
 void vrViewerTOC::OnVisibleStatusChanged(wxCommandEvent & event) {
@@ -40,7 +42,55 @@ void vrViewerTOC::OnVisibleStatusChanged(wxCommandEvent & event) {
 	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
 	ProcessWindowEvent(myEvt);
 }
+				   
+void vrViewerTOC::OnMouseRightDown(wxMouseEvent & event) {
+	if (GetCount() == 0) {
+		return;
+	}
+	
+	// hit test
+	wxPoint myPos = event.GetPosition();
+	int myItemID = HitTest(myPos);
+	wxLogMessage("Item seleced id is %d @ position %d - %d", myItemID, myPos.x, myPos.y);
 
+	// FIXME: Remove this code when HitTest will work, this is a bug in wxWidgets
+	int myItemSelected = GetSelection();
+	if (myItemSelected == wxNOT_FOUND) {
+		wxLogWarning("No item selected, %d", myItemSelected);
+		return;
+	}
+	
+	wxASSERT(m_ViewerManager);
+	vrRenderer * myRenderer = m_ViewerManager->GetRenderer(myItemSelected);
+	wxASSERT(myRenderer);
+	
+	_ShowMenuContextual(myItemSelected, myRenderer);
+	
+}
+
+
+void vrViewerTOC::_ShowMenuContextual(int id, vrRenderer * renderer) {
+	wxASSERT(renderer);
+	wxASSERT(id != wxNOT_FOUND);
+	
+	wxMenu myPopMenu;
+	myPopMenu.Append(vrID_POPUP_REMOVE, "Remove Layer");
+	myPopMenu.AppendSeparator();
+	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, "Set transparency...");
+	myPopMenu.AppendSeparator();
+	
+	switch (renderer->GetRender()->GetType()) {
+		case vrRENDER_VECTOR:
+			myPopMenu.Append(vrID_POPUP_PEN_COLOR, "Set pen color...");
+			myPopMenu.Append(vrID_POPUP_BRUSH_COLOR, "Set brush color...");
+			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, "Set drawing width...");
+			break;
+		default:
+			break;
+	}
+	
+	PopupMenu(&myPopMenu);	
+}
 
 
 

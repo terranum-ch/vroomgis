@@ -170,8 +170,15 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 	wxASSERT(gdc);
 	wxStopWatch sw;
 	// creating pen
-	// TODO: Update this code for reflecting the vrRender code
-	wxPen myPen (wxColour(0,0,255, 150), 2); 
+	
+	wxASSERT(render->GetType() == vrRENDER_VECTOR);
+	vrRenderVector * myRender = (vrRenderVector*) render;
+	myRender->GetColorPen();
+	
+	wxPen myPen (myRender->GetColorPen(),
+				 myRender->GetSize());
+				 
+				 //wxColour(0,0,255, 150), 2); 
 	gdc->SetPen(myPen);
 	
 	
