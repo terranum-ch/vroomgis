@@ -36,11 +36,15 @@ vrRENDER_TYPE vrRender::GetType() const{
 
 
 void vrRender::SetTransparency(int value) {
-  m_Transparency = value;
+	wxASSERT(value >= 0 && value <= 100);
+	m_Transparency = value;
 }
 
 
-
+unsigned char vrRender::GetTransparencyChar() {
+	int myValue = m_Transparency * 255 / 100;
+	return 255 - myValue;
+}
 
 
 vrRenderVector::vrRenderVector() {
@@ -67,6 +71,25 @@ void vrRenderVector::SetColorBrush(const wxColour & color) {
 
 void vrRenderVector::SetSize(int value) {
 	m_Size = value;
+}
+
+wxColour vrRenderVector::GetColorPen() {
+	char myRed = m_ColorPen.Red();
+	char myGreen = m_ColorPen.Green();
+	char myBlue = m_ColorPen.Blue();
+	
+	m_ColorPen.Set(myRed, myGreen, myBlue, GetTransparencyChar());	
+	return m_ColorPen;
+}
+
+
+wxColour vrRenderVector::GetColorBrush(){
+	char myRed = m_ColorBrush.Red();
+	char myGreen = m_ColorBrush.Green();
+	char myBlue = m_ColorBrush.Blue();
+	
+	m_ColorBrush.Set(myRed, myGreen, myBlue, GetTransparencyChar());	
+	return m_ColorBrush;
 }
 
 

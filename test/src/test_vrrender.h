@@ -64,6 +64,29 @@ public:
 		
 	}
 	
+	void testRenderGetTransparencyChar(){
+		vrRender * mypRender = NULL;
+		vrRenderVector myRenderVect;
+		
+		mypRender = & myRenderVect;
+		
+		mypRender->SetTransparency(0); // opaque
+		TS_ASSERT_EQUALS(mypRender->GetTransparency(), 0);
+		TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 255);
+		
+		mypRender->SetTransparency(100); // transparent
+		TS_ASSERT_EQUALS(mypRender->GetTransparency(), 100);
+		TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 0);
+		
+		mypRender->SetTransparency(50); // medium tranparency
+		TS_ASSERT_EQUALS(mypRender->GetTransparency(), 50);
+		TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 128);
+		
+		
+
+		
+	}
+	
 };
 
 
