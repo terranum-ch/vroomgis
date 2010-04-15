@@ -290,7 +290,27 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	
 	
 	// prepare bitmap for drawing
-	wxBitmap myBmp(bmp->GetSize());
+	wxSize myBmpSize = bmp->GetSize();
+	wxBitmap myBmp(myBmpSize);
+	if (bmp->HasAlpha() == false){
+		bmp->InitAlpha();
+		wxLogMessage("Initing alpha");
+	}
+	
+	// empty bitmap
+	wxMemoryDC myDC;
+	myDC.SelectObject(myBmp);
+	wxGraphicsContext * myPgdc = wxGraphicsContext::Create(myDC);
+	myPgdc->SetBrush(wxBrush(wxColour(255,0,0,30)));
+	myPgdc->SetPen(wxPen(wxColour(255,0,0,30)));
+	wxGraphicsPath path = myPgdc->CreatePath();
+	path.AddRectangle(0,0,myBmpSize.x,myBmpSize.y);
+	myPgdc->DrawPath(path);
+	wxDELETE(myPgdc);
+	myDC.SelectObject(wxNullBitmap);
+		
+	
+	// adding transparency
 	char myBackgroundTransparency = 0;
 	unsigned char * alphachar = NULL;
 	unsigned int myimglen = bmp->GetWidth() * bmp->GetHeight();
@@ -305,10 +325,7 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	for ( unsigned int i = 0; i< myimglen; i++) {
 		*(alphachar + i) =  myBackgroundTransparency;
 	}
-	if (bmp->HasAlpha() == false){
-		bmp->InitAlpha();
-		wxLogMessage("Initing alpha");
-	}
+
 	bmp->SetAlpha(alphachar, false);
 	wxASSERT(myBmp.IsOk());
 	
@@ -340,7 +357,7 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 		return false;
 	}
 	
-	
+	wxDELETE(pgdc);
 	dc.SelectObject(wxNullBitmap);
 	*bmp = myBmp.ConvertToImage();
 
