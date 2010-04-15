@@ -30,15 +30,22 @@ echo '1) Updating SVN .... DONE (\c'
 echo  $VARSVNNUMBER ')'	
 echo $VARLINE
 
-echo "Removing binary files"
-rm -rvf $BINDIR
-mkdir $BINDIR
+
+echo "Should we totally clean the build directory (bin) (y/n) if not sure say yes"
+read value
+echo "$value"
+if [ "$value" = "y" ] ; then 
+   rm -rvf $BINDIR
+   mkdir $BINDIR
+else
+   echo "build directory not deleted"
+fi
 
 
 echo "3) configuring ..."
 cd $BINDIR
 
-cmake $TRUNKDIR/app/vroomloader/build -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config"
+cmake $TRUNKDIR/app/vroomloader/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config"
 
 echo $VARLINE
 echo "4) Making the binary"
