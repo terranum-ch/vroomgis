@@ -1,8 +1,8 @@
 /***************************************************************************
 								test_setup.h
-							Setup tests 
+							Setup tests
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2009 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -24,14 +24,12 @@
 #include <wx/wx.h>
 #endif
 
-#define private public
-#define protected public
 
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/GlobalFixture.h>
 
 #ifdef __LINUX__
-#include "gtk/gtk.h"	
+#include "gtk/gtk.h"
 #endif
 
 
@@ -40,7 +38,7 @@ class Fixture1 : public CxxTest::GlobalFixture
 
 public:
 	bool setUpWorld(){
-		wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");	
+		wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
 		wxInitializer initializer;
 		if ( !initializer )
 		{
@@ -53,7 +51,7 @@ public:
 #endif
 
 		return true;
-	}	
+	}
 
 
 };
@@ -61,7 +59,7 @@ public:
 
 static Fixture1 fixture1;
 
- 
+
 class Suite : public CxxTest::TestSuite
 {
 public:

@@ -2,7 +2,7 @@
 								test_vrlabel.h
 							Labelling class for data
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2009 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -24,7 +24,6 @@
     #include <wx/wx.h>
 #endif
 
-
 #include "vrlabel.h"
 
 
@@ -33,12 +32,12 @@ class TEST_vrLabel : public CxxTest::TestSuite
 {
 public:
 	wxFont m_Fontt;
-	
+
 	void setUp()
 	{
 		m_Fontt = wxFont(12,wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
 	}
-	
+
 	void testLabelCreate()
 	{
 		// using *wxNORMAL_FONT crash !!!
@@ -51,21 +50,21 @@ public:
 #endif
 		TS_ASSERT_EQUALS(myLabel.GetColor(), *wxBLACK);
 	}
-	
+
 	void testLabelCreate2()
 	{
 		wxFont myFont2 = m_Fontt;
 		myFont2.SetUnderlined(true);
-		
+
 		vrLabel myLabel(myFont2, wxColour(255,0,0));
 		TS_ASSERT_EQUALS(myLabel.GetColor(), *wxRED);
-#ifndef __WXMAC__		
+#ifndef __WXMAC__
 		TS_ASSERT(myLabel.GetFont() != m_Fontt);
 		TS_ASSERT_EQUALS(myLabel.GetFont(), myFont2);
 #endif
 	}
-	
-		
+
+
 };
 
 
