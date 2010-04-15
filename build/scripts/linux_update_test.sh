@@ -38,13 +38,13 @@ cd ..
 
 echo "Should we totally clean the build directory (bin) (y/n) if not sure say yes"
 read value
-
-if [ "$value" == "y" ]  
-then 
-rm -rvf $BINDIR
-mkdir $BINDIR
+echo "$value"
+if [ "$value" = "y" ] ; then 
+   rm -rvf $BINDIR
+   mkdir $BINDIR
+else
+   echo "build directory not deleted"
 fi
-
 
 echo "3) configuring ..."
 cd $BINDIR
