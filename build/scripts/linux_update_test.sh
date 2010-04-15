@@ -36,14 +36,20 @@ rm $BINDIR/main.cpp
 cd ..
 cd .. 
 
-echo "2b) REMOVING build directory"
+echo "Should we totally clean the build directory (bin) (y/n) if not sure say yes"
+read value
+
+if [ "$value" == "y" ]  
+then 
 rm -rvf $BINDIR
 mkdir $BINDIR
+fi
+
 
 echo "3) configuring ..."
 cd $BINDIR
 
-cmake $TRUNKDIR/test/build -DCXXTEST_DIRECTORY:PATH="/home/lucien/Documents/LIB/cxxtest" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DUNIT_TESTING_PATH:PATH="/home/lucien/Documents/ColtopGIS/test_data" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config"
+cmake $TRUNKDIR/test/build -G "CodeBlocks - Unix Makefiles" -DCXXTEST_DIRECTORY:PATH="/home/lucien/Documents/LIB/cxxtest" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DUNIT_TESTING_PATH:PATH="/home/lucien/Documents/ColtopGIS/test_data" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config"
 
 echo $VARLINE
 echo "4) Making the tests"

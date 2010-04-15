@@ -1,8 +1,8 @@
 /***************************************************************************
 				vrlayerraster.h
-                    
+
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2009 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -25,6 +25,7 @@
     #include <wx/wx.h>
 #endif
 
+
 #include "vrlayer.h"
 
 class vrLayerRaster : public vrLayer {
@@ -37,9 +38,9 @@ class vrLayerRaster : public vrLayer {
     virtual ~vrLayerRaster();
 	virtual bool Create(const wxFileName & filename){return false;}
     virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
-	
+
 	virtual bool GetExtent(vrRealRect & rect){return false;}
-	
+
 	virtual bool IsOK();
 
 
@@ -51,15 +52,15 @@ class vrLayerRaster : public vrLayer {
 class vrLayerRasterGDAL : public vrLayerRaster {
   private:
 	vrRealRect m_ImgExtent;
-    wxSize m_ImgPxSize;	
-	
+    wxSize m_ImgPxSize;
+
 	// stat for one band data (Greyscale, MNT, etc)
 	double m_OneBandMin;
     double m_OneBandMax;
     double m_OneBandNoData;
-	
-	
-	
+
+
+
     bool _Close();
 	bool _ComputeDisplayPosSize(const wxSize & pximgsize, const vrRealRect & imgextent,
 								const vrRealRect & wndextent, double pxsize,
@@ -68,21 +69,21 @@ class vrLayerRasterGDAL : public vrLayerRaster {
 						const wxRect & readimgpxinfo);
 	double _ReadGDALValueToDouble(void* & data, const GDALDataType & type, int index);
 
-	
+
 	bool _ComputeStat();
     bool _HasStat();
 	bool _ComputeExtent();
 	bool _HasExtent();
 
-	
+
 
   public:
     vrLayerRasterGDAL();
     virtual ~vrLayerRasterGDAL();
-	
+
 	virtual bool Create(const wxFileName & filename);
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
-	
+
 	virtual bool GetExtent(vrRealRect & rect);
 	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 						 const vrRender * render = NULL, const vrLabel * label = NULL);

@@ -2,7 +2,7 @@
 								test_vrrender.h
 					Rendering array storring vrLayer, vrRender, vrLabel
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2009 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -24,6 +24,7 @@
     #include <wx/wx.h>
 #endif
 
+
 #include "test_param.h"	//for test parameters
 #include "vrrenderer.h"
 
@@ -33,7 +34,7 @@ class TEST_vrRenderer : public CxxTest::TestSuite
 public:
 	vrLayerManager * m_Manager;
 	vrLayer * m_LayerShp;
-	
+
 
 	void setUp()
 	{
@@ -43,41 +44,41 @@ public:
 		m_LayerShp = m_Manager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
 		TS_ASSERT(m_LayerShp != NULL);
 	}
-	
+
 	void tearDown()
 	{
 		delete m_Manager;
 	}
-	
-	
+
+
 	void testRendererCreate()
 	{
 		TS_ASSERT(m_Manager != NULL);
 		TS_ASSERT(m_LayerShp != NULL);
-		
+
 		vrRenderer myRenderer(m_LayerShp);
 		TS_ASSERT_EQUALS(myRenderer.GetLayer()->GetType(), vrDRIVER_VECTOR_SHP);
-		
+
 		TS_ASSERT_EQUALS(myRenderer.GetRender()->GetType(), vrRENDER_VECTOR);
 		TS_ASSERT_EQUALS(myRenderer.GetLabel()->GetColor(), *wxBLACK);
-		
+
 	}
-	
+
 	void testRenderCreate()
 	{
-		
+
 		//vrRenderRaster * myRenderRaster = new vrRenderRaster();
 		vrRenderVector * myRenderVector = new vrRenderVector();
-		
+
 		// crash
 		//vrRenderer myRenderer(m_LayerShp, myRenderRaster);
-		
+
 		// ok
 		vrRenderer myRenderer (m_LayerShp, myRenderVector);
-		
+
 	}
-	
-	
+
+
 };
 
 
