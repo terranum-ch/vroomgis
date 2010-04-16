@@ -27,6 +27,7 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
     EVT_MENU(wxID_EXIT,  vroomLoaderFrame::OnQuit)
     EVT_MENU(wxID_ABOUT, vroomLoaderFrame::OnAbout)
 	EVT_MENU(wxID_OPEN, vroomLoaderFrame::OnOpenLayer)
+	EVT_MENU(wxID_REMOVE, vroomLoaderFrame::OnCloseLayer)
 	EVT_MENU (wxID_INFO, vroomLoaderFrame::OnShowLog)
 	EVT_MENU (wxID_DEFAULT, vroomLoaderFrame::OnToolSelect)
 	EVT_MENU (wxID_ZOOM_IN, vroomLoaderFrame::OnToolZoom)
@@ -109,7 +110,8 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
     
 	helpMenu->Append(wxID_ABOUT, "&About...\tF1", "Show about dialog");
 	helpMenu->Append(wxID_INFO, "Show Log Window", "Show log window");
-    fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O","Open a GIS layer");
+    fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O","Open GIS layer(s)");
+	fileMenu->Append(wxID_REMOVE, "&Close\tCtrl+W", "Close GIS layer(s)");
 	fileMenu->Append(wxID_EXIT, "E&xit\tAlt-X", "Quit this program");
 	toolMenu->Append(wxID_DEFAULT, "Select\tCtrl+S", "Select the selection tool");
 	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
@@ -235,6 +237,57 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 		
 	}
 	//event.Skip();
+}
+
+
+
+void vroomLoaderFrame::OnCloseLayer(wxCommandEvent & event){
+	
+	wxArrayString myLayersName;
+	for (int i = 0; i<m_ViewerLayerManager->GetCount(); i++) {
+		vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(i);
+		wxASSERT(myRenderer);
+		myLayersName.Add(myRenderer->GetLayer()->GetName().GetFullName());
+	}
+	
+	if (myLayersName.IsEmpty()) {
+		wxLogError("No layer opened, nothing to close");
+		return;
+	}
+	
+
+	wxMultiChoiceDialog myChoiceDlg (this, "Select Layer(s) to close",
+									 "Close layer(s)",
+									 myLayersName);
+	if (myChoiceDlg.ShowModal() != wxID_OK) {
+		return;
+	}
+	
+	wxArrayInt myLayerToRemoveIndex = myChoiceDlg.GetSelections();
+	if (myLayerToRemoveIndex.IsEmpty()) {
+		wxLogWarning("Nothing selected, no layer will be closed");
+		return;
+	}
+	
+	// removing layer(s)
+	m_ViewerLayerManager->FreezeBegin();
+	for (int j = (signed) myLayerToRemoveIndex.GetCount() -1; j >= 0 ; j--) {
+		
+		// remove from viewer manager (TOC and Display)
+		vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(myLayerToRemoveIndex.Item(j));
+		vrLayer * myLayer = myRenderer->GetLayer();
+		wxASSERT(myRenderer);
+		m_ViewerLayerManager->Remove(myRenderer);
+		
+		// close layer (not used anymore);
+		m_LayerManager->Close(myLayer);
+	}
+	
+	m_ViewerLayerManager->FreezeEnd();
+									 
+									 
+	
+	
 }
 
 

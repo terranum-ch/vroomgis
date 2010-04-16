@@ -77,9 +77,9 @@ class vrViewerLayerManager : public wxEvtHandler {
     virtual ~vrViewerLayerManager();
 
     bool Add(long pos, vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL); 
-    bool Remove(const wxFileName & filename);
+    bool Remove(vrRenderer * renderer);
 	vrRenderer * GetRenderer(const unsigned int & index);
-
+	int GetCount();
 	
     void FreezeBegin();
     void FreezeEnd();

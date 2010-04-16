@@ -45,6 +45,11 @@ public:
 
    	void testCreateLayerManager()
 	{
+		wxLogMessage("*************************");
+		wxLogMessage("  VRLAYER MANAGER TESTS  ");
+		wxLogMessage("*************************");
+		
+		
 		vrLayerManager myLayerManager;
 		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc))==false);
 		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP))==true);
@@ -84,6 +89,20 @@ public:
 		// testing type
 		TS_ASSERT_EQUALS(myLayerManager.GetLayer(m_JpegName)->GetType(),vrDRIVER_RASTER_JPEG);
 		TS_ASSERT_EQUALS(myLayerManager.GetLayer(m_TiffName)->GetType(),vrDRIVER_RASTER_TIFF);
+	}
+	
+	void testRemoveLayer1(){
+		vrLayerManager myLayerManager;
+		TS_ASSERT(myLayerManager.Open(m_JpegName) ==true);
+		TS_ASSERT(myLayerManager.Open(m_TiffName)==true);
+		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
+		
+		// removing layer
+		vrLayer * myLayer = myLayerManager.GetLayer(m_JpegName);
+		TS_ASSERT(myLayer != NULL);
+		
+		TS_ASSERT(myLayerManager.Close(myLayer));
+		TS_ASSERT_EQUALS(myLayerManager.Close(myLayer),false);
 	}
 
 

@@ -103,6 +103,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	// need to compute coordinate ?
 	if (m_Renderers.GetCount() == 0) {
 		m_ComputeExtentStatus = true;
+		wxLogMessage("Computing status is set to TRUE");
 	}
 	
 	
@@ -137,8 +138,44 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 
 
 
-bool vrViewerLayerManager::Remove(const wxFileName & filename) {
-	return false;
+bool vrViewerLayerManager::Remove(vrRenderer * renderer) {
+	wxASSERT(renderer);
+	
+	int myRemoveIndex = wxNOT_FOUND;
+	for (int i = 0; i< GetCount(); i++) {
+		vrRenderer * myRenderer = GetRenderer(i);
+		wxASSERT(myRenderer);
+		if (myRenderer == renderer) {
+			myRemoveIndex = i;
+			break;
+		}
+	}
+	
+	if (myRemoveIndex == wxNOT_FOUND) {
+		wxLogError("Unable to remove renderer, maybe allready removed");
+		return false;
+	}
+	
+	
+	// remove from Renderer array
+	vrRenderer * myRenderer = GetRenderer(myRemoveIndex);
+	wxASSERT(myRenderer);
+	m_Renderers.Detach(myRemoveIndex);
+	wxDELETE(myRenderer);
+	
+	// remove from TOC
+	if (m_Toc) {
+		m_Toc->Remove(myRemoveIndex);
+	}
+	
+	// if not freezed, refresh imediatelly.
+	if (m_FreezeStatus==false) {
+		if(m_WindowParent){
+			wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
+			m_WindowParent->ProcessWindowEvent(myEvt);
+		}
+	}
+	return true;
 }
 
 
@@ -154,6 +191,13 @@ vrRenderer * vrViewerLayerManager::GetRenderer(const unsigned int & index) {
 	wxASSERT(renderer);
 	return renderer;
 }
+
+
+// number of renderers
+int vrViewerLayerManager::GetCount() {
+	return m_Renderers.GetCount();
+}
+
 
 
 void vrViewerLayerManager::FreezeBegin() {

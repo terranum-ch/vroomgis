@@ -90,7 +90,7 @@ public:
 	}
 	
 	void testGetRenderer() {
-		wxLogMessage("Testing getting renderer");
+		
 		
 		// open data
 		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
@@ -115,6 +115,29 @@ public:
 		myRenderer = m_ViewManager->GetRenderer(12);
 		TS_ASSERT(myRenderer == NULL);
 		
+	}
+	
+	void testRemove(){
+		wxLogMessage("Testing removing renderer");
+		
+		// open data
+		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
+		vrLayer * myTestSHPLayer = NULL;
+		myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
+		TS_ASSERT(myTestSHPLayer != NULL);
+		TS_ASSERT_EQUALS(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
+		
+		// add data to the viewermanager
+		TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer)==true);
+		
+		// renderer should be accessible
+		vrRenderer * myRenderer = m_ViewManager->GetRenderer(0);
+		TS_ASSERT(myRenderer != NULL);
+		TS_ASSERT_EQUALS(myRenderer->GetLayer(), myTestSHPLayer);
+		
+		// testing deleting
+		TS_ASSERT_EQUALS(m_ViewManager->Remove(myRenderer),true);
+		TS_ASSERT_EQUALS(m_ViewManager->Remove(myRenderer),false);
 	}
 	
 

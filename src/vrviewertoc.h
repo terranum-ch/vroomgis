@@ -67,7 +67,7 @@ public:
     virtual ~vrViewerTOC();
 	
     bool Add(int index, vrRenderer * renderer, int control);
-    bool Remove(int index);
+    void Remove(int index);
 	
     void FreezeBegin();
     void FreezeEnd();
