@@ -101,6 +101,45 @@ bool vrLayerManager::Open(const wxFileName & filename) {
 }
 
 
+// true if layer isn't any more used. false otherwise
+bool vrLayerManager::Close(vrLayer * layer) {
+	wxASSERT(layer);
+	
+	//check all viewerlayermanagers to ensure that this layer
+	//isn't open anywhere.
+	for (unsigned int i = 0; i<m_ViewerManagers.GetCount(); i++) {
+		for (int j = 0; j<m_ViewerManagers.Item(i)->GetCount(); j++) {
+			vrRenderer * myRenderer = m_ViewerManagers.Item(i)->GetRenderer(j);
+			if (layer == myRenderer->GetLayer()) {
+				wxLogError("Unable to close '%s', layer still in use",
+						   layer->GetName().GetFullName());
+				return false;
+			}
+		}
+	}
+	
+	// Layer isn't anymore used we can close now
+	int iRemoveIndex = wxNOT_FOUND;
+	for (unsigned int i = 0; i< m_Layers.GetCount(); i++) {
+		if (m_Layers.Item(i) == layer) {
+			iRemoveIndex = i;
+		}
+	}
+	
+	if (iRemoveIndex == wxNOT_FOUND) {
+		wxLogError("Unable to close '%s', layer not present into layermanager",
+				   layer->GetName().GetFullName());
+		return false;
+	}
+	
+	vrLayer * myLayer = m_Layers.Item(iRemoveIndex);
+	wxASSERT(myLayer);
+	m_Layers.Detach(iRemoveIndex);
+	wxDELETE(myLayer);
+	return true;
+}
+
+
 int vrLayerManager::GetCount() {
 	return m_Layers.GetCount();
 }

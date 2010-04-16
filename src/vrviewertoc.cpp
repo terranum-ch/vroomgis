@@ -227,7 +227,6 @@ bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
 	wxASSERT(index == -1);
 	
 	
-	
 	// prepending item to the list
 	if (index == -1) {
 		
@@ -236,20 +235,14 @@ bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
 		
 	}
 	
-	// inserting item
-	/*if(IsFrozen()==false){
-		if(IsExpanded(m_ParentItem)==false){
-			Expand(m_ParentItem);
-		}
-	}*/
-	
 	return false;
 }
 
 
 
-bool vrViewerTOC::Remove(int index) {
-	return false;
+void vrViewerTOC::Remove(int index) {
+	wxASSERT(index != wxNOT_FOUND);
+	Delete(index);
 }
 
 void vrViewerTOC::FreezeBegin() {

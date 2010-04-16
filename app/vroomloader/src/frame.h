@@ -75,6 +75,7 @@ public:
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 	void OnOpenLayer(wxCommandEvent & event);
+	void OnCloseLayer(wxCommandEvent & event);
 	void OnShowLog (wxCommandEvent & event);
 	
 	void OnToolSelect (wxCommandEvent & event);
