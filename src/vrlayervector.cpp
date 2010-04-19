@@ -217,7 +217,15 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 		wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
 		wxRect2DDouble myPathRect = myPath.GetBox();
 		
-		if (myPathRect.Intersects(myWndRect)) {
+		bool bIntersect = myPathRect.Intersects(myWndRect);
+		bool bIsBigEnough = true;
+		if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
+			bIsBigEnough = false;
+			iCount--;
+		}
+
+
+		if (bIntersect && bIsBigEnough) {
 			gdc->StrokePath(myPath);
 		}
 		
@@ -225,7 +233,7 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 		myFeat = NULL;
 	}
 	
-	if (iCount == 0) {
+	if (iCount <= 0) {
 		wxLogWarning("No data drawn.");
 	}
 	wxLogMessage("%d lines drawed in %ldms", iCount, sw.Time());
@@ -289,27 +297,13 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	m_Layer->ResetReading();
 	
 	
+	
 	// prepare bitmap for drawing
-	wxSize myBmpSize = bmp->GetSize();
-	wxBitmap myBmp(myBmpSize);
 	if (bmp->HasAlpha() == false){
 		bmp->InitAlpha();
 		wxLogMessage("Initing alpha");
 	}
-	
-	// empty bitmap
-	wxMemoryDC myDC;
-	myDC.SelectObject(myBmp);
-	wxGraphicsContext * myPgdc = wxGraphicsContext::Create(myDC);
-	myPgdc->SetBrush(wxBrush(wxColour(255,0,0,30)));
-	myPgdc->SetPen(wxPen(wxColour(255,0,0,30)));
-	wxGraphicsPath path = myPgdc->CreatePath();
-	path.AddRectangle(0,0,myBmpSize.x,myBmpSize.y);
-	myPgdc->DrawPath(path);
-	wxDELETE(myPgdc);
-	myDC.SelectObject(wxNullBitmap);
-		
-	
+
 	// adding transparency
 	char myBackgroundTransparency = 0;
 	unsigned char * alphachar = NULL;
@@ -325,10 +319,25 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	for ( unsigned int i = 0; i< myimglen; i++) {
 		*(alphachar + i) =  myBackgroundTransparency;
 	}
-
 	bmp->SetAlpha(alphachar, false);
-	wxASSERT(myBmp.IsOk());
 	
+
+	wxBitmap myBmp(*bmp);
+	wxASSERT(myBmp.IsOk());
+
+	// empty bitmap
+	/*wxSize myBmpSize = bmp->GetSize();
+	wxMemoryDC myDC;
+	myDC.SelectObject(myBmp);
+	wxGraphicsContext * myPgdc = wxGraphicsContext::Create(myDC);
+	myPgdc->SetBrush(wxBrush(wxColour(255,0,0,30)));
+	myPgdc->SetPen(wxPen(wxColour(255,0,0,30)));
+	wxGraphicsPath path = myPgdc->CreatePath();
+	path.AddRectangle(0,0,myBmpSize.x,myBmpSize.y);
+	myPgdc->DrawPath(path);
+	wxDELETE(myPgdc);
+	myDC.SelectObject(wxNullBitmap);*/
+
 	// draw
 	wxMemoryDC dc;
 	dc.SelectObject(myBmp);
