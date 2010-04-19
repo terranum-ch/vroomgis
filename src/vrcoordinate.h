@@ -52,6 +52,7 @@ class vrCoordinate {
 
 	
     void ClearLayersExtent();
+	void ClearPixelSize();
     void AddLayersExtent(const vrRealRect & rect);
     bool ComputeFullExtent();
 	

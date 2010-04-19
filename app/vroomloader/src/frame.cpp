@@ -190,15 +190,17 @@ void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 
 void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 {
+	
 	/*
 	// TODO: This is temp code for autoloading file
-	wxFileName myTestFile("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/gwn_combioula.shp");
+	wxFileName myTestFile("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/gwn_combioula.shp");
 	m_LayerManager->Open(myTestFile);
 	vrLayer * myTestLayer = m_LayerManager->GetLayer(myTestFile);
 	wxASSERT(myTestLayer);
 	m_ViewerLayerManager->Add(-1, myTestLayer);
 	return;
-	*/
+	 */
+	
 	
 	
 	vrDrivers myDrivers;
