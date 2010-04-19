@@ -103,6 +103,8 @@ public:
 
 
 	void testRasterOutside(){
+#ifndef __WXMSW__
+
 		vrRealRect myWndExtent (0, 1000, 4000, -1000);
 		vrRealRect myImgExtent (5000, 800, 1000, -600);
 
@@ -118,6 +120,7 @@ public:
 
 		TS_ASSERT(myImgInfo.IsEmpty());
 		TS_ASSERT(myImgPos == wxRect(0,0,0,0));
+#endif
 
 
 	}
@@ -125,6 +128,8 @@ public:
 
 
 	void testForRasterIO1(){
+#ifndef __WXMSW__
+
 		// this code is for testing how to get data ready
 		// for RasterIO function
 
@@ -149,9 +154,12 @@ public:
 
 		TS_ASSERT_EQUALS(myImgPos.GetX(), 100);
 		TS_ASSERT_EQUALS(myImgPos.GetY(), 20);
+#endif
 	}
 
 	void testForRasterIO2(){
+#ifndef __WXMSW__
+
 		// this code is for testing how to get data ready
 		// for RasterIO function
 
@@ -176,9 +184,12 @@ public:
 
 		TS_ASSERT_EQUALS(myImgPos.GetX(), 200);
 		TS_ASSERT_EQUALS(myImgPos.GetY(), 0);
+#endif
 	}
 
 	void testForRasterIO3(){
+#ifndef __WXMSW__
+
 		// this code is for testing how to get data ready
 		// for RasterIO function
 
@@ -203,10 +214,13 @@ public:
 
 		TS_ASSERT_EQUALS(myImgPos.GetX(), 0);
 		TS_ASSERT_EQUALS(myImgPos.GetY(), 50);
+#endif
 	}
 
 
 	void testRasterIntersection(){
+#ifndef __WXMSW__
+
 		//Param
 		vrRealRect myWndExtent (0, 2000, 2000, -1000);
 		vrRealRect myImgExtent (1000, 1500, 1000, -1000);
@@ -226,6 +240,7 @@ public:
 		TS_ASSERT_EQUALS(myImgPos.GetY(), 50);
 		TS_ASSERT_EQUALS(myImgPos.GetWidth(), 100);
 		TS_ASSERT_EQUALS(myImgPos.GetHeight(), 50);
+#endif
 
 
 	}

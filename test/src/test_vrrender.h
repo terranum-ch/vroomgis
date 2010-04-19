@@ -66,6 +66,8 @@ public:
 	}
 
 	void testRenderGetTransparencyChar(){
+		
+#ifndef __WXMSW__
 		vrRender * mypRender = NULL;
 		vrRenderVector myRenderVect;
 
@@ -82,7 +84,7 @@ public:
 		mypRender->SetTransparency(50); // medium tranparency
 		TS_ASSERT_EQUALS(mypRender->GetTransparency(), 50);
 		TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 128);
-
+#endif
 
 
 
