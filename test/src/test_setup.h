@@ -32,6 +32,7 @@
 #include "gtk/gtk.h"
 #endif
 
+#include "vrlayer.h"
 
 class Fixture1 : public CxxTest::GlobalFixture
 {

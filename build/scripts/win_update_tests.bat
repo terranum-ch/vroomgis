@@ -38,6 +38,14 @@ ECHO 1) Updating repositories ... DONE (version is : %REV%)
 ECHO 1b) REMOVING MAIN.CPP, will be generated again
 del %bindir%\main.cpp
 
+set wait2=
+set /p wait2=Totally clean the project ? (Y/N)
+IF /i %wait2% EQU y (
+echo Cleaning
+RD /S/Q %bindir%
+MD %bindir%
+)
+
 
 ECHO 2) Making Visual studio solution...
 cd %bindir%
