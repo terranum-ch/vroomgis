@@ -22,7 +22,7 @@
 bool vrCoordinate::_ComputePixelSize() {
 
 	wxASSERT(m_Viewer);
-	m_PxSize = wxNOT_FOUND;
+	ClearPixelSize();
 	double myPxWidth = m_Viewer->GetSize().GetWidth();
 	
 	if(m_WndExtent.m_width <= 0){
@@ -44,7 +44,7 @@ bool vrCoordinate::_ComputePixelSize() {
 vrCoordinate::vrCoordinate(vrViewerDisplay * viewer) {
 	wxASSERT(viewer);
 	m_Viewer = viewer;
-	m_PxSize = wxNOT_FOUND;
+	ClearPixelSize();
 }
 
 
@@ -93,9 +93,19 @@ bool vrCoordinate::UpdateExtent() {
 }
 
 
+
+
 void vrCoordinate::ClearLayersExtent() {
 	m_LayersExtent = vrRealRect();
 }
+
+
+
+void vrCoordinate::ClearPixelSize() {
+	m_PxSize = wxNOT_FOUND;
+}
+
+
 
 void vrCoordinate::AddLayersExtent(const vrRealRect & rect) {
 	

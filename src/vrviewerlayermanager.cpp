@@ -317,6 +317,7 @@ bool vrViewerLayerManager::_GetLayersExtent() {
 	
 	// clear actual layer extent
 	myCoordinate->ClearLayersExtent();
+	myCoordinate->ClearPixelSize();
 	
 	vrRealRect myLayerExtent;
 	for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
