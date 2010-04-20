@@ -62,8 +62,20 @@ vrCoordinate::~vrCoordinate() {
 }
 
 
+
 vrRealRect vrCoordinate::GetExtent() {
 	return m_WndExtent;
+}
+
+
+
+void vrCoordinate::SetExtent(const vrRealRect & extent) {
+	if (extent.IsOk() == false) {
+		wxLogError("specified extent isn't valid");
+		return;
+	}
+	ClearPixelSize();
+	m_WndExtent = extent;
 }
 
 
@@ -92,6 +104,38 @@ bool vrCoordinate::UpdateExtent() {
 	return true;
 }
 
+
+vrRealRect vrCoordinate::GetRectFitted(const vrRealRect & originalrect) {
+	
+	if (originalrect.IsOk() == false) {
+		wxLogError("Specified extent isn't Correct, unable to compute fitted rectangle");
+		return originalrect;
+	}
+	wxASSERT(m_WndExtent.IsOk()==true);
+	
+	double xfactor = fabs(m_WndExtent.m_width / originalrect.m_width);
+	double yfactor = fabs(m_WndExtent.m_height / originalrect.m_height);
+	
+	double ratiofactor = xfactor;
+	if (yfactor > xfactor) {
+		ratiofactor = yfactor;
+	}
+	
+	vrRealRect myFittedRect;
+	myFittedRect.m_width = fabs(m_WndExtent.m_width / ratiofactor);
+	if (m_WndExtent.m_width < 0) {
+		wxASSERT(originalrect.m_width < 0);
+		myFittedRect.m_width *= -1;
+	}
+	myFittedRect.m_height = fabs(m_WndExtent.m_height / ratiofactor);
+	if (m_WndExtent.m_height < 0) {
+		wxASSERT(originalrect.m_height < 0);
+		myFittedRect.m_height *= -1;
+	}
+	
+	myFittedRect.SetCentre(originalrect.GetCentre());
+	return myFittedRect;
+}
 
 
 

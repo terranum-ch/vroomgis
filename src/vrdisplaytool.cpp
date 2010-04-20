@@ -20,6 +20,7 @@
 #include "vrviewerdisplay.h"
 #include "vrrubberband.h"
 
+
 vrDisplayTool::vrDisplayTool() {
 	m_ID = wxNOT_FOUND;
 	m_Name = wxEmptyString;
@@ -131,6 +132,11 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 				 myRect.GetTop(),
 				 myRect.GetWidth(),
 				 myRect.GetHeight());
+	
+	// sending event
+	//wxCommandEvent evt(vrEVT_TOOL_ZOOM);
+	//evt.SetClientData(<#void *clientData#>)
+	
 	return true;
 }
 

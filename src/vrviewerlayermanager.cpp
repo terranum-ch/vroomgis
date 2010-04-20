@@ -26,6 +26,7 @@
 
 
 wxDEFINE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
+wxDEFINE_EVENT(vrEVT_TOOL_ZOOM, wxCommandEvent);
 
 
 BEGIN_EVENT_TABLE(vrViewerLayerManager, wxEvtHandler)
@@ -178,6 +179,36 @@ bool vrViewerLayerManager::Remove(vrRenderer * renderer) {
 	return true;
 }
 
+
+
+bool vrViewerLayerManager::Zoom(const vrRealRect & extent) {
+	if (extent.IsOk() == false) {
+		wxLogError("Specified extent (%f, %f, %f, %f) isn't supported",
+				   extent.GetLeft(), extent.GetTop(), 
+				   extent.GetRight(), extent.GetBottom());
+		return false;
+	}
+	
+	wxASSERT(m_Display);
+	
+	// create fitted rectangle
+	vrCoordinate * myCoord = m_Display->GetCoordinate();
+	wxASSERT(myCoord);
+	vrRealRect myFittedRect = myCoord->GetRectFitted(extent);
+	if (myFittedRect.IsOk() == false) {
+		wxLogError("Wasn't able to zoom");
+		return false;
+	}
+	
+	myCoord->SetExtent(myFittedRect);
+	
+	// update drawing
+	if(m_WindowParent){
+		wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
+		m_WindowParent->ProcessWindowEvent(myEvt);
+	}
+	return true;
+}
 
 
 vrRenderer * vrViewerLayerManager::GetRenderer(const unsigned int & index) {
