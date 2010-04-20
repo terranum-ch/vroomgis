@@ -32,6 +32,7 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_MENU (wxID_DEFAULT, vroomLoaderFrame::OnToolSelect)
 	EVT_MENU (wxID_ZOOM_IN, vroomLoaderFrame::OnToolZoom)
 	EVT_MENU (wxID_ZOOM_FIT, vroomLoaderFrame::OnToolZoomToFit)
+	EVT_MENU (wxID_ZOOM_100, vroomLoaderFrame::OnToolZoomToFit)
 	
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
 END_EVENT_TABLE()
@@ -120,7 +121,8 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	toolMenu->Append(wxID_DEFAULT, "Select\tCtrl+S", "Select the selection tool");
 	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
 	toolMenu->AppendSeparator();
-	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to Fit", "Zoom view to the full extent");
+	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to All layers", "Zoom view to the full extent of all layers");
+	toolMenu->Append(wxID_ZOOM_100, "Zoom to visible layers", "Zoom view to the full extent of all visible layers");
 	
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
@@ -319,7 +321,13 @@ void vroomLoaderFrame::OnToolZoom (wxCommandEvent & event){
 
 void vroomLoaderFrame::OnToolZoomToFit (wxCommandEvent & event)
 {
-	m_ViewerLayerManager->ZoomToFit();
+	if (event.GetId() == wxID_ZOOM_100) {
+		m_ViewerLayerManager->ZoomToFit(true);
+	}
+	else {
+		m_ViewerLayerManager->ZoomToFit(false);
+	}
+	
 	m_ViewerLayerManager->Reload();
 }
 

@@ -76,6 +76,42 @@ vrRealRect vrRealRect::Intersect(const vrRealRect & rect1) {
 }
 
 
+vrRealRect vrRealRect::Union(const wxRect2DDouble & rect) {
+	wxDouble left,right,bottom,top;
+    
+	left = wxMin ( rect.m_x , m_x );
+    right = wxMax ( rect.m_x+rect.m_width, m_x + m_width );
+	
+	if (m_height < 0) {
+		wxASSERT(rect.m_height < 0);
+		top = wxMax (rect.m_y, m_y);
+		bottom = wxMin (rect.m_y + rect.m_height, m_y + m_height);
+	}
+	else {
+		top = wxMin ( rect.m_y , m_y );
+		bottom = wxMax ( rect.m_y+rect.m_height, m_y + m_height );
+	}
+	
+  	
+	vrRealRect myUnion;
+	if (right < left) {
+		// invalid rect (negative width)
+		return myUnion;
+	}
+	
+	if (top < bottom) {
+		// invalid rect (negative height)
+		return myUnion;
+	}
+	
+	myUnion.SetLeftTop(wxPoint2DDouble(left, top));
+	myUnion.SetRightBottom(wxPoint2DDouble(right, bottom));
+	
+	return myUnion;
+	
+}
+
+
 
 bool vrRealRect::IsOk() const{
 	if (m_width != 0 && m_width != 0) {
