@@ -19,8 +19,48 @@
 #include "vrdisplaytool.h"
 #include "vrviewerdisplay.h"
 #include "vrrubberband.h"
+#include "vrevent.h"
 
 
+/***************************************************************************//**
+@brief Used for passing message from tool to application
+@author Lucien Schreiber (c) CREALP 2010
+@date 20 avril 2010
+*******************************************************************************/
+void vrDisplayToolMessage::_InitMembers() {
+	m_EvtType = wxEVT_NULL;
+	m_Rect = wxRect();
+	wxASSERT(m_Rect.IsEmpty());
+	m_Position = wxDefaultPosition;
+}
+
+vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype, const wxRect & rect) {
+	_InitMembers();
+	m_EvtType = eventtype;
+	m_Rect = rect;
+}
+
+vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype, const wxPoint & pos) {
+	_InitMembers();
+	m_EvtType = eventtype;
+	m_Position = pos;
+	
+}
+
+vrDisplayToolMessage::~vrDisplayToolMessage() {
+}
+
+
+
+
+
+
+
+/***************************************************************************//**
+@brief Base tool class
+@author Lucien Schreiber (c) CREALP 2010
+@date 20 avril 2010
+*******************************************************************************/
 vrDisplayTool::vrDisplayTool() {
 	m_ID = wxNOT_FOUND;
 	m_Name = wxEmptyString;
@@ -73,6 +113,37 @@ bool vrDisplayTool::MouseMove(const wxMouseEvent & event) {
 }
 
 
+
+/***************************************************************************//**
+@brief Send a message to the parent
+@param void 
+@param vrDisplayTool::SendMessage 
+@param vrDisplayToolMessage 
+@param message valid pointer, will be sent to parent throught SetClientData.
+ Should be deleted when intercepting event
+@author Lucien Schreiber (c) CREALP 2010
+@date 20 avril 2010
+ *******************************************************************************/
+void vrDisplayTool::SendMessage(vrDisplayToolMessage * message) {
+	wxASSERT(m_Display);
+	wxASSERT(message);
+	wxASSERT(message->m_EvtType != wxEVT_NULL);
+	
+	wxCommandEvent myEvt (message->m_EvtType);
+	myEvt.SetClientData(message);
+	
+	// send message to the top level window if found
+	wxWindow * myTopWin = wxGetTopLevelParent(m_Display);
+	if (myTopWin != NULL) {
+		myTopWin->ProcessWindowEvent(myEvt);
+		return;
+	}
+	
+	// send message to the display if not found
+	m_Display->ProcessWindowEvent(myEvt);
+}
+
+
 vrDisplayToolDefault::vrDisplayToolDefault(vrViewerDisplay * display) {
 	Create(display, wxID_DEFAULT, "Select", wxCursor(wxCURSOR_ARROW));
 }
@@ -117,6 +188,8 @@ bool vrDisplayToolZoom::MouseDown(const wxMouseEvent & event) {
 	return false;
 }
 
+
+
 bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 	m_Rubber->SetPointLast(event.GetPosition());
 	if (m_Rubber->IsValid()==false) {
@@ -133,12 +206,14 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 				 myRect.GetWidth(),
 				 myRect.GetHeight());
 	
-	// sending event
-	//wxCommandEvent evt(vrEVT_TOOL_ZOOM);
-	//evt.SetClientData(<#void *clientData#>)
-	
+	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_ZOOM,
+																myRect);
+	wxASSERT(myMessage);
+	SendMessage(myMessage);
 	return true;
 }
+
+
 
 bool vrDisplayToolZoom::MouseMove(const wxMouseEvent & event) {
 

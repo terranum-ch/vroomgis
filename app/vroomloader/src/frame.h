@@ -80,6 +80,9 @@ public:
 	
 	void OnToolSelect (wxCommandEvent & event);
 	void OnToolZoom (wxCommandEvent & event);
+	void OnToolZoomToFit (wxCommandEvent & event);
+	
+	void OnToolAction (wxCommandEvent & event);
 	
 private:
     DECLARE_EVENT_TABLE()

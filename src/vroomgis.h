@@ -27,7 +27,10 @@
 
 #include "vrviewertoc.h"
 #include "vrlayermanager.h"
+#include "vrcoordinate.h"
 #include "vrviewerdisplay.h"
+#include "vrevent.h"
+#include "vrdisplaytool.h"
 
 //#include "vrdriver.h"
 //#include "vrlabel.h"

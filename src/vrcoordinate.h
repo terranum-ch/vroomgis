@@ -59,6 +59,10 @@ class vrCoordinate {
     bool ComputeFullExtent();
 	
 	double GetPixelSize();
+	
+	bool ConvertFromPixels(const wxRect & in, vrRealRect & out);
+    bool ConvertFromPixels(const wxPoint & in, wxPoint2DDouble & out);
+	
 	bool IsOk();
 
 };

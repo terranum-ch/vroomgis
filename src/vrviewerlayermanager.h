@@ -79,14 +79,25 @@ class vrViewerLayerManager : public wxEvtHandler {
     bool Add(long pos, vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL); 
     bool Remove(vrRenderer * renderer);
     bool Zoom(const vrRealRect & extent);
+	void ZoomToFit();
+
 
 	vrRenderer * GetRenderer(const unsigned int & index);
+	inline vrViewerDisplay * GetDispaly() const;
 	int GetCount();
 	
     void FreezeBegin();
-    void FreezeEnd();
+    void FreezeEnd();	
+	void Reload();
+
 
 };
+
+inline vrViewerDisplay * vrViewerLayerManager::GetDispaly() const {
+	return m_Display;
+}
+
+
 WX_DECLARE_OBJARRAY(vrViewerLayerManager*, vrArrayViewerLayerManager);
 
 

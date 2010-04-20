@@ -234,6 +234,54 @@ double vrCoordinate::GetPixelSize() {
 }
 
 
+bool vrCoordinate::ConvertFromPixels(const wxRect & in, vrRealRect & out) {
+	out = vrRealRect(0,0,0,0);
+	if (in.IsEmpty() == true) {
+		wxLogError("Unable to convert empty rectangle");
+		return false;
+	}
+	
+	wxPoint2DDouble myTopLeft, myRightBottom;
+	if (ConvertFromPixels(in.GetLeftTop(), myTopLeft) == false) {
+		return false;
+	}
+	
+	if (ConvertFromPixels(in.GetBottomRight(), myRightBottom)==false) {
+		return false;
+	}
+	
+	out.SetLeftTop(myTopLeft);
+	out.SetRightBottom(myRightBottom);
+	return true;
+}
+
+
+
+bool vrCoordinate::ConvertFromPixels(const wxPoint & in, wxPoint2DDouble & out) {
+	out = wxPoint2DDouble(0,0);
+	if (in == wxDefaultPosition) {
+		wxLogError("Unable to convert point (%d, %d)", in.x, in.y);
+		return false;
+	}
+	wxASSERT(m_WndExtent.IsOk());
+	
+	wxPoint2DDouble myLeftTop = m_WndExtent.GetLeftTop();
+	if (m_WndExtent.m_width > 0) {
+		out.m_x = myLeftTop.m_x + (in.x * GetPixelSize());
+	}else {
+		out.m_x = myLeftTop.m_x - (in.x * GetPixelSize());
+	}
+
+	if (m_WndExtent.m_height > 0) {
+		out.m_y = myLeftTop.m_y + (in.y * GetPixelSize());
+	}else {
+		out.m_y = myLeftTop.m_y - (in.y * GetPixelSize());
+	}
+	return true;
+}
+
+
+
 bool vrCoordinate::IsOk() {
 	wxASSERT(m_Viewer);
 	

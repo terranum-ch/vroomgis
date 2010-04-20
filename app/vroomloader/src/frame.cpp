@@ -31,6 +31,9 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_MENU (wxID_INFO, vroomLoaderFrame::OnShowLog)
 	EVT_MENU (wxID_DEFAULT, vroomLoaderFrame::OnToolSelect)
 	EVT_MENU (wxID_ZOOM_IN, vroomLoaderFrame::OnToolZoom)
+	EVT_MENU (wxID_ZOOM_FIT, vroomLoaderFrame::OnToolZoomToFit)
+	
+	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
 END_EVENT_TABLE()
 IMPLEMENT_APP(vroomLoader)
 
@@ -113,8 +116,11 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
     fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O","Open GIS layer(s)");
 	fileMenu->Append(wxID_REMOVE, "&Close\tCtrl+W", "Close GIS layer(s)");
 	fileMenu->Append(wxID_EXIT, "E&xit\tAlt-X", "Quit this program");
+
 	toolMenu->Append(wxID_DEFAULT, "Select\tCtrl+S", "Select the selection tool");
 	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
+	toolMenu->AppendSeparator();
+	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to Fit", "Zoom view to the full extent");
 	
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
@@ -308,6 +314,46 @@ void vroomLoaderFrame::OnToolSelect (wxCommandEvent & event){
 
 void vroomLoaderFrame::OnToolZoom (wxCommandEvent & event){
 	m_DisplayCtrl->SetToolZoom();
+}
+
+
+void vroomLoaderFrame::OnToolZoomToFit (wxCommandEvent & event)
+{
+	m_ViewerLayerManager->ZoomToFit();
+	m_ViewerLayerManager->Reload();
+}
+
+
+
+void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
+	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
+	wxASSERT(myMsg);
+	
+	if(myMsg->m_EvtType == vrEVT_TOOL_ZOOM){
+		// getting rectangle
+		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
+		wxASSERT(myCoord);
+		
+		// get real rectangle
+		vrRealRect myRealRect;
+		bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_Rect, myRealRect);
+		wxASSERT(bSuccess == true);
+		
+		// get fitted rectangle
+		vrRealRect myFittedRect =myCoord->GetRectFitted(myRealRect);
+		wxASSERT(myFittedRect.IsOk());
+				
+		// moving view
+		m_ViewerLayerManager->Zoom(myFittedRect);
+		m_ViewerLayerManager->Reload();
+		
+		
+	}else {
+		wxLogError("Operation not supported now");
+	}
+
+	
+	wxDELETE(myMsg);
 }
 
 
