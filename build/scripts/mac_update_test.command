@@ -34,6 +34,16 @@ echo $VARLINE
 echo "2) REMOVING MAIN.CPP, will be generated again"
 rm $BINDIR/main.cpp
 
+echo "Should we totally clean the build directory (bin) (y/n) if not sure say yes"
+read value
+echo "$value"
+if [ "$value" = "y" ] ; then 
+   rm -rvf $BINDIR
+   mkdir $BINDIR
+else
+   echo "build directory not deleted"
+fi
+
 echo "3) configuring ..."
 cd $BINDIR
 
