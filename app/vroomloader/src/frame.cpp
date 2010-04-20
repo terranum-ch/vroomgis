@@ -35,6 +35,7 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_MENU (wxID_ZOOM_100, vroomLoaderFrame::OnToolZoomToFit)
 	
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
+	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
 END_EVENT_TABLE()
 IMPLEMENT_APP(vroomLoader)
 
@@ -356,7 +357,22 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 		m_ViewerLayerManager->Reload();
 		
 		
-	}else {
+	}else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
+		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
+		wxASSERT(myCoord);
+		
+		wxPoint myClickedPos = myMsg->m_Position;
+		if (myClickedPos != wxDefaultPosition) {
+			wxPoint2DDouble myRealClickedPos;
+			myCoord->ConvertFromPixels(myClickedPos, myRealClickedPos);
+			wxMessageBox(wxString::Format("Selected coordinate :\nx:\t%.4f\ny:\t%.4f",
+										  myRealClickedPos.m_x,
+										  myRealClickedPos.m_y),
+						 "Selected coordinate");
+		}
+
+	}
+	else {
 		wxLogError("Operation not supported now");
 	}
 

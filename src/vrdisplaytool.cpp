@@ -152,12 +152,15 @@ vrDisplayToolDefault::~vrDisplayToolDefault() {
 }
 
 bool vrDisplayToolDefault::MouseDown(const wxMouseEvent & event) {
-	wxLogMessage("Select down");
+	
+	vrDisplayToolMessage * myMsG = new vrDisplayToolMessage(vrEVT_TOOL_SELECT,
+															event.GetPosition());
+	SendMessage(myMsG);
 	return false;
 }
 
 bool vrDisplayToolDefault::MouseUp(const wxMouseEvent & event) {
-	wxLogMessage("Select up");	
+
 	return false;
 }
 
