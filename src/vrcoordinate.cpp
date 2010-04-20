@@ -153,13 +153,19 @@ void vrCoordinate::ClearPixelSize() {
 
 void vrCoordinate::AddLayersExtent(const vrRealRect & rect) {
 	
-	if (m_LayersExtent.IsEmpty()==true) {
+	if (m_LayersExtent.IsOk()==false) {
 		m_LayersExtent = rect;
 		return;
 	}
 	
-	vrRealRect myTempRect (m_LayersExtent);
-	vrRealRect::Union(myTempRect, rect, &m_LayersExtent);
+	//vrRealRect myTempRect (m_LayersExtent);
+	vrRealRect myResult = m_LayersExtent.Union(rect);
+	if (myResult.IsOk() == false) {
+		wxLogError("Computing rectangle union failed, result invalid");
+		return;
+	}
+	
+	m_LayersExtent = myResult;
 	
 }
 

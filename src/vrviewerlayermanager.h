@@ -61,7 +61,7 @@ class vrViewerLayerManager : public wxEvtHandler {
 	bool _BitmapArrayInit();
     void _BitmapArrayDelete();
     bool _GetLayersData();
-	bool _GetLayersExtent();
+	bool _GetLayersExtent(bool onlyvisible);
     wxBitmap * _MergeBitmapData();
 	
 	// event function
@@ -79,7 +79,7 @@ class vrViewerLayerManager : public wxEvtHandler {
     bool Add(long pos, vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL); 
     bool Remove(vrRenderer * renderer);
     bool Zoom(const vrRealRect & extent);
-	void ZoomToFit();
+    void ZoomToFit(bool onlyvisible = false);
 
 
 	vrRenderer * GetRenderer(const unsigned int & index);

@@ -123,7 +123,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	if (m_FreezeStatus==false) {
 		if(m_WindowParent){
 			if (m_ComputeExtentStatus == true) {
-				_GetLayersExtent();
+				_GetLayersExtent(false);
 				m_ComputeExtentStatus = false;
 			}
 			
@@ -211,8 +211,8 @@ bool vrViewerLayerManager::Zoom(const vrRealRect & extent) {
 }
 
 
-void vrViewerLayerManager::ZoomToFit() {
-	_GetLayersExtent();
+void vrViewerLayerManager::ZoomToFit(bool onlyvisible) {
+	_GetLayersExtent(onlyvisible);
 }
 
 
@@ -252,7 +252,7 @@ void vrViewerLayerManager::FreezeEnd() {
 	
 	// compute layers extent
 	if (m_ComputeExtentStatus == true) {
-		_GetLayersExtent();
+		_GetLayersExtent(false);
 		m_ComputeExtentStatus = false;
 	}
 	
@@ -352,7 +352,7 @@ bool vrViewerLayerManager::_GetLayersData() {
 }
 
 
-bool vrViewerLayerManager::_GetLayersExtent() {
+bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible) {
 		
 	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
 	wxASSERT(myCoordinate);
@@ -364,7 +364,12 @@ bool vrViewerLayerManager::_GetLayersExtent() {
 	vrRealRect myLayerExtent;
 	for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
 		if (m_Renderers.Item(i)->GetLayer()->GetExtent(myLayerExtent)==true) {
-			myCoordinate->AddLayersExtent(myLayerExtent);
+			
+			if (onlyvisible == true && m_Renderers.Item(i)->GetVisible() == false){
+			}
+			else {
+				myCoordinate->AddLayersExtent(myLayerExtent);
+			}
 		}
 	}
 	
