@@ -198,6 +198,48 @@ public:
 		
 		
 	}
+	
+	
+	void testConvertFromPixels(){
+		// init display
+		FakevrViewerDisplay myDisplay (wxSize(200,100));
+		TS_ASSERT(myDisplay.GetSize() == wxSize(200, 100));
+		vrCoordinate myCoord (&myDisplay);
+		vrRealRect myExtent (0,2000,1000,-1000);
+		myCoord.SetExtent(myExtent);
+		double myPx = myCoord.GetPixelSize();
+		TS_ASSERT_DELTA(myPx, 5, 0.000001);
+		
+		// test
+		wxPoint2DDouble myConvertedPt;
+		TS_ASSERT(myCoord.ConvertFromPixels(wxPoint(100,50),myConvertedPt)==true);
+		TS_ASSERT(myConvertedPt == wxPoint2DDouble(500,1750));
+		
+		TS_ASSERT(myCoord.ConvertFromPixels(wxPoint(10,0),myConvertedPt)==true);
+		TS_ASSERT(myConvertedPt == wxPoint2DDouble(50,2000));
+
+		TS_ASSERT(myCoord.ConvertFromPixels(wxPoint(0,0),myConvertedPt)==true);
+		TS_ASSERT(myConvertedPt == wxPoint2DDouble(0,2000));
+
+	}
+	
+	void testConvertFromPixels2(){
+		// init display
+		FakevrViewerDisplay myDisplay (wxSize(200,100));
+		TS_ASSERT(myDisplay.GetSize() == wxSize(200, 100));
+		vrCoordinate myCoord (&myDisplay);
+		vrRealRect myExtent (0,2000,1000,-1000);
+		myCoord.SetExtent(myExtent);
+		double myPx = myCoord.GetPixelSize();
+		TS_ASSERT_DELTA(myPx, 5, 0.000001);
+		
+		// test
+		vrRealRect myConvertedRect;
+		TS_ASSERT(myCoord.ConvertFromPixels(wxRect(0,0, 50, 100),myConvertedRect)==true);
+		TS_ASSERT(myConvertedRect == vrRealRect(0,2000, 245,-495));
+		
+	}
+	
 
 };
 

@@ -26,6 +26,36 @@ class vrViewerDisplay;
 class vrRubberBand;
 
 
+
+/***************************************************************************//**
+@brief Used for passing message from tool to application
+@author Lucien Schreiber (c) CREALP 2010
+@date 20 avril 2010
+*******************************************************************************/
+class vrDisplayToolMessage {
+private:
+    void _InitMembers();
+	
+	
+public:
+    wxRect m_Rect;
+	wxPoint m_Position;
+    wxEventType m_EvtType;
+	
+    vrDisplayToolMessage(const wxEventType & eventtype, const wxRect & rect);
+    vrDisplayToolMessage(const wxEventType & eventtype, const wxPoint & pos);
+    virtual ~vrDisplayToolMessage();
+	
+};
+
+
+
+
+/***************************************************************************//**
+@brief Base tool class
+@author Lucien Schreiber (c) CREALP 2010
+@date 20 avril 2010
+*******************************************************************************/
 class vrDisplayTool {
 private:
     wxString m_Name;
@@ -53,6 +83,7 @@ public:
     virtual bool MouseUp(const wxMouseEvent & event);
     virtual bool MouseMove(const wxMouseEvent & event);
 	
+	void SendMessage(vrDisplayToolMessage * message);
 	
 };
 
@@ -76,6 +107,11 @@ inline const wxCursor vrDisplayTool::GetCursor() const {
 
 
 
+/***************************************************************************//**
+@brief Default tool
+@author Lucien Schreiber (c) CREALP 2010
+@date 20 avril 2010
+*******************************************************************************/
 class vrDisplayToolDefault : public vrDisplayTool {
   public:
     vrDisplayToolDefault(vrViewerDisplay * display);
@@ -90,6 +126,11 @@ class vrDisplayToolDefault : public vrDisplayTool {
 
 
 
+/***************************************************************************//**
+@brief Default Zoom tool
+@author Lucien Schreiber (c) CREALP 2010
+@date 20 avril 2010
+*******************************************************************************/
 class vrDisplayToolZoom : public vrDisplayTool {
   public:
     vrDisplayToolZoom(vrViewerDisplay * display);

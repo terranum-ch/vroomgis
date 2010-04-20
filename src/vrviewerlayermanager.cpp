@@ -211,6 +211,12 @@ bool vrViewerLayerManager::Zoom(const vrRealRect & extent) {
 }
 
 
+void vrViewerLayerManager::ZoomToFit() {
+	_GetLayersExtent();
+}
+
+
+
 vrRenderer * vrViewerLayerManager::GetRenderer(const unsigned int & index) {
 	// check index into limits
 	if (index > m_Renderers.GetCount()-1) {
@@ -257,6 +263,11 @@ void vrViewerLayerManager::FreezeEnd() {
 
 }
 
+
+void vrViewerLayerManager::Reload() {
+	wxCommandEvent evt;
+	OnReload(evt);
+}
 
 
 bool vrViewerLayerManager::_BitmapArrayInit() {
