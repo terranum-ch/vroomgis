@@ -154,6 +154,50 @@ public:
 		TS_ASSERT(myCoord.IsOk() == true);
 	}
 
+	
+	void testGetFittedRectangle(){
+		FakevrViewerDisplay myDisplay;
+		TS_ASSERT(myDisplay.GetSize() == wxSize(600, 400));
+		vrCoordinate myCoord (&myDisplay);
+		
+		vrRealRect myExtent (0,2000,1000,-1000);
+		myCoord.SetExtent(myExtent);
+		
+		// not valid rectangle
+		vrRealRect mySelRect1 (0,10,0,0);
+		TS_ASSERT(myCoord.GetRectFitted(mySelRect1).IsOk() == false);
+		
+		// perfect ratio (smaller)
+		vrRealRect mySelRect (0,200,100,-100);
+		TS_ASSERT(myCoord.GetRectFitted(mySelRect) == mySelRect);
+		
+		// perfect ratio (bigger)
+		vrRealRect mySelRect2 (0,20000,10000,-10000);
+		TS_ASSERT(myCoord.GetRectFitted(mySelRect2) == mySelRect2);
+		
+		// smaller 1/2
+		vrRealRect mySelRect3 (0,200,10,-100);
+		vrRealRect myResult3 (0,155,10,-10);
+		TS_ASSERT(myCoord.GetRectFitted(mySelRect3) == myResult3);
+	}
+	
+	void testGetPixelSize(){
+		FakevrViewerDisplay myDisplay (wxSize(200,100));
+		TS_ASSERT(myDisplay.GetSize() == wxSize(200, 100));
+		vrCoordinate myCoord (&myDisplay);
+		
+		vrRealRect myExtent (0,2000,1000,-1000);
+		myCoord.SetExtent(myExtent);
+		double myPx = myCoord.GetPixelSize();
+		TS_ASSERT_DELTA(myPx, 5, 0.000001);
+	
+		vrRealRect myExtent2 (0,200,100,-100);
+		myCoord.SetExtent(myExtent2);
+		double myPx2 = myCoord.GetPixelSize();
+		TS_ASSERT_DELTA(myPx2, 0.5, 0.000001);
+		
+		
+	}
 
 };
 

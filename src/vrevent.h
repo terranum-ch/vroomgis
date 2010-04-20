@@ -28,6 +28,6 @@
 
 // Event definition.
 wxDECLARE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
-
+wxDECLARE_EVENT(vrEVT_TOOL_ZOOM, wxCommandEvent);
 
 #endif

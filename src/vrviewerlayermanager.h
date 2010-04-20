@@ -78,6 +78,8 @@ class vrViewerLayerManager : public wxEvtHandler {
 
     bool Add(long pos, vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL); 
     bool Remove(vrRenderer * renderer);
+    bool Zoom(const vrRealRect & extent);
+
 	vrRenderer * GetRenderer(const unsigned int & index);
 	int GetCount();
 	

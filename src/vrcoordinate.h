@@ -48,7 +48,9 @@ class vrCoordinate {
 	
 
 	vrRealRect GetExtent();
+	void SetExtent(const vrRealRect & extent);
 	bool UpdateExtent();
+	vrRealRect GetRectFitted(const vrRealRect & originalrect);
 
 	
     void ClearLayersExtent();
