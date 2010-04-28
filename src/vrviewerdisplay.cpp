@@ -206,6 +206,14 @@ void vrViewerDisplay::SetToolZoom() {
 	SetTool(new vrDisplayToolZoom(this));
 }
 
+
+
+void vrViewerDisplay::SetToolPan() {
+	SetTool(new vrDisplayToolPan(this));
+}
+
+
+
 void vrViewerDisplay::SetTool(vrDisplayTool * tool) {
 	wxDELETE(m_Tool);
 	

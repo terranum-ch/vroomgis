@@ -228,3 +228,99 @@ bool vrDisplayToolZoom::MouseMove(const wxMouseEvent & event) {
 	return false;
 }
 
+
+
+
+
+/***************************************************************************//**
+@brief Default pan tool
+@author Lucien Schreiber (c) CREALP 2010
+@date 28 avril 2010
+ *******************************************************************************/
+vrDisplayToolPan::vrDisplayToolPan(vrViewerDisplay * display) {
+	Create(display, wxID_DEFAULT, "Pan", wxCursor(wxCURSOR_HAND));
+	m_Point = wxDefaultPosition;
+	m_PanBitmap = NULL;
+}
+
+
+
+vrDisplayToolPan::~vrDisplayToolPan() {
+}
+
+
+
+bool vrDisplayToolPan::MouseDown(const wxMouseEvent & event) {
+	wxASSERT(m_Point == wxDefaultPosition);
+	m_Point = event.GetPosition();
+
+	wxASSERT(m_PanBitmap == NULL);
+	
+	wxClientDC myDc (GetDisplay());
+	m_PanBitmap = new wxBitmap (myDc.GetSize());
+	wxASSERT(m_PanBitmap);
+	
+	wxMemoryDC memdc;
+	memdc.SelectObject(*m_PanBitmap);
+	memdc.Blit(0,0,
+			   m_PanBitmap->GetSize().GetWidth(),
+			   m_PanBitmap->GetSize().GetHeight(),
+			   &myDc,
+			   0,0);
+	memdc.SelectObject(wxNullBitmap);
+	return true;
+}
+
+
+
+bool vrDisplayToolPan::MouseUp(const wxMouseEvent & event) {
+	
+	// compute the new raster origin
+	wxPoint myNewPos(m_Point.x - event.GetPosition().x,
+					 m_Point.y - event.GetPosition().y);
+	
+	
+	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_PAN,
+																myNewPos);
+	wxASSERT(myMessage);
+	SendMessage(myMessage);
+	
+	wxASSERT(m_PanBitmap);
+	wxDELETE(m_PanBitmap);
+	m_Point = wxDefaultPosition;
+	return true;
+}
+
+
+
+bool vrDisplayToolPan::MouseMove(const wxMouseEvent & event) {
+	if (event.Dragging()==false) {
+		return false;
+	}
+	
+	wxASSERT(m_PanBitmap);
+
+	// compute the new raster origin
+	wxPoint myNewPos(event.GetPosition().x - m_Point.x,
+					 event.GetPosition().y - m_Point.y);
+	
+	if (myNewPos.x == 0 && myNewPos.y == 0) {
+		return false;
+	}
+	
+	wxMemoryDC memdc;
+	wxBitmap * myMovedBmp = new wxBitmap(m_PanBitmap->GetSize());
+	wxASSERT(myMovedBmp);
+	memdc.SelectObject(*myMovedBmp);
+	memdc.SetBrush(*wxWHITE_BRUSH);
+	memdc.SetPen(*wxWHITE_PEN);
+	memdc.DrawRectangle (0,0, m_PanBitmap->GetSize().x,m_PanBitmap->GetSize().y);
+	memdc.DrawBitmap (*m_PanBitmap, myNewPos.x, myNewPos.y);
+	memdc.SelectObject(wxNullBitmap);
+	
+	GetDisplay()->SetBitmap(myMovedBmp);
+	wxDELETE(myMovedBmp);
+	return true;
+}
+
+

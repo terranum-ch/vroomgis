@@ -33,9 +33,11 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_MENU (wxID_ZOOM_IN, vroomLoaderFrame::OnToolZoom)
 	EVT_MENU (wxID_ZOOM_FIT, vroomLoaderFrame::OnToolZoomToFit)
 	EVT_MENU (wxID_ZOOM_100, vroomLoaderFrame::OnToolZoomToFit)
+	EVT_MENU (wxID_MOVE_FRAME, vroomLoaderFrame::OnToolPan)
 	
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
+	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomLoaderFrame::OnToolAction)
 END_EVENT_TABLE()
 IMPLEMENT_APP(vroomLoader)
 
@@ -121,6 +123,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 
 	toolMenu->Append(wxID_DEFAULT, "Select\tCtrl+S", "Select the selection tool");
 	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
+	toolMenu->Append(wxID_MOVE_FRAME, "Pan\tCtrl+P", "Select the pan tool");
 	toolMenu->AppendSeparator();
 	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to All layers", "Zoom view to the full extent of all layers");
 	toolMenu->Append(wxID_ZOOM_100, "Zoom to visible layers", "Zoom view to the full extent of all visible layers");
@@ -310,14 +313,23 @@ void vroomLoaderFrame::OnShowLog (wxCommandEvent & event)
 
 
 
+
 void vroomLoaderFrame::OnToolSelect (wxCommandEvent & event){
 	m_DisplayCtrl->SetToolDefault();
 }
 
 
+
 void vroomLoaderFrame::OnToolZoom (wxCommandEvent & event){
 	m_DisplayCtrl->SetToolZoom();
 }
+
+
+
+void vroomLoaderFrame::OnToolPan (wxCommandEvent & event){
+	m_DisplayCtrl->SetToolPan();
+}
+
 
 
 void vroomLoaderFrame::OnToolZoomToFit (wxCommandEvent & event)
@@ -372,6 +384,26 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 		}
 
 	}
+	else if (myMsg->m_EvtType == vrEVT_TOOL_PAN) {
+		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
+		wxASSERT(myCoord);
+		
+		wxPoint myMovedPos = myMsg->m_Position;
+		wxPoint2DDouble myMovedRealPt;
+		if (myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)==false){
+			wxLogError("Error converting point : %d, %d to real coordinate",
+					   myMovedPos.x, myMovedPos.y);
+			wxDELETE(myMsg);
+			return;
+		}
+		
+		vrRealRect myActExtent = myCoord->GetExtent();
+		myActExtent.MoveLeftTopTo(myMovedRealPt);
+		myCoord->SetExtent(myActExtent);
+		m_ViewerLayerManager->Reload();
+	}
+
+	
 	else {
 		wxLogError("Operation not supported now");
 	}

@@ -30,5 +30,6 @@
 wxDECLARE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
 wxDECLARE_EVENT(vrEVT_TOOL_ZOOM, wxCommandEvent);
 wxDECLARE_EVENT(vrEVT_TOOL_SELECT, wxCommandEvent);
+wxDECLARE_EVENT(vrEVT_TOOL_PAN, wxCommandEvent);
 
 #endif
