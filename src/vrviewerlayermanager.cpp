@@ -409,9 +409,10 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 	wxBitmap * myAggregatedBmp = new wxBitmap(mySize);
 	wxMemoryDC myDC(*myAggregatedBmp);
 	
-	// paint to white the background
-	myDC.SetBrush(*wxGREY_BRUSH);
-	myDC.SetPen(*wxGREY_PEN);
+	// paint the background
+	wxASSERT(m_Display);
+	myDC.SetBrush(m_Display->GetBackgroundColour());
+	myDC.SetPen(m_Display->GetBackgroundColour());
 	myDC.Clear();
 	myDC.DrawRectangle(0,0,mySize.GetWidth(), mySize.GetHeight());
 	
