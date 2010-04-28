@@ -89,8 +89,7 @@ void  vroomLoaderFrame::_CreateControls()
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 	
-	m_DisplayCtrl = new vrViewerDisplay( m_panel2, wxID_ANY);
-	m_DisplayCtrl->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+	m_DisplayCtrl = new vrViewerDisplay( m_panel2, wxID_ANY, wxColour(120,120,120));
 	
 	bSizer5->Add( m_DisplayCtrl, 1, wxEXPAND, 5 );
 	

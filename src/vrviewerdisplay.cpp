@@ -39,8 +39,11 @@ bool vrViewerDisplay::_DrawRoundedMessage(const wxString & text, const wxColour 
 	}
 	// erase screen 
 	bdc.Clear();
-	bdc.SetBrush(*wxWHITE_BRUSH);
-	bdc.SetPen(*wxWHITE_PEN);
+	bdc.SetBrush(wxBrush(GetBackgroundColour()));
+	bdc.SetPen(wxPen(GetBackgroundColour()));
+	
+	//bdc.SetBrush(*wxWHITE_BRUSH);
+	//bdc.SetPen(*wxWHITE_PEN);
 	bdc.DrawRectangle(0,0,width,height);
 	
 	// draw rectangle

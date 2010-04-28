@@ -312,8 +312,8 @@ bool vrDisplayToolPan::MouseMove(const wxMouseEvent & event) {
 	wxBitmap * myMovedBmp = new wxBitmap(m_PanBitmap->GetSize());
 	wxASSERT(myMovedBmp);
 	memdc.SelectObject(*myMovedBmp);
-	memdc.SetBrush(*wxWHITE_BRUSH);
-	memdc.SetPen(*wxWHITE_PEN);
+	memdc.SetBrush(GetDisplay()->GetBackgroundColour());
+	memdc.SetPen(GetDisplay()->GetBackgroundColour());
 	memdc.DrawRectangle (0,0, m_PanBitmap->GetSize().x,m_PanBitmap->GetSize().y);
 	memdc.DrawBitmap (*m_PanBitmap, myNewPos.x, myNewPos.y);
 	memdc.SelectObject(wxNullBitmap);
