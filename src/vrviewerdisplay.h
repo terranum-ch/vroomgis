@@ -56,6 +56,7 @@ public:
 	
 	void SetToolDefault();
     void SetToolZoom();
+	void SetToolPan();
     void SetTool(vrDisplayTool * tool);
     inline const vrDisplayTool * GetTool() const;
 	

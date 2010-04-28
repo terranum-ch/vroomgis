@@ -141,4 +141,28 @@ class vrDisplayToolZoom : public vrDisplayTool {
     virtual bool MouseMove(const wxMouseEvent & event);
 
 };
+
+
+
+/***************************************************************************//**
+@brief Default pan tool
+@author Lucien Schreiber (c) CREALP 2010
+@date 28 avril 2010
+ *******************************************************************************/
+class vrDisplayToolPan : public vrDisplayTool {
+private:
+    wxPoint m_Point;
+	wxBitmap * m_PanBitmap;
+	
+public:
+    vrDisplayToolPan(vrViewerDisplay * display);
+    virtual ~vrDisplayToolPan();
+	
+    virtual bool MouseDown(const wxMouseEvent & event);
+    virtual bool MouseUp(const wxMouseEvent & event);
+    virtual bool MouseMove(const wxMouseEvent & event);
+	
+};
+
+
 #endif

@@ -80,6 +80,7 @@ public:
 	
 	void OnToolSelect (wxCommandEvent & event);
 	void OnToolZoom (wxCommandEvent & event);
+	void OnToolPan (wxCommandEvent & event);
 	void OnToolZoomToFit (wxCommandEvent & event);
 	
 	void OnToolAction (wxCommandEvent & event);
