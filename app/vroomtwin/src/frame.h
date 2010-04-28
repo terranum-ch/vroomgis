@@ -1,0 +1,93 @@
+/***************************************************************************
+								vroomTwin.h
+					Two Windows test program for VroomGIS 
+                             -------------------
+    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    email                : lucien.schreiber at crealp dot vs dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#ifndef _VROOMTWIN_TEST_H_
+#define _VROOMTWIN_TEST_H_
+
+#include "wx/wxprec.h"
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+
+#if !defined(__WXMSW__) && !defined(__WXPM__)
+#include "sample.xpm"
+#endif
+
+#include <wx/splitter.h>	//splitter bar
+#include "../../../src/vroomgis.h"
+
+class vroomTwin : public wxApp
+{
+public:
+     virtual bool OnInit();
+};
+
+
+
+
+
+class vroomTwinFrame : public wxFrame
+{
+private:
+	wxLogWindow * m_LogWnd;
+
+	// vroomgis engine
+	vrLayerManager * m_LayerManager;
+
+	vrViewerTOC * m_TocCtrl1;
+	vrViewerLayerManager * m_ViewerLayerManager1;
+	vrViewerDisplay * m_DisplayCtrl1;
+	
+	vrViewerTOC * m_TocCtrl2;
+	vrViewerLayerManager * m_ViewerLayerManager2;
+	vrViewerDisplay * m_DisplayCtrl2;
+	
+	
+	void _CreateControls();
+	
+public:
+    vroomTwinFrame(const wxString& title);
+	~vroomTwinFrame();
+	
+    void OnQuit(wxCommandEvent& event);
+    void OnAbout(wxCommandEvent& event);
+	void OnOpenLayer(wxCommandEvent & event);
+	void OnCloseLayer(wxCommandEvent & event);
+	void OnShowLog (wxCommandEvent & event);
+	
+	/*void OnToolSelect (wxCommandEvent & event);
+	void OnToolZoom (wxCommandEvent & event);
+	void OnToolPan (wxCommandEvent & event);
+	void OnToolZoomToFit (wxCommandEvent & event);
+	
+	void OnToolAction (wxCommandEvent & event);*/
+	
+private:
+    DECLARE_EVENT_TABLE()
+};
+
+
+
+
+#endif
+
+
