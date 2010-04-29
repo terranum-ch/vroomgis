@@ -262,9 +262,9 @@ void vroomTwinFrame::OnOpenLayer(wxCommandEvent & event)
 
 void vroomTwinFrame::OnCloseLayer(wxCommandEvent & event){
 	
-/*	wxArrayString myLayersName;
-	for (int i = 0; i<m_ViewerLayerManager->GetCount(); i++) {
-		vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(i);
+	wxArrayString myLayersName;
+	for (int i = 0; i<m_ViewerLayerManager1->GetCount(); i++) {
+		vrRenderer * myRenderer = m_ViewerLayerManager1->GetRenderer(i);
 		wxASSERT(myRenderer);
 		myLayersName.Add(myRenderer->GetLayer()->GetName().GetFullName());
 	}
@@ -289,21 +289,27 @@ void vroomTwinFrame::OnCloseLayer(wxCommandEvent & event){
 	}
 	
 	// removing layer(s)
-	m_ViewerLayerManager->FreezeBegin();
+	m_ViewerLayerManager1->FreezeBegin();
+	m_ViewerLayerManager2->FreezeBegin();
+	
 	for (int j = (signed) myLayerToRemoveIndex.GetCount() -1; j >= 0 ; j--) {
 		
 		// remove from viewer manager (TOC and Display)
-		vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(myLayerToRemoveIndex.Item(j));
+		vrRenderer * myRenderer = m_ViewerLayerManager1->GetRenderer(myLayerToRemoveIndex.Item(j));
 		vrLayer * myLayer = myRenderer->GetLayer();
 		wxASSERT(myRenderer);
-		m_ViewerLayerManager->Remove(myRenderer);
+		m_ViewerLayerManager1->Remove(myRenderer);
+		
+		vrRenderer * myRenderer2 = m_ViewerLayerManager2->GetRenderer(myLayerToRemoveIndex.Item(j));
+		wxASSERT(myRenderer2);
+		m_ViewerLayerManager2->Remove(myRenderer2);
 		
 		// close layer (not used anymore);
 		m_LayerManager->Close(myLayer);
 	}
-	
-	m_ViewerLayerManager->FreezeEnd();
-				*/					 
+	m_ViewerLayerManager2->FreezeEnd();
+	m_ViewerLayerManager1->FreezeEnd();
+									 
 									 
 	
 	
@@ -347,9 +353,9 @@ void vroomTwinFrame::OnToolPan (wxCommandEvent & event){
 
 void vroomTwinFrame::OnToolZoomToFit (wxCommandEvent & event)
 {
-		m_ViewerLayerManager1->ZoomToFit(true);
+		m_ViewerLayerManager1->ZoomToFit(false);
 		m_ViewerLayerManager1->Reload();
-		m_ViewerLayerManager2->ZoomToFit(true);
+		m_ViewerLayerManager2->ZoomToFit(false);
 		m_ViewerLayerManager2->Reload();
 }
 
