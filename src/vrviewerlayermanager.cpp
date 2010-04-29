@@ -57,6 +57,10 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 	if (m_Display==NULL){
 		wxLogError("No display attached");
 	}
+	else {
+		m_Display->SetViewerLayerManager(this);
+	}
+
 	
 	
 	if (m_Toc == NULL){
@@ -65,7 +69,6 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 	else {
 		m_Toc->SetViewerLayerManager(this);
 	}
-
 
 	// add this viewer layer manager to the vrLayerManager
 	m_LayerManager->AddViewerLayerManager(this);
@@ -128,8 +131,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 				m_ComputeExtentStatus = false;
 			}
 			
-			wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
-			m_WindowParent->ProcessWindowEvent(myEvt);
+			Reload();
 		}
 	}
 	
@@ -173,8 +175,7 @@ bool vrViewerLayerManager::Remove(vrRenderer * renderer) {
 	// if not freezed, refresh imediatelly.
 	if (m_FreezeStatus==false) {
 		if(m_WindowParent){
-			wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
-			m_WindowParent->ProcessWindowEvent(myEvt);
+			Reload();
 		}
 	}
 	return true;
@@ -205,8 +206,7 @@ bool vrViewerLayerManager::Zoom(const vrRealRect & extent) {
 	
 	// update drawing
 	if(m_WindowParent){
-		wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
-		m_WindowParent->ProcessWindowEvent(myEvt);
+		Reload();
 	}
 	return true;
 }
@@ -259,15 +259,23 @@ void vrViewerLayerManager::FreezeEnd() {
 	
 	
 	// reloading data
-	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
-	m_WindowParent->ProcessWindowEvent(myEvt);
+	Reload();
 
 }
 
 
 void vrViewerLayerManager::Reload() {
-	wxCommandEvent evt;
-	OnReload(evt);
+	_BitmapArrayInit();
+	
+	_GetLayersData();
+	wxBitmap * myFinalBmp = _MergeBitmapData();
+	_BitmapArrayDelete();
+	
+	// pass bitmap to dispaly
+	wxASSERT(m_Display);
+	m_Display->SetBitmap(myFinalBmp);
+	
+	wxDELETE(myFinalBmp);
 }
 
 
@@ -431,19 +439,8 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 
 
 void vrViewerLayerManager::OnReload(wxCommandEvent & event) {
-	
-	_BitmapArrayInit();
-	
-	_GetLayersData();
-	wxBitmap * myFinalBmp = _MergeBitmapData();
-	_BitmapArrayDelete();
-	
-	// pass bitmap to dispaly
-	wxASSERT(m_Display);
-	m_Display->SetBitmap(myFinalBmp);
-	
-	wxDELETE(myFinalBmp);
-	//event.Skip();
+	Reload();
+	event.Skip();
 }
 
 

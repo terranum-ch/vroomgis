@@ -25,12 +25,14 @@
 
 class vrCoordinate;
 class vrDisplayTool;
+class vrViewerLayerManager;
 
 class vrViewerDisplay : public wxPanel{
 private:
     vrCoordinate * m_Coordinate;
 	wxBitmap * m_bmp;
 	vrDisplayTool * m_Tool;
+    vrViewerLayerManager * m_ViewerManager;
 
 	
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
@@ -50,6 +52,8 @@ public:
 	vrViewerDisplay();
     vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, const wxColour & colour = *wxWHITE);
     virtual ~vrViewerDisplay();
+	void SetViewerLayerManager(vrViewerLayerManager * value);
+
 	
 	void SetBitmap(wxBitmap * bmp);
 	vrCoordinate * GetCoordinate() {return m_Coordinate;}
@@ -59,6 +63,7 @@ public:
 	void SetToolPan();
     void SetTool(vrDisplayTool * tool);
     inline const vrDisplayTool * GetTool() const;
+
 	
 };
 

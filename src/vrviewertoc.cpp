@@ -200,8 +200,8 @@ void vrViewerTOC::_ShowMenuContextual(int id, vrRenderer * renderer) {
 
 void vrViewerTOC::_ReloadData() {
 	// ask for reloading data
-	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
-	ProcessWindowEvent(myEvt);
+	wxASSERT(m_ViewerManager);
+	m_ViewerManager->Reload();
 }
 
 
