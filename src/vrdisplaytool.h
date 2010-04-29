@@ -22,6 +22,8 @@
 #include <wx/wx.h>
 #endif
 
+#include <wx/overlay.h>
+
 class vrViewerDisplay;
 class vrRubberBand;
 class vrViewerLayerManager;
@@ -168,6 +170,28 @@ public:
     virtual bool MouseMove(const wxMouseEvent & event);
 	
 };
+
+
+/***************************************************************************//**
+@brief Default viewfinder tool
+@author Lucien Schreiber (c) CREALP 2010
+@date 29 avril 2010
+ *******************************************************************************/
+class vrDisplayToolSight : public vrDisplayTool {
+private:
+   wxOverlay m_Overlay;
+	
+public:
+    vrDisplayToolSight(vrViewerDisplay * display);
+    virtual ~vrDisplayToolSight();
+	
+    virtual bool MouseDown(const wxMouseEvent & event);
+    virtual bool MouseUp(const wxMouseEvent & event);
+    virtual bool MouseMove(const wxMouseEvent & event);
+	
+};
+
+
 
 
 #endif

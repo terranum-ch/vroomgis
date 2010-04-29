@@ -233,6 +233,11 @@ void vrViewerDisplay::SetToolPan() {
 
 
 
+void vrViewerDisplay::SetToolSight() {
+	SetTool(new vrDisplayToolSight(this));
+}
+
+
 void vrViewerDisplay::SetTool(vrDisplayTool * tool) {
 	wxDELETE(m_Tool);
 	
