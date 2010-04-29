@@ -191,6 +191,11 @@ void vrViewerDisplay::SetViewerLayerManager(vrViewerLayerManager * value) {
 }
 
 
+ vrViewerLayerManager * vrViewerDisplay::GetViewerLayerManager() {
+	return m_ViewerManager;
+}
+
+
 void vrViewerDisplay::SetBitmap(wxBitmap * bmp) {
 	
 	wxDELETE(m_bmp);

@@ -32,18 +32,23 @@ void vrDisplayToolMessage::_InitMembers() {
 	m_Rect = wxRect();
 	wxASSERT(m_Rect.IsEmpty());
 	m_Position = wxDefaultPosition;
+	m_ParentManager = NULL;
 }
 
-vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype, const wxRect & rect) {
+vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype, 
+										   vrViewerDisplay * parent, const wxRect & rect) {
 	_InitMembers();
 	m_EvtType = eventtype;
 	m_Rect = rect;
+	m_ParentManager = parent->GetViewerLayerManager();
 }
 
-vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype, const wxPoint & pos) {
+vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
+										   vrViewerDisplay * parent, const wxPoint & pos) {
 	_InitMembers();
 	m_EvtType = eventtype;
 	m_Position = pos;
+	m_ParentManager = parent->GetViewerLayerManager();
 	
 }
 
@@ -154,6 +159,7 @@ vrDisplayToolDefault::~vrDisplayToolDefault() {
 bool vrDisplayToolDefault::MouseDown(const wxMouseEvent & event) {
 	
 	vrDisplayToolMessage * myMsG = new vrDisplayToolMessage(vrEVT_TOOL_SELECT,
+															GetDisplay(),
 															event.GetPosition());
 	SendMessage(myMsG);
 	return false;
@@ -210,6 +216,7 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 				 myRect.GetHeight());
 	
 	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_ZOOM,
+																GetDisplay(),
 																myRect);
 	wxASSERT(myMessage);
 	SendMessage(myMessage);
@@ -281,6 +288,7 @@ bool vrDisplayToolPan::MouseUp(const wxMouseEvent & event) {
 	
 	
 	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_PAN,
+																GetDisplay(),
 																myNewPos);
 	wxASSERT(myMessage);
 	SendMessage(myMessage);
