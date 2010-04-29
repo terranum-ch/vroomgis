@@ -74,11 +74,10 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 
 
 vrViewerLayerManager::~vrViewerLayerManager() {
-	//wxLogMessage("ViewerLayerManager Dtor called");
+	wxLogMessage("ViewerLayerManager Dtor called");
 	
 	if (m_WindowParent) {
-		m_WindowParent->PopEventHandler(false);
-		m_WindowParent->SetEventHandler(m_WindowParent);
+		m_WindowParent->RemoveEventHandler(this);
 	}
 	
 	

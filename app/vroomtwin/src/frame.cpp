@@ -49,7 +49,7 @@ bool vroomTwin::OnInit()
         return false;
 	
     vroomTwinFrame *frame = new vroomTwinFrame("vroomTwin");
-	frame->SetSize(50, 50, 800, 600);
+	frame->SetSize(50, 50, 800, 500);
 	frame->Show(true);
 	return true;
 }
@@ -69,6 +69,7 @@ void  vroomTwinFrame::_CreateControls()
 	
 	wxStaticText * m_staticText2 = new wxStaticText( m_panel1, wxID_ANY, "Display 1", wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
+	m_staticText2->SetFont( *wxSMALL_FONT );
 	bSizer4->Add( m_staticText2, 0, wxALL, 5 );
 	
 	m_TocCtrl1 = new vrViewerTOC( m_panel1, wxID_ANY);
@@ -91,10 +92,10 @@ void  vroomTwinFrame::_CreateControls()
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_DisplayCtrl1 = new vrViewerDisplay( m_panel2, wxID_ANY, *wxBLACK);
+	m_DisplayCtrl1 = new vrViewerDisplay( m_panel2, wxNewId(), *wxBLACK);
 	bSizer5->Add( m_DisplayCtrl1, 1, wxEXPAND|wxRIGHT, 1 );
 	
-	m_DisplayCtrl2 = new vrViewerDisplay( m_panel2, wxID_ANY, *wxWHITE);
+	m_DisplayCtrl2 = new vrViewerDisplay( m_panel2, wxNewId(), *wxWHITE);
 	bSizer5->Add( m_DisplayCtrl2, 1, wxEXPAND|wxLEFT, 1 );
 	
 	m_panel2->SetSizer( bSizer5 );
@@ -163,8 +164,10 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 
 vroomTwinFrame::~vroomTwinFrame()
 {	
+	
 	// don't delete m_ViewerLayerManager, will be deleted by the manager
 	wxDELETE(m_LayerManager);
+	
 	delete wxLog::SetActiveTarget (NULL);
 }
 
