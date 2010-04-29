@@ -332,3 +332,54 @@ bool vrDisplayToolPan::MouseMove(const wxMouseEvent & event) {
 }
 
 
+
+
+
+/***************************************************************************//**
+@brief Default viewfinder tool
+@author Lucien Schreiber (c) CREALP 2010
+@date 29 avril 2010
+ *******************************************************************************/
+vrDisplayToolSight::vrDisplayToolSight(vrViewerDisplay * display) {
+	Create(display, wxID_DEFAULT, "Sight", wxCursor(wxCURSOR_CROSS));
+}
+
+
+vrDisplayToolSight::~vrDisplayToolSight() {
+	{
+		wxClientDC myDC (GetDisplay());
+		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		overlaydc.Clear();	
+	}
+	m_Overlay.Reset();
+}
+
+bool vrDisplayToolSight::MouseDown(const wxMouseEvent & event) {
+	return true;
+}
+
+bool vrDisplayToolSight::MouseUp(const wxMouseEvent & event) {
+	return true;
+}
+
+bool vrDisplayToolSight::MouseMove(const wxMouseEvent & event) {
+	{
+		wxClientDC myDC (GetDisplay());
+		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		overlaydc.Clear();	
+	}
+	m_Overlay.Reset();
+	
+	
+	wxClientDC myDC (GetDisplay());
+	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	overlaydc.Clear();
+	//myDC.SetLogicalFunction(wxINVERT);
+	myDC.SetPen(*wxRED_PEN);
+	//myDC.DrawLine (wxPoint(0,0), event.GetPosition());
+	myDC.CrossHair(event.GetPosition());
+	return true;
+}
+
+
+

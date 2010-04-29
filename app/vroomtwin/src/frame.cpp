@@ -33,6 +33,7 @@ BEGIN_EVENT_TABLE(vroomTwinFrame, wxFrame)
 	EVT_MENU (wxID_ZOOM_IN, vroomTwinFrame::OnToolZoom)
 	EVT_MENU (wxID_ZOOM_FIT, vroomTwinFrame::OnToolZoomToFit)
 	EVT_MENU (wxID_MOVE_FRAME, vroomTwinFrame::OnToolPan)
+	EVT_MENU (vtID_SIGHT_TOOL, vroomTwinFrame::OnToolSight)
 	EVT_MENU (vtID_SET_SYNCRO_MODE, vroomTwinFrame::OnSyncroToolSwitch)
 	//EVT_MENU (wxID_ZOOM_100, vroomTwinFrame::OnToolZoomToFit)
 	
@@ -133,6 +134,7 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
 	toolMenu->Append(wxID_MOVE_FRAME, "Pan\tCtrl+P", "Select the pan tool");
 	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to fit", "Zoom view to the full extent of all layers");
+	toolMenu->Append(vtID_SIGHT_TOOL, "Viewfinder\tCtrl+F", "Select the viewfinder tool");
 	toolMenu->AppendSeparator();
 	toolMenu->AppendCheckItem(vtID_SET_SYNCRO_MODE, "Syncronize tools", 
 							  "When set to true, tools action are working on all display");
@@ -348,6 +350,13 @@ void vroomTwinFrame::OnToolPan (wxCommandEvent & event){
 	m_DisplayCtrl1->SetToolPan();
 	m_DisplayCtrl2->SetToolPan();
 }
+
+
+void vroomTwinFrame::OnToolSight (wxCommandEvent & event){
+	m_DisplayCtrl1->SetToolSight();
+	m_DisplayCtrl2->SetToolSight();
+}
+
 
 
 

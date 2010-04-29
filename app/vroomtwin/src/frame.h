@@ -42,7 +42,8 @@ public:
 };
 
 
-const int vtID_SET_SYNCRO_MODE = wxID_HIGHEST + 1;
+const int vtID_SET_SYNCRO_MODE	= wxID_HIGHEST + 1;
+const int vtID_SIGHT_TOOL		= wxID_HIGHEST + 2;
 
 
 
@@ -81,6 +82,7 @@ public:
 	//void OnToolSelect (wxCommandEvent & event);
 	void OnToolZoom (wxCommandEvent & event);
 	void OnToolPan (wxCommandEvent & event);
+	void OnToolSight (wxCommandEvent & event);
 	void OnToolZoomToFit (wxCommandEvent & event);
 	
 	void OnToolAction (wxCommandEvent & event);
