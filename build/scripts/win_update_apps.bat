@@ -9,6 +9,7 @@ REM 4) Launch the app
 
 @SET TRUNKDIR=D:\LS\PRJ\COLTOPGIS\trunk-vroomgis
 @SET BINDIR=D:\LS\PRJ\COLTOPGIS\bin\vroomloader
+@SET BINDIR2=D:\LS\PRJ\COLTOPGIS\bin\vroomtwin
 @SET VSDIR=C:\Program Files\Microsoft Visual Studio 9.0\Common7\IDE
 
 
@@ -65,6 +66,49 @@ ECHO 3) BUILDING VROOMLOADER APP DONE
 
 cd %bindir%
 start %bindir%\Debug\vroomLoader.exe
+REM "C:\Program Files\Notepad++\notepad++.exe" %bindir%\Testing\Temporary\LastTest.log
+REM notepad.exe %bindir%\Testing\Temporary\LastTest.log
+REM goto :WaitForEnter
+
+
+
+
+
+ECHO ----------------------------------------
+ECHO         UPDATE VROOMGIS APP
+ECHO 			VROOMTWIN
+ECHO     (c) Lucien Schreiber CREALP
+ECHO ----------------------------------------
+
+SET WXWIN=%PARAMWXWIN%
+echo %WXWIN%
+
+
+ECHO 2) Making Visual studio solution...
+cd %bindir2%
+cmake %trunkdir%\app\vroomtwin\build -G "Visual Studio 9 2008" -DCXXTEST_DIRECTORY:PATH=%PARAMCXX% -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH=%PARAMGIS% -DSEARCH_GEOS_LIB_PATH:PATH=%PARAMGEOS% -DUSE_MT_LIBRARY:BOOL=1
+ECHO 2) Making Visual studio solution... DONE
+
+
+
+ECHO -----------------------------------------------
+ECHO 3) BUILDING VROOMTWIN APP (MAY TAKE SOME TIMES)-----
+ECHO -----------------------------------------------
+
+cd %BINDIR2%
+"%vsdir%\VCExpress.exe" vroomTwin.sln /Out solution.log /Build Debug
+echo %ERRORLEVEL%
+IF ERRORLEVEL 1 goto QuitErrorBuildScript
+
+"%vsdir%\VCExpress.exe" vroomTwin.sln /Out solution.log /Build Release
+echo %ERRORLEVEL%
+IF ERRORLEVEL 1 goto QuitErrorBuildScript
+
+ECHO 3) BUILDING VROOMLOADER APP DONE
+
+
+cd %bindir%
+start %bindir2%\Debug\vroomTwin.exe
 REM "C:\Program Files\Notepad++\notepad++.exe" %bindir%\Testing\Temporary\LastTest.log
 REM notepad.exe %bindir%\Testing\Temporary\LastTest.log
 goto :WaitForEnter
