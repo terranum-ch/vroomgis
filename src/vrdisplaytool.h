@@ -24,6 +24,7 @@
 
 class vrViewerDisplay;
 class vrRubberBand;
+class vrViewerLayerManager;
 
 
 
@@ -41,9 +42,13 @@ public:
     wxRect m_Rect;
 	wxPoint m_Position;
     wxEventType m_EvtType;
+	vrViewerLayerManager * m_ParentManager;
+
 	
-    vrDisplayToolMessage(const wxEventType & eventtype, const wxRect & rect);
-    vrDisplayToolMessage(const wxEventType & eventtype, const wxPoint & pos);
+    vrDisplayToolMessage(const wxEventType & eventtype, 
+						 vrViewerDisplay * parent, const wxRect & rect);
+    vrDisplayToolMessage(const wxEventType & eventtype, 
+						 vrViewerDisplay * parent, const wxPoint & pos);
     virtual ~vrDisplayToolMessage();
 	
 };

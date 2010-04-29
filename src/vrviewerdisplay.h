@@ -53,6 +53,7 @@ public:
     vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, const wxColour & colour = *wxWHITE);
     virtual ~vrViewerDisplay();
 	void SetViewerLayerManager(vrViewerLayerManager * value);
+	vrViewerLayerManager * GetViewerLayerManager();
 
 	
 	void SetBitmap(wxBitmap * bmp);

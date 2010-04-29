@@ -42,6 +42,7 @@ public:
 };
 
 
+const int vtID_SET_SYNCRO_MODE = wxID_HIGHEST + 1;
 
 
 
@@ -49,6 +50,7 @@ class vroomTwinFrame : public wxFrame
 {
 private:
 	wxLogWindow * m_LogWnd;
+	bool m_SyncroTool;
 
 	// vroomgis engine
 	vrLayerManager * m_LayerManager;
@@ -74,12 +76,14 @@ public:
 	void OnCloseLayer(wxCommandEvent & event);
 	void OnShowLog (wxCommandEvent & event);
 	
-	/*void OnToolSelect (wxCommandEvent & event);
+	void OnSyncroToolSwitch(wxCommandEvent & event);
+	
+	//void OnToolSelect (wxCommandEvent & event);
 	void OnToolZoom (wxCommandEvent & event);
 	void OnToolPan (wxCommandEvent & event);
 	void OnToolZoomToFit (wxCommandEvent & event);
 	
-	void OnToolAction (wxCommandEvent & event);*/
+	void OnToolAction (wxCommandEvent & event);
 	
 private:
     DECLARE_EVENT_TABLE()

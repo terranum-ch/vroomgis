@@ -29,15 +29,16 @@ BEGIN_EVENT_TABLE(vroomTwinFrame, wxFrame)
 	EVT_MENU(wxID_OPEN, vroomTwinFrame::OnOpenLayer)
 	EVT_MENU(wxID_REMOVE, vroomTwinFrame::OnCloseLayer)
 	EVT_MENU (wxID_INFO, vroomTwinFrame::OnShowLog)
-	/*EVT_MENU (wxID_DEFAULT, vroomTwinFrame::OnToolSelect)
+	//EVT_MENU (wxID_DEFAULT, vroomTwinFrame::OnToolSelect)
 	EVT_MENU (wxID_ZOOM_IN, vroomTwinFrame::OnToolZoom)
 	EVT_MENU (wxID_ZOOM_FIT, vroomTwinFrame::OnToolZoomToFit)
-	EVT_MENU (wxID_ZOOM_100, vroomTwinFrame::OnToolZoomToFit)
 	EVT_MENU (wxID_MOVE_FRAME, vroomTwinFrame::OnToolPan)
+	EVT_MENU (vtID_SET_SYNCRO_MODE, vroomTwinFrame::OnSyncroToolSwitch)
+	//EVT_MENU (wxID_ZOOM_100, vroomTwinFrame::OnToolZoomToFit)
 	
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomTwinFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomTwinFrame::OnToolAction)
-	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomTwinFrame::OnToolAction)*/
+	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomTwinFrame::OnToolAction)
 END_EVENT_TABLE()
 IMPLEMENT_APP(vroomTwin)
 
@@ -69,7 +70,9 @@ void  vroomTwinFrame::_CreateControls()
 	
 	wxStaticText * m_staticText2 = new wxStaticText( m_panel1, wxID_ANY, "Display 1", wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText2->Wrap( -1 );
+#ifdef __WXOSX__
 	m_staticText2->SetFont( *wxSMALL_FONT );
+#endif
 	bSizer4->Add( m_staticText2, 0, wxALL, 5 );
 	
 	m_TocCtrl1 = new vrViewerTOC( m_panel1, wxID_ANY);
@@ -77,8 +80,9 @@ void  vroomTwinFrame::_CreateControls()
 	
 	wxStaticText * m_staticText1 = new wxStaticText( m_panel1, wxID_ANY, "Display 2", wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
+#ifdef __WXOSX__
 	m_staticText1->SetFont( *wxSMALL_FONT );
-	
+#endif
 	bSizer4->Add( m_staticText1, 0, wxALL, 5 );
 	
 	m_TocCtrl2 = new vrViewerTOC( m_panel1, wxID_ANY);
@@ -111,12 +115,13 @@ void  vroomTwinFrame::_CreateControls()
 vroomTwinFrame::vroomTwinFrame(const wxString& title)
        : wxFrame(NULL, wxID_ANY, title)
 {
+	m_SyncroTool = true;
     SetIcon(wxICON(sample));
 
 	// MENU
     wxMenu *fileMenu = new wxMenu;
 	wxMenu *helpMenu = new wxMenu;
-	//wxMenu *toolMenu = new wxMenu;
+	wxMenu *toolMenu = new wxMenu;
     
 	helpMenu->Append(wxID_ABOUT, "&About...\tF1", "Show about dialog");
 	helpMenu->Append(wxID_INFO, "Show Log Window", "Show log window");
@@ -124,16 +129,18 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 	fileMenu->Append(wxID_REMOVE, "&Close\tCtrl+W", "Close GIS layer(s)");
 	fileMenu->Append(wxID_EXIT, "E&xit\tAlt-X", "Quit this program");
 
-	/*toolMenu->Append(wxID_DEFAULT, "Select\tCtrl+S", "Select the selection tool");
+	//toolMenu->Append(wxID_DEFAULT, "Select\tCtrl+S", "Select the selection tool");
 	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
 	toolMenu->Append(wxID_MOVE_FRAME, "Pan\tCtrl+P", "Select the pan tool");
+	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to fit", "Zoom view to the full extent of all layers");
 	toolMenu->AppendSeparator();
-	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to All layers", "Zoom view to the full extent of all layers");
-	toolMenu->Append(wxID_ZOOM_100, "Zoom to visible layers", "Zoom view to the full extent of all visible layers");*/
+	toolMenu->AppendCheckItem(vtID_SET_SYNCRO_MODE, "Syncronize tools", 
+							  "When set to true, tools action are working on all display");
+	toolMenu->Check(vtID_SET_SYNCRO_MODE, m_SyncroTool);
 	
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
-	//menuBar->Append(toolMenu, "&Tools");
+	menuBar->Append(toolMenu, "&Tools");
 	menuBar->Append(helpMenu, "&Help");
 	
     SetMenuBar(menuBar);
@@ -164,10 +171,8 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 
 vroomTwinFrame::~vroomTwinFrame()
 {	
-	
 	// don't delete m_ViewerLayerManager, will be deleted by the manager
 	wxDELETE(m_LayerManager);
-	
 	delete wxLog::SetActiveTarget (NULL);
 }
 
@@ -313,37 +318,40 @@ void vroomTwinFrame::OnShowLog (wxCommandEvent & event)
 
 
 
-/*
-void vroomTwinFrame::OnToolSelect (wxCommandEvent & event){
-	m_DisplayCtrl->SetToolDefault();
+void vroomTwinFrame::OnSyncroToolSwitch(wxCommandEvent & event){
+	m_SyncroTool = GetMenuBar()->IsChecked(vtID_SET_SYNCRO_MODE);
 }
 
 
 
+/*
+void vroomTwinFrame::OnToolSelect (wxCommandEvent & event){
+	m_DisplayCtrl->SetToolDefault();
+}
+*/
+
+
 void vroomTwinFrame::OnToolZoom (wxCommandEvent & event){
-	m_DisplayCtrl->SetToolZoom();
+	m_DisplayCtrl1->SetToolZoom();
+	m_DisplayCtrl2->SetToolZoom();
 }
 
 
 
 void vroomTwinFrame::OnToolPan (wxCommandEvent & event){
-	m_DisplayCtrl->SetToolPan();
+	m_DisplayCtrl1->SetToolPan();
+	m_DisplayCtrl2->SetToolPan();
 }
 
 
 
 void vroomTwinFrame::OnToolZoomToFit (wxCommandEvent & event)
 {
-	if (event.GetId() == wxID_ZOOM_100) {
-		m_ViewerLayerManager->ZoomToFit(true);
-	}
-	else {
-		m_ViewerLayerManager->ZoomToFit(false);
-	}
-	
-	m_ViewerLayerManager->Reload();
+		m_ViewerLayerManager1->ZoomToFit(true);
+		m_ViewerLayerManager1->Reload();
+		m_ViewerLayerManager2->ZoomToFit(true);
+		m_ViewerLayerManager2->Reload();
 }
-
 
 
 void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
@@ -352,7 +360,7 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 	
 	if(myMsg->m_EvtType == vrEVT_TOOL_ZOOM){
 		// getting rectangle
-		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
+		vrCoordinate * myCoord = myMsg->m_ParentManager->GetDispaly()->GetCoordinate();
 		wxASSERT(myCoord);
 		
 		// get real rectangle
@@ -364,12 +372,53 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 		vrRealRect myFittedRect =myCoord->GetRectFitted(myRealRect);
 		wxASSERT(myFittedRect.IsOk());
 				
-		// moving view
-		m_ViewerLayerManager->Zoom(myFittedRect);
-		m_ViewerLayerManager->Reload();
 		
+		if (m_SyncroTool == false) {
+			myMsg->m_ParentManager->Zoom(myFittedRect);
+			myMsg->m_ParentManager->Reload();
+		}
+		else {
+			m_ViewerLayerManager1->Zoom(myFittedRect);
+			m_ViewerLayerManager1->Reload();
+			m_ViewerLayerManager2->Zoom(myFittedRect);
+			m_ViewerLayerManager2->Reload();
+		}
+	}
+	
+	
+	
+	
+	else if (myMsg->m_EvtType == vrEVT_TOOL_PAN) {
+		vrCoordinate * myCoord = myMsg->m_ParentManager->GetDispaly()->GetCoordinate();
+		wxASSERT(myCoord);
 		
-	}else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
+		wxPoint myMovedPos = myMsg->m_Position;
+		wxPoint2DDouble myMovedRealPt;
+		if (myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)==false){
+			wxLogError("Error converting point : %d, %d to real coordinate",
+					   myMovedPos.x, myMovedPos.y);
+			wxDELETE(myMsg);
+			return;
+		}
+		
+		vrRealRect myActExtent = myCoord->GetExtent();
+		myActExtent.MoveLeftTopTo(myMovedRealPt);
+		
+		if (m_SyncroTool == false) {
+			myCoord->SetExtent(myActExtent);
+			myMsg->m_ParentManager->Reload();
+		}
+		else {
+			m_ViewerLayerManager1->GetDispaly()->GetCoordinate()->SetExtent(myActExtent);
+			m_ViewerLayerManager1->Reload();
+			m_ViewerLayerManager2->GetDispaly()->GetCoordinate()->SetExtent(myActExtent);
+			m_ViewerLayerManager2->Reload();
+		}
+
+	}
+	
+	
+	/* else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
 		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
 		wxASSERT(myCoord);
 		
@@ -384,25 +433,7 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 		}
 
 	}
-	else if (myMsg->m_EvtType == vrEVT_TOOL_PAN) {
-		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
-		wxASSERT(myCoord);
-		
-		wxPoint myMovedPos = myMsg->m_Position;
-		wxPoint2DDouble myMovedRealPt;
-		if (myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)==false){
-			wxLogError("Error converting point : %d, %d to real coordinate",
-					   myMovedPos.x, myMovedPos.y);
-			wxDELETE(myMsg);
-			return;
-		}
-		
-		vrRealRect myActExtent = myCoord->GetExtent();
-		myActExtent.MoveLeftTopTo(myMovedRealPt);
-		myCoord->SetExtent(myActExtent);
-		m_ViewerLayerManager->Reload();
-	}
-
+	*/
 	
 	else {
 		wxLogError("Operation not supported now");
@@ -410,6 +441,6 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 
 	
 	wxDELETE(myMsg);
-}*/
+}
 
 
