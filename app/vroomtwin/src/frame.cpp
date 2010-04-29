@@ -212,7 +212,7 @@ void vroomTwinFrame::OnOpenLayer(wxCommandEvent & event)
 	return;
 	 */
 	
-	/*
+	
 	
 	vrDrivers myDrivers;
 	wxFileDialog myFileDlg (this, "Select GIS Layers",
@@ -223,33 +223,34 @@ void vroomTwinFrame::OnOpenLayer(wxCommandEvent & event)
 	
 	wxArrayString myPathsFileName;
 	
-	if(myFileDlg.ShowModal()==wxID_OK){
-		// try to open files
-
-		myFileDlg.GetPaths(myPathsFileName);
-		wxASSERT(myPathsFileName.GetCount() > 0);
-		
-		
-		for (unsigned int i = 0; i< myPathsFileName.GetCount(); i++) {
-			// open files
-			bool myOpen = m_LayerManager->Open(wxFileName(myPathsFileName.Item(i)));
-			wxASSERT(myOpen);
-		}
-		
-		m_ViewerLayerManager->FreezeBegin();
-		for (unsigned int j = 0; j< myPathsFileName.GetCount(); j++) {
-			// get files
-			vrLayer * myLayer = m_LayerManager->GetLayer( wxFileName(myPathsFileName.Item(j)));
-			wxASSERT(myLayer);
-			
-			// add files to the viewer
-			m_ViewerLayerManager->Add(-1, myLayer);
-		}
-		m_ViewerLayerManager->FreezeEnd();
-		
-		
+	if(myFileDlg.ShowModal()!=wxID_OK){
+		return;
 	}
-	//event.Skip();*/
+	
+	// try to open files
+	myFileDlg.GetPaths(myPathsFileName);
+	wxASSERT(myPathsFileName.GetCount() > 0);
+	
+	
+	for (unsigned int i = 0; i< myPathsFileName.GetCount(); i++) {
+		// open files
+		bool myOpen = m_LayerManager->Open(wxFileName(myPathsFileName.Item(i)));
+		wxASSERT(myOpen);
+	}
+	
+	m_ViewerLayerManager1->FreezeBegin();
+	m_ViewerLayerManager2->FreezeBegin();
+	for (unsigned int j = 0; j< myPathsFileName.GetCount(); j++) {
+		// get files
+		vrLayer * myLayer = m_LayerManager->GetLayer( wxFileName(myPathsFileName.Item(j)));
+		wxASSERT(myLayer);
+		
+		// add files to the viewer
+		m_ViewerLayerManager1->Add(-1, myLayer);
+		m_ViewerLayerManager2->Add(-1, myLayer);
+	}
+	m_ViewerLayerManager2->FreezeEnd();
+	m_ViewerLayerManager1->FreezeEnd();
 }
 
 

@@ -19,6 +19,7 @@
 #include "vrcoordinate.h"
 #include "vrevent.h"
 #include "vrdisplaytool.h"
+#include "vrviewerlayermanager.h"
 
 
 bool vrViewerDisplay::_DrawRoundedMessage(const wxString & text, const wxColour & colour) {
@@ -87,10 +88,12 @@ void vrViewerDisplay::OnSizeChange(wxSizeEvent & event) {
 		return;
 	}
 	
+	if (m_ViewerManager == NULL){
+		return;
+	}
 	
-	wxCommandEvent myEvt(vrEVT_VLM_RELOAD);
-	ProcessWindowEvent(myEvt);
-	
+	m_ViewerManager->Reload();
+		
 	wxASSERT(m_Coordinate);
 	if (m_Coordinate->IsOk() == true) {
 		m_Coordinate->UpdateExtent();
@@ -135,6 +138,7 @@ vrViewerDisplay::vrViewerDisplay(){
 	m_Coordinate = NULL;
 	m_bmp = NULL;
 	m_Tool = NULL;
+	m_ViewerManager = NULL;
 	wxLogError("Don't use this vrViewerDisplay ctor, only here for tests");
 }
 
@@ -146,6 +150,7 @@ wxPanel(parent, id){
 	m_Coordinate = new vrCoordinate(this);
 	m_bmp = NULL;
 	m_Tool = NULL;
+	m_ViewerManager = NULL;
 	
 	SetBackgroundColour(colour);
 	
@@ -177,6 +182,12 @@ vrViewerDisplay::~vrViewerDisplay() {
 	wxDELETE(m_Coordinate);
 	wxDELETE(m_Tool);
 	wxDELETE(m_bmp);
+}
+
+
+void vrViewerDisplay::SetViewerLayerManager(vrViewerLayerManager * value) {
+	wxASSERT(value);
+	m_ViewerManager = value;
 }
 
 
