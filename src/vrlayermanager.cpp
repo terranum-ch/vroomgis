@@ -41,8 +41,8 @@ vrLayerManager::~vrLayerManager() {
 	wxASSERT(m_Layers.GetCount()==0);
 	
 	// manually clearing array of viewermanagers
-	unsigned int iCountVM = m_ViewerManagers.GetCount();
-	for (unsigned j = 0; j<iCountVM; j++){
+	int iCountVM = m_ViewerManagers.GetCount();
+	for (int j = iCountVM - 1; j >= 0; j--){
 		vrViewerLayerManager * myManager = m_ViewerManagers.Item(0);
 		m_ViewerManagers.Detach(0);
 		wxDELETE(myManager);
