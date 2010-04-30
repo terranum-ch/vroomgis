@@ -40,6 +40,8 @@ BEGIN_EVENT_TABLE(vroomTwinFrame, wxFrame)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomTwinFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomTwinFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomTwinFrame::OnToolAction)
+	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SIGHT, vroomTwinFrame::OnToolAction)
+
 END_EVENT_TABLE()
 IMPLEMENT_APP(vroomTwin)
 
@@ -430,7 +432,30 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 			m_ViewerLayerManager2->Reload();
 		}
 
+	} else if (myMsg->m_EvtType == vrEVT_TOOL_SIGHT) {
+		
+		vrViewerLayerManager * myInvertedMgr = m_ViewerLayerManager1;
+		if (myInvertedMgr == myMsg->m_ParentManager) {
+			myInvertedMgr = m_ViewerLayerManager2;
+		}
+		
+			{
+				wxClientDC myDC (myInvertedMgr->GetDispaly());
+				wxDCOverlay overlaydc (m_Overlay, &myDC);
+				overlaydc.Clear();	
+			}
+			m_Overlay.Reset();
+		
+		if (myMsg->m_Position != wxDefaultPosition) {
+			wxClientDC myDC (myInvertedMgr->GetDispaly());
+			wxDCOverlay overlaydc (m_Overlay, &myDC);
+			overlaydc.Clear();
+			myDC.SetPen(*wxGREEN_PEN);
+			myDC.CrossHair(myMsg->m_Position);
+		}
+		
 	}
+
 	
 	
 	/* else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {

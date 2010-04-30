@@ -52,6 +52,7 @@ class vroomTwinFrame : public wxFrame
 private:
 	wxLogWindow * m_LogWnd;
 	bool m_SyncroTool;
+	wxOverlay m_Overlay;
 
 	// vroomgis engine
 	vrLayerManager * m_LayerManager;

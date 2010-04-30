@@ -29,6 +29,7 @@ wxDEFINE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_ZOOM, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_SELECT, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_PAN, wxCommandEvent);
+wxDEFINE_EVENT(vrEVT_TOOL_SIGHT, wxCommandEvent);
 
 
 BEGIN_EVENT_TABLE(vrViewerLayerManager, wxEvtHandler)

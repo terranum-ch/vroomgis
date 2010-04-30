@@ -346,23 +346,45 @@ vrDisplayToolSight::vrDisplayToolSight(vrViewerDisplay * display) {
 
 
 vrDisplayToolSight::~vrDisplayToolSight() {
+}
+
+bool vrDisplayToolSight::MouseDown(const wxMouseEvent & event) {
+	wxClientDC myDC (GetDisplay());
+	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	overlaydc.Clear();
+	myDC.SetPen(*wxRED_PEN);
+	myDC.CrossHair(event.GetPosition());
+	
+	
+	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
+															GetDisplay(),
+															event.GetPosition());
+	SendMessage(myMsg);
+	return true;
+}
+
+bool vrDisplayToolSight::MouseUp(const wxMouseEvent & event) {
 	{
 		wxClientDC myDC (GetDisplay());
 		wxDCOverlay overlaydc (m_Overlay, &myDC);
 		overlaydc.Clear();	
 	}
 	m_Overlay.Reset();
-}
-
-bool vrDisplayToolSight::MouseDown(const wxMouseEvent & event) {
-	return true;
-}
-
-bool vrDisplayToolSight::MouseUp(const wxMouseEvent & event) {
+	
+	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
+															GetDisplay(),
+															wxDefaultPosition);
+	SendMessage(myMsg);
+	
 	return true;
 }
 
 bool vrDisplayToolSight::MouseMove(const wxMouseEvent & event) {
+	if (event.Dragging() == false) {
+		return false;
+	}
+	
+	
 	{
 		wxClientDC myDC (GetDisplay());
 		wxDCOverlay overlaydc (m_Overlay, &myDC);
@@ -374,10 +396,14 @@ bool vrDisplayToolSight::MouseMove(const wxMouseEvent & event) {
 	wxClientDC myDC (GetDisplay());
 	wxDCOverlay overlaydc (m_Overlay, &myDC);
 	overlaydc.Clear();
-	//myDC.SetLogicalFunction(wxINVERT);
 	myDC.SetPen(*wxRED_PEN);
-	//myDC.DrawLine (wxPoint(0,0), event.GetPosition());
 	myDC.CrossHair(event.GetPosition());
+	
+	
+	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
+															GetDisplay(),
+															event.GetPosition());
+	SendMessage(myMsg);
 	return true;
 }
 
