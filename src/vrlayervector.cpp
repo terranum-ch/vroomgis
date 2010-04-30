@@ -177,8 +177,6 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 	
 	wxPen myPen (myRender->GetColorPen(),
 				 myRender->GetSize());
-				 
-				 //wxColour(0,0,255, 150), 2); 
 	gdc->SetPen(myPen);
 	
 	
@@ -237,6 +235,67 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 		wxLogWarning("No data drawn.");
 	}
 	wxLogMessage("%d lines drawed in %ldms", iCount, sw.Time());
+	return true;
+}
+
+
+
+bool vrLayerVectorOGR::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+								   const vrRender * render, const vrLabel * label, double pxsize) {
+	wxASSERT(gdc);
+	wxStopWatch sw;
+	// creating pen
+	
+	wxASSERT(render->GetType() == vrRENDER_VECTOR);
+	vrRenderVector * myRender = (vrRenderVector*) render;
+	myRender->GetColorPen();
+	
+	wxPen myPen (myRender->GetColorPen(),
+				 myRender->GetSize());
+	gdc->SetPen(myPen);
+	
+	
+	// iterating and drawing geometries
+	OGRPoint * myGeom = NULL;
+	long iCount = 0;
+	while (1) {
+		OGRFeature * myFeat = GetNextFeature(false);
+		if (myFeat == NULL) {
+			break;
+		}
+		
+		myGeom = NULL;
+		myGeom = (OGRPoint*) myFeat->GetGeometryRef();
+		wxASSERT(myGeom);
+		
+		
+		// convert and check intersection
+		wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(),myGeom->getY()),
+										 coord.GetLeftTop(),
+										 pxsize);
+		double myWidth = 0, myHeight = 0;
+		gdc->GetSize(&myWidth, &myHeight);
+		wxRect myWndRect(0,0,myWidth, myHeight);
+		if (myWndRect.Contains(myPt)==false) {
+			OGRFeature::DestroyFeature(myFeat);
+			continue;
+		}
+		iCount++;
+
+#ifdef __WXMSW__
+		gdc->StrokeLine (myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+#else
+		gdc->StrokeLine (myPt.x, myPt.y, myPt.x, myPt.y);
+#endif
+		
+		OGRFeature::DestroyFeature(myFeat);
+		myFeat = NULL;
+	}
+	
+	if (iCount <= 0) {
+		wxLogWarning("No data drawn.");
+	}
+	wxLogMessage("%d points drawed in %ldms", iCount, sw.Time());
 	return true;
 }
 
@@ -352,6 +411,10 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 	switch (myGeomType) {
 		case wkbLineString:
 			bReturn = _DrawLines(pgdc, coord, render, label, pxsize);
+			break;
+			
+		case wkbPoint:
+			bReturn = _DrawPoints(pgdc, coord, render, label, pxsize);
 			break;
 		
 		

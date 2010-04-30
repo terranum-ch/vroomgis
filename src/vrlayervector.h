@@ -60,6 +60,9 @@ class vrLayerVectorOGR : public vrLayerVector {
 private:
 	virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							const vrRender * render, const vrLabel * label, double pxsize);
+	virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+							 const vrRender * render, const vrLabel * label, double pxsize);
+
 	
 protected:
     virtual bool _Close();
