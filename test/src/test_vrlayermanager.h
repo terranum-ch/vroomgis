@@ -106,8 +106,7 @@ public:
 		// myLayer isn't valid anymore dont test again !
 		//TS_ASSERT(myLayerManager.Close(myLayer)==false);
 	}
-
-
+	
 
 };
 

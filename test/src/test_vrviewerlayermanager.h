@@ -118,7 +118,6 @@ public:
 	}
 	
 	void testRemove(){
-		wxLogMessage("Testing removing renderer");
 		
 		// open data
 		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
@@ -139,6 +138,36 @@ public:
 		TS_ASSERT_EQUALS(m_ViewManager->Remove(myRenderer),true);
 		TS_ASSERT_EQUALS(m_ViewManager->Remove(myRenderer),false);
 	}
+	
+	
+	void testMoveLayer(){
+		wxLogMessage("Testing moving layer");
+		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
+		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileTIF)));
+		TS_ASSERT(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileJPEG)));
+		TS_ASSERT_EQUALS(m_LayerManager->GetCount(), 3);
+		
+		vrLayer * myLayer1 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileJPEG));
+		vrLayer * myLayer2 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileTIF));
+		vrLayer * myLayer3 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
+
+		TS_ASSERT(m_ViewManager->Add(-1, myLayer3)==true);
+		TS_ASSERT(m_ViewManager->Add(-1, myLayer2)==true);
+		TS_ASSERT(m_ViewManager->Add(-1, myLayer1)==true);
+		
+		
+		
+		
+		// Moving code
+		wxString myJpegName = m_ViewManager->GetRenderer(0)->GetLayer()->GetName().GetFullName();
+		//wxLogMessage (myJpegName + " - " + g_TestFileJPEG);
+		TS_ASSERT(myJpegName == g_TestFileJPEG);
+		TS_ASSERT(m_ViewManager->Move(2, 0)==true);
+		TS_ASSERT(m_ViewManager->GetRenderer(0)->GetLayer()->GetName().GetFullName() == g_TestFileSHP);
+		TS_ASSERT(m_ViewManager->Move(0, 2)==true);
+		TS_ASSERT(m_ViewManager->GetRenderer(0)->GetLayer()->GetName().GetFullName() == g_TestFileJPEG);
+	}
+	
 	
 
 

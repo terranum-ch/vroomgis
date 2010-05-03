@@ -88,14 +88,14 @@ public:
 		OGRFeature * myGeom = NULL;
 		myGeom = myLayer.GetFeature(0);
 		TS_ASSERT(myGeom != NULL);
-		OGRFeature::DestroyFeature(myGeom);
-
-
+		
 		OGRLineString * myLine = (OGRLineString*) myGeom->GetGeometryRef();
 		wxLogMessage("line returned start here : %.4f | %.4f and contain %d vertex",
 					 myLine->getX(0),
 					 myLine->getY(0),
 					 myLine->getNumPoints());
+		
+		OGRFeature::DestroyFeature(myGeom);
 
 	}
 
