@@ -44,7 +44,10 @@ private:
 	
 	// event function
 	void OnVisibleStatusChanged(wxCommandEvent & event);
+
 	void OnMouseRightDown(wxMouseEvent & event);
+    void OnMouseWheel(wxMouseEvent & event);
+	
 	// event function popup
 	void OnSetColorPen(wxCommandEvent & event);
     void OnSetColorBrush(wxCommandEvent & event);
