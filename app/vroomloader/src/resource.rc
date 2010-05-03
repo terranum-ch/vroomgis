@@ -1,3 +1,3 @@
-mondrian ICON "sample.ico"
+vroomgis ICON "../../../art/vroomgis.ico"
 #include "wx/msw/wx.rc"
 

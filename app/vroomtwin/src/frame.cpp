@@ -119,7 +119,7 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
        : wxFrame(NULL, wxID_ANY, title)
 {
 	m_SyncroTool = true;
-    SetIcon(wxICON(sample));
+    SetIcon(wxICON(vroomgis));
 
 	// MENU
     wxMenu *fileMenu = new wxMenu;
