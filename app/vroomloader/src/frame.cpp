@@ -205,15 +205,31 @@ void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 {
 	
-	/*
+	
 	// TODO: This is temp code for autoloading file
+	/*
 	wxFileName myTestFile("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/gwn_combioula.shp");
+	wxFileName myTestFile1("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/MNT.tif");
+	wxFileName myTestFile2("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/ortophoto_clp.tif");
+
 	m_LayerManager->Open(myTestFile);
+	m_LayerManager->Open(myTestFile1);
+	m_LayerManager->Open(myTestFile2);
+	
 	vrLayer * myTestLayer = m_LayerManager->GetLayer(myTestFile);
+	vrLayer * myTestLayer1 = m_LayerManager->GetLayer(myTestFile1);
+	vrLayer * myTestLayer2 = m_LayerManager->GetLayer(myTestFile2);
+	
 	wxASSERT(myTestLayer);
+	wxASSERT(myTestLayer1);
+	wxASSERT(myTestLayer2);
+
+	m_ViewerLayerManager->Add(-1, myTestLayer1);
+	m_ViewerLayerManager->Add(-1, myTestLayer2);
 	m_ViewerLayerManager->Add(-1, myTestLayer);
 	return;
-	 */
+	*/
+	 
 	
 	
 	

@@ -148,7 +148,7 @@ bool vrViewerLayerManager::Move(long oldpos, long newpos) {
 	wxASSERT(oldpos != newpos);
 	
 	int myNewPos = newpos;
-	if (newpos > oldpos) {
+	if (newpos > oldpos + 1) {
 		myNewPos = myNewPos -1;
 	}
 	

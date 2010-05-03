@@ -31,6 +31,7 @@
 BEGIN_EVENT_TABLE(vrViewerTOC, wxCheckListBox)
 	EVT_CHECKLISTBOX(wxID_ANY, vrViewerTOC::OnVisibleStatusChanged)
 	EVT_RIGHT_DOWN(vrViewerTOC::OnMouseRightDown)
+	EVT_MOUSEWHEEL(vrViewerTOC::OnMouseWheel)
 	// POPUP EVENT
 	EVT_MENU(vrID_POPUP_PEN_COLOR, vrViewerTOC::OnSetColorPen)
 	EVT_MENU(vrID_POPUP_BRUSH_COLOR, vrViewerTOC::OnSetColorBrush)
@@ -167,6 +168,59 @@ void vrViewerTOC::OnMouseRightDown(wxMouseEvent & event) {
 	
 	_ShowMenuContextual(myItemSelected, myRenderer);
 	
+}
+
+
+void vrViewerTOC::OnMouseWheel(wxMouseEvent & event) {
+	if (GetCount() == 0) {
+		return;
+	}
+	
+	int myItemSelected = GetSelection();
+	if (myItemSelected == wxNOT_FOUND) {
+		wxLogWarning("No item selected, select an item (%d)", myItemSelected);
+		return;
+	}
+	
+	// check if not the y axis
+	if (event.GetWheelAxis() == 1) {
+		return;
+	}
+	
+	// Not used for now on...
+	/*
+	int myDelta = event.GetWheelDelta();
+	int myRotation = event.GetWheelRotation();
+	double myStep = myRotation / myDelta;
+	wxLogMessage("Wheel rotation is %d with delta : %d, result is :%f",
+				 myRotation,
+				 myDelta,
+				 myStep);
+	*/
+
+	int myRotation = event.GetWheelRotation();
+	int myNewPosition = myItemSelected;
+	// going up
+	if (myRotation > 0) {
+		if (myItemSelected == 0) {
+			return;
+		}
+		myNewPosition--;
+	}
+	// going down
+	else if (myRotation < 0) {
+		if (myItemSelected == (signed) GetCount() -1) {
+			return;
+		}
+		myNewPosition++;
+	}else {
+		// myRotation == 0 MBP trackpad...
+		return;
+	}
+		 
+	wxASSERT(m_ViewerManager);
+	wxLogMessage("Moving item : %d to %d", myItemSelected, myNewPosition);
+	m_ViewerManager->Move(myItemSelected, myNewPosition);
 }
 
 
