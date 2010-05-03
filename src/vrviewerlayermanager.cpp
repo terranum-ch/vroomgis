@@ -142,6 +142,37 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 
 
 
+bool vrViewerLayerManager::Move(long oldpos, long newpos) {
+	wxASSERT(oldpos >= 0 && newpos >= 0);
+	wxASSERT(oldpos < (signed) m_Renderers.GetCount() && newpos < (signed) m_Renderers.GetCount());
+	wxASSERT(oldpos != newpos);
+	
+	int myNewPos = newpos;
+	if (newpos > oldpos) {
+		myNewPos = myNewPos -1;
+	}
+	
+	vrRenderer * myRenderer = m_Renderers.Item(oldpos);
+	wxASSERT(myRenderer);
+	m_Renderers.Detach(oldpos);
+	m_Renderers.Insert(myRenderer, myNewPos);
+	
+	
+	if(m_Toc && m_Toc->Move(oldpos, newpos)==false){
+		wxLogError("Moving layer '%s' from position %d to %d failed",
+				   myRenderer->GetLayer()->GetName().GetFullName(),
+				   oldpos, newpos);
+		return false;
+	}
+	
+	if (m_FreezeStatus == false && m_WindowParent) {
+		Reload();
+	}
+
+	return true;
+}
+
+
 
 bool vrViewerLayerManager::Remove(vrRenderer * renderer) {
 	wxASSERT(renderer);
