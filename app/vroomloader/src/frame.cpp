@@ -34,6 +34,7 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_MENU (wxID_ZOOM_FIT, vroomLoaderFrame::OnToolZoomToFit)
 	EVT_MENU (wxID_ZOOM_100, vroomLoaderFrame::OnToolZoomToFit)
 	EVT_MENU (wxID_MOVE_FRAME, vroomLoaderFrame::OnToolPan)
+	EVT_MENU (vlID_MOVE_LAYER, vroomLoaderFrame::OnMoveLayer)
 	
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
@@ -71,14 +72,14 @@ void  vroomLoaderFrame::_CreateControls()
 	m_TocCtrl = new vrViewerTOC( m_panel1, wxID_ANY);
 	bSizer4->Add( m_TocCtrl, 2, wxEXPAND, 5 );
 	
-	wxFilePickerCtrl * myPicker = new wxFilePickerCtrl(m_panel1, wxID_ANY,wxEmptyString, 
-													   wxFileSelectorPromptStr,
-													   wxFileSelectorDefaultWildcardStr,
-													   wxDefaultPosition,
-													   wxDefaultSize,
-													   wxFLP_SAVE | wxFLP_USE_TEXTCTRL);
+	//wxFilePickerCtrl * myPicker = new wxFilePickerCtrl(m_panel1, wxID_ANY,wxEmptyString, 
+	//												   wxFileSelectorPromptStr,
+	//												   wxFileSelectorDefaultWildcardStr,
+	//												   wxDefaultPosition,
+	//												   wxDefaultSize,
+	//												   wxFLP_SAVE | wxFLP_USE_TEXTCTRL);
 													   
-	bSizer4->Add(myPicker, 0, wxEXPAND | wxALL, 5);
+	//bSizer4->Add(myPicker, 0, wxEXPAND | wxALL, 5);
 	
 	
 	m_panel1->SetSizer( bSizer4 );
@@ -126,6 +127,8 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	toolMenu->AppendSeparator();
 	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to All layers", "Zoom view to the full extent of all layers");
 	toolMenu->Append(wxID_ZOOM_100, "Zoom to visible layers", "Zoom view to the full extent of all visible layers");
+	toolMenu->AppendSeparator();
+	toolMenu->Append(vlID_MOVE_LAYER, "Move layer...\tCtrl+M", "Move the selected layer");
 	
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
@@ -342,6 +345,42 @@ void vroomLoaderFrame::OnToolZoomToFit (wxCommandEvent & event)
 	
 	m_ViewerLayerManager->Reload();
 }
+
+
+void vroomLoaderFrame::OnMoveLayer (wxCommandEvent & event){
+	if (m_ViewerLayerManager->GetCount() <= 1) {
+		wxLogError("Moving layer not possible with less than 2 layers");
+		return;
+	}
+	
+	int iOldPos = m_TocCtrl->GetSelection();
+	if (iOldPos == wxNOT_FOUND) {
+		wxLogError("No layer selected, select a layer first");
+		return;
+	} 
+	
+	wxMenu myPosMenu;
+	myPosMenu.SetTitle("Move layer to following position");
+	for (int i = 0; i<m_ViewerLayerManager->GetCount(); i++) {
+		myPosMenu.Append(vlID_MENU_POPUP_LAYER + i, 
+						 wxString::Format("%d - %s",i+1,
+										  m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetName().GetFullName()));
+	}
+	wxPoint myPos = wxGetMousePosition();
+	
+	int iNewID = GetPopupMenuSelectionFromUser(myPosMenu, ScreenToClient(myPos));
+	if (iNewID == wxID_NONE) {
+		return;
+	}
+	
+	int iNewPos = iNewID - vlID_MENU_POPUP_LAYER;
+	if (iNewPos == iOldPos) {
+		return;
+	}
+	
+	m_ViewerLayerManager->Move(iOldPos, iNewPos);
+}
+
 
 
 
