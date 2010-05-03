@@ -176,14 +176,14 @@ void vrViewerTOC::_ShowMenuContextual(int id, vrRenderer * renderer) {
 	wxASSERT(id != wxNOT_FOUND);
 	
 	wxMenu myPopMenu;
-	myPopMenu.Append(vrID_POPUP_REMOVE, "Remove Layer (not implemented)");
-	myPopMenu.Enable(vrID_POPUP_REMOVE, false);
-	myPopMenu.AppendSeparator();
+	//myPopMenu.Append(vrID_POPUP_REMOVE, "Remove Layer (not implemented)");
+	//myPopMenu.Enable(vrID_POPUP_REMOVE, false);
+	//myPopMenu.AppendSeparator();
 	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, "Set Transparency...");
-	myPopMenu.AppendSeparator();
-	
+		
 	switch (renderer->GetRender()->GetType()) {
 		case vrRENDER_VECTOR:
+			myPopMenu.AppendSeparator();
 			myPopMenu.Append(vrID_POPUP_PEN_COLOR, "Set Pen color...");	
 			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, "Set Pen width...");
 			myPopMenu.AppendSeparator();
@@ -238,6 +238,41 @@ bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
 	return false;
 }
 
+
+bool vrViewerTOC::Move(long oldpos, long newpos) {	
+	wxString myOldText = GetString(oldpos);
+	bool myOldChecked = IsChecked(oldpos);
+	bool myOldSelected = IsSelected(oldpos);
+	
+	// switching two values
+	if (abs(oldpos - newpos) == 1) {
+		SetString (oldpos, GetString(newpos));
+		Check(oldpos, IsChecked(newpos));
+		if (IsSelected(newpos)) {
+			Select(oldpos);
+		}
+		
+		SetString(newpos, myOldText);
+		Check(newpos, myOldChecked);
+		if (myOldSelected) {
+			Select(newpos);
+		}
+	}
+	else {
+		int myNewPos = newpos;
+		if (newpos > oldpos) {
+			myNewPos = myNewPos -1;
+		}
+		
+		Remove(oldpos);
+		Insert(myOldText, myNewPos);
+		Check(myNewPos, myOldChecked);
+		if (myOldSelected) {
+			Select(myNewPos);
+		}
+	}	
+	return true;
+}
 
 
 void vrViewerTOC::Remove(int index) {
