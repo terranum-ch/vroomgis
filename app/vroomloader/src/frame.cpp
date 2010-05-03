@@ -108,7 +108,7 @@ void  vroomLoaderFrame::_CreateControls()
 vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
        : wxFrame(NULL, wxID_ANY, title)
 {
-    SetIcon(wxICON(sample));
+    SetIcon(wxICON(vroomgis));
 
 	// MENU
     wxMenu *fileMenu = new wxMenu;
