@@ -29,7 +29,7 @@
 
 
 #if !defined(__WXMSW__) && !defined(__WXPM__)
-#include "sample.xpm"
+#include "../../../art/vroomgis.xpm"
 #endif
 
 #include <wx/splitter.h>	//splitter bar
