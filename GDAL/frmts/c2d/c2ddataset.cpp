@@ -76,11 +76,11 @@ static double C2DGetAngle( char *pszField )
 /* ==================================================================== */
 /************************************************************************/
 
-//class C2DRasterBand;
+class C2DRasterBand;
 
 class C2DDataset : public GDALPamDataset
 {
-    //friend class C2DRasterBand;
+    friend class C2DRasterBand;
 	
     FILE	*fp;
     GByte	abyHeader[1012];
@@ -90,8 +90,8 @@ public:
     
     static GDALDataset *Open( GDALOpenInfo * );
 	
-    //CPLErr 	GetGeoTransform( double * padfTransform );
-    //const char *GetProjectionRef();
+    CPLErr 	GetGeoTransform( double * padfTransform );
+    const char *GetProjectionRef();
 };
 
 /************************************************************************/
@@ -262,7 +262,7 @@ GDALDataset * C2DDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      First we check to see if the file has the expected header       */
 /*      bytes.  For now we expect the C2D file to start with a line     */
-/*      containing the letters C2D
+/*      containing the letters C2D										*/
 /* -------------------------------------------------------------------- */
     if( poOpenInfo->nHeaderBytes < 32 
 	   || strstr((const char *) poOpenInfo->pabyHeader,"C2D") == NULL){
@@ -295,6 +295,7 @@ GDALDataset * C2DDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
     VSIFReadL( poDS->abyHeader, 1, 1012, poDS->fp );
 
+	// TODO: Change this to realy get raster dimension
     poDS->nRasterXSize = C2DGetField( (char *) poDS->abyHeader + 23, 3 );
     poDS->nRasterYSize = C2DGetField( (char *) poDS->abyHeader + 26, 3 );
     if  (poDS->nRasterXSize <= 0 || poDS->nRasterYSize <= 0 )
@@ -310,6 +311,9 @@ GDALDataset * C2DDataset::Open( GDALOpenInfo * poOpenInfo )
 /*      Create band information objects.                                */
 /* -------------------------------------------------------------------- */
     poDS->SetBand( 1, new C2DRasterBand( poDS, 1 ));
+	poDS->SetBand( 2, new C2DRasterBand( poDS, 2 ));
+	poDS->SetBand( 3, new C2DRasterBand( poDS, 3 ));
+	
 
 /* -------------------------------------------------------------------- */
 /*      Initialize any PAM information.                                 */
@@ -340,10 +344,10 @@ void GDALRegister_C2D()
         
         poDriver->SetDescription( "C2D" );
         poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, 
-                                   "Japanese DEM (.mem)" );
+                                   "Coltop 2D files (.c2d)" );
         poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, 
                                    "frmt_various.html#C2D" );
-        poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "mem" );
+        poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "c2d" );
 
         poDriver->pfnOpen = C2DDataset::Open;
 
