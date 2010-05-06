@@ -435,6 +435,11 @@ void CPL_STDCALL GDALAllRegister()
 #ifdef FRMT_saga
     GDALRegister_SAGA();
 #endif
+	
+#ifdef FRMT_c2d
+	GDALRegister_C2D();
+#endif
+	
 /* -------------------------------------------------------------------- */
 /*      Deregister any drivers explicitly marked as supressed by the    */
 /*      GDAL_SKIP environment variable.                                 */

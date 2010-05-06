@@ -20,7 +20,7 @@ file (MAKE_DIRECTORY "${GDAL_SOURCE_PATH}/frmts/c2d")
 #COPYING FILES INTO FRMTS
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/../frmts/gdalallregister.cpp   ${GDAL_SOURCE_PATH}/frmts/gdalallregister.cpp COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/../frmts/makefile.vc   ${GDAL_SOURCE_PATH}/frmts/makefile.vc COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/../frmts/c2d/c2ddataset.cpp   ${GDAL_SOURCE_PATH}/frmts/c2d/c3ddataset.cpp COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/../frmts/c2d/c2ddataset.cpp   ${GDAL_SOURCE_PATH}/frmts/c2d/c2ddataset.cpp COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/../frmts/c2d/GNUmakefile   ${GDAL_SOURCE_PATH}/frmts/c2d/GNUmakefile COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/../frmts/c2d/makefile.vc   ${GDAL_SOURCE_PATH}/frmts/c2d/makefile.vc COPYONLY)
 
