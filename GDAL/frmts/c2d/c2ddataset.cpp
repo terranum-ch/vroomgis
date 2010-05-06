@@ -33,10 +33,10 @@ void	GDALRegister_C2D(void);
 CPL_C_END
 
 /************************************************************************/
-/*                            JDEMGetField()                            */
+/*                            C2DGetField()                            */
 /************************************************************************/
 
-static int JDEMGetField( char *pszField, int nWidth )
+static int C2DGetField( char *pszField, int nWidth )
 
 {
     char	szWork[32];
@@ -50,13 +50,13 @@ static int JDEMGetField( char *pszField, int nWidth )
 }
 
 /************************************************************************/
-/*                            JDEMGetAngle()                            */
+/*                            C2DGetAngle()                            */
 /************************************************************************/
 
-static double JDEMGetAngle( char *pszField )
+static double C2DGetAngle( char *pszField )
 
 {
-    int		nAngle = JDEMGetField( pszField, 7 );
+    int		nAngle = C2DGetField( pszField, 7 );
     int		nDegree, nMin, nSec;
 
     // Note, this isn't very general purpose, but it would appear
@@ -96,31 +96,31 @@ public:
 
 /************************************************************************/
 /* ==================================================================== */
-/*                            JDEMRasterBand                             */
+/*                            C2DRasterBand                             */
 /* ==================================================================== */
 /************************************************************************/
 
-class JDEMRasterBand : public GDALPamRasterBand
+class C2DRasterBand : public GDALPamRasterBand
 {
-    friend class JDEMDataset;
+    friend class C2DDataset;
 
     int          nRecordSize;
     char*        pszRecord;
     
   public:
 
-    		JDEMRasterBand( JDEMDataset *, int );
-                ~JDEMRasterBand();
+    		C2DRasterBand( C2DDataset *, int );
+                ~C2DRasterBand();
     
     virtual CPLErr IReadBlock( int, int, void * );
 };
 
 
 /************************************************************************/
-/*                           JDEMRasterBand()                            */
+/*                           C2DRasterBand()                            */
 /************************************************************************/
 
-JDEMRasterBand::JDEMRasterBand( JDEMDataset *poDS, int nBand )
+C2DRasterBand::C2DRasterBand( C2DDataset *poDS, int nBand )
 
 {
     this->poDS = poDS;
@@ -137,10 +137,10 @@ JDEMRasterBand::JDEMRasterBand( JDEMDataset *poDS, int nBand )
 }
 
 /************************************************************************/
-/*                          ~JDEMRasterBand()                            */
+/*                          ~C2DRasterBand()                            */
 /************************************************************************/
 
-JDEMRasterBand::~JDEMRasterBand()
+C2DRasterBand::~C2DRasterBand()
 {
     VSIFree(pszRecord);
 }
@@ -149,11 +149,11 @@ JDEMRasterBand::~JDEMRasterBand()
 /*                             IReadBlock()                             */
 /************************************************************************/
 
-CPLErr JDEMRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
+CPLErr C2DRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
                                   void * pImage )
 
 {
-    JDEMDataset *poGDS = (JDEMDataset *) poDS;
+    C2DDataset *poGDS = (C2DDataset *) poDS;
     int		i;
     
     if (pszRecord == NULL)
@@ -178,37 +178,37 @@ CPLErr JDEMRasterBand::IReadBlock( int nBlockXOff, int nBlockYOff,
     if( !EQUALN((char *) poGDS->abyHeader,pszRecord,6) )
     {
         CPLError( CE_Failure, CPLE_AppDefined, 
-                  "JDEM Scanline corrupt.  Perhaps file was not transferred\n"
+                  "C2D Scanline corrupt.  Perhaps file was not transferred\n"
                   "in binary mode?" );
         return CE_Failure;
     }
     
-    if( JDEMGetField( pszRecord + 6, 3 ) != nBlockYOff + 1 )
+    if( C2DGetField( pszRecord + 6, 3 ) != nBlockYOff + 1 )
     {
         CPLError( CE_Failure, CPLE_AppDefined, 
-                  "JDEM scanline out of order, JDEM driver does not\n"
+                  "C2D scanline out of order, C2D driver does not\n"
                   "currently support partial datasets." );
         return CE_Failure;
     }
 
     for( i = 0; i < nBlockXSize; i++ )
         ((float *) pImage)[i] = (float)
-            (JDEMGetField( pszRecord + 9 + 5 * i, 5) * 0.1);
+            (C2DGetField( pszRecord + 9 + 5 * i, 5) * 0.1);
 
     return CE_None;
 }
 
 /************************************************************************/
 /* ==================================================================== */
-/*				JDEMDataset				*/
+/*				C2DDataset				*/
 /* ==================================================================== */
 /************************************************************************/
 
 /************************************************************************/
-/*                            ~JDEMDataset()                             */
+/*                            ~C2DDataset()                             */
 /************************************************************************/
 
-JDEMDataset::~JDEMDataset()
+C2DDataset::~C2DDataset()
 
 {
     FlushCache();
@@ -220,15 +220,15 @@ JDEMDataset::~JDEMDataset()
 /*                          GetGeoTransform()                           */
 /************************************************************************/
 
-CPLErr JDEMDataset::GetGeoTransform( double * padfTransform )
+CPLErr C2DDataset::GetGeoTransform( double * padfTransform )
 
 {
     double	dfLLLat, dfLLLong, dfURLat, dfURLong;
 
-    dfLLLat = JDEMGetAngle( (char *) abyHeader + 29 );
-    dfLLLong = JDEMGetAngle( (char *) abyHeader + 36 );
-    dfURLat = JDEMGetAngle( (char *) abyHeader + 43 );
-    dfURLong = JDEMGetAngle( (char *) abyHeader + 50 );
+    dfLLLat = C2DGetAngle( (char *) abyHeader + 29 );
+    dfLLLong = C2DGetAngle( (char *) abyHeader + 36 );
+    dfURLat = C2DGetAngle( (char *) abyHeader + 43 );
+    dfURLong = C2DGetAngle( (char *) abyHeader + 50 );
     
     padfTransform[0] = dfLLLong;
     padfTransform[3] = dfURLat;
@@ -246,7 +246,7 @@ CPLErr JDEMDataset::GetGeoTransform( double * padfTransform )
 /*                          GetProjectionRef()                          */
 /************************************************************************/
 
-const char *JDEMDataset::GetProjectionRef()
+const char *C2DDataset::GetProjectionRef()
 
 {
     return( "GEOGCS[\"Tokyo\",DATUM[\"Tokyo\",SPHEROID[\"Bessel 1841\",6377397.155,299.1528128,AUTHORITY[\"EPSG\",7004]],TOWGS84[-148,507,685,0,0,0,0],AUTHORITY[\"EPSG\",6301]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]],UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]],AUTHORITY[\"EPSG\",4301]]" );
@@ -295,8 +295,8 @@ GDALDataset * C2DDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
     VSIFReadL( poDS->abyHeader, 1, 1012, poDS->fp );
 
-    poDS->nRasterXSize = JDEMGetField( (char *) poDS->abyHeader + 23, 3 );
-    poDS->nRasterYSize = JDEMGetField( (char *) poDS->abyHeader + 26, 3 );
+    poDS->nRasterXSize = C2DGetField( (char *) poDS->abyHeader + 23, 3 );
+    poDS->nRasterYSize = C2DGetField( (char *) poDS->abyHeader + 26, 3 );
     if  (poDS->nRasterXSize <= 0 || poDS->nRasterYSize <= 0 )
     {
         CPLError( CE_Failure, CPLE_AppDefined, 
@@ -309,7 +309,7 @@ GDALDataset * C2DDataset::Open( GDALOpenInfo * poOpenInfo )
 /* -------------------------------------------------------------------- */
 /*      Create band information objects.                                */
 /* -------------------------------------------------------------------- */
-    poDS->SetBand( 1, new JDEMRasterBand( poDS, 1 ));
+    poDS->SetBand( 1, new C2DRasterBand( poDS, 1 ));
 
 /* -------------------------------------------------------------------- */
 /*      Initialize any PAM information.                                 */
@@ -326,26 +326,26 @@ GDALDataset * C2DDataset::Open( GDALOpenInfo * poOpenInfo )
 }
 
 /************************************************************************/
-/*                          GDALRegister_JDEM()                          */
+/*                          GDALRegister_C2D()                          */
 /************************************************************************/
 
-void GDALRegister_JDEM()
+void GDALRegister_C2D()
 
 {
     GDALDriver	*poDriver;
 
-    if( GDALGetDriverByName( "JDEM" ) == NULL )
+    if( GDALGetDriverByName( "C2D" ) == NULL )
     {
         poDriver = new GDALDriver();
         
-        poDriver->SetDescription( "JDEM" );
+        poDriver->SetDescription( "C2D" );
         poDriver->SetMetadataItem( GDAL_DMD_LONGNAME, 
                                    "Japanese DEM (.mem)" );
         poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, 
-                                   "frmt_various.html#JDEM" );
+                                   "frmt_various.html#C2D" );
         poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "mem" );
 
-        poDriver->pfnOpen = JDEMDataset::Open;
+        poDriver->pfnOpen = C2DDataset::Open;
 
         GetGDALDriverManager()->RegisterDriver( poDriver );
     }

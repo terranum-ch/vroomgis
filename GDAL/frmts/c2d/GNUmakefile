@@ -1,9 +1,9 @@
 
 include ../../GDALmake.opt
 
-OBJ	=	jdemdataset.o
+OBJ	=	c2ddataset.o
 
-CPPFLAGS	:=	$(GDAL_INCLUDE) $(CPPFLAGS)
+CPPFLAGS	:=	$(GDAL_INCLUDE) 
 
 default:	$(OBJ:.o=.$(OBJ_EXT))
 

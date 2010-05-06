@@ -1,7 +1,5 @@
 
-OBJ	=	jdemdataset.obj
-
-EXTRAFLAGS = 	-I..\iso8211
+OBJ	=	c2ddataset.obj
 
 GDAL_ROOT	=	..\..
 
