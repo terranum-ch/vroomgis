@@ -30,6 +30,23 @@
 #include "cpl_string.h"
 #include <ctype.h>
 
+
+// ------------------------------------------------------------------------
+// Constant for C2D formats
+// ------------------------------------------------------------------------
+const char * C2DMagicName = "C2D";
+struct C2DInfo {
+	const int m_Version;
+	int m_Width;
+	int m_Height;
+	
+	C2DInfo():m_Version(1){
+		m_Width = -1;
+		m_Height = -1;
+	}
+};
+
+
 CPL_C_START
 void    GDALRegister_C2D(void);
 CPL_C_END
@@ -47,6 +64,8 @@ class C2DDataset : public RawDataset
     int         bGeoTransformValid;
     double      adfGeoTransform[6];
 	
+	static int  SaveAsCRLF(char **papszStrList, const char *pszFname);
+
 public:
 	//C2DDataset();
 	~C2DDataset();
@@ -111,27 +130,42 @@ CPLErr C2DDataset::GetGeoTransform( double * padfTransform )
 /*                              Identify()                              */
 /************************************************************************/
 
-int C2DDataset::Identify( GDALOpenInfo * poOpenInfo )
-
-{
-	/* -------------------------------------------------------------------- */
-	/*      Verify that this is a _raw_ ppm or pgm file.  Note, we don't    */
-	/*      support ascii files, or pbm (1bit) files.                       */
-	/* -------------------------------------------------------------------- */
-    if( poOpenInfo->nHeaderBytes < 10 || poOpenInfo->fp == NULL )
-        return FALSE;
+int C2DDataset::Identify( GDALOpenInfo * poOpenInfo ){
 	
-    if( poOpenInfo->pabyHeader[0] != 'P'  ||
-	   (poOpenInfo->pabyHeader[2] != ' '  &&    // XXX: Magick number
-		poOpenInfo->pabyHeader[2] != '\t' &&    // may be followed
-		poOpenInfo->pabyHeader[2] != '\n' &&    // any of the blank
-		poOpenInfo->pabyHeader[2] != '\r') )    // characters
-        return FALSE;
+	CPLError( CE_Warning, CPLE_NotSupported, "Entering identify function" );
 	
-    if( poOpenInfo->pabyHeader[1] != '5'
-	   && poOpenInfo->pabyHeader[1] != '6' )
-        return FALSE;
+	// -------------------------------------------------------------------- 
+	//      Verify that this is a c2d file.					
+	// -------------------------------------------------------------------- 
+    if( poOpenInfo->nHeaderBytes < 20 || poOpenInfo->fp == NULL ){
+		CPLError( CE_Warning, CPLE_NotSupported, "This is not a c2d file" );
+		return FALSE;
+	}
 	
+	FILE	*fp;
+    fp = VSIFOpenL( poOpenInfo->pszFilename, "r" );
+    if( fp == NULL )
+    {
+		CPLError( CE_Warning, CPLE_NotSupported,  "Unable to open the c2d file" );
+        return FALSE;
+    }
+	
+	VSIFSeekL(fp, SEEK_SET, 0);
+	char myChar [strlen(C2DMagicName)];
+	int iReadedB = VSIFReadL(&myChar, sizeof(char), sizeof(C2DMagicName), fp);
+	if (iReadedB != sizeof(C2DMagicName) || strcmp(myChar, C2DMagicName) != 0) {
+		CPLError( CE_Warning, CPLE_NotSupported, 
+				 "This is not a c2d file : %d bytes readed and magic number is %s",
+				 iReadedB,
+				 myChar);
+		return FALSE;
+	}
+	
+	CPLError( CE_Warning, CPLE_NotSupported, 
+			 "Readed magic number OK : %s",myChar);
+	
+	VSIFCloseL(fp);
+	CPLError( CE_Warning, CPLE_NotSupported,  "leaving identify function" );
     return TRUE;
 }
 
@@ -139,182 +173,203 @@ int C2DDataset::Identify( GDALOpenInfo * poOpenInfo )
 /*                                Open()                                */
 /************************************************************************/
 
-GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo )
-
-{
+GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
+	
+	
+	CPLError( CE_Warning, CPLE_NotSupported, 
+			 "Entering opening function" );
+	
 	/* -------------------------------------------------------------------- */
 	/*      Verify that this is a _raw_ ppm or pgm file.  Note, we don't    */
 	/*      support ascii files, or pbm (1bit) files.                       */
 	/* -------------------------------------------------------------------- */
     if( !Identify( poOpenInfo ) )
+	{
         return NULL;
+	}
+	
 	
 	/* -------------------------------------------------------------------- */
-	/*      Parse out the tokens from the header.                           */
+	/*      Assume ownership of the file handled from the GDALOpenInfo.     */
 	/* -------------------------------------------------------------------- */
-    const char  *pszSrc = (const char *) poOpenInfo->pabyHeader;
-    char        szToken[512];
-    int         iIn, iToken = 0, nWidth =-1, nHeight=-1, nMaxValue=-1;
-    unsigned int iOut;
+	VSIFClose(poOpenInfo->fp );
+    poOpenInfo->fp = NULL;
+	CPLError( CE_Warning, CPLE_NotSupported, "Closing file OK");
 	
-    iIn = 2;
-    while( iIn < poOpenInfo->nHeaderBytes && iToken < 3 )
+	
+	/* -------------------------------------------------------------------- */
+	//      Parse the header, just after the magic number                      
+	/* -------------------------------------------------------------------- */
+ 	// TODO : open the file in poDS->fpImage
+	
+	FILE	*fp;
+    fp = VSIFOpenL( poOpenInfo->pszFilename, "r" );
+    if( fp == NULL )
     {
-        iOut = 0;
-        szToken[0] = '\0';
-        while( iOut < sizeof(szToken) && iIn < poOpenInfo->nHeaderBytes )
-        {
-            if( pszSrc[iIn] == '#' )
-            {
-                while( pszSrc[iIn] != 10 && pszSrc[iIn] != 13
-					  && iIn < poOpenInfo->nHeaderBytes - 1 )
-                    iIn++;
-            }
-			
-            if( iOut != 0 && isspace((unsigned char)pszSrc[iIn]) )
-            {
-                szToken[iOut] = '\0';
-				
-                if( iToken == 0 )
-                    nWidth = atoi(szToken);
-                else if( iToken == 1 )
-                    nHeight = atoi(szToken);
-                else if( iToken == 2 )
-                    nMaxValue = atoi(szToken);
-				
-                iToken++;
-                iIn++;
-                break;
-            }
-			
-            else if( !isspace((unsigned char)pszSrc[iIn]) )
-            {
-                szToken[iOut++] = pszSrc[iIn];
-            }
-			
-            iIn++;
-        }
+		CPLError( CE_Warning, CPLE_NotSupported,  "Unable to open the c2d file" );
+        return NULL;
     }
 	
-    CPLDebug( "C2D", "C2D header contains: width=%d, height=%d, maxval=%d",
-			 nWidth, nHeight, nMaxValue );
+	VSIFSeekL(fp, sizeof(C2DMagicName), SEEK_SET);
+	C2DInfo myInfo;
+	int iReadedB = VSIFReadL(&myInfo, sizeof(C2DInfo), sizeof(myInfo), fp);
+	if (iReadedB != sizeof(C2DInfo)){
+		CPLError( CE_Warning, CPLE_NotSupported, 
+				 "Corrupted C2d header : %d bytes readed instead of %ld",
+				 iReadedB, sizeof(C2DInfo));
+		return NULL;
+	}
 	
-    if( iToken != 3 || nWidth < 1 || nHeight < 1 || nMaxValue < 1 )
+	
+	CPLError( CE_Warning, CPLE_NotSupported, 
+			 "Raster informations : %d , %d, %d",myInfo.m_Version, myInfo.m_Width, myInfo.m_Height);
+	VSIFCloseL(fp);
+	
+	CPLError( CE_Warning, CPLE_NotSupported, "Reading header OK");
+
+
+	
+	/* -------------------------------------------------------------------- */
+	/*      Confirm the requested access is supported.                      */
+	/* -------------------------------------------------------------------- */
+    if( poOpenInfo->eAccess == GA_Update )
+    {
+        CPLError( CE_Failure, CPLE_NotSupported, 
+				 "The C2D driver does not support update access to existing"
+				 " datasets.\n" );
         return NULL;
+    }
 	
 	/* -------------------------------------------------------------------- */
 	/*      Create a corresponding GDALDataset.                             */
 	/* -------------------------------------------------------------------- */
     C2DDataset  *poDS;
+	poDS = new C2DDataset();
+	CPLError( CE_Warning, CPLE_NotSupported, "Creating Dataset OK");
+
 	
-    poDS = new C2DDataset();
 	
 	/* -------------------------------------------------------------------- */
 	/*      Capture some information from the file that is of interest.     */
 	/* -------------------------------------------------------------------- */
-    poDS->nRasterXSize = nWidth;
+    int nWidth = myInfo.m_Width;
+	int nHeight = myInfo.m_Height;
+	int iPixelSize = 1;
+	GDALDataType eDataType = GDT_Float32;
+	int iIn = 2;
+	
+	poDS->nRasterXSize = nWidth;
     poDS->nRasterYSize = nHeight;
 	
-	/* -------------------------------------------------------------------- */
-	/*      Assume ownership of the file handled from the GDALOpenInfo.     */
-	/* -------------------------------------------------------------------- */
-    VSIFClose( poOpenInfo->fp );
-    poOpenInfo->fp = NULL;
+
+
+	return NULL;
 	
-    if( poOpenInfo->eAccess == GA_Update )
-        poDS->fpImage = VSIFOpenL( poOpenInfo->pszFilename, "rb+" );
-    else
-        poDS->fpImage = VSIFOpenL( poOpenInfo->pszFilename, "rb" );
-	
-    if( poDS->fpImage == NULL )
+	poDS->fpImage = VSIFOpenL( poOpenInfo->pszFilename, "rb+" );
+	if( poDS->fpImage == NULL )
     {
         CPLError( CE_Failure, CPLE_OpenFailed,
-				 "Failed to re-open %s within C2D driver.\n",
+				 "Failed to re-open %s within PNM driver.\n",
 				 poOpenInfo->pszFilename );
         return NULL;
     }
+	 poDS->eAccess = poOpenInfo->eAccess;
 	
-    poDS->eAccess = poOpenInfo->eAccess;
+	CPLError( CE_Warning, CPLE_NotSupported, "Reopening file OK");
+
 	
 	/* -------------------------------------------------------------------- */
 	/*      Create band information objects.                                */
 	/* -------------------------------------------------------------------- */
-    int         bMSBFirst = TRUE, iPixelSize;
-    GDALDataType eDataType;
+    int         bMSBFirst = TRUE;
+    
 	
 #ifdef CPL_LSB
     bMSBFirst = FALSE;
 #endif
 	
-    if ( nMaxValue < 256 )
-        eDataType = GDT_Byte;
-    else
-        eDataType = GDT_UInt16;
+	poDS->SetBand(
+				  1, new RawRasterBand( poDS, 1, poDS->fpImage, iIn, 3*iPixelSize,
+									   nWidth*3*iPixelSize, eDataType, bMSBFirst, TRUE ));
+	poDS->SetBand(
+				  2, new RawRasterBand( poDS, 2, poDS->fpImage, iIn+iPixelSize,
+									   3*iPixelSize, nWidth*3*iPixelSize,
+									   eDataType, bMSBFirst, TRUE ));
+	poDS->SetBand(
+				  3, new RawRasterBand( poDS, 3, poDS->fpImage, iIn+2*iPixelSize,
+									   3*iPixelSize, nWidth*3*iPixelSize,
+									   eDataType, bMSBFirst, TRUE ));
 	
-    iPixelSize = GDALGetDataTypeSize( eDataType ) / 8;
-	
-    if( poOpenInfo->pabyHeader[1] == '5' )
-    {
-        if (nWidth > INT_MAX / iPixelSize)
-        {
-            CPLError( CE_Failure, CPLE_AppDefined, 
-					 "Int overflow occured.");
-            delete poDS;
-            return NULL;
-        }
-        poDS->SetBand(
-					  1, new RawRasterBand( poDS, 1, poDS->fpImage, iIn, iPixelSize,
-										   nWidth*iPixelSize, eDataType, bMSBFirst, TRUE ));
-        poDS->GetRasterBand(1)->SetColorInterpretation( GCI_GrayIndex );
-    }
-    else
-    {
-        if (nWidth > INT_MAX / (3 * iPixelSize))
-        {
-            CPLError( CE_Failure, CPLE_AppDefined, 
-					 "Int overflow occured.");
-            delete poDS;
-            return NULL;
-        }
-        poDS->SetBand(
-					  1, new RawRasterBand( poDS, 1, poDS->fpImage, iIn, 3*iPixelSize,
-										   nWidth*3*iPixelSize, eDataType, bMSBFirst, TRUE ));
-        poDS->SetBand(
-					  2, new RawRasterBand( poDS, 2, poDS->fpImage, iIn+iPixelSize,
-										   3*iPixelSize, nWidth*3*iPixelSize,
-										   eDataType, bMSBFirst, TRUE ));
-        poDS->SetBand(
-					  3, new RawRasterBand( poDS, 3, poDS->fpImage, iIn+2*iPixelSize,
-										   3*iPixelSize, nWidth*3*iPixelSize,
-										   eDataType, bMSBFirst, TRUE ));
-		
-        poDS->GetRasterBand(1)->SetColorInterpretation( GCI_RedBand );
-        poDS->GetRasterBand(2)->SetColorInterpretation( GCI_GreenBand );
-        poDS->GetRasterBand(3)->SetColorInterpretation( GCI_BlueBand );
-    }
+	poDS->GetRasterBand(1)->SetColorInterpretation( GCI_RedBand );
+	poDS->GetRasterBand(2)->SetColorInterpretation( GCI_GreenBand );
+	poDS->GetRasterBand(3)->SetColorInterpretation( GCI_BlueBand );
 	
 	/* -------------------------------------------------------------------- */
 	/*      Check for world file.                                           */
 	/* -------------------------------------------------------------------- */
-    poDS->bGeoTransformValid = 
-	GDALReadWorldFile( poOpenInfo->pszFilename, ".wld", 
-					  poDS->adfGeoTransform );
+	//poDS->bGeoTransformValid = 	GDALReadWorldFile( poOpenInfo->pszFilename, ".wld", 
+	//				  poDS->adfGeoTransform );
 	
 	/* -------------------------------------------------------------------- */
 	/*      Initialize any PAM information.                                 */
 	/* -------------------------------------------------------------------- */
-    poDS->SetDescription( poOpenInfo->pszFilename );
-    poDS->TryLoadXML();
+	poDS->SetDescription( poOpenInfo->pszFilename );
+	poDS->TryLoadXML();
 	
 	/* -------------------------------------------------------------------- */
 	/*      Check for overviews.                                            */
 	/* -------------------------------------------------------------------- */
-    poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename );
+	poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename );
 	
-    return( poDS );
+	return( poDS );
 }
 
+/************************************************************************/
+/*                               CSLSaveCRLF()                          */
+/************************************************************************/
 
+/***
+ * Write a stringlist to a CR + LF terminated text file.
+ *
+ * Returns the number of lines written, or 0 if the file could not 
+ * be written.
+ */
+
+int C2DDataset::SaveAsCRLF(char **papszStrList, const char *pszFname)
+{
+    FILE    *fp;
+    int     nLines = 0;
+	
+    if (papszStrList)
+    {
+        if ((fp = VSIFOpenL(pszFname, "wt")) != NULL)
+        {
+            while(*papszStrList != NULL)
+            {
+                if( VSIFPrintfL( fp, "%s\r\n", *papszStrList ) < 1 )
+                {
+                    CPLError( CE_Failure, CPLE_FileIO,
+							 "CSLSaveCRLF(\"%s\") failed: unable to write to output file.",
+							 pszFname );
+                    break;
+                }
+				
+                nLines++;
+                papszStrList++;
+            }
+			
+            VSIFCloseL(fp);
+        }
+        else
+        {
+            CPLError( CE_Failure, CPLE_OpenFailed,
+					 "CSLSaveCRLF(\"%s\") failed: unable to open output file.",
+					 pszFname );
+        }
+    }
+	
+    return nLines;
+}
 
 /************************************************************************/
 /*                             CreateCopy()                             */
@@ -325,34 +380,60 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 					   GDALProgressFunc pfnProgress, void * pProgressData )
 
 {
+	CPLError( CE_Warning, CPLE_NotSupported,"Entering create copy function" );
+	
 	int nBands = poSrcDS->GetRasterCount();
 	if (nBands != 1){
-        CPLError( CE_Failure, CPLE_NotSupported, 
+        CPLError( CE_Failure, CPLE_NotSupported,
 				 "C2D driver does not support source dataset with less or more than one band.\n");
         return NULL;
     }
 	
+	
 	//GDALDataType eType = poSrcDS->GetRasterBand(1)->GetRasterDataType();
-	if( !pfnProgress( 0.0, NULL, pProgressData ) ){
-        return NULL;
-	}
+	//if( !pfnProgress( 0.0, NULL, pProgressData ) ){
+      //  return NULL;
+	//}
 	
 	// -------------------------------------------------------------------- 
 	//      Create the dataset.                                             
 	// --------------------------------------------------------------------
-	FILE	*fpImage =VSIFOpen( pszFilename, "wb" );
+	FILE * fpImage =VSIFOpenL( pszFilename, "wb" );
     if( fpImage == NULL )
     {
-        CPLError( CE_Failure, CPLE_OpenFailed, 
-				 "Unable to create c2d file %s.\n", 
+        CPLError( CE_Failure, CPLE_OpenFailed, "Unable to create c2d file %s.\n", 
 				 pszFilename );
         return NULL;
     }
 	
-	//VSIFWrite(
+	VSIFSeekL(fpImage, 0, SEEK_SET); // begining of file
+	VSIFWriteL(C2DMagicName, sizeof(char), sizeof(C2DMagicName), fpImage);
+	C2DInfo myRasterInfo;
+	myRasterInfo.m_Width = poSrcDS->GetRasterBand(1)->GetXSize();
+	myRasterInfo.m_Height = poSrcDS->GetRasterBand(1)->GetYSize();
+	int sizewrited = VSIFWriteL(&myRasterInfo, sizeof(C2DInfo), sizeof(myRasterInfo), fpImage);
 	
-	VSIFClose(fpImage);
-    return (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
+	
+	/*int sizewrited = VSIFWriteL(mychar, sizeof(char), sizeof(mychar), fpImage);
+	if (sizewrited != sizeof(mychar)) {
+		CPLError( CE_Warning, CPLE_NotSupported, 
+				 "Not the good number of bytes written (%d), sizeof mychar = %ld",
+				 sizewrited,
+				 sizeof(mychar));
+		//return NULL;
+	}*/
+	
+	
+	CPLError( CE_Warning, CPLE_NotSupported, 
+			 "Write ok : %d bytes", sizewrited);
+		
+	//VSIFWriteL( (void *) "\0\0", 2, 1, fpImage );	
+	VSIFCloseL(fpImage);
+    
+	CPLError( CE_Warning, CPLE_NotSupported, 
+			 "Create copy passed" );
+	
+	return (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
 }
 
 
