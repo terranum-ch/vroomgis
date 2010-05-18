@@ -44,10 +44,29 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/../GDALmake.opt.in   ${GDAL_SOURCE_P
 #
 
 IF(WIN32)
-	#CHECK FOR VISUAL STUDIO SETUP
-	# A COMPLETER...
-	#FIND_FILE(CMAKE_INSTALL_PREFIX
-	MESSAGE(FATAL_ERROR "Code for windows support didn't exist. Please add code to this file")
+	SET(GDAL_CONFIGURED CACHE BOOL "Is GDAL correctly configured (nmake.opt) ?")
+	IF (NOT GDAL_CONFIGURED)
+		MESSAGE(FATAL_ERROR "Configure GDAL first using nmake.opt")
+	ENDIF (NOT GDAL_CONFIGURED)
+	
+	SET (VCVARS_PATH CACHE PATH "Path to the vcvars.bat file for setting up VisualStudio")
+	IF (NOT VCVARS_PATH)
+		MESSAGE(FATAL_ERROR "Visual Studio Vars not found")
+	ENDIF (NOT VCVARS_PATH)
+	
+	SET (GDAL_SOURCE_PATH_WINDOWS CACHE PATH "Path to the GDAL source with backslash")
+	IF (NOT GDAL_SOURCE_PATH_WINDOWS)
+		MESSAGE(FATAL_ERROR "Path to GDAL not defined")
+	ENDIF (NOT GDAL_SOURCE_PATH_WINDOWS)
+	
+	#MESSAGE (${PROJECT_SOURCE_DIR})
+	EXECUTE_PROCESS(COMMAND build-gdal-win.bat ${VCVARS_PATH} ${GDAL_SOURCE_PATH_WINDOWS}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} 
+			OUTPUT_VARIABLE MYCONFIGOUTPUT
+			ERROR_VARIABLE MYCONFIGERROR)
+	MESSAGE("Configure : ${MYCONFIGOUTPUT} ${MYCONFIGERROR}")	
+	
+	#MESSAGE(FATAL_ERROR "Code for windows support didn't exist. Please add code to this file")
 
 
 ELSE(WIN32)
@@ -88,8 +107,8 @@ ENDIF(WIN32)
 SET (PROJECTNAME gdal_c2d_support)
 PROJECT (${PROJECTNAME})
 
-SET (SOURCE_C2D_VAR 	${CMAKE_CURRENT_SOURCE_DIR}/../frmts/c2d/c2ddataset.cpp / 
-			${CMAKE_CURRENT_SOURCE_DIR}/../gcore/gdal_frmts.h / 
+SET (SOURCE_C2D_VAR 	${CMAKE_CURRENT_SOURCE_DIR}/../frmts/c2d/c2ddataset.cpp  
+			${CMAKE_CURRENT_SOURCE_DIR}/../gcore/gdal_frmts.h  
 			${CMAKE_CURRENT_SOURCE_DIR}/../frmts/gdalallregister.cpp)
 SOURCE_GROUP (SOURCE_C2D FILES ${SOURCE_C2D_VAR})
 
@@ -98,8 +117,8 @@ FILE (GLOB_RECURSE SOURCE_PORT_H ${GDAL_SOURCE_PATH}/port/*.h)
 SOURCE_GROUP (SOURCE_PORT FILES ${SOURCE_PORT_C} ${SOURCE_PORT_H})
 
 
-SET (SOURCE_SAMPLE_VAR	${GDAL_SOURCE_PATH}/frmts/jdem/jdemdataset.cpp / 
-			${GDAL_SOURCE_PATH}/frmts/saga/sagadataset.cpp / 
+SET (SOURCE_SAMPLE_VAR	${GDAL_SOURCE_PATH}/frmts/jdem/jdemdataset.cpp  
+			${GDAL_SOURCE_PATH}/frmts/saga/sagadataset.cpp  
 			${GDAL_SOURCE_PATH}/frmts/jpeg/jpgdataset.cpp)
 SOURCE_GROUP (SOURCE_SAMPLE FILES ${SOURCE_SAMPLE_VAR})
 
