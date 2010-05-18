@@ -34,7 +34,7 @@
 // ------------------------------------------------------------------------
 // Constant for C2D formats
 // ------------------------------------------------------------------------
-const char * C2DMagicName = "C2D";
+const char C2DMagicName[] = "C2D";
 struct C2DInfo {
 	const int m_Version;
 	int m_Width;
@@ -151,8 +151,9 @@ int C2DDataset::Identify( GDALOpenInfo * poOpenInfo ){
     }
 	
 	VSIFSeekL(fp, SEEK_SET, 0);
-	char myChar [strlen(C2DMagicName)];
-	int iReadedB = VSIFReadL(&myChar, sizeof(char), sizeof(C2DMagicName), fp);
+	int myLength = strlen(C2DMagicName);
+	char * myChar = new char[myLength];
+	int iReadedB = VSIFReadL(myChar, sizeof(char), sizeof(C2DMagicName), fp);
 	if (iReadedB != sizeof(C2DMagicName) || strcmp(myChar, C2DMagicName) != 0) {
 		CPLError( CE_Warning, CPLE_NotSupported, 
 				 "This is not a c2d file : %d bytes readed and magic number is %s",
@@ -165,6 +166,8 @@ int C2DDataset::Identify( GDALOpenInfo * poOpenInfo ){
 			 "Readed magic number OK : %s",myChar);
 	
 	VSIFCloseL(fp);
+	delete [] myChar;
+
 	CPLError( CE_Warning, CPLE_NotSupported,  "leaving identify function" );
     return TRUE;
 }
@@ -261,7 +264,7 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 	poDS->nRasterXSize = nWidth;
     poDS->nRasterYSize = nHeight;
 	
-
+	//CPLError( CE_Warning, CPLE_NotSupported, "Hello you");
 
 	return NULL;
 	
@@ -269,7 +272,7 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 	if( poDS->fpImage == NULL )
     {
         CPLError( CE_Failure, CPLE_OpenFailed,
-				 "Failed to re-open %s within PNM driver.\n",
+				 "Failed to re-open %s within C2D driver.\n",
 				 poOpenInfo->pszFilename );
         return NULL;
     }
