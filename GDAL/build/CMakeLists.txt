@@ -119,7 +119,8 @@ SOURCE_GROUP (SOURCE_PORT FILES ${SOURCE_PORT_C} ${SOURCE_PORT_H})
 
 SET (SOURCE_SAMPLE_VAR	${GDAL_SOURCE_PATH}/frmts/jdem/jdemdataset.cpp  
 			${GDAL_SOURCE_PATH}/frmts/saga/sagadataset.cpp  
-			${GDAL_SOURCE_PATH}/frmts/jpeg/jpgdataset.cpp)
+			${GDAL_SOURCE_PATH}/frmts/jpeg/jpgdataset.cpp
+			${GDAL_SOURCE_PATH}/frmts/raw/pnmdataset.cpp)
 SOURCE_GROUP (SOURCE_SAMPLE FILES ${SOURCE_SAMPLE_VAR})
 
 

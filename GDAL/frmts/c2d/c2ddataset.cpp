@@ -282,6 +282,40 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 	
 	poDS = new C2DDataset();
 	poDS->fpImage = fpImage;
+	poDS->nRasterXSize = myRasterInfo.m_Width;
+	poDS->nRasterYSize = myRasterInfo.m_Height;
+	
+	
+	// Take ownership of file handled from GDALOpeninfo.
+	VSIFClose(poOpenInfo->fp);
+	poOpenInfo->fp = NULL;
+	
+	if( poOpenInfo->eAccess == GA_Update )
+        poDS->fpImage = VSIFOpenL( poOpenInfo->pszFilename, "rb+" );
+    else
+        poDS->fpImage = VSIFOpenL( poOpenInfo->pszFilename, "rb" );
+	
+    if( poDS->fpImage == NULL ){
+        CPLError( CE_Failure, CPLE_OpenFailed,
+				 "Failed to re-open %s within C2D driver.\n",
+				 poOpenInfo->pszFilename );
+        return NULL;
+    }
+    poDS->eAccess = poOpenInfo->eAccess;
+	
+	
+	// create one band
+	int iPixelSize =  GDALGetDataTypeSize( GDT_Float32 ) / 8;
+	int iIn = (sizeof(C2DMagicName) / sizeof(char)) + sizeof(C2DInfo);
+	int         bMSBFirst = TRUE;
+#ifdef CPL_LSB
+    bMSBFirst = FALSE;
+#endif
+	
+	poDS->SetBand(1, new RawRasterBand( poDS, 1, poDS->fpImage, iIn, iPixelSize,
+									   myRasterInfo.m_Width*iPixelSize, GDT_Float32, bMSBFirst, TRUE ));
+	poDS->GetRasterBand(1)->SetColorInterpretation( GCI_GrayIndex );
+	
 	
 	
 	poDS->SetDescription( poOpenInfo->pszFilename );
@@ -333,9 +367,107 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	}
 	
     
+	C2DDataset * poDS = (C2DDataset*) GDALOpen( pszFilename, GA_Update ); 
+	
+	
+	/* -------------------------------------------------------------------- */
+	/*      Copy the image data.                                            */
+	/* -------------------------------------------------------------------- */
+    int         nXSize = mySrcRasterInfo.m_Width;
+    int         nYSize = mySrcRasterInfo.m_Height;
+    int  	nBlockXSize, nBlockYSize, nBlockTotal, nBlocksDone;
+	
+    poSrcDS->GetRasterBand(1)->GetBlockSize( &nBlockXSize, &nBlockYSize );
+	
+    nBlockTotal = ((nXSize + nBlockXSize - 1) / nBlockXSize)
+	* ((nYSize + nBlockYSize - 1) / nBlockYSize);
+	
+    nBlocksDone = 0;
+	GDALRasterBand *poSrcBand = poSrcDS->GetRasterBand( 1 );
+	GDALRasterBand *poDstBand = poDS->GetRasterBand( 1 );
+	int	       iYOffset, iXOffset;
+	void           *pData;
+	CPLErr  eErr;
+	
+	CPLError( CE_Warning, CPLE_NotSupported, "Preparing copying data" );
+
+	pData = CPLMalloc(nBlockXSize * nBlockYSize
+					  * GDALGetDataTypeSize(eType) / 8);
+	
+	for( iYOffset = 0; iYOffset < nYSize; iYOffset += nBlockYSize )
+	{
+		for( iXOffset = 0; iXOffset < nXSize; iXOffset += nBlockXSize )
+		{
+			int	nTBXSize, nTBYSize;
+			
+			if( !pfnProgress( (nBlocksDone++) / (float) nBlockTotal,
+							 NULL, pProgressData ) )
+			{
+				CPLError( CE_Failure, CPLE_UserInterrupt, 
+						 "User terminated" );
+				delete poDS;
+				
+				GDALDriver *poC2DDriver = 
+				(GDALDriver *) GDALGetDriverByName( "C2D" );
+				poC2DDriver->Delete( pszFilename );
+				return NULL;
+			}
+
+			nTBXSize = MIN(nBlockXSize,nXSize-iXOffset);
+			nTBYSize = MIN(nBlockYSize,nYSize-iYOffset);
+
+			eErr = poSrcBand->RasterIO( GF_Read, 
+									   iXOffset, iYOffset, 
+									   nTBXSize, nTBYSize,
+									   pData, nTBXSize, nTBYSize,
+									   eType, 0, 0 );
+			
+			if( eErr != CE_None )
+			{
+				CPLError( CE_Warning, CPLE_NotSupported, "Reading failed");
+				return NULL;
+			}
+			
+			
+			eErr = poDstBand->RasterIO( GF_Write, 
+									   iXOffset, iYOffset, 
+									   nTBXSize, nTBYSize,
+									   pData, nTBXSize, nTBYSize,
+									   eType, 0, 0 );
+			
+			if( eErr != CE_None )
+			{
+				CPLError( CE_Warning, CPLE_NotSupported, "Writing failed");
+				return NULL;
+			}
+		}
+	}
+	
+	CPLFree( pData );
+	CPLError( CE_Warning, CPLE_NotSupported, "Writing band informations passed" );
+
+	/* Make sure image data gets flushed */
+	RawRasterBand *poDstRawBand =  (RawRasterBand *) poDS->GetRasterBand( 1 );
+	poDstRawBand->FlushCache();
+	
+	
+    if( !pfnProgress( 1.0, NULL, pProgressData ) )
+    {
+        CPLError( CE_Failure, CPLE_UserInterrupt, 
+				 "User terminated" );
+        delete poDS;
+		
+        GDALDriver *poC2DDriver = 
+		(GDALDriver *) GDALGetDriverByName( "C2D" );
+        poC2DDriver->Delete( pszFilename );
+        return NULL;
+    }
+		
+	
 	CPLError( CE_Warning, CPLE_NotSupported, "Create copy passed" );
 	
-	return (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
+	//return (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
+	return poDS;
 }
 
 
