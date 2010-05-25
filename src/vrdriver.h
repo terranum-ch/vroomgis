@@ -42,7 +42,7 @@ static const wxString vrDRIVERS_EXTENSION []= {
 	wxEmptyString,
 	"*.tif;*.tiff",
 	"*.jpg;*.jpeg",
-	"*.hdr",
+	"*.adf",
 	"*.c2d"
 };
 
