@@ -798,6 +798,12 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 	poDS->SetBand(1, new RawRasterBand( poDS, 1, poDS->fpImage, iIn, iPixelSize,
 									   myRasterInfo.m_Width*iPixelSize, GDT_Float32, bMSBFirst, TRUE ));
 	poDS->GetRasterBand(1)->SetColorInterpretation( GCI_GrayIndex );
+
+	iIn += sizeof(GDT_Float32) * myRasterInfo.m_Width * myRasterInfo.m_Height; 
+
+	poDS->SetBand(2, new RawRasterBand( poDS, 2, poDS->fpImage, iIn, iPixelSize,
+									   myRasterInfo.m_Width*iPixelSize, GDT_Float32, bMSBFirst, TRUE ));
+	poDS->GetRasterBand(2)->SetColorInterpretation( GCI_GrayIndex );
 	
 	
 	
@@ -953,7 +959,29 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	/* -------------------------------------------------------------------- */
 	/*      Copy the First band image data.                                 */
 	/* -------------------------------------------------------------------- */
+	GDALRasterBand *poDstBand2 = poDS->GetRasterBand( 2 );
 	
+	pData = NULL;
+	GDALGeneric3x3ProcessingAlg pfnAlg = NULL;
+
+
+	int dfDstNoDataValue = -9999;
+	bool bDstHasNoData = TRUE;
+	double scale = 1.0;
+	// 0 = 'percent' or 1 = 'degrees'
+    int slopeFormat = 1; 
+	double  adfGeoTransform[6];
+	GDALGetGeoTransform(poSrcDS, adfGeoTransform);
+	pData = GDALCreateSlopeData(adfGeoTransform, scale, slopeFormat);
+	pfnAlg = GDALSlopeAlg;
+	
+	GDALGeneric3x3Processing(poSrcBand, poDstBand2,
+							 pfnAlg, pData,
+							 pfnProgress, NULL);
+	
+	/* Make sure image data gets flushed */
+	RawRasterBand *poDstRawBand2 =  (RawRasterBand *) poDS->GetRasterBand( 2 );
+	poDstRawBand2->FlushCache();
 	
 	
 	return poDS;
