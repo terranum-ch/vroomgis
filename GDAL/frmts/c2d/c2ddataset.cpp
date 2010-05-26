@@ -40,16 +40,31 @@ public:
 	const int m_Version;
 	int m_Width;
 	int m_Height;
+	double m_GeoTransform[6];
 	
 	C2DInfo():m_Version(1){
 		m_Width = -1;
 		m_Height = -1;
+		
+		m_GeoTransform[0] = 0.0;
+		m_GeoTransform[1] = 1.0;
+		m_GeoTransform[2] = 0.0;
+		m_GeoTransform[3] = 0.0;
+		m_GeoTransform[4] = 0.0;
+		m_GeoTransform[5] = 1.0;
 	}
 	
 	C2DInfo & operator = (const C2DInfo & other){
 		if (this != &other) {
 			m_Width = other.m_Width;
 			m_Height = other.m_Height;
+			
+			m_GeoTransform[0] = other.m_GeoTransform[0];
+			m_GeoTransform[1] = other.m_GeoTransform[1];
+			m_GeoTransform[2] = other.m_GeoTransform[2];
+			m_GeoTransform[3] = other.m_GeoTransform[3];
+			m_GeoTransform[4] = other.m_GeoTransform[4];
+			m_GeoTransform[5] = other.m_GeoTransform[5];
 		}
 		return *this;
 	}
@@ -612,6 +627,8 @@ double GDALGeneric3x3RasterBand::GetNoDataValue( int* pbHasNoData )
 class C2DDataset : public RawDataset
 {
     FILE        *fpImage;       // image data file.
+	C2DInfo		m_RasterInfo;	// raster info
+	bool		m_GeoTransformValid;
 	
 	static bool		ReadMagicNumber(GDALOpenInfo * poOpenInfo);
 	static bool		WriteMagicNumber(const char * pszFilename);
@@ -641,6 +658,8 @@ public:
 C2DDataset::C2DDataset()
 {
     fpImage = NULL;
+	m_GeoTransformValid = FALSE;
+	
 }
 
 /************************************************************************/
@@ -662,17 +681,13 @@ C2DDataset::~C2DDataset()
 CPLErr C2DDataset::GetGeoTransform( double * padfTransform )
 
 {
-	// TODO: Implement this function
-	return CE_None;
-	
-	
-    /*if( bGeoTransformValid )
+    if( m_GeoTransformValid)
     {
-        memcpy( padfTransform, adfGeoTransform, sizeof(double)*6 );
+		memcpy( padfTransform, m_RasterInfo.m_GeoTransform, sizeof(double)*6 );
         return CE_None;
     }
     else
-        return CE_Failure;*/
+        return CE_Failure;
 }
 
 /************************************************************************/
@@ -782,7 +797,7 @@ bool C2DDataset::ReadHeader(const char * pszFilename, C2DInfo & info){
 		CPLError( CE_Failure, CPLE_NotSupported,  "Unable to open, driver version conflit (found %d, expected %d)",
 				 pInfo->m_Version, info.m_Version);
 	}
-	
+	//m_RasterInfo = *pInfo;
 	info = *pInfo;
 	delete pInfo;
 	VSIFCloseL(fp);
@@ -826,6 +841,17 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 	poDS->fpImage = fpImage;
 	poDS->nRasterXSize = myRasterInfo.m_Width;
 	poDS->nRasterYSize = myRasterInfo.m_Height;
+	poDS->m_RasterInfo = myRasterInfo;
+	poDS->m_GeoTransformValid = TRUE;
+	
+	
+	CPLError( CE_Warning, CPLE_NotSupported, "-Open - Getting geotransform value : %f, %f, %f, %f, %f, %f",
+			 myRasterInfo.m_GeoTransform[0],
+			 myRasterInfo.m_GeoTransform[1],
+			 myRasterInfo.m_GeoTransform[2],
+			 myRasterInfo.m_GeoTransform[3],
+			 myRasterInfo.m_GeoTransform[4],
+			 myRasterInfo.m_GeoTransform[5]);
 	
 	
 	// Take ownership of file handled from GDALOpeninfo.
@@ -912,8 +938,26 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	}
 	CPLError( CE_Warning, CPLE_NotSupported, "Writing magic number passed" );
 
-	// Write header
+	// get geotransform informations
 	C2DInfo mySrcRasterInfo;
+	double * pSrcTransform =  (double *) CPLMalloc(6*sizeof(double));
+	poSrcDS->GetGeoTransform (pSrcTransform);
+	CPLError( CE_Warning, CPLE_NotSupported, "Writing following parameters %f %f %f %f %f %f",
+			 *pSrcTransform,
+			 *(pSrcTransform+1),
+			 *(pSrcTransform+2),
+			 *(pSrcTransform+3),
+			 *(pSrcTransform+4),
+			 *(pSrcTransform+5));
+	mySrcRasterInfo.m_GeoTransform[0] = *pSrcTransform;
+	mySrcRasterInfo.m_GeoTransform[1] = *(pSrcTransform+1);
+	mySrcRasterInfo.m_GeoTransform[2] = *(pSrcTransform+2);
+	mySrcRasterInfo.m_GeoTransform[3] = *(pSrcTransform+3);
+	mySrcRasterInfo.m_GeoTransform[4] = *(pSrcTransform+4);
+	mySrcRasterInfo.m_GeoTransform[5] = *(pSrcTransform+5);
+	CPLFree(pSrcTransform);
+	
+	// Write header
 	mySrcRasterInfo.m_Width = poSrcDS->GetRasterBand(1)->GetXSize();
 	mySrcRasterInfo.m_Height = poSrcDS->GetRasterBand(1)->GetYSize();
 	if (WriteHeader(pszFilename, mySrcRasterInfo) == FALSE) {
@@ -1061,11 +1105,6 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	int bAngleAsAzimuth = TRUE;
 	dfDstNoDataValue = -9999;
 	bDstHasNoData = TRUE;
-	//double scale = 1.0;
-
-	
-	//double  adfGeoTransform[6];
-	//GDALGetGeoTransform(poSrcDS, adfGeoTransform);
 	
 	pData = GDALCreateAspectData(bAngleAsAzimuth);
 	pfnAlg = GDALAspectAlg;
