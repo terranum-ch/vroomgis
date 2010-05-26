@@ -111,6 +111,65 @@ void*  GDALCreateSlopeData(double* adfGeoTransform,
 
 
 
+/************************************************************************/
+/*                         GDALAspect()                                 */
+/************************************************************************/
+
+typedef struct
+{
+    int bAngleAsAzimuth;
+} GDALAspectAlgData;
+
+float GDALAspectAlg (float* afWin, float fDstNoDataValue, void* pData)
+{
+    const double degreesToRadians = M_PI / 180.0;
+    GDALAspectAlgData* psData = (GDALAspectAlgData*)pData;
+    double dx, dy;
+    float aspect;
+    
+    dx = ((afWin[2] + afWin[5] + afWin[5] + afWin[8]) -
+          (afWin[0] + afWin[3] + afWin[3] + afWin[6]));
+	
+    dy = ((afWin[6] + afWin[7] + afWin[7] + afWin[8]) - 
+          (afWin[0] + afWin[1] + afWin[1] + afWin[2]));
+	
+    aspect = atan2(dy,-dx) / degreesToRadians;
+	
+    if (dx == 0 && dy == 0)
+    {
+        /* Flat area */
+        aspect = fDstNoDataValue;
+    } 
+    else if ( psData->bAngleAsAzimuth )
+    {
+        if (aspect > 90.0) 
+            aspect = 450.0 - aspect;
+        else
+            aspect = 90.0 - aspect;
+    }
+    else
+    {
+        if (aspect < 0)
+            aspect += 360.0;
+    }
+	
+    if (aspect == 360.0) 
+        aspect = 0.0;
+	
+    return aspect;
+}
+
+void*  GDALCreateAspectData(int bAngleAsAzimuth)
+{
+    GDALAspectAlgData* pData =
+	(GDALAspectAlgData*)CPLMalloc(sizeof(GDALAspectAlgData));
+	
+    pData->bAngleAsAzimuth = bAngleAsAzimuth;
+    return pData;
+}
+
+
+
 
 /************************************************************************/
 /*                  GDALGeneric3x3Processing()                          */
@@ -805,6 +864,12 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 									   myRasterInfo.m_Width*iPixelSize, GDT_Float32, bMSBFirst, TRUE ));
 	poDS->GetRasterBand(2)->SetColorInterpretation( GCI_GrayIndex );
 	
+	iIn += sizeof(GDT_Float32) * myRasterInfo.m_Width * myRasterInfo.m_Height; 
+	
+	poDS->SetBand(3, new RawRasterBand( poDS, 3, poDS->fpImage, iIn, iPixelSize,
+									   myRasterInfo.m_Width*iPixelSize, GDT_Float32, bMSBFirst, TRUE ));
+	poDS->GetRasterBand(3)->SetColorInterpretation( GCI_GrayIndex );
+	
 	
 	
 	poDS->SetDescription( poOpenInfo->pszFilename );
@@ -957,7 +1022,7 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	
 	
 	/* -------------------------------------------------------------------- */
-	/*      Copy the First band image data.                                 */
+	/*      Copy the slope band image data.                                 */
 	/* -------------------------------------------------------------------- */
 	GDALRasterBand *poDstBand2 = poDS->GetRasterBand( 2 );
 	
@@ -982,6 +1047,36 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	/* Make sure image data gets flushed */
 	RawRasterBand *poDstRawBand2 =  (RawRasterBand *) poDS->GetRasterBand( 2 );
 	poDstRawBand2->FlushCache();
+	
+
+	
+	/* -------------------------------------------------------------------- */
+	/*      Copy the aspect band image data.                                 */
+	/* -------------------------------------------------------------------- */
+	GDALRasterBand *poDstBand3 = poDS->GetRasterBand( 3 );
+	
+	pData = NULL;
+	pfnAlg = NULL;
+	
+	int bAngleAsAzimuth = TRUE;
+	dfDstNoDataValue = -9999;
+	bDstHasNoData = TRUE;
+	//double scale = 1.0;
+
+	
+	//double  adfGeoTransform[6];
+	//GDALGetGeoTransform(poSrcDS, adfGeoTransform);
+	
+	pData = GDALCreateAspectData(bAngleAsAzimuth);
+	pfnAlg = GDALAspectAlg;
+	GDALGeneric3x3Processing(poSrcBand, poDstBand3,
+							 pfnAlg, pData,
+							 pfnProgress, NULL);
+	
+	/* Make sure image data gets flushed */
+	RawRasterBand *poDstRawBand3 =  (RawRasterBand *) poDS->GetRasterBand( 3 );
+	poDstRawBand3->FlushCache();
+	
 	
 	
 	return poDS;
