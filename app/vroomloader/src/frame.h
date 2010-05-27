@@ -33,6 +33,7 @@
 #endif
 
 #include <wx/splitter.h>	//splitter bar
+#include <wx/dnd.h>			// dnd
 //#include <wx/treectrl.h>	// temp treectrl
 
 
@@ -52,7 +53,16 @@ public:
      virtual bool OnInit();
 };
 
-
+class vroomLoaderFrame;
+class vroomDropFiles : public wxFileDropTarget {
+private:
+	vroomLoaderFrame * m_LoaderFrame;
+	
+public:
+	vroomDropFiles(vroomLoaderFrame * parent);
+	virtual bool OnDropFiles(wxCoord x, wxCoord y, 
+							 const wxArrayString & filenames);
+};
 
 
 
@@ -80,9 +90,12 @@ public:
     vroomLoaderFrame(const wxString& title);
 	~vroomLoaderFrame();
 	
+	bool OpenLayers (const wxArrayString & names);
+	
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 	void OnOpenLayer(wxCommandEvent & event);
+	
 	void OnCloseLayer(wxCommandEvent & event);
 	void OnShowLog (wxCommandEvent & event);
 	

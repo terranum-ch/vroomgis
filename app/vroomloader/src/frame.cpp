@@ -44,6 +44,24 @@ IMPLEMENT_APP(vroomLoader)
 
 
 
+vroomDropFiles::vroomDropFiles(vroomLoaderFrame * parent){
+	wxASSERT(parent);
+	m_LoaderFrame = parent;
+}
+
+
+bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y, 
+								 const wxArrayString & filenames){
+	if (filenames.GetCount() == 0) {
+		return false;
+	}
+	
+	m_LoaderFrame->OpenLayers(filenames);
+	return true;
+}
+
+
+
 bool vroomLoader::OnInit()
 {
     if ( !wxApp::OnInit() )
@@ -154,6 +172,8 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	// Connect Events
 	m_DisplayCtrl->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
 
+	// DND
+	m_TocCtrl->SetDropTarget(new vroomDropFiles(this));
 
 	// VROOMGIS
 	m_LayerManager = new vrLayerManager();
@@ -200,6 +220,26 @@ void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 }
 
 
+bool vroomLoaderFrame::OpenLayers (const wxArrayString & names){
+	for (unsigned int i = 0; i< names.GetCount(); i++) {
+		// open files
+		bool myOpen = m_LayerManager->Open(wxFileName(names.Item(i)));
+		wxASSERT(myOpen);
+	}
+	
+	m_ViewerLayerManager->FreezeBegin();
+	for (unsigned int j = 0; j< names.GetCount(); j++) {
+		// get files
+		vrLayer * myLayer = m_LayerManager->GetLayer( wxFileName(names.Item(j)));
+		wxASSERT(myLayer);
+		
+		// add files to the viewer
+		m_ViewerLayerManager->Add(-1, myLayer);
+	}
+	m_ViewerLayerManager->FreezeEnd();
+	return true;
+	
+}
 
 
 void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
@@ -248,8 +288,8 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 		myFileDlg.GetPaths(myPathsFileName);
 		wxASSERT(myPathsFileName.GetCount() > 0);
 		
-		
-		for (unsigned int i = 0; i< myPathsFileName.GetCount(); i++) {
+		OpenLayers(myPathsFileName);
+		/*for (unsigned int i = 0; i< myPathsFileName.GetCount(); i++) {
 			// open files
 			bool myOpen = m_LayerManager->Open(wxFileName(myPathsFileName.Item(i)));
 			wxASSERT(myOpen);
@@ -264,7 +304,7 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 			// add files to the viewer
 			m_ViewerLayerManager->Add(-1, myLayer);
 		}
-		m_ViewerLayerManager->FreezeEnd();
+		m_ViewerLayerManager->FreezeEnd();*/
 		
 		
 	}
