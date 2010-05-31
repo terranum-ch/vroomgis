@@ -88,7 +88,7 @@ CPL_C_END
 
 
 /************************************************************************/
-/*                         GDALSlope()                                  */
+/*                    HORN GDALSlope()                                  */
 /************************************************************************/
 
 typedef struct
@@ -136,7 +136,7 @@ void*  GDALCreateSlopeData(double* adfGeoTransform,
 
 
 /************************************************************************/
-/*                         GDALAspect()                                 */
+/*                    HORN GDALAspect()                                 */
 /************************************************************************/
 
 typedef struct
@@ -646,7 +646,7 @@ class C2DDataset : public RawDataset
 	static bool		ReadHeader(const char * pszFilename, C2DInfo & info);
 	static bool		WriteProj (const char * pszFilename, const char * proj);
 	static bool		ReadProj (char * pszFilename, char ** proj);
-	static bool		CreateMetaData (C2DDataset * poDS, GDALDataset *poSrcDS);
+	static bool		CreateMetaData (C2DDataset * poDS, GDALDataset *poSrcDS, char ** papszOptions);
 	
 public:
 	C2DDataset();
@@ -891,7 +891,7 @@ bool C2DDataset::ReadProj (char * pszFilename, char ** proj){
 
 
 
-bool C2DDataset::CreateMetaData (C2DDataset * poDS, GDALDataset *poSrcDS){
+bool C2DDataset::CreateMetaData (C2DDataset * poDS, GDALDataset *poSrcDS, char ** papszOptions){
 	if (poDS == NULL || poSrcDS == NULL) {
 		CPLError( CE_Failure, CPLE_NotSupported,  "Creating metadata failed");
         return FALSE;
@@ -923,6 +923,13 @@ bool C2DDataset::CreateMetaData (C2DDataset * poDS, GDALDataset *poSrcDS){
 		}
 	}
 	CSLDestroy(papszFileList);
+	
+	// SLOPE ALGORITHM USED
+	const char * pszSlopeAlg = CSLFetchNameValue(papszOptions, "SLOPE_ALGORITHM");
+	if (pszSlopeAlg == NULL) {
+		pszSlopeAlg = "HORN";
+	}
+	poDS->SetMetadataItem ("C2D_SLOPE_ALGORITHM", pszSlopeAlg);
 	
 	
 	return TRUE;
@@ -1294,9 +1301,8 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	
 	
 	// WRITE METADATA
-	CreateMetaData(poDS, poSrcDS);
-	
-	
+	CreateMetaData(poDS, poSrcDS, papszOptions);
+
 	
 	return poDS;
 }
@@ -1322,13 +1328,22 @@ void GDALRegister_C2D()
         poDriver->SetMetadataItem( GDAL_DMD_HELPTOPIC, 
                                    "frmt_various.html#C2D" );
         poDriver->SetMetadataItem( GDAL_DMD_EXTENSION, "c2d" );
+		
+		char szCreateOptions[500];
+		strcat(szCreateOptions, ""
+			  "<CreationOptionList>"
+			  "<Option name='SLOPE_ALGORITHM' type='string-select' default='HORN'>"
+					"<Value>HORN</Value>"
+					"<Value>ZEVENBERGEN</Value>"
+			   "</Option>"
+			   "</CreationOptionList>");
+		poDriver->SetMetadataItem(GDAL_DMD_CREATIONOPTIONLIST, szCreateOptions);
+		
 
         poDriver->pfnOpen = C2DDataset::Open;
 		poDriver->pfnCreateCopy = C2DDataset::CreateCopy;
 		//poDriver->pfnCreateCopy = C2DCreateCopy;
 		poDriver->pfnIdentify = C2DDataset::Identify;
-
-		
 		
         GetGDALDriverManager()->RegisterDriver( poDriver );
     }
