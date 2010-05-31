@@ -646,7 +646,7 @@ class C2DDataset : public RawDataset
 	static bool		ReadHeader(const char * pszFilename, C2DInfo & info);
 	static bool		WriteProj (const char * pszFilename, const char * proj);
 	static bool		ReadProj (char * pszFilename, char ** proj);
-
+	static bool		CreateMetaData (C2DDataset * poDS, GDALDataset *poSrcDS);
 	
 public:
 	C2DDataset();
@@ -889,6 +889,44 @@ bool C2DDataset::ReadProj (char * pszFilename, char ** proj){
 }
 
 
+
+
+bool C2DDataset::CreateMetaData (C2DDataset * poDS, GDALDataset *poSrcDS){
+	if (poDS == NULL || poSrcDS == NULL) {
+		CPLError( CE_Failure, CPLE_NotSupported,  "Creating metadata failed");
+        return FALSE;
+	}
+	
+	// RASTER VERSION
+	C2DInfo myEmptyInfo;
+	char myVersionChar [10] = {"\0"};
+	sprintf(myVersionChar, "%d", myEmptyInfo.m_Version);
+	poDS->SetMetadataItem( "C2D_VERSION", myVersionChar, NULL);
+	
+	// RASTER CREATION DATE / TIME
+	time_t myTime = time(NULL);
+	poDS->SetMetadataItem ("C2D_CREATION_DATE_TIME",
+						   ctime(&myTime), NULL);
+	
+	// ORIGIN FILE
+	char** papszFileList = poSrcDS->GetFileList();
+	int iNumFile = CSLCount(papszFileList);
+	if (iNumFile != 0) {
+		char myCount [5] = {"\0"};
+		sprintf(myCount, "%d", iNumFile);
+		poDS->SetMetadataItem("C2D_ORIGIN_FILE_COUNT", myCount, NULL);
+		
+		for (int i = 1; i<= iNumFile; i++) {
+			char myItemName [25] = {"0"};
+			sprintf(myItemName, "C2D_ORIGIN_FILE_%02d", i);
+			poDS->SetMetadataItem (myItemName, *(papszFileList+(i-1)), NULL);
+		}
+	}
+	CSLDestroy(papszFileList);
+	
+	
+	return TRUE;
+}
 
 
 
@@ -1252,6 +1290,11 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	/* Make sure image data gets flushed */
 	RawRasterBand *poDstRawBand3 =  (RawRasterBand *) poDS->GetRasterBand( 3 );
 	poDstRawBand3->FlushCache();
+	
+	
+	
+	// WRITE METADATA
+	CreateMetaData(poDS, poSrcDS);
 	
 	
 	
