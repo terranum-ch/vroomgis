@@ -41,10 +41,14 @@ public:
 	int m_Width;
 	int m_Height;
 	double m_GeoTransform[6];
+	bool m_NoDataEnabled;
+	double m_NoDataValue;
 	
 	C2DInfo():m_Version(1){
 		m_Width = -1;
 		m_Height = -1;
+		m_NoDataEnabled = FALSE;
+		m_NoDataValue = 0;
 		
 		m_GeoTransform[0] = 0.0;
 		m_GeoTransform[1] = 1.0;
@@ -59,6 +63,9 @@ public:
 		if (this != &other) {
 			m_Width = other.m_Width;
 			m_Height = other.m_Height;
+			
+			m_NoDataEnabled = other.m_NoDataEnabled;
+			m_NoDataValue = other.m_NoDataValue;
 			
 			m_GeoTransform[0] = other.m_GeoTransform[0];
 			m_GeoTransform[1] = other.m_GeoTransform[1];
@@ -992,10 +999,20 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 									   myRasterInfo.m_Width*iPixelSize, GDT_Float32, bMSBFirst, TRUE ));
 	poDS->GetRasterBand(3)->SetColorInterpretation( GCI_GrayIndex );
 	
+
+	if (myRasterInfo.m_NoDataEnabled == TRUE) {
+		poDS->GetRasterBand(1)->SetNoDataValue(myRasterInfo.m_NoDataValue);
+		poDS->GetRasterBand(2)->SetNoDataValue(-9999);
+		poDS->GetRasterBand(3)->SetNoDataValue(-9999);
+	}
 	
 	
 	poDS->SetDescription( poOpenInfo->pszFilename );
     poDS->TryLoadXML();
+	
+	// for overviews support
+	poDS->oOvManager.Initialize( poDS, poOpenInfo->pszFilename );
+	
 	return (poDS);
 }
 
@@ -1052,6 +1069,14 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	mySrcRasterInfo.m_GeoTransform[4] = *(pSrcTransform+4);
 	mySrcRasterInfo.m_GeoTransform[5] = *(pSrcTransform+5);
 	CPLFree(pSrcTransform);
+	
+	// get No Data value
+	int bSuccess = FALSE;
+	double myNodataValue = poSrcDS->GetRasterBand(1)->GetNoDataValue(&bSuccess);
+	if (bSuccess == TRUE) {
+		mySrcRasterInfo.m_NoDataEnabled = TRUE;
+		mySrcRasterInfo.m_NoDataValue = myNodataValue;
+	}
 	
 		
 	// Write header
