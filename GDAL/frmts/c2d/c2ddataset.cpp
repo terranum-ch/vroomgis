@@ -86,9 +86,8 @@ void    GDALRegister_C2D(void);
 CPL_C_END
 
 
-
 /************************************************************************/
-/*                    HORN GDALSlope()                                  */
+/*                    SLOPE												*/
 /************************************************************************/
 
 typedef struct
@@ -99,6 +98,8 @@ typedef struct
     int    slopeFormat;
 } GDALSlopeAlgData;
 
+
+/*                    HORN's   Slope()                                  */
 float GDALSlopeAlg (float* afWin, float fDstNoDataValue, void* pData)
 {
     const double radiansToDegrees = 180.0 / M_PI;
@@ -119,6 +120,28 @@ float GDALSlopeAlg (float* afWin, float fDstNoDataValue, void* pData)
         return 100*(sqrt(key) / (8*psData->scale));
 }
 
+
+/*                    ZEVENBERGEN AND THORNE Slope()                    */
+float GDALSlopeAlgZevenbergen (float* afWin, float fDstNoDataValue, void* pData)
+{
+	const double radiansToDegrees = 180.0 / M_PI;
+    GDALSlopeAlgData* psData = (GDALSlopeAlgData*)pData;
+    double dg, dh, key;
+    
+    dg = (-1.0 * afWin[3]+afWin[5]) / (2*psData->ewres);
+
+    dh = (afWin[7]-afWin[1]) / (2*psData->nsres);
+	
+    key = (dg * dg + dh * dh);
+	
+    if (psData->slopeFormat == 1) 
+        return atan(sqrt(key)) * radiansToDegrees;
+    else
+        return 100*(sqrt(key));
+}
+
+
+
 void*  GDALCreateSlopeData(double* adfGeoTransform,
                            double scale,
                            int slopeFormat)
@@ -134,16 +157,19 @@ void*  GDALCreateSlopeData(double* adfGeoTransform,
 }
 
 
-
 /************************************************************************/
-/*                    HORN GDALAspect()                                 */
+/*                    ASPECT											*/
 /************************************************************************/
 
 typedef struct
 {
+	double nsres;
+    double ewres;
     int bAngleAsAzimuth;
 } GDALAspectAlgData;
 
+
+/*                    HORN's ASPECT                                  */
 float GDALAspectAlg (float* afWin, float fDstNoDataValue, void* pData)
 {
     const double degreesToRadians = M_PI / 180.0;
@@ -183,12 +209,56 @@ float GDALAspectAlg (float* afWin, float fDstNoDataValue, void* pData)
     return aspect;
 }
 
-void*  GDALCreateAspectData(int bAngleAsAzimuth)
+
+
+/*                 ZEVENBERGEN AND THORNE's ASPECT               */
+float GDALAspectAlgZevenbergen (float* afWin, float fDstNoDataValue, void* pData)
+{
+    const double degreesToRadians = M_PI / 180.0;
+    GDALAspectAlgData* psData = (GDALAspectAlgData*)pData;
+    double dg, dh;
+    float aspect;
+    
+	dg = (-1.0 * afWin[3]+afWin[5]) / (2*psData->ewres);
+	
+    dh = (afWin[7]-afWin[1]) / (2*psData->nsres);
+	
+	
+    aspect = atan2(-dh,-dg) / degreesToRadians;
+
+    if (dh == 0 && dg == 0)
+    {
+        /* Flat area */
+        aspect = fDstNoDataValue;
+    } 
+    else if ( psData->bAngleAsAzimuth )
+    {
+        if (aspect > 90.0) 
+            aspect = 450.0 - aspect;
+        else
+            aspect = 90.0 - aspect;
+    }
+    else
+    {
+        if (aspect < 0)
+            aspect += 360.0;
+    }
+	
+    if (aspect == 360.0) 
+        aspect = 0.0;
+	
+    return aspect;
+}
+
+
+void*  GDALCreateAspectData(int bAngleAsAzimuth, double* adfGeoTransform)
 {
     GDALAspectAlgData* pData =
 	(GDALAspectAlgData*)CPLMalloc(sizeof(GDALAspectAlgData));
 	
     pData->bAngleAsAzimuth = bAngleAsAzimuth;
+	pData->nsres = adfGeoTransform[5];
+    pData->ewres = adfGeoTransform[1];
     return pData;
 }
 
@@ -1264,7 +1334,20 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	double  adfGeoTransform[6];
 	GDALGetGeoTransform(poSrcDS, adfGeoTransform);
 	pData = GDALCreateSlopeData(adfGeoTransform, scale, slopeFormat);
-	pfnAlg = GDALSlopeAlg;
+	
+	const char * pszSlopeAlg = CSLFetchNameValue(papszOptions, "SLOPE_ALGORITHM");
+	if (pszSlopeAlg == NULL) {
+		pszSlopeAlg = "HORN";
+	}
+	
+	if (strcmp(pszSlopeAlg, "ZEVENBERGEN")==0){
+		pfnAlg = GDALSlopeAlgZevenbergen;
+	}
+	else {
+		pfnAlg = GDALSlopeAlg;
+	}
+	
+	
 	
 	GDALGeneric3x3Processing(poSrcBand, poDstBand2,
 							 pfnAlg, pData,
@@ -1288,8 +1371,16 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	dfDstNoDataValue = -9999;
 	bDstHasNoData = TRUE;
 	
-	pData = GDALCreateAspectData(bAngleAsAzimuth);
-	pfnAlg = GDALAspectAlg;
+	pData = GDALCreateAspectData(bAngleAsAzimuth, adfGeoTransform);
+	
+	if (strcmp(pszSlopeAlg, "ZEVENBERGEN")==0){
+		pfnAlg = GDALAspectAlgZevenbergen;
+	}
+	else {
+		pfnAlg = GDALAspectAlg;
+	}
+		
+	
 	GDALGeneric3x3Processing(poSrcBand, poDstBand3,
 							 pfnAlg, pData,
 							 pfnProgress, NULL);
@@ -1297,7 +1388,6 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	/* Make sure image data gets flushed */
 	RawRasterBand *poDstRawBand3 =  (RawRasterBand *) poDS->GetRasterBand( 3 );
 	poDstRawBand3->FlushCache();
-	
 	
 	
 	// WRITE METADATA
