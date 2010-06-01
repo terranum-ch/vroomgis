@@ -43,12 +43,14 @@ public:
 	double m_GeoTransform[6];
 	bool m_NoDataEnabled;
 	double m_NoDataValue;
+	GDALDataType m_DEMDataType;
 	
 	C2DInfo():m_Version(1){
 		m_Width = -1;
 		m_Height = -1;
 		m_NoDataEnabled = FALSE;
 		m_NoDataValue = 0;
+		m_DEMDataType = GDT_Float32;
 		
 		m_GeoTransform[0] = 0.0;
 		m_GeoTransform[1] = 1.0;
@@ -63,6 +65,8 @@ public:
 		if (this != &other) {
 			m_Width = other.m_Width;
 			m_Height = other.m_Height;
+			
+			m_DEMDataType = other.m_DEMDataType;
 			
 			m_NoDataEnabled = other.m_NoDataEnabled;
 			m_NoDataValue = other.m_NoDataValue;
@@ -1099,10 +1103,10 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 	
 	
 	poDS->SetBand(1, new RawRasterBand( poDS, 1, poDS->fpImage, iIn, iPixelSize,
-									   myRasterInfo.m_Width*iPixelSize, GDT_Float32, bMSBFirst, TRUE ));
+									   myRasterInfo.m_Width*iPixelSize, myRasterInfo.m_DEMDataType, bMSBFirst, TRUE ));
 	poDS->GetRasterBand(1)->SetColorInterpretation( GCI_GrayIndex );
 
-	iIn += sizeof(GDT_Float32) * myRasterInfo.m_Width * myRasterInfo.m_Height; 
+	iIn += sizeof(myRasterInfo.m_DEMDataType) * myRasterInfo.m_Width * myRasterInfo.m_Height; 
 
 	poDS->SetBand(2, new RawRasterBand( poDS, 2, poDS->fpImage, iIn, iPixelSize,
 									   myRasterInfo.m_Width*iPixelSize, GDT_Float32, bMSBFirst, TRUE ));
@@ -1192,6 +1196,9 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 		mySrcRasterInfo.m_NoDataEnabled = TRUE;
 		mySrcRasterInfo.m_NoDataValue = myNodataValue;
 	}
+	
+	// data type for DEM
+	mySrcRasterInfo.m_DEMDataType = eType;
 	
 		
 	// Write header
