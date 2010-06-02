@@ -1,8 +1,8 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+				vrlayerrasterc2d.h
+                    
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2010 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -15,46 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
+#ifndef _VRLAYERRASTERC2D_H
+#define _VRLAYERRASTERC2D_H
 
-
+// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+// Include wxWidgets' headers
 #ifndef WX_PRECOMP
-	#include <wx/wx.h>
-	#include <wx/filename.h>
+    #include <wx/wx.h>
 #endif
 
 
-#include "vrlayer.h"
-#include "vrviewerlayermanager.h"
+#include "vrlayerraster.h"
 
+class vrRealRect;
+class vrRender;
+class vrLabel;
 
-class vrLayerManager 
-{
-	
-private:
-	vrArrayViewerLayerManager m_ViewerManagers;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	bool Close(vrLayer * layer);
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	
+class vrLayerRasterC2D : public vrLayerRasterGDAL {
+  public:
+    vrLayerRasterC2D();
+
+    virtual ~vrLayerRasterC2D();
+
+    //virtual bool GetData(wxImage * bmp, const vrRealRect & coord, double pxsize, const vrRender * render = NULL, const vrLabel * label = NULL);
+
 };
-
-
-
-
-
-
-
-
 #endif

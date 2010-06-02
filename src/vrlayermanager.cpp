@@ -17,6 +17,9 @@
 
 
 #include "vrlayermanager.h"
+#include "vrlayervector.h"
+#include "vrlayerrasterc2d.h"
+#include "vrlayerraster.h"
 
 
 
@@ -80,7 +83,9 @@ bool vrLayerManager::Open(const wxFileName & filename) {
 			myLayer = new vrLayerRasterGDAL();
 			break;
 
-			
+		case vrDRIVER_RASTER_C2D:
+			myLayer = new vrLayerRasterC2D();
+			break;
 			
 		default:
 			wxLogError("Extension \"%s\" not supported",filename.GetExt());
