@@ -796,8 +796,6 @@ int C2DDataset::Identify( GDALOpenInfo * poOpenInfo ){
 
 	// Some bytes availlable
 	if( poOpenInfo->nHeaderBytes < 3 || poOpenInfo->fp == NULL ){
-		CPLError( CE_Warning, CPLE_NotSupported, "This %s is not a c2d file",
-				 poOpenInfo->pszFilename);
 		return FALSE;
 	}
 	
@@ -812,7 +810,7 @@ bool C2DDataset::ReadMagicNumber(GDALOpenInfo * poOpenInfo){
     fp = VSIFOpenL( poOpenInfo->pszFilename, "r" );
     if( fp == NULL )
     {
-		CPLError( CE_Warning, CPLE_NotSupported,  "Unable to open the %s c2d file",
+		CPLError( CE_Failure, CPLE_NotSupported,  "Unable to open the %s c2d file",
 				 poOpenInfo->pszFilename);
         return FALSE;
     }
@@ -821,16 +819,9 @@ bool C2DDataset::ReadMagicNumber(GDALOpenInfo * poOpenInfo){
 	char * myChar = new char[myLength];
 	int iReadedB = VSIFReadL(myChar, sizeof(char), sizeof(C2DMagicName), fp);
 	if (iReadedB != sizeof(C2DMagicName) || strcmp(myChar, C2DMagicName) != 0) {
-		CPLError( CE_Warning, CPLE_NotSupported, 
-				 "This is not a c2d file : %d bytes readed and magic number is %s",
-				 iReadedB,
-				 myChar);
 		delete [] myChar;
 		return FALSE;
 	}
-	
-	CPLError( CE_Warning, CPLE_NotSupported, 
-			 "Readed magic number OK : %s",myChar);
 	
 	VSIFCloseL(fp);
 	delete [] myChar;
@@ -886,9 +877,6 @@ bool C2DDataset::ReadHeader(const char * pszFilename, C2DInfo & info){
 	VSIFSeekL(fp, sizeof(C2DMagicName), SEEK_SET);
 	int iReadedB = VSIFReadL(pInfo, sizeof(C2DInfo), 1, fp);
 	
-	CPLError( CE_Warning, CPLE_NotSupported,  "Readed header partially OK : %d bytes",
-			 iReadedB);
-	
 		
 	// ensure version is supported
 	if (pInfo->m_Version != info.m_Version) {
@@ -898,11 +886,7 @@ bool C2DDataset::ReadHeader(const char * pszFilename, C2DInfo & info){
 
 	info = *pInfo;
 	delete pInfo;
-	VSIFCloseL(fp);
-	
-	CPLError( CE_Warning, CPLE_NotSupported, "Readed header ok, file size is %d, %d",
-			 info.m_Width, info.m_Height);
-	
+	VSIFCloseL(fp);	
 	return TRUE;
 }
 
@@ -920,10 +904,8 @@ bool C2DDataset::WriteProj (const char * pszFilename, const char * proj){
 	
 	int * myLength = new int (strlen(proj));
 	VSIFWriteL(myLength, sizeof(int), 1, fpImage);
-	CPLError( CE_Warning, CPLE_NotSupported, "Writing projection system size %d", *myLength);
-	
+
 	if (*myLength > 0) {
-		CPLError( CE_Warning, CPLE_NotSupported, "Writing projection system");
 		VSIFWriteL(proj, sizeof(char), *myLength, fpImage);
 	}
 	VSIFCloseL(fpImage);
@@ -946,20 +928,13 @@ bool C2DDataset::ReadProj (char * pszFilename, char ** proj){
 	VSIFSeekL(fp, sizeof(C2DMagicName) + sizeof(C2DInfo), SEEK_SET);
 	int * myLength = new int(0);
 	VSIFReadL(myLength, sizeof(int), 1, fp);
-		
-	CPLError( CE_Warning, CPLE_NotSupported,  "Readed size of projection : %d",
-			 *myLength);
 	
 	if (*myLength > 0) {
 		*proj = new char[*myLength];
 		VSIFReadL(*proj, sizeof(char), *myLength, fp);
-		//CPLError( CE_Warning, CPLE_NotSupported, "Readed projection : %s",
-		//		 *proj);
 	}
 	VSIFCloseL(fp);
-	
 	return TRUE;
-
 }
 
 
@@ -1021,7 +996,6 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 	if( !Identify( poOpenInfo ) ){
         return NULL;
 	}
-	CPLError( CE_Warning, CPLE_NotSupported, "Entering opening function" );
 	
 	C2DInfo myRasterInfo;
 	if (ReadHeader(poOpenInfo->pszFilename, myRasterInfo)==FALSE) {
@@ -1060,15 +1034,6 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 		myProj = NULL;
 	}
 	
-	CPLError( CE_Warning, CPLE_NotSupported, "-Open - Getting geotransform value : %f, %f, %f, %f, %f, %f",
-			 myRasterInfo.m_GeoTransform[0],
-			 myRasterInfo.m_GeoTransform[1],
-			 myRasterInfo.m_GeoTransform[2],
-			 myRasterInfo.m_GeoTransform[3],
-			 myRasterInfo.m_GeoTransform[4],
-			 myRasterInfo.m_GeoTransform[5]);
-	
-	
 	// Take ownership of file handled from GDALOpeninfo.
 	VSIFClose(poOpenInfo->fp);
 	poOpenInfo->fp = NULL;
@@ -1097,7 +1062,6 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 	
 	// if projection was readed then move forward
 	if (poDS->m_ProjValue != NULL) {
-		CPLError( CE_Warning, CPLE_OpenFailed,"Projection readed, move forward");
 		iIn += sizeof(char) * strlen(poDS->m_ProjValue);
 	}
 	
@@ -1125,7 +1089,6 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 		poDS->GetRasterBand(3)->SetNoDataValue(-9999);
 	}
 	
-	
 	poDS->SetDescription( poOpenInfo->pszFilename );
     poDS->TryLoadXML();
 	
@@ -1149,8 +1112,6 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 					   GDALProgressFunc pfnProgress, void * pProgressData )
 
 {
-	CPLError( CE_Warning, CPLE_NotSupported,"Entering create copy function" );
-	
 	int nBands = poSrcDS->GetRasterCount();
 	if (nBands != 1){
         CPLError( CE_Failure, CPLE_NotSupported,
@@ -1168,19 +1129,11 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	if (WriteMagicNumber(pszFilename) == FALSE) {
 		return NULL;
 	}
-	CPLError( CE_Warning, CPLE_NotSupported, "Writing magic number passed" );
 
 	// get geotransform informations
 	C2DInfo mySrcRasterInfo;
 	double * pSrcTransform =  (double *) CPLMalloc(6*sizeof(double));
 	poSrcDS->GetGeoTransform (pSrcTransform);
-	CPLError( CE_Warning, CPLE_NotSupported, "Writing following parameters %f %f %f %f %f %f",
-			 *pSrcTransform,
-			 *(pSrcTransform+1),
-			 *(pSrcTransform+2),
-			 *(pSrcTransform+3),
-			 *(pSrcTransform+4),
-			 *(pSrcTransform+5));
 	mySrcRasterInfo.m_GeoTransform[0] = *pSrcTransform;
 	mySrcRasterInfo.m_GeoTransform[1] = *(pSrcTransform+1);
 	mySrcRasterInfo.m_GeoTransform[2] = *(pSrcTransform+2);
@@ -1212,18 +1165,9 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	
 	// write proj
 	const char * pSrcPrjRef = poSrcDS->GetProjectionRef();
-	if (pSrcPrjRef != NULL && strlen(pSrcPrjRef) != 0) {
-		CPLError( CE_Warning, CPLE_NotSupported, "Project system returned : %d %s",
-				 strlen(pSrcPrjRef), pSrcPrjRef);
-		
-	}
-	
-	
 	if(WriteProj(pszFilename, pSrcPrjRef)==FALSE){
 		return NULL;
 	}
-	
-	
 	
     
 	C2DDataset * poDS = (C2DDataset*) GDALOpen( pszFilename, GA_Update ); 
@@ -1248,8 +1192,6 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	void           *pData;
 	CPLErr  eErr;
 	
-	CPLError( CE_Warning, CPLE_NotSupported, "Preparing copying data" );
-
 	pData = CPLMalloc(nBlockXSize * nBlockYSize
 					  * GDALGetDataTypeSize(eType) / 8);
 	
@@ -1353,7 +1295,6 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	else {
 		pfnAlg = GDALSlopeAlgZevenbergen;
 	}
-	
 	
 	
 	GDALGeneric3x3Processing(poSrcBand, poDstBand2,
