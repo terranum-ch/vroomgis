@@ -1,8 +1,8 @@
 /***************************************************************************
-								vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
+				vrlayerrasterc2d.cpp
+                    
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2010 CREALP Lucien Schreiber 
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -15,46 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VR_LAYERMANAGER_H_
-#define _VR_LAYERMANAGER_H_
+#include "vrlayerrasterc2d.h"
+#include "vrrealrect.h"
+#include "vrrender.h"
+#include "vrlabel.h"
 
+vrLayerRasterC2D::vrLayerRasterC2D() {
+}
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-	#include <wx/filename.h>
-#endif
+vrLayerRasterC2D::~vrLayerRasterC2D() {
+}
 
+//bool vrLayerRasterC2D::GetData(wxImage * bmp, const vrRealRect & coord, double pxsize, const vrRender * render, const vrLabel * label) {
+//  return false;
+//}
 
-#include "vrlayer.h"
-#include "vrviewerlayermanager.h"
-
-
-class vrLayerManager 
-{
-	
-private:
-	vrArrayViewerLayerManager m_ViewerManagers;
-	vrArrayLayer m_Layers;
-	
-public:
-	vrLayerManager();
-    virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename);	
-	bool Close(vrLayer * layer);
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	
-};
-
-
-
-
-
-
-
-
-#endif
