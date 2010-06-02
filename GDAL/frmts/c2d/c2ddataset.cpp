@@ -999,11 +999,11 @@ bool C2DDataset::CreateMetaData (C2DDataset * poDS, GDALDataset *poSrcDS, char *
 	CSLDestroy(papszFileList);
 	
 	// SLOPE ALGORITHM USED
-	const char * pszSlopeAlg = CSLFetchNameValue(papszOptions, "SLOPE_ALGORITHM");
+	const char * pszSlopeAlg = CSLFetchNameValue(papszOptions, "ALGORITHM");
 	if (pszSlopeAlg == NULL) {
-		pszSlopeAlg = "HORN";
+		pszSlopeAlg = "SHARP";
 	}
-	poDS->SetMetadataItem ("C2D_SLOPE_ALGORITHM", pszSlopeAlg);
+	poDS->SetMetadataItem ("C2D_ALGORITHM", pszSlopeAlg);
 	
 	
 	return TRUE;
@@ -1342,16 +1342,16 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	GDALGetGeoTransform(poSrcDS, adfGeoTransform);
 	pData = GDALCreateSlopeData(adfGeoTransform, scale, slopeFormat);
 	
-	const char * pszSlopeAlg = CSLFetchNameValue(papszOptions, "SLOPE_ALGORITHM");
+	const char * pszSlopeAlg = CSLFetchNameValue(papszOptions, "ALGORITHM");
 	if (pszSlopeAlg == NULL) {
-		pszSlopeAlg = "HORN";
+		pszSlopeAlg = "SHARP";
 	}
 	
-	if (strcmp(pszSlopeAlg, "ZEVENBERGEN")==0){
-		pfnAlg = GDALSlopeAlgZevenbergen;
+	if (strcmp(pszSlopeAlg, "SOFT")==0){
+		pfnAlg = GDALSlopeAlg;
 	}
 	else {
-		pfnAlg = GDALSlopeAlg;
+		pfnAlg = GDALSlopeAlgZevenbergen;
 	}
 	
 	
@@ -1380,11 +1380,11 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	
 	pData = GDALCreateAspectData(bAngleAsAzimuth, adfGeoTransform);
 	
-	if (strcmp(pszSlopeAlg, "ZEVENBERGEN")==0){
-		pfnAlg = GDALAspectAlgZevenbergen;
+	if (strcmp(pszSlopeAlg, "SOFT")==0){
+		pfnAlg = GDALAspectAlg;
 	}
 	else {
-		pfnAlg = GDALAspectAlg;
+		pfnAlg = GDALAspectAlgZevenbergen;
 	}
 		
 	
@@ -1429,9 +1429,9 @@ void GDALRegister_C2D()
 		char szCreateOptions[500];
 		strcat(szCreateOptions, ""
 			  "<CreationOptionList>"
-			  "<Option name='SLOPE_ALGORITHM' type='string-select' default='HORN'>"
-					"<Value>HORN</Value>"
-					"<Value>ZEVENBERGEN</Value>"
+			  "<Option name='ALGORITHM' type='string-select' default='SHARP'>"
+					"<Value>SHARP</Value>"
+					"<Value>SOFT</Value>"
 			   "</Option>"
 			   "</CreationOptionList>");
 		poDriver->SetMetadataItem(GDAL_DMD_CREATIONOPTIONLIST, szCreateOptions);
@@ -1439,9 +1439,7 @@ void GDALRegister_C2D()
 
         poDriver->pfnOpen = C2DDataset::Open;
 		poDriver->pfnCreateCopy = C2DDataset::CreateCopy;
-		//poDriver->pfnCreateCopy = C2DCreateCopy;
 		poDriver->pfnIdentify = C2DDataset::Identify;
-		
         GetGDALDriverManager()->RegisterDriver( poDriver );
     }
 }
