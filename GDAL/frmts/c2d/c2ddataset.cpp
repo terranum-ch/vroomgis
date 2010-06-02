@@ -280,7 +280,8 @@ CPLErr GDALGeneric3x3Processing  ( GDALRasterBandH hSrcBand,
 								  GDALGeneric3x3ProcessingAlg pfnAlg,
 								  void* pData,
 								  GDALProgressFunc pfnProgress,
-								  void * pProgressData)
+								  void * pProgressData,
+								  int iBand)
 {
     CPLErr eErr;
     float *pafThreeLineWin; /* 3 line rotating source buffer */
@@ -299,7 +300,7 @@ CPLErr GDALGeneric3x3Processing  ( GDALRasterBandH hSrcBand,
 	/* -------------------------------------------------------------------- */
 	/*      Initialize progress counter.                                    */
 	/* -------------------------------------------------------------------- */
-    if( !pfnProgress( 0.0, NULL, pProgressData ) )
+    if( !pfnProgress((iBand - 1) / 3.0, NULL, pProgressData ) )
     {
         CPLError( CE_Failure, CPLE_UserInterrupt, "User terminated" );
         return CE_Failure;
@@ -414,7 +415,8 @@ CPLErr GDALGeneric3x3Processing  ( GDALRasterBandH hSrcBand,
         if (eErr != CE_None)
             goto end;
 		
-        if( !pfnProgress( 1.0 * (i+1) / nYSize, NULL, pProgressData ) )
+		double dprogress =  1.0 * (iBand - 1)/3.0 + (1.0 * (i+1) / nYSize)/3.0;
+        if( !pfnProgress(dprogress, NULL, pProgressData ) )
         {
             CPLError( CE_Failure, CPLE_UserInterrupt, "User terminated" );
             eErr = CE_Failure;
@@ -427,7 +429,7 @@ CPLErr GDALGeneric3x3Processing  ( GDALRasterBandH hSrcBand,
         nLine3Off = nTemp;
     }
 	
-    pfnProgress( 1.0, NULL, pProgressData );
+    pfnProgress( iBand / 3, NULL, pProgressData );
     eErr = CE_None;
 	
 end:
@@ -1201,7 +1203,7 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 		{
 			int	nTBXSize, nTBYSize;
 			
-			if( !pfnProgress( (nBlocksDone++) / (float) nBlockTotal,
+			if( !pfnProgress( (nBlocksDone++) / (float) nBlockTotal / 3, /// 3 ,
 							 NULL, pProgressData ) )
 			{
 				CPLError( CE_Failure, CPLE_UserInterrupt, 
@@ -1251,7 +1253,7 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	poDstRawBand->FlushCache();
 	
 	
-    if( !pfnProgress( 1.0, NULL, pProgressData ) )
+   /* if( !pfnProgress( 1.0, NULL, pProgressData ) )
     {
         CPLError( CE_Failure, CPLE_UserInterrupt, 
 				 "User terminated" );
@@ -1261,7 +1263,7 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 		(GDALDriver *) GDALGetDriverByName( "C2D" );
         poC2DDriver->Delete( pszFilename );
         return NULL;
-    }
+    }*/
 		
 	
 	
@@ -1299,7 +1301,7 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	
 	GDALGeneric3x3Processing(poSrcBand, poDstBand2,
 							 pfnAlg, pData,
-							 pfnProgress, NULL);
+							 pfnProgress, NULL, 2);
 	
 	/* Make sure image data gets flushed */
 	RawRasterBand *poDstRawBand2 =  (RawRasterBand *) poDS->GetRasterBand( 2 );
@@ -1331,7 +1333,7 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	
 	GDALGeneric3x3Processing(poSrcBand, poDstBand3,
 							 pfnAlg, pData,
-							 pfnProgress, NULL);
+							 pfnProgress, NULL, 3);
 	
 	/* Make sure image data gets flushed */
 	RawRasterBand *poDstRawBand3 =  (RawRasterBand *) poDS->GetRasterBand( 3 );
