@@ -1069,7 +1069,7 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 	
 	
 	poDS->SetBand(1, new RawRasterBand( poDS, 1, poDS->fpImage, iIn, iPixelSize,
-									   myRasterInfo.m_Width*iPixelSize, myRasterInfo.m_DEMDataType, bMSBFirst, TRUE ));
+									   myRasterInfo.m_Width*iPixelSize, GDT_Float32, bMSBFirst, TRUE ));
 	poDS->GetRasterBand(1)->SetColorInterpretation( GCI_GrayIndex );
 
 	iIn += sizeof(myRasterInfo.m_DEMDataType) * myRasterInfo.m_Width * myRasterInfo.m_Height; 
@@ -1236,7 +1236,7 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 									   iXOffset, iYOffset, 
 									   nTBXSize, nTBYSize,
 									   pData, nTBXSize, nTBYSize,
-									   eType, 0, 0 );
+									   GDT_Float32, 0, 0 );
 			
 			if( eErr != CE_None )
 			{

@@ -33,12 +33,17 @@ class vrRender;
 class vrLabel;
 
 class vrLayerRasterC2D : public vrLayerRasterGDAL {
-  public:
+private:
+	void _HSVtoRGB (int *r,int *g,int *b, int h, int s, int v);
+	
+protected:
+    virtual bool _GetRasterData(unsigned char ** imgdata,
+								const wxSize & outimgpxsize,
+								const wxRect & readimgpxinfo, 
+								const vrRender * render);
+	
+public:
     vrLayerRasterC2D();
-
     virtual ~vrLayerRasterC2D();
-
-    //virtual bool GetData(wxImage * bmp, const vrRealRect & coord, double pxsize, const vrRender * render = NULL, const vrLabel * label = NULL);
-
 };
 #endif
