@@ -50,45 +50,45 @@ class vrLayerRaster : public vrLayer {
 
 
 class vrLayerRasterGDAL : public vrLayerRaster {
-  private:
+private:
 	vrRealRect m_ImgExtent;
     wxSize m_ImgPxSize;
-
+	
 	// stat for one band data (Greyscale, MNT, etc)
 	double m_OneBandMin;
     double m_OneBandMax;
     double m_OneBandNoData;
-
-
-
+	
+	
+	
     bool _Close();
 	bool _ComputeDisplayPosSize(const wxSize & pximgsize, const vrRealRect & imgextent,
 								const vrRealRect & wndextent, double pxsize,
 								wxRect & pximginfo, wxRect & pximgpos);
-	bool _GetRasterData(unsigned char ** imgdata, const wxSize & outimgpxsize,
-						const wxRect & readimgpxinfo);
-	double _ReadGDALValueToDouble(void* & data, const GDALDataType & type, int index);
-
-
+		
 	bool _ComputeStat();
     bool _HasStat();
 	bool _ComputeExtent();
 	bool _HasExtent();
-
-
-
-  public:
+	
+protected:
+	double _ReadGDALValueToDouble(void* & data, const GDALDataType & type, int index);
+	virtual bool _GetRasterData(unsigned char ** imgdata, const wxSize & outimgpxsize,
+								const wxRect & readimgpxinfo, const vrRender * render);
+	
+	
+public:
     vrLayerRasterGDAL();
     virtual ~vrLayerRasterGDAL();
-
+	
 	virtual bool Create(const wxFileName & filename);
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
-
+	
 	virtual bool GetExtent(vrRealRect & rect);
 	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 						 const vrRender * render = NULL, const vrLabel * label = NULL);
-
-
-
+	
+	
+	
 };
 #endif

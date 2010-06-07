@@ -135,7 +135,8 @@ bool vrLayerRasterGDAL::_ComputeDisplayPosSize(const wxSize & pximgsize,
 
 bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata, 
 									   const wxSize & outimgpxsize,
-									   const wxRect & readimgpxinfo) {
+									   const wxRect & readimgpxinfo,
+									   const vrRender * render) {
 	
 	wxASSERT(m_Dataset);
 	m_Dataset->FlushCache();
@@ -644,7 +645,7 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 		
 		unsigned char * myimgdata = NULL;
 		if (_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
-						   myImgInfo) == false) {
+						   myImgInfo, render) == false) {
 			wxASSERT(myimgdata == NULL);
 			return false;
 		}
