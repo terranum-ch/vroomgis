@@ -90,7 +90,9 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & o
 		double mySlpDouble = _ReadGDALValueToDouble(mySlopeData, GDT_Float32, i/3);
 		double myAspDouble = _ReadGDALValueToDouble(myAspectData, GDT_Float32, i/3);
 		
-		// TODO: round double value to int.
+		// normalize slope
+		mySlpDouble = mySlpDouble * 255 / 90;
+		
 		_HSVtoRGB(&r, &g, &b, wxRound(myAspDouble),wxRound(mySlpDouble), 250);
 		
 		// fill buffer
@@ -98,7 +100,6 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & o
 		*(*imgdata + i + 1) = g;
 		*(*imgdata + i + 2) = b;
 	}
-		
 	
 	
 	CPLFree(myAspectData);
