@@ -91,7 +91,7 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & o
 		double myAspDouble = _ReadGDALValueToDouble(myAspectData, GDT_Float32, i/3);
 		
 		// TODO: round double value to int.
-		_HSVtoRGB(&r, &g, &b,(int) myAspDouble,(int) mySlpDouble, 250);
+		_HSVtoRGB(&r, &g, &b, wxRound(myAspDouble),wxRound(mySlpDouble), 250);
 		
 		// fill buffer
 		*(*imgdata + i)	= r;
