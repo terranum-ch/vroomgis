@@ -33,6 +33,7 @@
 #endif
 
 #include <wx/splitter.h>	//splitter bar
+#include <wx/dnd.h>			// dnd
 #include "../../../src/vroomgis.h"
 
 class vroomTwin : public wxApp
@@ -44,6 +45,17 @@ public:
 
 const int vtID_SET_SYNCRO_MODE	= wxID_HIGHEST + 1;
 const int vtID_SIGHT_TOOL		= wxID_HIGHEST + 2;
+
+class vroomTwinFrame;
+class vroomDropFiles : public wxFileDropTarget {
+private:
+	vroomTwinFrame * m_LoaderFrame;
+	
+public:
+	vroomDropFiles(vroomTwinFrame * parent);
+	virtual bool OnDropFiles(wxCoord x, wxCoord y, 
+							 const wxArrayString & filenames);
+};
 
 
 
@@ -71,6 +83,8 @@ private:
 public:
     vroomTwinFrame(const wxString& title);
 	~vroomTwinFrame();
+	
+	bool OpenLayers (const wxArrayString & names);
 	
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);

@@ -46,6 +46,23 @@ END_EVENT_TABLE()
 IMPLEMENT_APP(vroomTwin)
 
 
+vroomDropFiles::vroomDropFiles(vroomTwinFrame * parent){
+	wxASSERT(parent);
+	m_LoaderFrame = parent;
+}
+
+
+bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y, 
+								 const wxArrayString & filenames){
+	if (filenames.GetCount() == 0) {
+		return false;
+	}
+	
+	m_LoaderFrame->OpenLayers(filenames);
+	return true;
+}
+
+
 
 bool vroomTwin::OnInit()
 {
@@ -163,6 +180,11 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 	m_LogWnd = new wxLogWindow(this, "vroomTwin Log", true, true);
 	
 	
+	// DND
+	m_TocCtrl1->SetDropTarget(new vroomDropFiles(this));
+	m_TocCtrl2->SetDropTarget(new vroomDropFiles(this));
+	
+	
 	// VROOMGIS
 	m_LayerManager = new vrLayerManager();
 	m_ViewerLayerManager1 = new vrViewerLayerManager(m_LayerManager, this, m_DisplayCtrl1 , m_TocCtrl1);
@@ -206,6 +228,28 @@ void vroomTwinFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 }
 
 
+bool vroomTwinFrame::OpenLayers (const wxArrayString & names){
+	for (unsigned int i = 0; i< names.GetCount(); i++) {
+		// open files
+		bool myOpen = m_LayerManager->Open(wxFileName(names.Item(i)));
+		wxASSERT(myOpen);
+	}
+	
+	m_ViewerLayerManager1->FreezeBegin();
+	m_ViewerLayerManager2->FreezeBegin();
+	for (unsigned int j = 0; j< names.GetCount(); j++) {
+		// get files
+		vrLayer * myLayer = m_LayerManager->GetLayer( wxFileName(names.Item(j)));
+		wxASSERT(myLayer);
+		
+		// add files to the viewer
+		m_ViewerLayerManager1->Add(-1, myLayer);
+		m_ViewerLayerManager2->Add(-1, myLayer);
+	}
+	m_ViewerLayerManager2->FreezeEnd();
+	m_ViewerLayerManager1->FreezeEnd();
+	return true;
+}
 
 
 void vroomTwinFrame::OnOpenLayer(wxCommandEvent & event)
@@ -240,7 +284,9 @@ void vroomTwinFrame::OnOpenLayer(wxCommandEvent & event)
 	myFileDlg.GetPaths(myPathsFileName);
 	wxASSERT(myPathsFileName.GetCount() > 0);
 	
+	OpenLayers(myPathsFileName);
 	
+	/*
 	for (unsigned int i = 0; i< myPathsFileName.GetCount(); i++) {
 		// open files
 		bool myOpen = m_LayerManager->Open(wxFileName(myPathsFileName.Item(i)));
@@ -259,7 +305,7 @@ void vroomTwinFrame::OnOpenLayer(wxCommandEvent & event)
 		m_ViewerLayerManager2->Add(-1, myLayer);
 	}
 	m_ViewerLayerManager2->FreezeEnd();
-	m_ViewerLayerManager1->FreezeEnd();
+	m_ViewerLayerManager1->FreezeEnd();*/
 }
 
 
