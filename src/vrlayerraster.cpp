@@ -719,3 +719,55 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 }
 
 
+bool vrLayerRasterGDAL::GetPixelValue(double coordx, double coordy, wxArrayDouble & values) {
+	
+	values.Clear();
+	
+	// is coordinate inside raster 
+	vrRealRect myRasterExtent;
+	if (GetExtent(myRasterExtent)==false) {
+		return false;
+	}
+	wxPoint2DDouble myPoint (coordx, coordy);
+	if (myRasterExtent.Contains(myPoint) == false) {
+		return false;
+	}
+	
+	
+	// convert real coord to pixel coord
+	double myMin = wxMin (m_ImgExtent.m_y, m_ImgExtent.m_y + m_ImgExtent.m_height);
+	int pxcoordx = wxRound((coordx - m_ImgExtent.m_x) / fabs(m_ImgExtent.m_width / m_ImgPxSize.x));
+	int pxcoordy = wxRound((coordy - myMin) / fabs(m_ImgExtent.m_height / m_ImgPxSize.y));
+	
+	
+	// get data for all bands
+	wxASSERT(m_Dataset);
+	int myRasterCount = m_Dataset->GetRasterCount();
+	void * pData = CPLMalloc((GDALGetDataTypeSize(GDT_Float32) / 8) * myRasterCount);
+	
+	if (m_Dataset->RasterIO(GF_Read,
+							pxcoordx, pxcoordy,
+							1, 1, 
+							pData,
+							1, 1,
+							GDT_Float32, 
+							myRasterCount, NULL, 0,0,0) != CE_None) {
+		wxLogError("Error reading value at pixel (%d, %d) in %s",
+				   pxcoordx, pxcoordy, m_FileName.GetFullName());
+		if (pData != NULL) {
+			CPLFree(pData);
+			pData = NULL;
+		}
+		return false;
+	}
+	double myVal = 0.0;
+	for (int i = 0; i<myRasterCount; i++) {
+		myVal = _ReadGDALValueToDouble(pData, GDT_Float32, i); 
+		values.Add(myVal);
+	}
+	CPLFree(pData);
+	return true;
+}
+
+
+

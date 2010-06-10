@@ -57,7 +57,7 @@ public:
 		TS_ASSERT_EQUALS(m_Driver.GetType("jpg"), vrDRIVER_RASTER_JPEG);
 		TS_ASSERT_EQUALS(m_Driver.GetType("JPEG"), vrDRIVER_RASTER_JPEG);
 		TS_ASSERT_EQUALS(m_Driver.GetType("c2d"), vrDRIVER_RASTER_C2D);
-		TS_ASSERT_EQUALS(m_Driver.GetType("hdr"), vrDRIVER_RASTER_ESRIGRID);
+		TS_ASSERT_EQUALS(m_Driver.GetType("adf"), vrDRIVER_RASTER_ESRIGRID);
 	}
 
 

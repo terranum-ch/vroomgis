@@ -43,6 +43,8 @@ static const wxString g_TestFileSHP = "fluss_poly_combioula.shp";
 static const wxString g_TestFileSHP2 = "gwn_combioula.shp";
 static const wxString g_TestFileTIF = "MNT.tif";
 static const wxString g_TestFileJPEG = "Boltigen.jpg";
+static const wxString g_TestFileMNT = "mntmo.tif";
+static const wxString g_TestFileC2D = "mntmovs.c2d";
 
 
 
