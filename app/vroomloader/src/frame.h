@@ -38,10 +38,12 @@
 
 
 #include "../../../src/vroomgis.h"
-
+class vrDisplayValueDlg;
 
 
 const int vlID_MOVE_LAYER		= wxID_HIGHEST + 1;
+const int vlID_DISPLAY_VALUE    = wxID_HIGHEST + 2;
+const int vlID_DISPLAY_VALUE_DLG= wxID_HIGHEST + 3;
 
 const int vl_POPUP_OFFSET = 50;
 const int vlID_MENU_POPUP_LAYER = wxID_HIGHEST + 2 + vl_POPUP_OFFSET; 
@@ -71,6 +73,8 @@ class vroomLoaderFrame : public wxFrame
 private:
 	//wxTextCtrl* m_LogCtrl;
 	wxLogWindow * m_LogWnd;
+	
+	vrDisplayValueDlg * m_DisplayValueDlg;
 	
 	// controls (vroomgis)
 	vrViewerTOC * m_TocCtrl;
@@ -104,6 +108,7 @@ public:
 	void OnToolPan (wxCommandEvent & event);
 	void OnToolZoomToFit (wxCommandEvent & event);
 	void OnMoveLayer (wxCommandEvent & event);
+	void OnToolDisplayValue (wxCommandEvent & event);
 	
 	void OnToolAction (wxCommandEvent & event);
 	
