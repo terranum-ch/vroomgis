@@ -19,6 +19,7 @@
 #include <wx/filepicker.h>
 
 #include "tmlog.h"	// for double logging process
+#include "vrdisplayvalue.h"	// for displaying values
 
 
 
@@ -35,6 +36,7 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_MENU (wxID_ZOOM_100, vroomLoaderFrame::OnToolZoomToFit)
 	EVT_MENU (wxID_MOVE_FRAME, vroomLoaderFrame::OnToolPan)
 	EVT_MENU (vlID_MOVE_LAYER, vroomLoaderFrame::OnMoveLayer)
+	EVT_MENU (vlID_DISPLAY_VALUE, vroomLoaderFrame::OnToolDisplayValue)
 	
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
@@ -127,6 +129,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
        : wxFrame(NULL, wxID_ANY, title)
 {
     SetIcon(wxICON(vroomgis));
+	m_DisplayValueDlg = NULL;
 
 	// MENU
     wxMenu *fileMenu = new wxMenu;
@@ -147,6 +150,8 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	toolMenu->Append(wxID_ZOOM_100, "Zoom to visible layers", "Zoom view to the full extent of all visible layers");
 	toolMenu->AppendSeparator();
 	toolMenu->Append(vlID_MOVE_LAYER, "Move layer...\tCtrl+M", "Move the selected layer");
+	toolMenu->AppendSeparator();
+	toolMenu->Append(vlID_DISPLAY_VALUE, "Display raster value...\tCtrl+I", "Display pixel values for raster");
 	
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
@@ -437,6 +442,23 @@ void vroomLoaderFrame::OnMoveLayer (wxCommandEvent & event){
 	m_ViewerLayerManager->Move(iOldPos, iNewPos);
 }
 
+
+
+void vroomLoaderFrame::OnToolDisplayValue (wxCommandEvent & event){
+	
+	m_DisplayValueDlg = (vrDisplayValueDlg*) wxWindow::FindWindowById(vlID_DISPLAY_VALUE_DLG);
+	if(m_DisplayValueDlg != NULL) {
+		m_DisplayValueDlg->Raise();
+		return;
+	}
+	
+	m_DisplayValueDlg = new vrDisplayValueDlg(this, m_ViewerLayerManager, vlID_DISPLAY_VALUE_DLG);
+	m_DisplayValueDlg->Show();
+	
+	vrDisplayValueTool * myDisplayTool = new vrDisplayValueTool(m_DisplayCtrl,
+																m_DisplayValueDlg);
+	m_DisplayCtrl->SetTool(myDisplayTool);
+}
 
 
 
