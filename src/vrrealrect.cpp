@@ -112,6 +112,30 @@ vrRealRect vrRealRect::Union(const wxRect2DDouble & rect) {
 }
 
 
+bool vrRealRect::Contains (const wxPoint2DDouble & pt){
+	if (pt.m_x < GetLeft()) {
+		return false;
+	}
+	
+	if (pt.m_x > GetRight()) {
+		return false;
+	}
+	
+	
+	wxDouble myMin = wxMin(GetTop(), GetBottom());
+	wxDouble myMax = wxMax(GetTop(), GetBottom());
+	
+	if (pt.m_y < myMin) {
+		return false;
+	}
+	
+	if (pt.m_y > myMax) {
+		return false;
+	}
+	return true;
+}
+
+
 
 bool vrRealRect::IsOk() const{
 	if (m_width != 0 && m_width != 0) {

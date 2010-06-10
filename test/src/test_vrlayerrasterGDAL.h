@@ -25,12 +25,12 @@
 #endif
 
 
-//#include "vrlayer.h"
-//#include "vrlayerraster.h"
-//#include "vrlayervector.h"
-//#include "test_param.h"	//for test parameters
-//#include "vrlayerraster.h"
-//#include "vrlayermanager.h"
+#include "vrlayer.h"
+#include "vrlayerraster.h"
+#include "vrlayervector.h"
+#include "test_param.h"	//for test parameters
+#include "vrlayerraster.h"
+#include "vrlayermanager.h"
 
 
 class TEST_vrLayerRasterGDAL : public CxxTest::TestSuite
@@ -241,9 +241,36 @@ public:
 		TS_ASSERT_EQUALS(myImgPos.GetWidth(), 100);
 		TS_ASSERT_EQUALS(myImgPos.GetHeight(), 50);
 #endif
-
+	}
+	
+	void testGetPixelValueGDAL(){
+		wxLogMessage("Testing getting pixel value for GDAL raster");
+		vrRealRect myExtent;
+		TS_ASSERT(myExtent.IsEmpty()==true);
+		
+		// extent failed, layer not opened
+		vrLayerRasterGDAL myLayer;
+		TS_ASSERT(myLayer.GetExtent(myExtent)==false);
+		
+		// extent ok for layer GDAL
+		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileMNT), false),true);
+		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
+		wxArrayDouble myValues;
+		TS_ASSERT(myLayer.GetPixelValue(598100, 115000, myValues));
+		TS_ASSERT(myValues.GetCount() != 0)
+		
+		TS_ASSERT_DELTA (myValues.Item(0), 754.5999, 0.001);
+		
+		wxString myTxtValues = "Value of px 598100 - 115000 = ";
+		for (unsigned int i = 0; i<myValues.GetCount(); i++) {
+			myTxtValues.Append(wxString::Format(" %.2f -", myValues.Item(i)));
+		}
+		myTxtValues.RemoveLast(1);
+		wxLogMessage(myTxtValues);
 
 	}
+	
+
 
 };
 
