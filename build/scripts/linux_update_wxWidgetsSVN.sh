@@ -42,7 +42,7 @@ echo $VARLINE
 #running configure
 echo "2) Configuring library..."
 cd $VARTRUNKDIR/build64/
-../configure --prefix=$VARBINDIR --enable-unicode --disable-monolithic --disable-shared
+../configure --prefix=$VARBINDIR --enable-unicode --disable-monolithic --disable-shared  --enable-graphics_ctx
 echo "2) Configuring library.. DONE"
 echo $VARLINE
 
