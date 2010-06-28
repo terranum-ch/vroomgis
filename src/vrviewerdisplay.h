@@ -46,7 +46,7 @@ private:
 	void OnMouseDown(wxMouseEvent & event);
     void OnMouseUp(wxMouseEvent & event);
     void OnMouseMove(wxMouseEvent & event);
-	
+	void OnMouseCaptureLost(wxMouseEvent & event);
 	
 public:
 	vrViewerDisplay();

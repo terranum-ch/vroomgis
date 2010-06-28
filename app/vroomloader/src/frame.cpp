@@ -449,11 +449,11 @@ void vroomLoaderFrame::OnToolDisplayValue (wxCommandEvent & event){
 	m_DisplayValueDlg = (vrDisplayValueDlg*) wxWindow::FindWindowById(vlID_DISPLAY_VALUE_DLG);
 	if(m_DisplayValueDlg != NULL) {
 		m_DisplayValueDlg->Raise();
-		return;
 	}
-	
-	m_DisplayValueDlg = new vrDisplayValueDlg(this, m_ViewerLayerManager, vlID_DISPLAY_VALUE_DLG);
-	m_DisplayValueDlg->Show();
+	else{
+		m_DisplayValueDlg = new vrDisplayValueDlg(this, m_ViewerLayerManager, vlID_DISPLAY_VALUE_DLG);
+		m_DisplayValueDlg->Show();
+	}
 	
 	vrDisplayValueTool * myDisplayTool = new vrDisplayValueTool(m_DisplayCtrl,
 																m_DisplayValueDlg);
@@ -468,7 +468,7 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 	
 	if(myMsg->m_EvtType == vrEVT_TOOL_ZOOM){
 		// getting rectangle
-		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
+		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
 		
 		// get real rectangle
@@ -486,7 +486,7 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 		
 		
 	}else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
-		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
+		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
 		
 		wxPoint myClickedPos = myMsg->m_Position;
@@ -501,7 +501,7 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 
 	}
 	else if (myMsg->m_EvtType == vrEVT_TOOL_PAN) {
-		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
+		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
 		
 		wxPoint myMovedPos = myMsg->m_Position;

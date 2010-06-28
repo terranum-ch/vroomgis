@@ -66,8 +66,8 @@ class vrDisplayValueTool : public vrDisplayTool {
     vrDisplayValueTool(vrViewerDisplay * display, vrDisplayValueDlg * dialog);
     virtual ~vrDisplayValueTool();
 
-    virtual bool MouseDown(const wxMouseEvent & event){;}
-    virtual bool MouseUp(const wxMouseEvent & event){;}
+    virtual bool MouseDown(const wxMouseEvent & event){ return true;}
+    virtual bool MouseUp(const wxMouseEvent & event){ return true;}
     virtual bool MouseMove(const wxMouseEvent & event);
 
 };
