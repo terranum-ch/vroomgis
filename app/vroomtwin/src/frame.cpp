@@ -423,7 +423,7 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 	
 	if(myMsg->m_EvtType == vrEVT_TOOL_ZOOM){
 		// getting rectangle
-		vrCoordinate * myCoord = myMsg->m_ParentManager->GetDispaly()->GetCoordinate();
+		vrCoordinate * myCoord = myMsg->m_ParentManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
 		
 		// get real rectangle
@@ -452,7 +452,7 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 	
 	
 	else if (myMsg->m_EvtType == vrEVT_TOOL_PAN) {
-		vrCoordinate * myCoord = myMsg->m_ParentManager->GetDispaly()->GetCoordinate();
+		vrCoordinate * myCoord = myMsg->m_ParentManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
 		
 		wxPoint myMovedPos = myMsg->m_Position;
@@ -472,9 +472,9 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 			myMsg->m_ParentManager->Reload();
 		}
 		else {
-			m_ViewerLayerManager1->GetDispaly()->GetCoordinate()->SetExtent(myActExtent);
+			m_ViewerLayerManager1->GetDisplay()->GetCoordinate()->SetExtent(myActExtent);
 			m_ViewerLayerManager1->Reload();
-			m_ViewerLayerManager2->GetDispaly()->GetCoordinate()->SetExtent(myActExtent);
+			m_ViewerLayerManager2->GetDisplay()->GetCoordinate()->SetExtent(myActExtent);
 			m_ViewerLayerManager2->Reload();
 		}
 
@@ -486,14 +486,14 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 		}
 		
 			{
-				wxClientDC myDC (myInvertedMgr->GetDispaly());
+				wxClientDC myDC (myInvertedMgr->GetDisplay());
 				wxDCOverlay overlaydc (m_Overlay, &myDC);
 				overlaydc.Clear();	
 			}
 			m_Overlay.Reset();
 		
 		if (myMsg->m_Position != wxDefaultPosition) {
-			wxClientDC myDC (myInvertedMgr->GetDispaly());
+			wxClientDC myDC (myInvertedMgr->GetDisplay());
 			wxDCOverlay overlaydc (m_Overlay, &myDC);
 			overlaydc.Clear();
 			myDC.SetPen(*wxGREEN_PEN);
