@@ -336,7 +336,7 @@ bool vrViewerLayerManager::_BitmapArrayInit() {
 			
 		}
 	}
-	wxLogMessage("Created %d images", m_Images->GetCount());
+	wxLogMessage("Created %ld images", m_Images->GetCount());
 	return true;
 }
 
@@ -344,7 +344,7 @@ bool vrViewerLayerManager::_BitmapArrayInit() {
 
 void vrViewerLayerManager::_BitmapArrayDelete() {
 	if (m_Images) {
-		wxLogMessage("Deleting %d images", m_Images->GetCount());
+		wxLogMessage("Deleting %ld images", m_Images->GetCount());
 		
 		unsigned int iCountImg = m_Images->GetCount();
 		for (unsigned j = 0; j<iCountImg; j++){

@@ -58,8 +58,14 @@ bool vrViewerDisplay::_DrawRoundedMessage(const wxString & text, const wxColour 
 	wxFont myFont(myRect.GetWidth() / text.Len() , wxFONTFAMILY_DEFAULT, 
 				  wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 	wxASSERT(myFont.IsOk());
+
+	//TODO: Submit bug for this problem
+#ifndef __WXMAC__
 	bdc.SetFont(myFont);
+#endif
+
 	bdc.SetTextForeground(*wxWHITE);
+
 
 	wxSize myTextSize = bdc.GetTextExtent(text);
 	wxRect myTextRectComputed(myTextSize);
