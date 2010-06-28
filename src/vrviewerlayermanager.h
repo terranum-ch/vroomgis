@@ -84,7 +84,7 @@ class vrViewerLayerManager : public wxEvtHandler {
 
 
 	vrRenderer * GetRenderer(const unsigned int & index);
-	inline vrViewerDisplay * GetDispaly() const;
+	inline vrViewerDisplay * GetDisplay() const;
 	int GetCount();
 	
     void FreezeBegin();
@@ -94,7 +94,7 @@ class vrViewerLayerManager : public wxEvtHandler {
 
 };
 
-inline vrViewerDisplay * vrViewerLayerManager::GetDispaly() const {
+inline vrViewerDisplay * vrViewerLayerManager::GetDisplay() const {
 	return m_Display;
 }
 

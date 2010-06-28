@@ -162,19 +162,19 @@ bool vrDisplayToolDefault::MouseDown(const wxMouseEvent & event) {
 															GetDisplay(),
 															event.GetPosition());
 	SendMessage(myMsG);
-	return false;
+	return true;
 }
 
 bool vrDisplayToolDefault::MouseUp(const wxMouseEvent & event) {
 
-	return false;
+	return true;
 }
 
 bool vrDisplayToolDefault::MouseMove(const wxMouseEvent & event) {
 	if (event.Dragging()==true) {
 		wxLogMessage("Dragging with selection");
 	}
-	return false;
+	return true;
 }
 
 
