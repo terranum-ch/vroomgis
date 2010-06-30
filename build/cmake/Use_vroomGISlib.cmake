@@ -36,6 +36,9 @@ INCLUDE ("${THIS_DIR_PATH}/FindwxWidgets.cmake")
 #GEOS - GDAL libs
 INCLUDE ("${THIS_DIR_PATH}/findGISLib.cmake")
 
+MESSAGE (${THIS_DIR_PATH})
+INCLUDE ("${THIS_DIR_PATH}/../../plugins/lsversion/build/use_lsversion.cmake")
+
 
 
 # VROOMGIS LIB
