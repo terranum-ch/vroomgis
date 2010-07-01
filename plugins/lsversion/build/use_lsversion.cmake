@@ -12,7 +12,7 @@ IF(USE_VERSION)
 	SET(wxWIDGETS_USING_SVN 0 CACHE BOOL "Using latest version of wxWidgets from SVN")
 	IF(wxWIDGETS_USING_SVN)
 		SET(wxWIDGETS_PATH_SVN 0 CACHE PATH "Path to the SVN version of wxWidgets from")
-		#SET(lsVERSION_HAS_WXWIDGETS_SVN 1)
+		SET(lsVERSION_SOFT_NAME ${CMAKE_PROJECT_NAME})		
 	
 		# GET WXWIDGETS VERSION
 		EXECUTE_PROCESS(COMMAND "svnversion" -n
@@ -60,7 +60,7 @@ IF(USE_VERSION)
 	ENDIF(MY_ERROR1)
 	MESSAGE("my soft version ${lsVERSION_SOFT_VERSION}")
 
-
+	
 	
 
 
