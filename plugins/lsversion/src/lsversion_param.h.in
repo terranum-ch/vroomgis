@@ -38,9 +38,16 @@ email                : lucien.schreiber at crealp dot vs dot ch
 
 // USING GDAL
 #cmakedefine lsVERSION_HAS_GDAL
+#ifdef lsVERSION_HAS_GDAL
+  #include "gdal_priv.h"		
+#endif
 
 // USING GEOS
-#cmakedefine lsVERSION_HAS_GEOS 
+#cmakedefine lsVERSION_HAS_GEOS
+#ifdef lsVERSION_HAS_GEOS
+  #include "geos_c.h"
+#endif
+
 
 
 

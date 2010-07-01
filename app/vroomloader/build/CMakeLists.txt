@@ -64,6 +64,10 @@ ENDIF (WIN32)
 # USE VROOMGIS LIBRARY
 TARGET_LINK_LIBRARIES(${PROGNAME} ${VR_LIBRARY_NAME})
 
+IF(USE_VERSION)
+	TARGET_LINK_LIBRARIES(${PROGNAME} "lsVersion")
+ENDIF(USE_VERSION)
+
 # copy libs to bundle if we are under mac...
 # check is done internally.
 INCLUDE ("../../../build/cmake/installMacGISLIB.cmake")

@@ -36,7 +36,6 @@
 #include <wx/dnd.h>			// dnd
 //#include <wx/treectrl.h>	// temp treectrl
 
-
 #include "../../../src/vroomgis.h"
 class vrDisplayValueDlg;
 
