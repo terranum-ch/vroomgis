@@ -33,6 +33,11 @@ wxDialog(parent, id, title, pos, size,style) {
 	wxString myCopy = wxString::Format("\u00A9 CREALP Lucien Schreiber, %d",
 									   wxDateTime::Now().GetYear());
 	SetCopyright(myCopy);
+	
+	//this->Layout();
+	//wxSizer * mySizer = this->GetSizer();
+	//wxASSERT(mySizer);
+	//mySizer->Fit(this);
 }
 
 
@@ -73,7 +78,6 @@ void lsVersionDlg::_CreateControls(){
 	
 	m_TitleCtrl = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_TitleCtrl->Wrap( -1 );
-	m_TitleCtrl->SetFont(wxNullFont);
 	
 	//wxFont myFont = m_TitleCtrl->GetFont();
 	//myFont.SetWeight(wxFONTWEIGHT_BOLD);
@@ -84,7 +88,6 @@ void lsVersionDlg::_CreateControls(){
 	
 	m_ProgNameCtrl = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_ProgNameCtrl->Wrap( -1 );
-	m_ProgNameCtrl->SetFont(wxNullFont);
 	bSizer1->Add( m_ProgNameCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 	
 	m_ModulesCtrl = new wxTextCtrl( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(250,150), wxTE_MULTILINE | wxTE_CENTRE );
@@ -92,10 +95,16 @@ void lsVersionDlg::_CreateControls(){
 	
 	m_CopyRightCtrl = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_CopyRightCtrl->Wrap( -1 );
-	m_CopyRightCtrl->SetFont(wxNullFont);
 	bSizer1->Add( m_CopyRightCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5 );
 	
+#ifdef __WXOSX__
+	m_TitleCtrl->SetFont(wxNullFont);
+	m_ProgNameCtrl->SetFont(wxNullFont);
+	m_CopyRightCtrl->SetFont(wxNullFont);
+#endif
+	
+	
 	this->SetSizer( bSizer1 );
-	this->Layout();
-	bSizer1->Fit( this );
+	//this->Layout();
+	//bSizer1->Fit( this );
 }
