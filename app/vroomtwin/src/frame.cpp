@@ -19,7 +19,9 @@
 #include <wx/filepicker.h>
 
 #include "tmlog.h"	// for double logging process
+#include "lsversion_dlg.h"
 
+#include "../../../art/vroomgis_bmp.cpp"
 
 
 
@@ -69,6 +71,7 @@ bool vroomTwin::OnInit()
     if ( !wxApp::OnInit() )
         return false;
 	
+	wxImage::AddHandler(new wxPNGHandler);
     vroomTwinFrame *frame = new vroomTwinFrame("vroomTwin");
 	frame->SetSize(50, 50, 800, 500);
 	frame->Show(true);
@@ -214,17 +217,9 @@ void vroomTwinFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void vroomTwinFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox(wxString::Format
-                 (
-				  "This is vroomTwin, a minimal Twin view vroomGIS sample\n"
-				  "running under %s.\n"
-				  "wxWidgets version is : %s",
-				  wxGetOsDescription(),
-				  wxVERSION_STRING
-                 ),
-                 "About vroomTwin",
-                 wxOK | wxICON_INFORMATION,
-                 this);
+	lsVersionDlg myDlg (this, wxID_ANY, wxEmptyString);
+	myDlg.SetBitmapLogo(wxImage(gVROOMGIS_STREAM));
+	myDlg.ShowModal();
 }
 
 

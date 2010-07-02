@@ -63,6 +63,7 @@ ENDIF (WIN32)
 
 # USE VROOMGIS LIBRARY
 TARGET_LINK_LIBRARIES(${PROGNAME} ${VR_LIBRARY_NAME})
+TARGET_LINK_LIBRARIES(${PROGNAME} "lsVersion")
 
 # copy libs to bundle if we are under mac...
 # check is done internally.

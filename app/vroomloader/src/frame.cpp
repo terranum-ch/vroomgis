@@ -218,9 +218,6 @@ void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
 	lsVersionDlg myDlg(this, wxID_ANY, wxEmptyString);
 	myDlg.SetBitmapLogo(wxBitmap(wxImage(gVROOMGIS_STREAM)));
-	myDlg.Layout();
-	myDlg.GetSizer()->Fit(&myDlg);
-	myDlg.CentreOnParent(wxBOTH);
 	myDlg.ShowModal();
 }
 

@@ -23,7 +23,7 @@ lsVersionDlg::lsVersionDlg(wxWindow * parent, wxWindowID id,
 						   const wxSize & size, long style) :
 wxDialog(parent, id, title, pos, size,style) {
 	_CreateControls();
-	SetTitleAndCaption("About installed modules");
+	SetTitleAndCaption("About");
 	wxString myName = wxString::Format("%s (%s)",
 									   lsVersion::GetSoftName().c_str(),
 									   lsVersion::GetSoftSVN()).c_str();
@@ -33,11 +33,6 @@ wxDialog(parent, id, title, pos, size,style) {
 	wxString myCopy = wxString::Format("\u00A9 CREALP Lucien Schreiber, %d",
 									   wxDateTime::Now().GetYear());
 	SetCopyright(myCopy);
-	
-	//this->Layout();
-	//wxSizer * mySizer = this->GetSizer();
-	//wxASSERT(mySizer);
-	//mySizer->Fit(this);
 }
 
 
@@ -105,6 +100,14 @@ void lsVersionDlg::_CreateControls(){
 	
 	
 	this->SetSizer( bSizer1 );
-	//this->Layout();
-	//bSizer1->Fit( this );
+}
+
+
+int lsVersionDlg::ShowModal(){
+	this->Layout();
+	wxSizer * mySizer = this->GetSizer();
+	wxASSERT(mySizer);
+	mySizer->Fit(this);
+	CenterOnParent(wxBOTH);
+	return wxDialog::ShowModal();
 }

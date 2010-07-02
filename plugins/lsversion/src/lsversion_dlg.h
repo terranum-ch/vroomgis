@@ -49,6 +49,8 @@ public:
     void SetSoftName(wxString name);
     void SetModulesName(wxString name);
     void SetCopyright(wxString name);
+	
+	virtual int ShowModal();
 };
 #endif
 
