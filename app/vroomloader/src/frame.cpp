@@ -73,6 +73,7 @@ bool vroomLoader::OnInit()
         return false;
 	
 	wxInitAllImageHandlers();
+	initialize_images();
 	
     vroomLoaderFrame *frame = new vroomLoaderFrame("vroomLoader");
     //frame->CenterOnScreen(wxBOTH);
@@ -202,6 +203,7 @@ vroomLoaderFrame::~vroomLoaderFrame()
 	wxDELETE(m_LayerManager);
 	
 	delete wxLog::SetActiveTarget (NULL);
+	clear_images();
 }
 
 
@@ -216,9 +218,10 @@ void vroomLoaderFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-	lsVersionDlg myDlg(this, wxID_ANY, wxEmptyString);
-	myDlg.SetBitmapLogo(wxBitmap(wxImage(gVROOMGIS_STREAM)));
-	myDlg.ShowModal();
+	lsVersionDlg * myDlg = new lsVersionDlg(this, wxID_ANY, wxEmptyString);
+	myDlg->SetBitmapLogo(*_img_vroomgis);
+	myDlg->ShowModal();
+	wxDELETE(myDlg);
 }
 
 
@@ -291,26 +294,7 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 		wxASSERT(myPathsFileName.GetCount() > 0);
 		
 		OpenLayers(myPathsFileName);
-		/*for (unsigned int i = 0; i< myPathsFileName.GetCount(); i++) {
-			// open files
-			bool myOpen = m_LayerManager->Open(wxFileName(myPathsFileName.Item(i)));
-			wxASSERT(myOpen);
-		}
-		
-		m_ViewerLayerManager->FreezeBegin();
-		for (unsigned int j = 0; j< myPathsFileName.GetCount(); j++) {
-			// get files
-			vrLayer * myLayer = m_LayerManager->GetLayer( wxFileName(myPathsFileName.Item(j)));
-			wxASSERT(myLayer);
-			
-			// add files to the viewer
-			m_ViewerLayerManager->Add(-1, myLayer);
-		}
-		m_ViewerLayerManager->FreezeEnd();*/
-		
-		
 	}
-	//event.Skip();
 }
 
 

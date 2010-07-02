@@ -72,6 +72,8 @@ bool vroomTwin::OnInit()
         return false;
 	
 	wxImage::AddHandler(new wxPNGHandler);
+	initialize_images();
+	
     vroomTwinFrame *frame = new vroomTwinFrame("vroomTwin");
 	frame->SetSize(50, 50, 800, 500);
 	frame->Show(true);
@@ -203,6 +205,8 @@ vroomTwinFrame::~vroomTwinFrame()
 	// don't delete m_ViewerLayerManager, will be deleted by the manager
 	wxDELETE(m_LayerManager);
 	delete wxLog::SetActiveTarget (NULL);
+	
+	clear_images();
 }
 
 
@@ -218,7 +222,7 @@ void vroomTwinFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 void vroomTwinFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
 	lsVersionDlg myDlg (this, wxID_ANY, wxEmptyString);
-	myDlg.SetBitmapLogo(wxImage(gVROOMGIS_STREAM));
+	myDlg.SetBitmapLogo(*_img_vroomgis);
 	myDlg.ShowModal();
 }
 
@@ -280,27 +284,6 @@ void vroomTwinFrame::OnOpenLayer(wxCommandEvent & event)
 	wxASSERT(myPathsFileName.GetCount() > 0);
 	
 	OpenLayers(myPathsFileName);
-	
-	/*
-	for (unsigned int i = 0; i< myPathsFileName.GetCount(); i++) {
-		// open files
-		bool myOpen = m_LayerManager->Open(wxFileName(myPathsFileName.Item(i)));
-		wxASSERT(myOpen);
-	}
-	
-	m_ViewerLayerManager1->FreezeBegin();
-	m_ViewerLayerManager2->FreezeBegin();
-	for (unsigned int j = 0; j< myPathsFileName.GetCount(); j++) {
-		// get files
-		vrLayer * myLayer = m_LayerManager->GetLayer( wxFileName(myPathsFileName.Item(j)));
-		wxASSERT(myLayer);
-		
-		// add files to the viewer
-		m_ViewerLayerManager1->Add(-1, myLayer);
-		m_ViewerLayerManager2->Add(-1, myLayer);
-	}
-	m_ViewerLayerManager2->FreezeEnd();
-	m_ViewerLayerManager1->FreezeEnd();*/
 }
 
 
