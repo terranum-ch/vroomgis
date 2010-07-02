@@ -52,7 +52,7 @@ fi
 echo "3) configuring ..."
 cd $BINDIR
 
-cmake $TRUNKDIR/app/vroomloader/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config"
+cmake $TRUNKDIR/app/vroomloader/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config" -DUSE_VERSION:BOOL=1 -DwxWIDGETS_USING_SVN:BOOL=1 -DwxWIDGETS_PATH_SVN="/home/lucien/Documents/LIB/wxWidgets-svn"
 
 echo $VARLINE
 echo "4) Making the binary"
@@ -85,7 +85,7 @@ fi
 echo "3) configuring ..."
 cd $BINDIR2
 
-cmake $TRUNKDIR/app/vroomtwin/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config"
+cmake $TRUNKDIR/app/vroomtwin/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config" -DUSE_VERSION:BOOL=1 -DwxWIDGETS_USING_SVN:BOOL=1 -DwxWIDGETS_PATH_SVN="/home/lucien/Documents/LIB/wxWidgets-svn"
 
 echo $VARLINE
 echo "4) Making the binary"
