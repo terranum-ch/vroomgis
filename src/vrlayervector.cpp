@@ -233,7 +233,7 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 	if (iCount <= 0) {
 		wxLogWarning("No data drawn.");
 	}
-	wxLogMessage("%d lines drawed in %ldms", iCount, sw.Time());
+	wxLogMessage("%ld lines drawed in %ldms", iCount, sw.Time());
 	return true;
 }
 

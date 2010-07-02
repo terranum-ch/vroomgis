@@ -154,19 +154,17 @@ void vrViewerTOC::OnMouseRightDown(wxMouseEvent & event) {
 	wxPoint myPos = event.GetPosition();
 	int myItemID = HitTest(myPos);
 	wxLogMessage("Item seleced id is %d @ position %d - %d", myItemID, myPos.x, myPos.y);
-
-	// FIXME: Remove this code when HitTest will work, this is a bug in wxWidgets
-	int myItemSelected = GetSelection();
-	if (myItemSelected == wxNOT_FOUND) {
-		wxLogWarning("No item selected, %d", myItemSelected);
+	
+	if (myItemID == wxNOT_FOUND) {
 		return;
 	}
 	
+	SetSelection(myItemID);
 	wxASSERT(m_ViewerManager);
-	vrRenderer * myRenderer = m_ViewerManager->GetRenderer(myItemSelected);
+	vrRenderer * myRenderer = m_ViewerManager->GetRenderer(myItemID);
 	wxASSERT(myRenderer);
 	
-	_ShowMenuContextual(myItemSelected, myRenderer);
+	_ShowMenuContextual(myItemID, myRenderer);
 	
 }
 
