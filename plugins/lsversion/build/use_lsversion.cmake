@@ -41,8 +41,8 @@ IF(USE_VERSION)
 	FIND_PATH(PLUGIN_PATH "lsversion_param.h.in" 
 	"../../../plugins/lsversion/src/"
 	"../../plugins/lsversion/src/" 
-	"../../../../../src/"
-	 "../../../../src/"
+	"../../../../plugins/lsversion/src/"
+	 "../plugins/lsversion/src"
 	 "../../../src/"
 	 "../../src/"
 	 "../src/"
@@ -66,6 +66,7 @@ IF(USE_VERSION)
 	# CREATE LIBRARY 
 	#
 	#search all source files
+	MESSAGE(${PLUGIN_PATH})
 	FILE (GLOB VERSION_SRC_FILES "${PLUGIN_PATH}/*.cpp")
 	SOURCE_GROUP(source FILES ${VERSION_SRC_FILES})
 

@@ -45,9 +45,28 @@ INCLUDE ("${THIS_DIR_PATH}/../../plugins/lsversion/build/use_lsversion.cmake")
 
 SET(VR_LIBRARY_NAME "vroomgis")
 
+#FINDING OUR PATH
+FIND_PATH(VROOMGIS_LIBRARY_PATH "vroomgis.h" 
+"${THIS_DIR_PATH}/../../src/"
+"${THIS_DIR_PATH}/../../trunk-vroomgis/src/" 
+"${THIS_DIR_PATH}/../../../trunk-vroomgis/src/"
+"${THIS_DIR_PATH}/../trunk-vroomgis/src/"
+ "../plugins/lsversion/src"
+ "../../../src/"
+ "../../src/"
+ "../src/"
+ "../"
+ NO_DEFAULT_PATH)
+
+IF(NOT VROOMGIS_LIBRARY_PATH)
+  MESSAGE (FATAL_ERROR "Vroomgis.h path not found")
+ENDIF(NOT VROOMGIS_LIBRARY_PATH)
+
+
+
 #CREATE LIB WITH ALL MAIN PROJECT CLASS
 #search all source files
-FILE (GLOB LIB_SRC_FILES "${THIS_DIR_PATH}/../../src/*.cpp")
+FILE (GLOB LIB_SRC_FILES "${VROOMGIS_LIBRARY_PATH}/*.cpp")
 SOURCE_GROUP(source FILES ${LIB_SRC_FILES})
 
 #TEMP CODE FOR COUNTING
@@ -57,9 +76,9 @@ IF(NOT MY_LENGTH)
 ENDIF(NOT MY_LENGTH)
 
 # search all headers files
-FILE (GLOB LIB_HEAD_FILES "${THIS_DIR_PATH}/../../src/*.h")
+FILE (GLOB LIB_HEAD_FILES "${VROOMGIS_LIBRARY_PATH}/*.h")
 SOURCE_GROUP(header FILES ${LIB_HEAD_FILES})
-INCLUDE_DIRECTORIES("${THIS_DIR_PATH}/../../src")
+INCLUDE_DIRECTORIES("${VROOMGIS_LIBRARY_PATH}")
 
 ADD_LIBRARY(${VR_LIBRARY_NAME} STATIC ${LIB_SRC_FILES} ${LIB_HEAD_FILES})
 
