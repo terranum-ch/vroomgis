@@ -29,14 +29,14 @@
 
 
 #if !defined(__WXMSW__) && !defined(__WXPM__)
-#include "../../../art/vroomgis.xpm"
+#include "../../../vroomgis/art/vroomgis.xpm"
 #endif
 
 #include <wx/splitter.h>	//splitter bar
 #include <wx/dnd.h>			// dnd
 //#include <wx/treectrl.h>	// temp treectrl
 
-#include "../../../src/vroomgis.h"
+#include "vroomgis.h"
 class vrDisplayValueDlg;
 
 
