@@ -1,11 +1,11 @@
 # SCRIPT FOR BUILDING LSVersion
-# INCLUDE THIS FILE FOR INCLUDING A FILE AND OPTIONNALY A DIALOG CONTAINING
+# INCLUDE THIS FILE FOR INCLUDING A DIALOG CONTAINING
 # ALL VERSION INFORMATIONS 
 
-
+SET(LSVERSION_NAME "lsVersion")
 
 #OPTIONS - PARAMETERS 
-SET(USE_VERSION 1 CACHE BOOL "Use component lsVersion")
+SET(USE_VERSION 1 CACHE BOOL "Use component ${LSVERSION_NAME}")
 IF(USE_VERSION)
 	SET(lsVERSION_ENABLED 1)
 
@@ -38,15 +38,22 @@ IF(USE_VERSION)
 	ENDIF(GDAL_INCLUDE_DIR)	
 
 	#FINDING OUR PATH
-	FIND_PATH(PLUGIN_PATH "lsversion_param.h.in" 
+	FIND_PATH(LSVERSION_PATH "lsversion_param.h.in" 
+	"/plugins/lsversion/src/"
+	"../plugins/lsversion/src/"
+	"../../plugins/lsversion/src/"
 	"../../../plugins/lsversion/src/"
-	"../../plugins/lsversion/src/" 
 	"../../../../plugins/lsversion/src/"
-	 "../plugins/lsversion/src"
-	 "../../../src/"
-	 "../../src/"
-	 "../src/"
-	 "../"
+	"/lib/lsversion/src/"
+	"../lib/lsversion/src/"
+	"../../lib/lsversion/src/"
+	"../../../lib/lsversion/src/"
+	"../../../../lib/lsversion/src/"
+	"/lsversion/src/"
+	"../lsversion/src/"
+	"../../lsversion/src/"
+	"../../../lsversion/src/"
+	"../../../../lsversion/src/"
 	 NO_DEFAULT_PATH)
 	
 	# GET PROGRAM SVN VERSION
@@ -66,21 +73,21 @@ IF(USE_VERSION)
 	# CREATE LIBRARY 
 	#
 	#search all source files
-	MESSAGE(${PLUGIN_PATH})
-	FILE (GLOB VERSION_SRC_FILES "${PLUGIN_PATH}/*.cpp")
-	SOURCE_GROUP(source FILES ${VERSION_SRC_FILES})
+	MESSAGE(${LSVERSION_PATH})
+	FILE (GLOB LSVERSION_SRC_FILES "${LSVERSION_PATH}/*.cpp")
+	SOURCE_GROUP(source FILES ${LSVERSION_SRC_FILES})
 
 	#COUNTING NUMBER OF SOURCES FOUND
-	LIST(LENGTH VERSION_SRC_FILES MY_VERSION_LENGTH)
+	LIST(LENGTH LSVERSION_SRC_FILES MY_VERSION_LENGTH)
 	IF(NOT MY_VERSION_LENGTH)
 		MESSAGE(FATAL_ERROR "${MY_VERSION_LENGTH} source found for lsVersion Plugin")
 	ENDIF(NOT MY_VERSION_LENGTH)
 
 	# search all headers files
-	FILE (GLOB VERSION_HEAD_FILES "${PLUGIN_PATH}/*.h")
-	SOURCE_GROUP(header FILES ${VERSION_HEAD_FILES})
-	INCLUDE_DIRECTORIES("${PLUGIN_PATH}")
-	ADD_LIBRARY("lsVersion" STATIC ${VERSION_SRC_FILES} ${VERSION_HEAD_FILES})
+	FILE (GLOB LSVERSION_HEAD_FILES "${LSVERSION_PATH}/*.h")
+	SOURCE_GROUP(header FILES ${LSVERSION_HEAD_FILES})
+	INCLUDE_DIRECTORIES("${LSVERSION_PATH}")
+	ADD_LIBRARY("lsVersion" STATIC ${LSVERSION_SRC_FILES} ${LSVERSION_HEAD_FILES})
 	
 
 ELSE(USE_VERSION)
@@ -88,7 +95,7 @@ ELSE(USE_VERSION)
 ENDIF(USE_VERSION)
 
 
-CONFIGURE_FILE("${PLUGIN_PATH}/lsversion_param.h.in" "${PROJECT_BINARY_DIR}/lsversion_param.h")
+CONFIGURE_FILE("${LSVERSION_PATH}/lsversion_param.h.in" "${PROJECT_BINARY_DIR}/lsversion_param.h")
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 
 

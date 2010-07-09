@@ -22,7 +22,7 @@
 #include "vrdisplayvalue.h"	// for displaying values
 #include <lsversion_dlg.h>
 
-#include "../../../art/vroomgis_bmp.cpp"
+#include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
 
 
