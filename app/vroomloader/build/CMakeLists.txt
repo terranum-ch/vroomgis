@@ -44,10 +44,10 @@ IF( APPLE )
 	SET(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) CREALP 2010")
 	
 	# Need to copy the icon file
-	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/Debug/${PROGNAME}.app/Contents/Resources")
-	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../../../vroomgis/art/${APP_ICON} ${PROJECT_BINARY_DIR}/Debug/${PROGNAME}.app/Contents/Resources")
-	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/Release/${PROGNAME}.app/Contents/Resources")
-	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../../../vroomgis/art/${APP_ICON} ${PROJECT_BINARY_DIR}/Release/${PROGNAME}.app/Contents/Resources")
+	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/Debug/${CMAKE_PROJECT_NAME}.app/Contents/Resources")
+	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../../../vroomgis/art/${APP_ICON} ${PROJECT_BINARY_DIR}/Debug/${CMAKE_PROJECT_NAME}.app/Contents/Resources")
+	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/Release/${CMAKE_PROJECT_NAME}.app/Contents/Resources")
+	EXEC_PROGRAM( "cp ${PROJECT_SOURCE_DIR}/../../../vroomgis/art/${APP_ICON} ${PROJECT_BINARY_DIR}/Release/${CMAKE_PROJECT_NAME}.app/Contents/Resources")
 ENDIF (APPLE)
 
 
