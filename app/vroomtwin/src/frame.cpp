@@ -21,7 +21,7 @@
 #include "tmlog.h"	// for double logging process
 #include "lsversion_dlg.h"
 
-#include "../../../art/vroomgis_bmp.cpp"
+#include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
 
 
