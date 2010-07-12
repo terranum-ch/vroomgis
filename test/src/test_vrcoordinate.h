@@ -26,8 +26,8 @@ Testing the coordinate system
 
 
 #include "test_param.h"	//for test parameters
-#include "../../src/vroomgis.h"
-#include "../../src/vrcoordinate.h"
+#include "vroomgis.h"
+#include "vrcoordinate.h"
 #include "fake_vrviewerdisplay.h"
 #include "fake_vrviewerdisplay.cpp"
 

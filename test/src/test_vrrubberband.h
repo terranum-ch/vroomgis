@@ -26,7 +26,7 @@
 
 
 #include "test_param.h"	//for test parameters
-#include "../../src/vrrubberband.h"
+#include "vrrubberband.h"
 
 
 
