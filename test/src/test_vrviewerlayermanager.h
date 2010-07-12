@@ -25,7 +25,7 @@
 #endif
 
 #include "test_param.h"	//for test parameters
-#include "../../src/vroomgis.h"
+#include "vroomgis.h"
 
 
 

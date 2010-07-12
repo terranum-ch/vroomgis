@@ -26,7 +26,7 @@ Testing the coordinate system
 
 
 #include "test_param.h"	//for test parameters
-#include "../../src/vrrealrect.h"
+#include "vrrealrect.h"
 
 
 

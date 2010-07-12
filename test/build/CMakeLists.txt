@@ -1,8 +1,8 @@
 # CMAKE BUILD FILE FOR TESTING VROOMGIS
 # USE WXWIDGETS (CONSOLE)
 # PART OF QA FOR VROOMGIS 
-# (c) LUCIEN SCHREIBER CREALP 2009
-cmake_minimum_required(VERSION 2.4)
+# (c) LUCIEN SCHREIBER CREALP 2010
+cmake_minimum_required(VERSION 2.6)
 
 
 ## POLICY FOR WINDOWS ONLY ???
@@ -11,9 +11,7 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 # REMOVE THIS LINE IF CALLED FROM ANOTHER CMAKE FILE
-SET (PROGNAME "vroomgis")
-SET (PROGNAMETEST ${PROGNAME}_test)
-PROJECT(${PROGNAMETEST})
+PROJECT("vroomgis_test")
 
 
 #search all source files
@@ -28,22 +26,24 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 
 #ONLY USED FOR ADDING HEADERS TO PROJECT 
 IF(APPLE)
-	ADD_EXECUTABLE("${PROGNAMETEST}-not_build" EXCLUDE_FROM_ALL main.cpp ${HEAD_FILES})
+	ADD_EXECUTABLE("${CMAKE_PROJECT_NAME}-not_build" EXCLUDE_FROM_ALL main.cpp ${HEAD_FILES})
 ENDIF(APPLE)
+
+
 
 
  # GTK LIB IF LINUX
 MESSAGE("System name is : " ${CMAKE_SYSTEM_NAME})
  IF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
  	MESSAGE("Systeme linux detecte")
- 	INCLUDE ("../../build/cmake/FindGTK2.cmake")
+ 	INCLUDE ("../../vroomgis/build/cmake/FindGTK2.cmake")
  	INCLUDE_DIRECTORIES(${GTK2_INCLUDE_DIRS})
  	MESSAGE("Gtk include is " ${GTK2_INCLUDE_DIRS})
  ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 
 #CREATE VROOMGIS LIBRARY
-INCLUDE("../../build/cmake/Use_vroomGISlib.cmake")
+INCLUDE("../../vroomgis/build/cmake/Use_vroomGISlib.cmake")
 
 
 #PARAMETERS FOR TEST
@@ -59,21 +59,21 @@ INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 # Use Python interpreter
 FIND_PACKAGE(PythonInterp)
 # Fait la liaison avec la bibliothèque CxxTest  
-INCLUDE("../../build/cmake/FindCxxTest.cmake")
+INCLUDE("../../vroomgis/build/cmake/FindCxxTest.cmake")
 SET(CXXTEST_USE_PYTHON 1)
 INCLUDE_DIRECTORIES(${CXXTEST_INCLUDE_DIR})
 ENABLE_TESTING()
 
-CXXTEST_ADD_TEST(${PROGNAMETEST} main.cpp ${HEAD_FILES})
+CXXTEST_ADD_TEST(${CMAKE_PROJECT_NAME} main.cpp ${HEAD_FILES})
 
 # USE VROOMGIS LIBRARY
-TARGET_LINK_LIBRARIES(${PROGNAMETEST} ${VR_LIBRARY_NAME})
+TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
 
 
 # SHOULD WE USE THE MT VERSION FOR DEFAULT 
 # COMPATIBILITY WITH < WINXP
 IF (WIN32)
-	INCLUDE ("../../build/cmake/Use_visualstudioMT.cmake")
+	INCLUDE ("../../vroomgis/build/cmake/Use_visualstudioMT.cmake")
 	ADD_DEFINITIONS (/D _CRT_SECURE_NO_WARNINGS)
 ENDIF (WIN32)
 
