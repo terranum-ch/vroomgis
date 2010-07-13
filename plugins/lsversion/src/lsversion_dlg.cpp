@@ -23,7 +23,7 @@ lsVersionDlg::lsVersionDlg(wxWindow * parent, wxWindowID id,
 						   const wxSize & size, long style) :
 wxDialog(parent, id, title, pos, size,style) {
 	_CreateControls();
-	SetTitleAndCaption("About");
+	SetTitleAndCaption(title);
 	wxString myName = wxString::Format("%s (%s)",
 									   lsVersion::GetSoftName().c_str(),
 									   lsVersion::GetSoftSVN()).c_str();

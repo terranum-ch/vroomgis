@@ -218,7 +218,7 @@ void vroomLoaderFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-	lsVersionDlg * myDlg = new lsVersionDlg(this, wxID_ANY, wxEmptyString);
+	lsVersionDlg * myDlg = new lsVersionDlg(this, wxID_ANY, "About");
 	myDlg->SetBitmapLogo(*_img_vroomgis);
 	myDlg->ShowModal();
 	wxDELETE(myDlg);
