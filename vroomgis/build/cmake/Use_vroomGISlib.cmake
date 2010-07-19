@@ -51,8 +51,8 @@ INCLUDE ("${VROOMGIS_PATH}/../build/cmake/FindwxWidgets.cmake")
 INCLUDE ("${VROOMGIS_PATH}/../build/cmake/findGISLib.cmake")
 
 
-#INCLUDE ("${VROOMGIS_PATH}/../../plugins/lsversion/build/use_lsversion.cmake")
-
+#SPATIALITE libs
+INCLUDE ("${VROOMGIS_PATH}/../build/cmake/findspatialite.cmake")
 
 
 #CREATE LIB WITH ALL MAIN PROJECT CLASS
