@@ -28,6 +28,7 @@
 enum vrDRIVERS_TYPE {
 	vrDRIVER_UNKNOWN = -1,
 	vrDRIVER_VECTOR_SHP = 0,
+	vrDRIVER_VECTOR_C2DP,
 	vrDRIVER_VECTOR_MEMORY,
 	vrDRIVER_RASTER_TIFF,
 	vrDRIVER_RASTER_JPEG,
@@ -39,6 +40,7 @@ enum vrDRIVERS_TYPE {
 
 static const wxString vrDRIVERS_EXTENSION []= {
 	"*.shp",
+	"*.c2dp",
 	wxEmptyString,
 	"*.tif;*.tiff",
 	"*.jpg;*.jpeg",
@@ -49,6 +51,7 @@ static const wxString vrDRIVERS_EXTENSION []= {
 
 const wxString vrDRIVERS_NAMES [] = {
 	"Shapefiles",
+	"ColtopGIS project",
 	wxEmptyString,
 	"Tiff",
 	"JPEG",
