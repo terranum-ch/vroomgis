@@ -102,9 +102,10 @@ vrViewerLayerManager::~vrViewerLayerManager() {
 
 
 
-bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrLabel * label) {
+bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrLabel * label, bool visible) {
 	wxASSERT(layer);
 	vrRenderer * myRenderer = new vrRenderer(layer, render, label);
+	myRenderer->SetVisible(visible);
 	
 	// need to compute coordinate ?
 	if (m_Renderers.GetCount() == 0) {
