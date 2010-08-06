@@ -274,20 +274,20 @@ vrViewerTOC::~vrViewerTOC() {
 
 
 bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
-	
-	// TODO: is really usefull to add item not at the begining ?
-	wxASSERT(index == -1);
-	
-	
-	// prepending item to the list
-	if (index == -1) {
-		
-		Insert(renderer->GetLayer()->GetName().GetFullName(), 0);
-		Check(0, renderer->GetVisible());
-		
+	if (index >= (signed) GetCount()) {
+		int myPos = Append(renderer->GetLayer()->GetName().GetFullName());
+		Check(myPos, renderer->GetVisible());
+		return true;
 	}
 	
-	return false;
+	// if index is -1, insert at the begining.
+	if (index == -1) {
+		index = 0;
+	}
+	
+	int myPos = Insert(renderer->GetLayer()->GetName().GetFullName(), index);
+	Check(myPos, renderer->GetVisible());
+	return true;
 }
 
 
