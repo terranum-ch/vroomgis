@@ -21,6 +21,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include "vrserialize.h"
 
 
 enum vrRENDER_TYPE {
@@ -48,6 +49,7 @@ class vrRender {
     inline const int GetTransparency() const;	
     void SetTransparency(int value);
 
+	virtual bool Serialize(vrSerialize & serialobj);
 };
 
 inline const int vrRender::GetTransparency() const {
@@ -77,7 +79,9 @@ private:
     inline const int GetSize() const;
     void SetSize(int value);
 	
+	virtual bool Serialize(vrSerialize & serialobj);
 };
+
 
 inline const int vrRenderVector::GetSize() const {
 	return m_Size;

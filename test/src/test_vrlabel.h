@@ -64,7 +64,27 @@ public:
 #endif
 	}
 
-
+	void testSerializeLabel(){
+		
+		// save label
+		vrLabel myLabel;
+		vrSerialize mySerialize;
+		TS_ASSERT(myLabel.Serialize(mySerialize));
+		TS_ASSERT(mySerialize.GetString() != wxEmptyString);
+		wxLogMessage(mySerialize.GetString());
+		
+		//change label colour
+		wxColour myColour (255, 0 ,0);
+		myLabel.SetColor(myColour);
+		
+		
+		// deserialize
+		vrSerialize mySerialize2 (mySerialize.GetString());
+		TS_ASSERT(myLabel.Serialize(mySerialize2));
+		TS_ASSERT(myLabel.GetColor() != myColour);
+	}
+	
+	
 };
 
 
