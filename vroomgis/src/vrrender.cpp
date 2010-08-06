@@ -47,6 +47,23 @@ unsigned char vrRender::GetTransparencyChar() {
 }
 
 
+bool vrRender::Serialize(vrSerialize & serialobj) {
+	serialobj.EnterObject();
+	if (serialobj.IsStoring()) {
+		serialobj << GetTransparency();
+	}
+	else {
+		serialobj >> m_Transparency;
+	}
+	serialobj.LeaveObject();
+	return serialobj.IsOk();
+}
+
+
+
+
+
+
 vrRenderVector::vrRenderVector() {
 	m_Type = vrRENDER_VECTOR;
 	m_Size = 1;
@@ -90,6 +107,24 @@ wxColour vrRenderVector::GetColorBrush(){
 	
 	m_ColorBrush.Set(myRed, myGreen, myBlue, GetTransparencyChar());	
 	return m_ColorBrush;
+}
+
+
+bool vrRenderVector::Serialize(vrSerialize & serialobj) {
+	vrRender::Serialize(serialobj);
+	serialobj.EnterObject();
+	if (serialobj.IsStoring()) {
+		serialobj << GetColorPen();
+		serialobj << GetColorBrush();
+		serialobj << GetSize();
+	}
+	else {
+		serialobj >> m_ColorPen;
+		serialobj >> m_ColorBrush;
+		serialobj >> m_Size;
+	}
+	serialobj.LeaveObject();
+	return serialobj.IsOk();
 }
 
 

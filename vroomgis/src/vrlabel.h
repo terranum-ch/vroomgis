@@ -21,33 +21,33 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-
+#include "vrserialize.h"
 
 
 class vrLabel {
   private:
     wxFont m_Font;
-
     wxColor m_Color;
 
 
   public:
     vrLabel(const wxFont & font = wxNullFont , const wxColour & color = *wxBLACK);
-
     virtual ~vrLabel();
 
     inline const wxFont GetFont() const;
-
     inline const wxColor GetColor() const;
 
     void SetFont(wxFont value);
-
     void SetColor(wxColor value);
-
+	
+	bool Serialize(vrSerialize & serialobj);
 };
+
+
 inline const wxFont vrLabel::GetFont() const {
   return m_Font;
 }
+
 
 inline const wxColor vrLabel::GetColor() const {
   return m_Color;

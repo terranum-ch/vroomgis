@@ -42,3 +42,17 @@ void vrLabel::SetColor(wxColor value) {
   m_Color = value;
 }
 
+
+bool vrLabel::Serialize(vrSerialize & serialobj) {
+	serialobj.EnterObject();
+	if (serialobj.IsStoring()) {
+		serialobj << m_Font;
+		serialobj << m_Color;
+	}
+	else {
+		serialobj >> m_Font;
+		serialobj >> m_Color;
+	}
+	serialobj.LeaveObject();
+	return serialobj.IsOk();
+}
