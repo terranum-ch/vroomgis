@@ -406,7 +406,7 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 	if (iCount <= 0) {
 		wxLogWarning("No data drawn.");
 	}
-	wxLogMessage("%d Polygon drawed in %ldms", iCount, sw.Time());
+	wxLogMessage("%ld Polygon drawed in %ldms", iCount, sw.Time());
 	return true;
 }
 

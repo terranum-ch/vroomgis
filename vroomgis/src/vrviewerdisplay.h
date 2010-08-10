@@ -33,6 +33,9 @@ private:
 	wxBitmap * m_bmp;
 	vrDisplayTool * m_Tool;
     vrViewerLayerManager * m_ViewerManager;
+	wxStatusBar * m_Status;
+	int m_StatusField;
+	wxString m_StatusErrText;
 
 	
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
@@ -58,6 +61,8 @@ public:
 	
 	void SetBitmap(wxBitmap * bmp);
 	vrCoordinate * GetCoordinate() {return m_Coordinate;}
+	void SetStatusCoordinates(wxStatusBar * status, int field = 0, const wxString & errmsg = wxEmptyString);
+
 	
 	void SetToolDefault();
     void SetToolZoom();

@@ -131,6 +131,17 @@ void vrViewerDisplay::OnMouseMove(wxMouseEvent & event) {
 	if (m_Tool != NULL) {
 		m_Tool->MouseMove(event);
 	}
+	
+	if (m_Status != NULL) {
+		wxPoint2DDouble myCoord;
+		if (GetCoordinate()->GetExtent().IsOk() == false || m_bmp == NULL) {
+			m_Status->SetStatusText(m_StatusErrText, m_StatusField);
+			return;
+		}
+		GetCoordinate()->ConvertFromPixels(event.GetPosition(), myCoord);
+		m_Status->SetStatusText(wxString::Format("%.2f : %.2f", myCoord.m_x, myCoord.m_y),
+								m_StatusField);
+	}
 }
 
 
@@ -148,6 +159,9 @@ vrViewerDisplay::vrViewerDisplay(){
 	m_bmp = NULL;
 	m_Tool = NULL;
 	m_ViewerManager = NULL;
+	m_Status = NULL;
+	m_StatusField = 0;
+	m_StatusErrText = wxEmptyString;
 	wxLogError("Don't use this vrViewerDisplay ctor, only here for tests");
 }
 
@@ -160,6 +174,9 @@ wxPanel(parent, id){
 	m_bmp = NULL;
 	m_Tool = NULL;
 	m_ViewerManager = NULL;
+	m_Status = NULL;
+	m_StatusField = 0;
+	m_StatusErrText = wxEmptyString;
 	
 	SetBackgroundColour(colour);
 	
@@ -217,6 +234,18 @@ void vrViewerDisplay::SetBitmap(wxBitmap * bmp) {
 	}
 	_InvalidateView(true);
 }
+
+
+
+void vrViewerDisplay::SetStatusCoordinates(wxStatusBar * status, int field, const wxString & errmsg) {
+	wxASSERT(status);
+	m_Status = status;
+	m_StatusField = field;
+	m_StatusErrText = errmsg;
+	m_Status->SetStatusText(m_StatusErrText, m_StatusField);
+}
+
+
 
 
 void vrViewerDisplay::_InvalidateView(bool updatenow) {
