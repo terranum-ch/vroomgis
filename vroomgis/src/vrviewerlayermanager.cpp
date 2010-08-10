@@ -216,6 +216,28 @@ bool vrViewerLayerManager::Remove(vrRenderer * renderer) {
 
 
 
+bool vrViewerLayerManager::ZoomOut(const vrRealRect & extent) {
+	if (extent.IsOk() == false) {
+		wxLogError("Specified extent (%f, %f, %f, %f) isn't supported",
+				   extent.GetLeft(), extent.GetTop(), 
+				   extent.GetRight(), extent.GetBottom());
+		return false;
+	}
+	
+	vrRealRect myFullExtent = GetDisplay()->GetCoordinate()->GetExtent();
+	double DivRatio = myFullExtent.m_width / extent.m_width;
+	if (DivRatio < 1.0) {
+		DivRatio = 1.0;
+	}
+	wxPoint2DDouble myCenter = extent.GetCentre();
+	myFullExtent.Scale(DivRatio);
+	myFullExtent.SetCentre(myCenter);
+	return Zoom(myFullExtent);
+}
+
+
+
+
 bool vrViewerLayerManager::Zoom(const vrRealRect & extent) {
 	if (extent.IsOk() == false) {
 		wxLogError("Specified extent (%f, %f, %f, %f) isn't supported",
