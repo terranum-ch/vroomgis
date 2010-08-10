@@ -80,6 +80,7 @@ class vrViewerLayerManager : public wxEvtHandler {
 	bool Move(long oldpos, long newpos);
 	bool Remove(vrRenderer * renderer);
     bool Zoom(const vrRealRect & extent);
+	bool ZoomOut(const vrRealRect & extent);
     void ZoomToFit(bool onlyvisible = false);
 
 
