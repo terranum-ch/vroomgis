@@ -189,7 +189,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	// VROOMGIS
 	m_LayerManager = new vrLayerManager();
 	m_ViewerLayerManager = new vrViewerLayerManager(m_LayerManager, this, m_DisplayCtrl , m_TocCtrl);
-	
+	m_DisplayCtrl->SetStatusCoordinates(GetStatusBar(), 1, _("Coordinates not available"));
 }
 
 
