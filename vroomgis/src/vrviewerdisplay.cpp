@@ -111,6 +111,7 @@ void vrViewerDisplay::OnEraseBackground (wxPaintEvent & event){
 
 
 void vrViewerDisplay::OnMouseDown(wxMouseEvent & event) {
+	SetFocus();
 	CaptureMouse();
 	if (m_Tool != NULL) {
 		m_Tool->MouseDown(event);
