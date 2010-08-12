@@ -105,10 +105,11 @@ OGRwkbGeometryType  vrLayerVector::GetGeometryType() {
 		return wkbUnknown;
 	}
 	
-	OGRFeature * myFeature = m_Layer->GetFeature(0);
-	
+	//OGRFeature * myFeature = m_Layer->GetFeature(0);
+	OGRFeature * myFeature = m_Layer->GetNextFeature();
+	m_Layer->ResetReading();
 	if (myFeature == NULL) {
-		wxLogError("Unable to get feature with fid %d", 0);
+		wxLogMessage("Unable to get geometry from feature with fid %d", 0);
 		return wkbUnknown;
 	}
 	
@@ -181,6 +182,9 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 	
 	// iterating and drawing geometries
 	OGRLineString * myGeom = NULL;
+	double myWidth = 0, myHeight = 0;
+	gdc->GetSize(&myWidth, &myHeight);
+	wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
 	long iCount = 0;
 	while (1) {
 		OGRFeature * myFeat = GetNextFeature(false);
@@ -208,11 +212,8 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 													coord.GetLeftTop(),
 													pxsize));
 		}
-		double myWidth = 0, myHeight = 0;
-		gdc->GetSize(&myWidth, &myHeight);
-		wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
+				
 		wxRect2DDouble myPathRect = myPath.GetBox();
-		
 		if(myPathRect.Intersects(myWndRect) == false){
 			OGRFeature::DestroyFeature(myFeat);
 			myFeat = NULL;
@@ -223,7 +224,7 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 			myFeat = NULL;
 			continue;			
 		}
-
+		
 		iCount++;
 		gdc->StrokePath(myPath);
 		OGRFeature::DestroyFeature(myFeat);
@@ -294,7 +295,7 @@ bool vrLayerVectorOGR::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 	if (iCount <= 0) {
 		wxLogWarning("No data drawn.");
 	}
-	wxLogMessage("%d points drawed in %ldms", iCount, sw.Time());
+	wxLogMessage("%ld points drawed in %ldms", iCount, sw.Time());
 	return true;
 }
 
@@ -427,6 +428,12 @@ bool vrLayerVectorOGR::GetExtent(vrRealRect & rect) {
 	
 	wxASSERT(m_Layer);
 	rect = vrRealRect();
+	if (m_Layer->GetFeatureCount() == 0) {
+		rect.SetLeftBottom(wxPoint2DDouble(0.0, 0.0));
+		rect.SetRightTop(wxPoint2DDouble(1000.0, 1000.0));
+		return true;
+	}
+	
 	OGREnvelope myEnveloppe;
 	if (m_Layer->GetExtent(&myEnveloppe, true)==OGRERR_FAILURE) {
 		wxLogError("Unable to compute extent for layer %s", m_FileName.GetFullName());
@@ -518,7 +525,7 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 			break;
 		
 		default: // unsupported case
-			wxLogError("Geometry type of %s isn't supported (%d)",
+			wxLogMessage("Geometry type of %s isn't supported or defined (%d)",
 					   m_FileName.GetFullName(), myGeomType);
 			bReturn = false;
 			break;

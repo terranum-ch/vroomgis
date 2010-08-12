@@ -34,16 +34,15 @@ class vrLabel;
 //For dealing with GIS data stored into C2P projects.
 class vrLayerVectorC2P : public vrLayerVectorOGR {
   protected:
-    virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
-
-    virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
-
-    virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
-
+    virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+							 const vrRender * render, const vrLabel * label, double pxsize);
+    virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+							const vrRender * render, const vrLabel * label, double pxsize);
+    virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+							   const vrRender * render, const vrLabel * label, double pxsize);
 
   public:
     vrLayerVectorC2P();
-
     virtual ~vrLayerVectorC2P();
 
     virtual bool Open(const wxFileName & filename, bool readwrite = false);

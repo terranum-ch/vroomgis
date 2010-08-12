@@ -19,6 +19,7 @@
 #include "vrlayermanager.h"
 #include "vrlayervector.h"
 #include "vrlayerrasterc2d.h"
+#include "vrlayervectorc2p.h"
 #include "vrlayerraster.h"
 
 
@@ -85,6 +86,10 @@ bool vrLayerManager::Open(const wxFileName & filename) {
 
 		case vrDRIVER_RASTER_C2D:
 			myLayer = new vrLayerRasterC2D();
+			break;
+			
+		case vrDRIVER_VECTOR_C2P:
+			myLayer = new vrLayerVectorC2P();
 			break;
 			
 		default:
