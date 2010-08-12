@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "vrSerialize.h"
+#include "vrserialize.h"
 
 
 // serializing data out
