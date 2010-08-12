@@ -1,5 +1,5 @@
 /***************************************************************************
-				vrlayervectorsc2dp.h
+				vrlayervectorsc2p.h
                     
                              -------------------
     copyright            : (C) 2010 CREALP Lucien Schreiber 
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _VRLAYERVECTORSC2DP_H_
-#define _VRLAYERVECTORSC2DP_H_
+#ifndef _VRLAYERVECTORSC2P_H_
+#define _VRLAYERVECTORSC2P_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -27,23 +27,26 @@
 
 
 #include "vrlayervector.h"
+
 class vrRender;
 class vrLabel;
 
-//For dealing with dip layer.
-class vrLayerVectorC2DP : public vrLayerVectorOGR {
+//For dealing with GIS data stored into C2P projects.
+class vrLayerVectorC2P : public vrLayerVectorOGR {
   protected:
-    virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							 const vrRender * render, const vrLabel * label, double pxsize);
-    virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							const vrRender * render, const vrLabel * label, double pxsize);
-    virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							   const vrRender * render, const vrLabel * label, double pxsize);
+    virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
+
+    virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
+
+    virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
 
 
   public:
-    vrLayerVectorC2DP();
-    virtual ~vrLayerVectorC2DP();
+    vrLayerVectorC2P();
+
+    virtual ~vrLayerVectorC2P();
+
+    virtual bool Open(const wxFileName & filename, bool readwrite = false);
 
 };
 #endif

@@ -1,5 +1,5 @@
 /***************************************************************************
-				vrlayervectorsc2dp.cpp
+				vrlayervectorsc2p.cpp
                     
                              -------------------
     copyright            : (C) 2010 CREALP Lucien Schreiber 
@@ -15,40 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "vrlayervectorsc2dp.h"
+#include "vrlayervectorsc2p.h"
+#include <wxRect2DDouble.h>
+
 #include "vrrender.h"
 #include "vrlabel.h"
 
-bool vrLayerVectorC2DP::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-									const vrRender * render, const vrLabel * label, double pxsize) {
-	wxLogError("Here we draw the Dips...");
-	return false;
-}
-
-
-
-bool vrLayerVectorC2DP::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-								   const vrRender * render, const vrLabel * label, double pxsize) {
+bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize) {
   return false;
 }
 
-
-
-bool vrLayerVectorC2DP::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-									  const vrRender * render, const vrLabel * label, double pxsize) {
+bool vrLayerVectorC2P::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize) {
   return false;
 }
 
-
-
-vrLayerVectorC2DP::vrLayerVectorC2DP() {
-	m_DriverType = vrDRIVER_VECTOR_C2DP;
-	m_GeometryType = wkbUnknown;
+bool vrLayerVectorC2P::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize) {
+  return false;
 }
 
+vrLayerVectorC2P::vrLayerVectorC2P() {
+}
 
+vrLayerVectorC2P::~vrLayerVectorC2P() {
+}
 
-vrLayerVectorC2DP::~vrLayerVectorC2DP() {
-	_Close();
+bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 }
 
