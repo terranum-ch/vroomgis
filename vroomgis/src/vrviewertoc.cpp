@@ -21,6 +21,7 @@
 #include "vrviewerlayermanager.h"
 #include "vrlayer.h"
 #include "vrrender.h"
+#include "vrrendervectorc2p.h"
 
 #include <wx/colordlg.h>	// colour dialog
 #include <wx/numdlg.h>		// number entry dialog
@@ -126,21 +127,45 @@ void vrViewerTOC::OnSetWidth(wxCommandEvent & event) {
 	int mySelItem = GetSelection();
 	wxASSERT(mySelItem != wxNOT_FOUND);
 	wxASSERT(m_ViewerManager);
+	vrRender * myRender = m_ViewerManager->GetRenderer(mySelItem)->GetRender();
+	wxASSERT(myRender);
+	int mySize = 1;
+	if (myRender->GetType() == vrRENDER_VECTOR) {
+		vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
+		mySize = myRenderVector->GetSize();
+	}else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
+		vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
+		mySize = myRenderDips->GetSize();
+	}
+	else {
+		wxFAIL;
+		return;
+	}
 	
-	vrRenderVector * myRenderVector = (vrRenderVector*) m_ViewerManager->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRenderVector);
 	
+	// get width value	
 	wxNumberEntryDialog myNumDlg(this,
 								 "Adjust the pen's width\nAllowed widths are between 0 and 50 pixels",
 								 "Width:",
 								 "Adjust pen's width",
-								 myRenderVector->GetSize(),
+								 mySize,
 								 1,
 								 50);
-	if (myNumDlg.ShowModal()==wxID_OK) {
-		myRenderVector->SetSize(myNumDlg.GetValue());
-		_ReloadData();
+	if (myNumDlg.ShowModal()!=wxID_OK) {
+		return;
 	}
+	if (myRender->GetType() == vrRENDER_VECTOR) {
+		vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
+		myRenderVector->SetSize(myNumDlg.GetValue());
+	}else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
+		vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
+		myRenderDips->SetSize(myNumDlg.GetValue());
+	}
+	else {
+		wxFAIL;
+		return;
+	}
+	_ReloadData();
 }
 
 
@@ -231,17 +256,23 @@ void vrViewerTOC::_ShowMenuContextual(int id, vrRenderer * renderer) {
 	//myPopMenu.Append(vrID_POPUP_REMOVE, "Remove Layer (not implemented)");
 	//myPopMenu.Enable(vrID_POPUP_REMOVE, false);
 	//myPopMenu.AppendSeparator();
-	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, "Set Transparency...");
-		
+	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, _("Set Transparency..."));
+	
 	switch (renderer->GetRender()->GetType()) {
 		case vrRENDER_VECTOR:
 			myPopMenu.AppendSeparator();
-			myPopMenu.Append(vrID_POPUP_PEN_COLOR, "Set Pen color...");	
-			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, "Set Pen width...");
+			myPopMenu.Append(vrID_POPUP_PEN_COLOR, _("Set Pen color..."));	
+			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, _("Set Pen width..."));
 			myPopMenu.AppendSeparator();
-			myPopMenu.Append(vrID_POPUP_BRUSH_COLOR, "Set Brush color...");
-
+			myPopMenu.Append(vrID_POPUP_BRUSH_COLOR, _("Set Brush color..."));
 			break;
+			
+		case vrRENDER_VECTOR_C2P_DIPS:
+			myPopMenu.AppendSeparator();
+			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, _("Set Pen width..."));
+			break;
+			
+			
 		default:
 			break;
 	}
