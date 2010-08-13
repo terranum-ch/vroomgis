@@ -60,6 +60,18 @@ void vrRenderVectorC2PDips::SetDipWidth(int value) {
 }
 
 
+void vrRenderVectorC2PDips::SetTransparency(int value) {
+	vrRender::SetTransparency(value);
+	// change all colours
+	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
+		wxColour myColour (m_DipColours.Item(i).m_Colour.Red(),
+						   m_DipColours.Item(i).m_Colour.Green(),
+						   m_DipColours.Item(i).m_Colour.Blue(),
+						   GetTransparencyChar());
+		m_DipColours.Item(i).m_Colour = myColour;
+	}
+}
+
 
 void vrRenderVectorC2PDips::SetSize(int value) {
   m_Size = value;

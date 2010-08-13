@@ -47,7 +47,7 @@ class vrRender {
 	virtual vrRENDER_TYPE GetType() const;
 
     inline const int GetTransparency() const;	
-    void SetTransparency(int value);
+    virtual void SetTransparency(int value);
 
 	virtual bool Serialize(vrSerialize & serialobj);
 };
