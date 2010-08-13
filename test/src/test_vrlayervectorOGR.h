@@ -135,7 +135,7 @@ public:
 				break;
 			}
 
-			wxLogMessage("oid : %d contain %d vertex",
+			wxLogMessage("oid : %ld contain %d vertex",
 						 myFeat->GetFID(),
 						 (((OGRLineString*) myFeat->GetGeometryRef())->getNumPoints()));
 			iCount++;
