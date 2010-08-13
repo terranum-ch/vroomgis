@@ -18,6 +18,7 @@
 #include "vrrenderer.h"
 #include "vrlayer.h"
 #include "vrrender.h"
+#include "vrrendervectorc2p.h"
 #include "vrlabel.h"
 
 
@@ -43,6 +44,10 @@ bool vrRenderer::_IsCorrectRender() {
 			
 		case vrRENDER_RASTER_C2D:
 			if (m_Layer->GetType() == vrDRIVER_RASTER_C2D) { bReturn = true;}
+			break;
+			
+		case vrRENDER_VECTOR_C2P_DIPS:
+			if (m_Layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
 			break;
 			
 		default:
@@ -77,7 +82,11 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 			case vrDRIVER_RASTER_C2D:
 				m_Render = new vrRenderRasterColtop();
 				break;
-					
+				
+			case vrDRIVER_VECTOR_C2P:
+				m_Render = new vrRenderVectorC2PDips();
+				break;
+				
 			default:
 				m_Render = new vrRender();
 				break;

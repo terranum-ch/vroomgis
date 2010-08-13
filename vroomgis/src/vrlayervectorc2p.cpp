@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "vrlayervectorc2p.h"
-#include "vrrender.h"
+#include "vrrendervectorc2p.h"
 #include "vrlabel.h"
 
 bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
@@ -25,13 +25,9 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 	wxStopWatch sw;
 	// creating pen
 	
-	wxASSERT(render->GetType() == vrRENDER_VECTOR);
-	vrRenderVector * myRender = (vrRenderVector*) render;
-	
-	wxPen myPen (myRender->GetColorPen(),
-				 myRender->GetSize());
-	gdc->SetPen(myPen);
-	
+	wxASSERT(render->GetType() == vrRENDER_VECTOR_C2P_DIPS);
+	vrRenderVectorC2PDips * myRender = (vrRenderVectorC2PDips*) render;
+	const int myDipWidth = myRender->GetDipWidth();
 	
 	// iterating and drawing geometries
 	OGRPoint * myGeom = NULL;
@@ -44,61 +40,59 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		if (myFeat == NULL) {
 			break;
 		}
-		
 		myGeom = NULL;
 		myGeom = (OGRPoint*) myFeat->GetGeometryRef();
 		wxASSERT(myGeom);
-		
-		
-		// get dip and direction
-		//int myIndex = myFeat->GetFieldIndex("DIP");
-		//double myDip = myFeat->GetFieldAsDouble(myIndex);
+				
+		// get direction
 		double myDir = myFeat->GetFieldAsDouble(1);
-		
-		// create | line
+		int myFamily = myFeat->GetFieldAsInteger(3);
 		wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(),myGeom->getY()),
 										 coord.GetLeftTop(),
 										 pxsize);
-		wxGraphicsMatrix myMatrix = gdc->CreateMatrix();
-		double a, b, c, d, e, f;
-		myMatrix.Get(&a, &b, &c, &d, &e, &f);
-		wxLogMessage("Matrix is : %f, %f, %f, %f, %f, %f", a, b, c, d, e, f);
-		myMatrix.Rotate((myDir * M_PI) / 180.0);
-		//myMatrix.Translate(myPt.x, myPt.y);
-		myMatrix.G et(&a, &b, &c, &d, &e, &f);
-		wxLogMessage("Matrix (rotated) is : %f, %f, %f, %f, %f, %f", a, b, c, d, e, f);
-		wxGraphicsPath myVPath = gdc->CreatePath();
-		myVPath.MoveToPoint(myPt.x, myPt.y);
-		myVPath.AddLineToPoint(myPt.x, myPt.y - 10);
-		myVPath.Transform(myMatrix);
-
-		// create -- Line
-		wxGraphicsPath myHPath = gdc->CreatePath();
-		myHPath.MoveToPoint(myPt.x - 15, myPt.y);
-		myHPath.AddLineToPoint(myPt.x + 15, myPt.y);
-		myHPath.Transform(myMatrix);
+				
+		// create pen
+		wxPen myPen (myRender->GetDipColour(myFamily),myRender->GetSize());
+		gdc->SetPen(myPen);
 		
+		// Create | line
+		wxGraphicsPath myVPath = gdc->CreatePath();		
+		myVPath.MoveToPoint(0.0, 0.0);
+		myVPath.AddLineToPoint(0.0, -1.0 * myDipWidth);
+		// Create -- line
+		wxGraphicsPath myHPath = gdc->CreatePath();
+		myHPath.MoveToPoint(-1.5 * myDipWidth, 0.0);
+		myHPath.AddLineToPoint(1.5 * myDipWidth, 0.0);
+		
+		// Rotate
+		wxGraphicsMatrix myRotateMatrix = gdc->CreateMatrix();
+		myRotateMatrix.Rotate((myDir * M_PI) / 180);
+		myVPath.Transform(myRotateMatrix);
+		myHPath.Transform(myRotateMatrix);
+		
+		// Translate to position
+		wxGraphicsMatrix myTranslateMatrix = gdc->CreateMatrix();
+		myTranslateMatrix.Translate(myPt.x, myPt.y);
+		myVPath.Transform(myTranslateMatrix);
+		myHPath.Transform(myTranslateMatrix);
+
+		// ensure intersecting display
 		wxRect2DDouble myPathRect = myVPath.GetBox();
 		myPathRect.Union(myHPath.GetBox());
-		
-		// ensure intersecting display
-		/*if (myPathRect.Intersects(myWndRect) ==false) {
+		if (myPathRect.Intersects(myWndRect) ==false) {
 			OGRFeature::DestroyFeature(myFeat);
 			myFeat = NULL;
 			continue;
-		}*/
-		
+		}
 		if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
 			OGRFeature::DestroyFeature(myFeat);
 			myFeat = NULL;
 			continue;			
 		}
-		
 		iCount++;
 		
 		gdc->StrokePath(myHPath);
 		gdc->StrokePath(myVPath);
-		
 		OGRFeature::DestroyFeature(myFeat);
 		myFeat = NULL;
 	}
@@ -127,6 +121,7 @@ bool vrLayerVectorC2P::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 vrLayerVectorC2P::vrLayerVectorC2P() {
 	wxASSERT(m_Dataset==NULL);
 	wxASSERT(m_Layer==NULL);
+	m_DriverType = vrDRIVER_VECTOR_C2P;
 }
 
 

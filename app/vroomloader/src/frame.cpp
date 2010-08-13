@@ -21,6 +21,7 @@
 #include "tmlog.h"	// for double logging process
 #include "vrdisplayvalue.h"	// for displaying values
 #include <lsversion_dlg.h>
+#include "vrrendervectorc2p.h"
 
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
@@ -238,8 +239,18 @@ bool vroomLoaderFrame::OpenLayers (const wxArrayString & names){
 		vrLayer * myLayer = m_LayerManager->GetLayer( wxFileName(names.Item(j)));
 		wxASSERT(myLayer);
 		
+		// if type is DIPS
+		vrRenderVectorC2PDips * myRender = NULL;
+		if (myLayer->GetType() == vrDRIVER_VECTOR_C2P) {
+			// change default colour;
+			myRender = new vrRenderVectorC2PDips(*wxBLUE);
+			//adding support for familly 2
+			myRender->AddDipColour(*wxRED, 10);
+		}
+		
+		
 		// add files to the viewer
-		m_ViewerLayerManager->Add(-1, myLayer);
+		m_ViewerLayerManager->Add(-1, myLayer, myRender);
 	}
 	m_ViewerLayerManager->FreezeEnd();
 	return true;
