@@ -163,4 +163,9 @@ bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 	return true;
 }
 
+wxFileName vrLayerVectorC2P::GetDisplayName() {
+	wxFileName myDisplayName (wxEmptyString, wxEmptyString, "DIPS", wxEmptyString);
+	return myDisplayName;
+}
+
 

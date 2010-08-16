@@ -93,4 +93,16 @@ public:
 	
 	
 };
+
+
+
+class vrLayerRasterEGRID : public vrLayerRasterGDAL {
+public:
+    vrLayerRasterEGRID();
+    virtual ~vrLayerRasterEGRID();
+	
+    virtual wxFileName GetDisplayName();
+	
+};
+
 #endif

@@ -46,6 +46,8 @@ class vrLayerVectorC2P : public vrLayerVectorOGR {
     virtual ~vrLayerVectorC2P();
 
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
+	virtual wxFileName GetDisplayName();
+
 
 };
 #endif

@@ -316,7 +316,7 @@ void vroomLoaderFrame::OnCloseLayer(wxCommandEvent & event){
 	for (int i = 0; i<m_ViewerLayerManager->GetCount(); i++) {
 		vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(i);
 		wxASSERT(myRenderer);
-		myLayersName.Add(myRenderer->GetLayer()->GetName().GetFullName());
+		myLayersName.Add(myRenderer->GetLayer()->GetDisplayName().GetFullName());
 	}
 	
 	if (myLayersName.IsEmpty()) {
@@ -417,7 +417,7 @@ void vroomLoaderFrame::OnMoveLayer (wxCommandEvent & event){
 	for (int i = 0; i<m_ViewerLayerManager->GetCount(); i++) {
 		myPosMenu.Append(vlID_MENU_POPUP_LAYER + i, 
 						 wxString::Format("%d - %s",i+1,
-										  m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetName().GetFullName()));
+										  m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetDisplayName().GetFullName()));
 	}
 	wxPoint myPos = wxGetMousePosition();
 	

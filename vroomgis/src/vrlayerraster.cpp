@@ -239,7 +239,10 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
 				}
 				
 				myRange = m_OneBandMax - m_OneBandMin;
-				wxASSERT(myRange > 0);
+				if (myRange <= 0) {
+					myRange = 1;
+				}
+				//wxASSERT(myRange > 0);
 				myDataType = band->GetRasterDataType();
 				
 				// getting monoband image
@@ -767,6 +770,24 @@ bool vrLayerRasterGDAL::GetPixelValue(double coordx, double coordy, wxArrayDoubl
 	}
 	CPLFree(pData);
 	return true;
+}
+
+
+
+
+
+
+
+vrLayerRasterEGRID::vrLayerRasterEGRID() {
+}
+
+vrLayerRasterEGRID::~vrLayerRasterEGRID() {
+	
+}
+
+wxFileName vrLayerRasterEGRID::GetDisplayName() {
+	wxFileName myName (GetFileName().GetPath());
+	return myName;
 }
 
 
