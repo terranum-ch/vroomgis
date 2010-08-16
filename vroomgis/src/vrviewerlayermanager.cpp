@@ -129,7 +129,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	if (m_FreezeStatus==false) {
 		if(m_WindowParent){
 			if (m_ComputeExtentStatus == true) {
-				_GetLayersExtent(false);
+				_GetLayersExtent(true);
 				m_ComputeExtentStatus = false;
 			}
 			
@@ -308,7 +308,7 @@ void vrViewerLayerManager::FreezeEnd() {
 	
 	// compute layers extent
 	if (m_ComputeExtentStatus == true) {
-		_GetLayersExtent(false);
+		_GetLayersExtent(true);
 		m_ComputeExtentStatus = false;
 	}
 	
