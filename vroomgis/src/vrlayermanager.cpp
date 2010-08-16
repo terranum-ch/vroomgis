@@ -79,6 +79,9 @@ bool vrLayerManager::Open(const wxFileName & filename) {
 			break;
 		
 		case vrDRIVER_RASTER_ESRIGRID:
+			myLayer = new vrLayerRasterEGRID();
+			break;
+			
 		case vrDRIVER_RASTER_JPEG:
 		case vrDRIVER_RASTER_TIFF:
 			myLayer = new vrLayerRasterGDAL();
@@ -122,7 +125,7 @@ bool vrLayerManager::Close(vrLayer * layer) {
 			vrRenderer * myRenderer = m_ViewerManagers.Item(i)->GetRenderer(j);
 			if (layer == myRenderer->GetLayer()) {
 				wxLogError("Unable to close '%s', layer still in use",
-						   layer->GetName().GetFullName());
+						   layer->GetDisplayName().GetFullName());
 				return false;
 			}
 		}
@@ -138,7 +141,7 @@ bool vrLayerManager::Close(vrLayer * layer) {
 	
 	if (iRemoveIndex == wxNOT_FOUND) {
 		wxLogError("Unable to close '%s', layer not present into layermanager",
-				   layer->GetName().GetFullName());
+				   layer->GetDisplayName().GetFullName());
 		return false;
 	}
 	
@@ -161,7 +164,7 @@ vrLayer * vrLayerManager::GetLayer(const wxFileName & filename){
 	
 	for (unsigned int i = 0; i<m_Layers.GetCount(); i++)
 	{
-		if (m_Layers.Item(i)->GetName().SameAs(filename)){
+		if (m_Layers.Item(i)->GetFileName().SameAs(filename)){
 			myLayer = m_Layers.Item(i);
 			break;
 		}

@@ -75,7 +75,7 @@ wxDialog (parent, id, title, pos, size, style){
 
 	// list raster layers
 	for (int i = 0; i<m_LayerViewerManager->GetCount(); i++) {
-		wxString myLayerName = m_LayerViewerManager->GetRenderer(i)->GetLayer()->GetName().GetFullName();
+		wxString myLayerName = m_LayerViewerManager->GetRenderer(i)->GetLayer()->GetDisplayName().GetFullName();
 		m_LayerChoice->Append(myLayerName);
 	}
 	m_LayerChoice->SetSelection(0);

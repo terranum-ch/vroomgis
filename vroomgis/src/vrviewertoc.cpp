@@ -306,7 +306,7 @@ vrViewerTOC::~vrViewerTOC() {
 
 bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
 	if (index >= (signed) GetCount()) {
-		int myPos = Append(renderer->GetLayer()->GetName().GetFullName());
+		int myPos = Append(renderer->GetLayer()->GetDisplayName().GetFullName());
 		Check(myPos, renderer->GetVisible());
 		return true;
 	}
@@ -316,7 +316,7 @@ bool vrViewerTOC::Add(int index, vrRenderer * renderer, int control) {
 		index = 0;
 	}
 	
-	int myPos = Insert(renderer->GetLayer()->GetName().GetFullName(), index);
+	int myPos = Insert(renderer->GetLayer()->GetDisplayName().GetFullName(), index);
 	Check(myPos, renderer->GetVisible());
 	return true;
 }

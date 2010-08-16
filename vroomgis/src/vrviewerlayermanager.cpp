@@ -161,7 +161,7 @@ bool vrViewerLayerManager::Move(long oldpos, long newpos) {
 	
 	if(m_Toc && m_Toc->Move(oldpos, newpos)==false){
 		wxLogError("Moving layer '%s' from position %d to %d failed",
-				   myRenderer->GetLayer()->GetName().GetFullName(),
+				   myRenderer->GetLayer()->GetDisplayName().GetFullName(),
 				   oldpos, newpos);
 		return false;
 	}
@@ -405,7 +405,7 @@ bool vrViewerLayerManager::_GetLayersData() {
 												   myCoordinate->GetExtent(),
 												   myCoordinate->GetPixelSize())==false) {
 				wxLogWarning("No data to display for '%s' !",
-						   m_Renderers.Item(i)->GetLayer()->GetName().GetFullName());
+						   m_Renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
 				bReturn = false;
 			}
 			iImageIndex++;

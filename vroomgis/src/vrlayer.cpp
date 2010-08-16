@@ -30,10 +30,14 @@ vrLayer::~vrLayer() {
 
 
 
-wxFileName vrLayer::GetName() {
+wxFileName vrLayer::GetFileName() {
 	return m_FileName;
 }
 
+
+wxFileName vrLayer::GetDisplayName() {
+	return m_FileName;
+}
 
 
 vrDRIVERS_TYPE vrLayer::GetType() {

@@ -49,7 +49,8 @@ public:
 	virtual bool Create(const wxFileName & filename){return false;}
     virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
 
-	wxFileName GetName();
+    wxFileName GetFileName();
+	virtual wxFileName GetDisplayName();
     virtual vrDRIVERS_TYPE GetType();
 	virtual bool GetExtent(vrRealRect & rect){return false;}
 	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
