@@ -244,6 +244,7 @@ bool vroomLoaderFrame::OpenLayers (const wxArrayString & names){
 		if (myLayer->GetType() == vrDRIVER_VECTOR_C2P) {
 			// change default colour;
 			myRender = new vrRenderVectorC2PDips(*wxBLUE);
+			myRender->SetUsingDefaultColour(false);
 			//adding support for familly 2
 			myRender->AddDipColour(*wxRED, 10);
 		}

@@ -35,6 +35,7 @@ vrRenderVectorC2PDips::vrRenderVectorC2PDips(const wxColour & defaultcolour, int
 	m_Type = vrRENDER_VECTOR_C2P_DIPS;
 	m_DipWidth = dipwith;
 	m_Size = size;
+	m_UseDefaultColour = true;
 	ClearDipColours();
 	AddDipColour(defaultcolour, 0);
 	m_MemoryFamilyID = wxNOT_FOUND;

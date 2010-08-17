@@ -28,6 +28,8 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 	wxASSERT(render->GetType() == vrRENDER_VECTOR_C2P_DIPS);
 	vrRenderVectorC2PDips * myRender = (vrRenderVectorC2PDips*) render;
 	const int myDipWidth = myRender->GetDipWidth();
+	const bool myUseDefaultColour = myRender->IsUsingDefaultColour();
+	wxPen myDefaultPen (myRender->GetDipColour(0), myRender->GetSize());
 	
 	// iterating and drawing geometries
 	OGRPoint * myGeom = NULL;
@@ -46,14 +48,17 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 				
 		// get direction
 		double myDir = myFeat->GetFieldAsDouble(1);
-		int myFamily = myFeat->GetFieldAsInteger(3);
 		wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(),myGeom->getY()),
 										 coord.GetLeftTop(),
 										 pxsize);
 				
-		// create pen
-		wxPen myPen (myRender->GetDipColour(myFamily),myRender->GetSize());
-		gdc->SetPen(myPen);
+		// create family pen if needed
+		if (myUseDefaultColour == false) {
+			int myFamily = myFeat->GetFieldAsInteger(3);
+			myDefaultPen.SetColour(myRender->GetDipColour(myFamily));
+			myDefaultPen.SetWidth(myRender->GetSize());
+		}
+		gdc->SetPen(myDefaultPen);
 		
 		// Create | line
 		wxGraphicsPath myVPath = gdc->CreatePath();		
