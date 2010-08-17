@@ -43,8 +43,6 @@ private:
 	bool m_FreezeStatus;
 	
 	// event function
-	void OnVisibleStatusChanged(wxCommandEvent & event);
-
 	void OnMouseRightDown(wxMouseEvent & event);
     void OnMouseWheel(wxMouseEvent & event);
 	
@@ -59,6 +57,7 @@ private:
 	
 protected:
     void _ReloadData();
+	virtual void OnVisibleStatusChanged(wxCommandEvent & event);
 	virtual void _ShowMenuContextual(int id, vrRenderer * renderer);
 	
 	
