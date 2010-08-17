@@ -47,6 +47,8 @@ private:
 	
     int m_DipWidth;
     int m_Size;
+	bool m_UseDefaultColour;
+
 	
 	long m_MemoryFamilyID;
 	wxColour m_MemoryColour;
@@ -66,6 +68,10 @@ public:
     void ClearDipColours();
     bool AddDipColour(const wxColour & colour, long familyid);
     wxColour GetDipColour(long familyID);
+	int GetCountColor();
+	
+	inline const bool IsUsingDefaultColour() const;
+    void SetUsingDefaultColour(bool value){m_UseDefaultColour = value;}
 	
     virtual bool Serialize(vrSerialize & serialobj);
 	
@@ -74,6 +80,13 @@ public:
 inline const int vrRenderVectorC2PDips::GetSize() const {
 	return m_Size;
 }
+
+
+inline const bool vrRenderVectorC2PDips::IsUsingDefaultColour() const {
+	return m_UseDefaultColour;
+}
+
+
 
 #endif
 

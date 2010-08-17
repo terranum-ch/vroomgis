@@ -81,6 +81,8 @@ void vrRenderVectorC2PDips::SetSize(int value) {
 
 void vrRenderVectorC2PDips::ClearDipColours() {
 	m_DipColours.Clear();
+	m_MemoryFamilyID = wxNOT_FOUND;
+	m_MemoryColour = wxColour();
 }
 
 
@@ -128,15 +130,29 @@ wxColour vrRenderVectorC2PDips::GetDipColour(long familyID) {
 
 
 
+int vrRenderVectorC2PDips::GetCountColor(){
+	int myCount = m_DipColours.GetCount();
+	// always the default colour
+	wxASSERT(myCount > 0);
+	return myCount;
+}
+
+
 
 bool vrRenderVectorC2PDips::Serialize(vrSerialize & serialobj) {
 	vrRender::Serialize(serialobj);
 	serialobj.EnterObject();
 	if (serialobj.IsStoring()) {
 		serialobj << GetSize();
+		serialobj << GetDipWidth();
+		serialobj << IsUsingDefaultColour();
+		serialobj << m_DipColours.Item(0).m_Colour;
 	}
 	else {
 		serialobj >> m_Size;
+		serialobj >> m_DipWidth;
+		serialobj >> m_UseDefaultColour;
+		serialobj >> m_DipColours.Item(0).m_Colour;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();
