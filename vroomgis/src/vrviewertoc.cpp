@@ -294,7 +294,7 @@ vrViewerTOC::vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos,
 wxCheckListBox(parent, id, pos, size){	
 
 	m_FreezeStatus = false;
-	
+	m_ViewerManager = NULL;
 }
 
 
