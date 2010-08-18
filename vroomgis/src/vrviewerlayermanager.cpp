@@ -113,6 +113,9 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 		wxLogMessage("Computing status is set to TRUE");
 	}
 	
+	if (pos >= m_Renderers.GetCount()) {
+		pos = m_Renderers.GetCount() -1;
+	}
 	
 	if (pos == -1){
 		m_Renderers.Insert(myRenderer, 0);
