@@ -50,7 +50,7 @@ class vrViewerLayerManager : public wxEvtHandler {
 	
 	// using array of wxImages instead of array of wxBitmap because bitmap are
 	// limited ressources on some systems
-	wxArrayImage * m_Images;
+	wxArrayImage m_Images;
 	
 	bool m_FreezeStatus;
 	bool m_ComputeExtentStatus;

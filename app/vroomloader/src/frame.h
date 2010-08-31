@@ -53,6 +53,8 @@ class vroomLoader : public wxApp
 public:
      virtual bool OnInit();
 };
+DECLARE_APP(vroomLoader);
+
 
 class vroomLoaderFrame;
 class vroomDropFiles : public wxFileDropTarget {
@@ -64,6 +66,8 @@ public:
 	virtual bool OnDropFiles(wxCoord x, wxCoord y, 
 							 const wxArrayString & filenames);
 };
+
+
 
 
 

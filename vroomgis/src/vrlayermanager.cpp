@@ -39,8 +39,8 @@ vrLayerManager::~vrLayerManager() {
 	for (unsigned int i = 0; i<iCount; i++)
 	{
 		vrLayer * myLayer = m_Layers.Item(0);
-		m_Layers.Detach(0);
 		wxDELETE(myLayer);
+		m_Layers.RemoveAt(0);
 	}
 	wxASSERT(m_Layers.GetCount()==0);
 	
@@ -48,8 +48,8 @@ vrLayerManager::~vrLayerManager() {
 	int iCountVM = m_ViewerManagers.GetCount();
 	for (int j = iCountVM - 1; j >= 0; j--){
 		vrViewerLayerManager * myManager = m_ViewerManagers.Item(0);
-		m_ViewerManagers.Detach(0);
 		wxDELETE(myManager);
+		m_ViewerManagers.RemoveAt(0);
 	}
 	wxASSERT(m_ViewerManagers.GetCount()==0);
 }
@@ -102,14 +102,14 @@ bool vrLayerManager::Open(const wxFileName & filename) {
 	}
 	
 	wxASSERT(myLayer);
-	if (myLayer->Open(filename, bReadWrite)==false)
+	if (myLayer->Open(filename, bReadWrite)==false){
 		return false;
+	}
 	
 	m_Layers.Add(myLayer);
 	wxLogMessage("%ld layers in the layermanager", m_Layers.GetCount());
 	bool bValue = m_Layers.Item(0)->IsOK();
 	wxLogMessage("added layer is %d", bValue);
-	
 	return true;
 }
 
@@ -147,8 +147,8 @@ bool vrLayerManager::Close(vrLayer * layer) {
 	
 	vrLayer * myLayer = m_Layers.Item(iRemoveIndex);
 	wxASSERT(myLayer);
-	m_Layers.Detach(iRemoveIndex);
 	wxDELETE(myLayer);
+	m_Layers.RemoveAt(iRemoveIndex);
 	return true;
 }
 
