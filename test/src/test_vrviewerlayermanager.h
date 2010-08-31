@@ -159,13 +159,13 @@ public:
 		
 		
 		// Moving code
-		wxString myJpegName = m_ViewManager->GetRenderer(0)->GetLayer()->GetName().GetFullName();
+		wxString myJpegName = m_ViewManager->GetRenderer(0)->GetLayer()->GetDisplayName().GetFullName();
 		//wxLogMessage (myJpegName + " - " + g_TestFileJPEG);
 		TS_ASSERT(myJpegName == g_TestFileJPEG);
 		TS_ASSERT(m_ViewManager->Move(2, 0)==true);
-		TS_ASSERT(m_ViewManager->GetRenderer(0)->GetLayer()->GetName().GetFullName() == g_TestFileSHP);
+		TS_ASSERT(m_ViewManager->GetRenderer(0)->GetLayer()->GetDisplayName().GetFullName() == g_TestFileSHP);
 		TS_ASSERT(m_ViewManager->Move(0, 2)==true);
-		TS_ASSERT(m_ViewManager->GetRenderer(0)->GetLayer()->GetName().GetFullName() == g_TestFileJPEG);
+		TS_ASSERT(m_ViewManager->GetRenderer(0)->GetLayer()->GetDisplayName().GetFullName() == g_TestFileJPEG);
 	}
 	
 	

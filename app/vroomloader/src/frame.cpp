@@ -260,6 +260,7 @@ bool vroomLoaderFrame::OpenLayers (const wxArrayString & names){
 
 void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 {
+	/*
 	// TODO: This is temp code for autoloading file
 	wxFileName myTestFile("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/gwn_combioula.shp");
 	wxFileName myTestFile1("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/MNT.tif");
@@ -283,6 +284,7 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 	m_ViewerLayerManager->Add(-1, myTestLayer);
 	m_ViewerLayerManager->FreezeEnd();
 	return;
+	 */
 	
 	 
 	vrDrivers myDrivers;

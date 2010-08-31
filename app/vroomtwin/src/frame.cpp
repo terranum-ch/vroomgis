@@ -294,7 +294,7 @@ void vroomTwinFrame::OnCloseLayer(wxCommandEvent & event){
 	for (int i = 0; i<m_ViewerLayerManager1->GetCount(); i++) {
 		vrRenderer * myRenderer = m_ViewerLayerManager1->GetRenderer(i);
 		wxASSERT(myRenderer);
-		myLayersName.Add(myRenderer->GetLayer()->GetName().GetFullName());
+		myLayersName.Add(myRenderer->GetLayer()->GetDisplayName().GetFullName());
 	}
 	
 	if (myLayersName.IsEmpty()) {
