@@ -48,8 +48,6 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 	m_LayerManager = parent;
 	m_FreezeStatus = false;
 	m_ComputeExtentStatus = false;
-	m_Images = NULL;
-	
 	if (window) {
 		m_WindowParent = window;
 		m_WindowParent->PushEventHandler(this);
@@ -94,8 +92,8 @@ vrViewerLayerManager::~vrViewerLayerManager() {
 	for (unsigned int i = 0; i<iCount; i++) {
 		vrRenderer * myRenderer = m_Renderers.Item(0);
 		wxASSERT(myRenderer);
-		m_Renderers.Detach(0);
 		wxDELETE(myRenderer);
+		m_Renderers.RemoveAt(0);
 	}
 	
 }
@@ -158,7 +156,7 @@ bool vrViewerLayerManager::Move(long oldpos, long newpos) {
 	
 	vrRenderer * myRenderer = m_Renderers.Item(oldpos);
 	wxASSERT(myRenderer);
-	m_Renderers.Detach(oldpos);
+	m_Renderers.RemoveAt(oldpos);
 	m_Renderers.Insert(myRenderer, myNewPos);
 	
 	
@@ -200,9 +198,9 @@ bool vrViewerLayerManager::Remove(vrRenderer * renderer) {
 	// remove from Renderer array
 	vrRenderer * myRenderer = GetRenderer(myRemoveIndex);
 	wxASSERT(myRenderer);
-	m_Renderers.Detach(myRemoveIndex);
 	wxDELETE(myRenderer);
-	
+	m_Renderers.RemoveAt(myRemoveIndex);
+		
 	// remove from TOC
 	if (m_Toc) {
 		m_Toc->Remove(myRemoveIndex);
@@ -338,13 +336,12 @@ void vrViewerLayerManager::Reload() {
 
 
 bool vrViewerLayerManager::_BitmapArrayInit() {
-	wxASSERT(m_Images == NULL);
+	wxASSERT(m_Images.GetCount() == 0);
 	if (m_Renderers.GetCount()== 0) {
 		//wxLogError("Unable to create images, no layer opened");
 		return false;
 	}
 	
-	m_Images = new wxArrayImage();
 	wxSize myDisplaySize = m_Display->GetSize();
 	
 	for (unsigned int i = 0; i<m_Renderers.GetCount(); i++) {
@@ -358,29 +355,28 @@ bool vrViewerLayerManager::_BitmapArrayInit() {
 			
 			wxLogMessage("Creation des images : %p", myImage);
 			
-			m_Images->Add(myImage);
+			m_Images.Add(myImage, 1);
 			
 		}
 	}
-	wxLogMessage("Created %ld images", m_Images->GetCount());
+	wxLogMessage("Created %ld images", m_Images.GetCount());
 	return true;
 }
 
 
 
 void vrViewerLayerManager::_BitmapArrayDelete() {
-	if (m_Images) {
-		wxLogMessage("Deleting %ld images", m_Images->GetCount());
+	if (m_Images.GetCount() > 0) {
+		wxLogMessage("Deleting %ld images", m_Images.GetCount());
 		
-		unsigned int iCountImg = m_Images->GetCount();
+		unsigned int iCountImg = m_Images.GetCount();
 		for (unsigned j = 0; j<iCountImg; j++){
-			wxImage * myImage = m_Images->Item(0);
+			wxImage * myImage = m_Images.Item(0);
 			wxASSERT(myImage);
-			m_Images->Detach(0);
 			wxDELETE(myImage);
+			m_Images.RemoveAt(0);
 		}
-		wxASSERT(m_Images->GetCount()==0);
-		wxDELETE(m_Images);
+		wxASSERT(m_Images.GetCount()==0);
 	}
 }
 
@@ -396,7 +392,7 @@ bool vrViewerLayerManager::_GetLayersData() {
 	// getting data from vrRenderer -> vrLayer
 	bool bReturn = true;
 	int iImageIndex = 0;
-	if(m_Images==NULL)
+	if(m_Images.GetCount() == 0)
 	{
 		return false;
 	}
@@ -404,7 +400,7 @@ bool vrViewerLayerManager::_GetLayersData() {
 	int iTotLayers = m_Renderers.GetCount();
 	for (int i = iTotLayers-1; i>= 0; i--) {
 		if (m_Renderers.Item(i)->GetVisible() == true) {
-			if (m_Renderers.Item(i)->GetBitmapData( m_Images->Item(iImageIndex),
+			if (m_Renderers.Item(i)->GetBitmapData( m_Images.Item(iImageIndex),
 												   myCoordinate->GetExtent(),
 												   myCoordinate->GetPixelSize())==false) {
 				wxLogWarning("No data to display for '%s' !",
@@ -458,16 +454,11 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible) {
 
 
 wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
-	
-	if (m_Images == NULL){
+	if (m_Images.GetCount() == 0) {
 		return NULL;
 	}
 	
-	if (m_Images->GetCount() == 0) {
-		return NULL;
-	}
-	
-	wxSize mySize = m_Images->Item(0)->GetSize();
+	wxSize mySize = m_Images.Item(0)->GetSize();
 	wxASSERT(mySize != wxDefaultSize);
 	
 	
@@ -482,8 +473,8 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 	myDC.DrawRectangle(0,0,mySize.GetWidth(), mySize.GetHeight());
 	
 	wxStopWatch sw;
-	for (unsigned int i = 0 ; i < m_Images->GetCount(); i++ ) {
-		wxBitmap myBmp (*m_Images->Item(i));
+	for (unsigned int i = 0 ; i < m_Images.GetCount(); i++ ) {
+		wxBitmap myBmp (*m_Images.Item(i));
 		myDC.DrawBitmap(myBmp,0,0,true);
 	}
 

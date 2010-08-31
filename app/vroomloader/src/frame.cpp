@@ -26,6 +26,22 @@
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
 
+IMPLEMENT_APP(vroomLoader);
+bool vroomLoader::OnInit()
+{
+    if ( !wxApp::OnInit() )
+        return false;
+	
+	wxInitAllImageHandlers();
+	initialize_images();
+	
+    vroomLoaderFrame *frame = new vroomLoaderFrame("vroomLoader");
+    //frame->CenterOnScreen(wxBOTH);
+	frame->SetSize(50, 50, 800, 500);
+	frame->Show(true);
+	
+    return true;
+}
 
 
 BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
@@ -46,8 +62,6 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomLoaderFrame::OnToolAction)
 END_EVENT_TABLE()
-IMPLEMENT_APP(vroomLoader)
-
 
 
 vroomDropFiles::vroomDropFiles(vroomLoaderFrame * parent){
@@ -68,21 +82,7 @@ bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y,
 
 
 
-bool vroomLoader::OnInit()
-{
-    if ( !wxApp::OnInit() )
-        return false;
-	
-	wxInitAllImageHandlers();
-	initialize_images();
-	
-    vroomLoaderFrame *frame = new vroomLoaderFrame("vroomLoader");
-    //frame->CenterOnScreen(wxBOTH);
-	frame->SetSize(50, 50, 800, 500);
-	frame->Show(true);
-	
-    return true;
-}
+
 
 void  vroomLoaderFrame::_CreateControls()
 {
@@ -210,9 +210,9 @@ vroomLoaderFrame::~vroomLoaderFrame()
 
 
 
-void vroomLoaderFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
+void vroomLoaderFrame::OnQuit(wxCommandEvent& event)
 {
-	Close(true);
+	event.Skip();
 }
 
 
@@ -258,16 +258,12 @@ bool vroomLoaderFrame::OpenLayers (const wxArrayString & names){
 	
 }
 
-
 void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 {
-	
-	
 	// TODO: This is temp code for autoloading file
-	/*
-	wxFileName myTestFile("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/gwn_combioula.shp");
-	wxFileName myTestFile1("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/MNT.tif");
-	wxFileName myTestFile2("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/ortophoto_clp.tif");
+	wxFileName myTestFile("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/gwn_combioula.shp");
+	wxFileName myTestFile1("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/MNT.tif");
+	wxFileName myTestFile2("/Users/lucien/Documents/PRJ/COLTOPGIS/test_data/ortophoto_clp.tif");
 
 	m_LayerManager->Open(myTestFile);
 	m_LayerManager->Open(myTestFile1);
@@ -281,15 +277,14 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 	wxASSERT(myTestLayer1);
 	wxASSERT(myTestLayer2);
 
+	m_ViewerLayerManager->FreezeBegin();
 	m_ViewerLayerManager->Add(-1, myTestLayer1);
 	m_ViewerLayerManager->Add(-1, myTestLayer2);
 	m_ViewerLayerManager->Add(-1, myTestLayer);
+	m_ViewerLayerManager->FreezeEnd();
 	return;
-	*/
+	
 	 
-	
-	
-	
 	vrDrivers myDrivers;
 	wxFileDialog myFileDlg (this, "Select GIS Layers",
 							wxEmptyString,
@@ -326,9 +321,9 @@ void vroomLoaderFrame::OnCloseLayer(wxCommandEvent & event){
 	}
 	
 
-	wxMultiChoiceDialog myChoiceDlg (this, "Select Layer(s) to close",
-									 "Close layer(s)",
-									 myLayersName);
+	wxMultiChoiceDialog  myChoiceDlg (this, "Select Layer(s) to close",
+									  "Close layer(s)",
+									  myLayersName);
 	if (myChoiceDlg.ShowModal() != wxID_OK) {
 		return;
 	}
