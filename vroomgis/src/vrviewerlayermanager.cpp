@@ -106,7 +106,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	myRenderer->SetVisible(visible);
 	
 	// need to compute coordinate ?
-	if (m_Renderers.GetCount() == 0) {
+	if (m_Renderers.GetCount() == 0 && visible == true) {
 		m_ComputeExtentStatus = true;
 		wxLogMessage("Computing status is set to TRUE");
 	}
