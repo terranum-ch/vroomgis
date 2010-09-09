@@ -105,11 +105,23 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	vrRenderer * myRenderer = new vrRenderer(layer, render, label);
 	myRenderer->SetVisible(visible);
 	
-	// need to compute coordinate ?
-	if (m_Renderers.GetCount() == 0 && visible == true) {
+	
+	// compute coordinate if layer added is visible and
+	// there is no other visible layers
+	if (visible == true && m_ComputeExtentStatus == false) {
 		m_ComputeExtentStatus = true;
-		wxLogMessage("Computing status is set to TRUE");
+		for (unsigned int i = 0; i<m_Renderers.GetCount(); i++) {
+			if (m_Renderers.Item(i)->GetVisible() == true) {
+				m_ComputeExtentStatus = false;
+				break;
+			}
+		}
 	}
+	
+	if (m_ComputeExtentStatus == true){
+		wxLogMessage("Computing extent required");
+	}
+	
 	
 	if (pos >= (signed) m_Renderers.GetCount()) {
 		pos = m_Renderers.GetCount();
