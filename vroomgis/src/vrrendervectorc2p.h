@@ -67,6 +67,7 @@ public:
 	
     void ClearDipColours();
     bool AddDipColour(const wxColour & colour, long familyid);
+	bool SetDipColour(const wxColour & colour, long familyid);
     wxColour GetDipColour(long familyID);
 	int GetCountColor();
 	
