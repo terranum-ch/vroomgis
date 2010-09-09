@@ -104,6 +104,18 @@ bool vrRenderVectorC2PDips::AddDipColour(const wxColour & colour, long familyid)
 }
 
 
+bool vrRenderVectorC2PDips::SetDipColour(const wxColour & colour, long familyid) {
+	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
+		if (m_DipColours.Item(i).m_FamilyID == familyid) {
+			m_DipColours.Item(i).m_Colour = colour;
+			return true;
+		}
+	}
+	wxLogError(_("Setting '%s' colour with '%d' id isn't allowed. ID didn't exist."),
+			   colour.GetAsString(), familyid);
+	return false;
+}
+
 
 wxColour vrRenderVectorC2PDips::GetDipColour(long familyID) {
 	wxASSERT(familyID >= 0);
