@@ -23,7 +23,7 @@ wxString vrDrivers::GetWildcards()
 	wxString myWildcards = wxEmptyString;
 	
 	// return all supported extensions
-	myWildcards.Append("All supported formats|");
+	myWildcards.Append(_("All supported formats|"));
 	for (unsigned int j = 0 ; j< sizeof(vrDRIVERS_EXTENSION) / sizeof(wxString); j++) {
 		if (vrDRIVERS_NAMES[j] != wxEmptyString) {
 			myWildcards.Append(vrDRIVERS_EXTENSION[j] + ";");
@@ -38,6 +38,30 @@ wxString vrDrivers::GetWildcards()
 		if (vrDRIVERS_NAMES[i] != wxEmptyString)
 			myWildcards.Append(vrDRIVERS_NAMES[i] + " files ("  + vrDRIVERS_EXTENSION[i] + ")|"
 							   + vrDRIVERS_EXTENSION[i] + "|");
+	}
+	myWildcards.RemoveLast(1);
+	return myWildcards;
+}
+
+
+wxString vrDrivers::GetSpecificWildcards(const wxArrayInt & types){
+	wxString myWildcards = wxEmptyString;
+	
+	if (types.GetCount() > 1) {
+		myWildcards.Append(_("All supported formats|"));
+		for (unsigned int j = 0; j < types.GetCount(); j++) {
+			myWildcards.Append(vrDRIVERS_EXTENSION[types.Item(j)] + ";");
+		}	
+		myWildcards.RemoveLast(1);
+		myWildcards.Append("|");
+	}
+		
+	for (unsigned int i = 0; i<types.GetCount(); i++) {
+		myWildcards.Append(vrDRIVERS_NAMES[types.Item(i)] +
+						   " files (" +
+						   vrDRIVERS_EXTENSION[types.Item(i)] +
+						   ")|" + vrDRIVERS_EXTENSION[types.Item(i)] +
+						   "|");
 	}
 	myWildcards.RemoveLast(1);
 	return myWildcards;

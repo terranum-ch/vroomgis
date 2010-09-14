@@ -63,6 +63,7 @@ const wxString vrDRIVERS_NAMES [] = {
 class vrDrivers {
   public:
     wxString GetWildcards();
+	wxString GetSpecificWildcards(const wxArrayInt & types);
 	vrDRIVERS_TYPE GetType(const wxString & extension);
     bool IsSupported(const wxString & extension);
 
