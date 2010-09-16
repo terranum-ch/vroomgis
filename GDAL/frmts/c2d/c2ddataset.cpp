@@ -939,6 +939,7 @@ bool C2DDataset::ReadProj (char * pszFilename, char ** proj){
 		VSIFReadL(*proj, sizeof(char), *myLength, fp);
 	}
 	VSIFCloseL(fp);
+	delete myLength;
 	return TRUE;
 }
 
@@ -1305,6 +1306,7 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	GDALGeneric3x3Processing(poSrcBand, poDstBand2,
 							 pfnAlg, pData,
 							 pfnProgress, NULL, 2);
+	CPLFree(pData);
 	
 	/* Make sure image data gets flushed */
 	RawRasterBand *poDstRawBand2 =  (RawRasterBand *) poDS->GetRasterBand( 2 );
@@ -1337,7 +1339,7 @@ C2DDataset::CreateCopy( const char * pszFilename, GDALDataset *poSrcDS,
 	GDALGeneric3x3Processing(poSrcBand, poDstBand3,
 							 pfnAlg, pData,
 							 pfnProgress, NULL, 3);
-	
+	CPLFree(pData);
 	/* Make sure image data gets flushed */
 	RawRasterBand *poDstRawBand3 =  (RawRasterBand *) poDS->GetRasterBand( 3 );
 	poDstRawBand3->FlushCache();
