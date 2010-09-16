@@ -71,7 +71,7 @@ wxDialog (parent, id, title, pos, size, style){
 
 	this->SetSizer( bSizer2 );
 	this->Layout();
-	bSizer2->Fit( this );
+	this->Fit();
 
 	// list raster layers
 	for (int i = 0; i<m_LayerViewerManager->GetCount(); i++) {
