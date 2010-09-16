@@ -28,6 +28,29 @@
 
 #include "vrlayer.h"
 
+
+enum vrOVERVIEW_TYPE {
+	vrOVERVIEW_NEAREST = 0,
+	vrOVERVIEW_GAUSS,
+	vrOVERVIEW_CUBIC,
+	vrOVERVIEW_AVERAGE,
+	vrOVERVIEW_MODE,
+	vrOVERVIEW_AVERAGE_MAGPHASE,
+	vrOVERVIEW_NONE	
+};
+
+const wxString vrOVERVIEW_TYPE_NAME[] = {
+	"NEAREST",
+	"GAUSS",
+	"CUBIC",
+	"AVERAGE",
+	"MODE",
+	"AVERAGE_MAGPHASE",
+	"NONE"
+};
+	
+
+
 class vrLayerRaster : public vrLayer {
   protected:
     GDALDataset * m_Dataset;
@@ -89,6 +112,9 @@ public:
 						 const vrRender * render = NULL, const vrLabel * label = NULL);
 	
 	virtual bool GetPixelValue(double coordx, double coordy, wxArrayDouble & values);
+    bool BuildOverviews(const wxArrayInt & factors,
+						vrOVERVIEW_TYPE type = vrOVERVIEW_NEAREST,
+						GDALProgressFunc progress = NULL);
 
 	
 	
