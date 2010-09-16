@@ -135,7 +135,9 @@ void  vroomLoaderFrame::_CreateControls()
 vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
        : wxFrame(NULL, wxID_ANY, title)
 {
+#ifndef __WXOSX__
     SetIcon(wxICON(vroomgis));
+#endif
 	m_DisplayValueDlg = NULL;
 
 	// MENU
