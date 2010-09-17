@@ -115,8 +115,7 @@ public:
     bool BuildOverviews(const wxArrayInt & factors,
 						vrOVERVIEW_TYPE type = vrOVERVIEW_NEAREST,
 						GDALProgressFunc progress = NULL);
-
-	
+    bool HasOverviews();
 	
 };
 
