@@ -784,6 +784,10 @@ bool vrLayerRasterGDAL::BuildOverviews(const wxArrayInt & factors,
 		myInts[i] = factors.Item(i);
 	}
 	
+	wxString myConstRRD = "USE_RRD";
+	wxString myConstRRDValue = "YES";
+	
+	CPLSetConfigOption(myConstRRD.mb_str(), myConstRRDValue.mb_str());
 	if( m_Dataset->BuildOverviews(vrOVERVIEW_TYPE_NAME[type].mb_str(),
 								  factors.GetCount(), 
 								  myInts, 0, NULL,
@@ -797,6 +801,17 @@ bool vrLayerRasterGDAL::BuildOverviews(const wxArrayInt & factors,
 	return false;
 }
 
+
+bool vrLayerRasterGDAL::HasOverviews() {
+	wxASSERT(m_Dataset);
+	
+	GDALRasterBand * myBand = m_Dataset->GetRasterBand(1);
+	wxASSERT(myBand);
+	if (myBand->GetOverviewCount() > 0) {
+		return true;
+	}
+	return false;
+}
 
 
 
