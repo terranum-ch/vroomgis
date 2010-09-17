@@ -1017,21 +1017,25 @@ GDALDataset *C2DDataset::Open( GDALOpenInfo * poOpenInfo ){
 		return NULL;		
 	}	
 	
-
-	C2DDataset * poDS;
+	// testing open the raster
 	FILE *fpImage = VSIFOpenL(poOpenInfo->pszFilename, "rb");
 	if (fpImage == NULL) {
 		CPLError( CE_Warning, CPLE_NotSupported, "Unable to open %s file",
 				 poOpenInfo->pszFilename);
 		return NULL;
 	}
+	VSIFCloseL(fpImage);
 	
+
+	
+	C2DDataset * poDS;
 	poDS = new C2DDataset();
-	poDS->fpImage = fpImage;
+	poDS->fpImage = NULL;
 	poDS->nRasterXSize = myRasterInfo.m_Width;
 	poDS->nRasterYSize = myRasterInfo.m_Height;
 	poDS->m_RasterInfo = myRasterInfo;
 	poDS->m_GeoTransformValid = TRUE;
+	
 	
 	if (myProj != NULL) {
 		poDS->m_ProjValue = new char [strlen(myProj)];
