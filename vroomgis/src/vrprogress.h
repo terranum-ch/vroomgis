@@ -26,6 +26,7 @@
 #endif
 #include <wx/progdlg.h>
 #include "tmpercent.h"
+#include "gdal_priv.h"
 
 
 class vrProgress {
@@ -35,7 +36,7 @@ public:
 	
 };
 
-int GDALUpdateSimple(double dfComplete, const char * pszMessage, void * pProgressArg);
+int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char * pszMessage, void * pProgressArg);
 
 class vrProgressSimple : public vrProgress {
 private:
