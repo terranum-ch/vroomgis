@@ -26,7 +26,7 @@ vrProgress::~vrProgress() {
 
 
 
-int GDALUpdateSimple(double dfComplete, const char * pszMessage, void * pProgressArg)
+int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char * pszMessage, void * pProgressArg)
 {
 	wxASSERT(pProgressArg);
 	vrProgressSimple * mypSimple = (vrProgressSimple*) pProgressArg;
