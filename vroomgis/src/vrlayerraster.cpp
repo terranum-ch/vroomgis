@@ -777,7 +777,8 @@ bool vrLayerRasterGDAL::GetPixelValue(double coordx, double coordy, wxArrayDoubl
 
 bool vrLayerRasterGDAL::BuildOverviews(const wxArrayInt & factors,
 									   vrOVERVIEW_TYPE type,
-									   GDALProgressFunc progress) {
+									   GDALProgressFunc progress,
+									   void * pfProgressData) {
 	wxASSERT(m_Dataset);
 	int * myInts = new int[factors.GetCount()];
 	for (unsigned int i = 0; i<factors.GetCount(); i++) {
@@ -791,7 +792,7 @@ bool vrLayerRasterGDAL::BuildOverviews(const wxArrayInt & factors,
 	if( m_Dataset->BuildOverviews(vrOVERVIEW_TYPE_NAME[type].mb_str(),
 								  factors.GetCount(), 
 								  myInts, 0, NULL,
-								  progress, NULL) == CE_None){
+								  progress, pfProgressData) == CE_None){
 		wxDELETEA(myInts);
 		return true;
 	}

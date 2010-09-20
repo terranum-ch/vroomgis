@@ -114,7 +114,8 @@ public:
 	virtual bool GetPixelValue(double coordx, double coordy, wxArrayDouble & values);
     bool BuildOverviews(const wxArrayInt & factors,
 						vrOVERVIEW_TYPE type = vrOVERVIEW_NEAREST,
-						GDALProgressFunc progress = NULL);
+						GDALProgressFunc progress = NULL,
+						void * pfProgressData = NULL);
     bool HasOverviews();
 	
 };
