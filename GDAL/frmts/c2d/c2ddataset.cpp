@@ -821,7 +821,7 @@ bool C2DDataset::ReadMagicNumber(GDALOpenInfo * poOpenInfo){
     }
 	
 	int myLength = strlen(C2DMagicName);
-	char * myChar = new char[myLength];
+	char * myChar = new char[myLength+1];
 	int iReadedB = VSIFReadL(myChar, sizeof(char), sizeof(C2DMagicName), fp);
 	if (iReadedB != sizeof(C2DMagicName) || strcmp(myChar, C2DMagicName) != 0) {
 		delete [] myChar;
@@ -852,7 +852,7 @@ bool C2DDataset::WriteMagicNumber(const char * pszFilename){
 
 
 bool C2DDataset::WriteHeader(const char * pszFilename, const C2DInfo & info){
-	FILE * fpImage =VSIFOpenL( pszFilename, "ab" );
+	FILE * fpImage =VSIFOpenL( pszFilename, "ab+" );
 	if (fpImage == NULL) {
 		CPLError( CE_Warning, CPLE_NotSupported, 
 				 "Opening file %s for Writing header failed",
@@ -899,7 +899,7 @@ bool C2DDataset::ReadHeader(const char * pszFilename, C2DInfo & info){
 
 
 bool C2DDataset::WriteProj (const char * pszFilename, const char * proj){
-	FILE * fpImage =VSIFOpenL( pszFilename, "ab" );
+	FILE * fpImage =VSIFOpenL( pszFilename, "ab+" );
 	if (fpImage == NULL) {
 		CPLError( CE_Warning, CPLE_NotSupported, 
 				 "Opening file %s for Writing projection failed",
