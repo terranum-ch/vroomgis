@@ -50,7 +50,7 @@ public:
     OGRFeature * GetNextFeature(bool restart);
 	OGRwkbGeometryType GetGeometryType();
 
-	
+	virtual bool AddFeature(OGRGeometry * geometry, void * data = NULL){return false;}
 	bool IsOK();
 	
 };

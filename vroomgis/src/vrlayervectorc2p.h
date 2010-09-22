@@ -48,6 +48,7 @@ class vrLayerVectorC2P : public vrLayerVectorOGR {
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
 	virtual wxFileName GetDisplayName();
 
+	virtual bool AddFeature(OGRGeometry * geometry, void * data = NULL);
 
 };
 #endif
