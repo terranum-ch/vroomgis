@@ -1,6 +1,6 @@
 /***************************************************************************
- vrcoordinate.h
-
+ vrshapeeditor.h
+ 
  -------------------
  copyright            : (C) 2010 CREALP Lucien Schreiber 
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -14,58 +14,56 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef _VRCOORDINATE_H
-#define _VRCOORDINATE_H
 
+#ifndef _VRSHAPEEDITOR_H_
+#define _VRSHAPEEDITOR_H_
+
+// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
+// Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-
-#include "vrrealrect.h"
+#include <wx/graphics.h>
+#include "ogrsf_frmts.h"
 
 class vrViewerDisplay;
+class vrRenderer;
 
-
-const int vrCOORDINATE_MARGIN = 10;
-
-class vrCoordinate {
-  private:
-    vrViewerDisplay * m_Viewer;
-	
-	vrRealRect m_WndExtent;
-    vrRealRect m_LayersExtent;
-	double m_PxSize;
-	
-
-    bool _ComputePixelSize();
-		
-
-  public:
-    vrCoordinate(vrViewerDisplay * viewer);
-	vrCoordinate(const vrCoordinate & source);
-	~vrCoordinate();
-	
-
-	vrRealRect GetExtent();
-	void SetExtent(const vrRealRect & extent);
-	bool UpdateExtent();
-	vrRealRect GetRectFitted(const vrRealRect & originalrect);
-
-	
-    void ClearLayersExtent();
-	void ClearPixelSize();
-    void AddLayersExtent(const vrRealRect & rect);
-    bool ComputeFullExtent();
-	
-	double GetPixelSize();
-	
-	bool ConvertFromPixels(const wxRect & in, vrRealRect & out);
-    bool ConvertFromPixels(const wxPoint & in, wxPoint2DDouble & out);
-	bool ConvertToPixels (const wxPoint2DDouble & in, wxPoint & out);
+class vrShapeEditor {
+protected:
+    OGRGeometry * m_Geometry;
+    vrViewerDisplay * m_Display;
 	
 	
-	bool IsOk();
+public:
+    vrShapeEditor(vrViewerDisplay * display);
+    virtual ~vrShapeEditor();
+	
+    virtual bool AddVertex(const wxPoint2DDouble & point){return false;}
+    virtual bool RemoveVertex(int index = wxNOT_FOUND){return false;}
+	
+    inline const OGRGeometry * GetGeometryRef() const;
+    virtual void DrawShape(vrRenderer * renderer){;}
+	
+};
 
+
+
+inline const OGRGeometry * vrShapeEditor::GetGeometryRef() const {
+	return m_Geometry;
+}
+
+
+
+class vrShapeEditorPoint : public vrShapeEditor {
+public:
+    vrShapeEditorPoint(vrViewerDisplay * display);
+    virtual ~vrShapeEditorPoint();
+	
+    virtual bool AddVertex(const wxPoint2DDouble & point);
+    virtual void DrawShape(vrRenderer * renderer);
+	
 };
 #endif
+
