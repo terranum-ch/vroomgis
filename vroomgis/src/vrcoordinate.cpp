@@ -290,8 +290,8 @@ bool vrCoordinate::ConvertFromPixels(const wxPoint & in, wxPoint2DDouble & out) 
 
 bool vrCoordinate::ConvertToPixels (const wxPoint2DDouble & in, wxPoint & out){
 	out = wxPoint(0,0);
-	out.x = wxRound((in.m_x - m_WndExtent.m_x) / GetPixelSize());
-	out.y = wxRound((in.m_y - m_WndExtent.m_y) / GetPixelSize());
+	out.x = wxRound(abs((in.m_x - m_WndExtent.m_x)) / GetPixelSize());
+	out.y = wxRound(abs((in.m_y - m_WndExtent.m_y)) / GetPixelSize());
 	return true;
 }
 

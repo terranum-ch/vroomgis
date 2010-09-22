@@ -19,7 +19,6 @@
 #include "vrviewerlayermanager.h"
 #include "vrviewerdisplay.h"
 #include "vrcoordinate.h"
-#include "vrrenderer.h"
 #include "vrrender.h"
 
 vrShapeEditor::vrShapeEditor(vrViewerDisplay * display) {
@@ -64,11 +63,11 @@ bool vrShapeEditorPoint::AddVertex(const wxPoint2DDouble & point) {
 
 
 
-void vrShapeEditorPoint::DrawShape(vrRenderer * renderer) {
+void vrShapeEditorPoint::DrawShape(vrRender * render) {
 	wxASSERT(m_Display);
 	wxASSERT(m_Geometry);
 	
-	vrRenderVector * myRender = (vrRenderVector*) renderer->GetRender();
+	vrRenderVector * myRender = (vrRenderVector*) render;
 	wxPen myPen (myRender->GetColorPen(),
 				 myRender->GetSize());
 	wxPoint myPt;
@@ -76,16 +75,12 @@ void vrShapeEditorPoint::DrawShape(vrRenderer * renderer) {
 	bool myResult = m_Display->GetCoordinate()->ConvertToPixels(wxPoint2DDouble(myOGRPt->getX(), myOGRPt->getY()), myPt);
 	wxASSERT(myResult);
 	wxClientDC myDC ((wxWindow*)m_Display);
-	wxGraphicsContext * gdc = wxGraphicsContext::Create(myDC);
-	wxASSERT(gdc);
-	gdc->SetPen(myPen);
+	myDC.SetPen(myPen);
 	
 #ifdef __WXMSW__
-	gdc->StrokeLine (myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+	myDC.DrawLine(myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
 #else
-	gdc->StrokeLine (myPt.x, myPt.y, myPt.x, myPt.y);
+	myDC.DrawLine(myPt.x, myPt.y, myPt.x, myPt.y);
 #endif
-	wxDELETE(gdc);
-
 }
 

@@ -28,7 +28,7 @@
 #include "ogrsf_frmts.h"
 
 class vrViewerDisplay;
-class vrRenderer;
+class vrRender;
 
 class vrShapeEditor {
 protected:
@@ -43,14 +43,14 @@ public:
     virtual bool AddVertex(const wxPoint2DDouble & point){return false;}
     virtual bool RemoveVertex(int index = wxNOT_FOUND){return false;}
 	
-    inline const OGRGeometry * GetGeometryRef() const;
-    virtual void DrawShape(vrRenderer * renderer){;}
+    inline OGRGeometry * GetGeometryRef() const;
+    virtual void DrawShape(vrRender * render){;}
 	
 };
 
 
 
-inline const OGRGeometry * vrShapeEditor::GetGeometryRef() const {
+inline OGRGeometry * vrShapeEditor::GetGeometryRef() const {
 	return m_Geometry;
 }
 
@@ -62,7 +62,7 @@ public:
     virtual ~vrShapeEditorPoint();
 	
     virtual bool AddVertex(const wxPoint2DDouble & point);
-    virtual void DrawShape(vrRenderer * renderer);
+    virtual void DrawShape(vrRender * render);
 	
 };
 #endif

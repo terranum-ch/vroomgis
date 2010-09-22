@@ -174,3 +174,28 @@ wxFileName vrLayerVectorC2P::GetDisplayName() {
 }
 
 
+bool vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
+	wxASSERT(m_Layer);
+	OGRFeature * myFeature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
+	wxASSERT(m_Layer);
+	myFeature->SetGeometry(geometry);
+	
+	if (data != NULL) {
+		wxArrayDouble * myArray = (wxArrayDouble*) data;
+		wxASSERT(myArray->GetCount() == 4);
+		myFeature->SetField(0, myArray->Item(1));
+		myFeature->SetField(1, myArray->Item(2));
+		myFeature->SetField(2, myArray->Item(0));
+		myFeature->SetField(3, myArray->Item(3));
+	}
+	
+	if(m_Layer->CreateFeature(myFeature) != OGRERR_NONE){
+		wxLogError(_("Error creating feature"));
+		OGRFeature::DestroyFeature(myFeature);
+		return false;
+	}
+	OGRFeature::DestroyFeature(myFeature);
+	return true;
+}
+
+
