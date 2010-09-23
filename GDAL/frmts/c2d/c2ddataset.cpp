@@ -859,7 +859,7 @@ bool C2DDataset::WriteHeader(const char * pszFilename, const C2DInfo & info){
 				 pszFilename);
 		return FALSE;
 	}
-	
+	VSIFSeekL(fpImage, 0, SEEK_END);
 	C2DInfo * myInfo = new C2DInfo(info);
 	VSIFWriteL(myInfo, sizeof(C2DInfo), 1, fpImage);
 	VSIFCloseL(fpImage);
@@ -906,7 +906,7 @@ bool C2DDataset::WriteProj (const char * pszFilename, const char * proj){
 				 pszFilename);
 		return FALSE;
 	}
-	
+	VSIFSeekL(fpImage, 0, SEEK_END);
 	int * myLength = new int (strlen(proj));
 	VSIFWriteL(myLength, sizeof(int), 1, fpImage);
 
