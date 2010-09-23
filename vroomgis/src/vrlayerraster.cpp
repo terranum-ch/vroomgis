@@ -741,7 +741,8 @@ bool vrLayerRasterGDAL::GetPixelValue(double coordx, double coordy, wxArrayDoubl
 	double myMin = wxMin (m_ImgExtent.m_y, m_ImgExtent.m_y + m_ImgExtent.m_height);
 	int pxcoordx = wxRound((coordx - m_ImgExtent.m_x) / fabs(m_ImgExtent.m_width / m_ImgPxSize.x));
 	int pxcoordy = wxRound((coordy - myMin) / fabs(m_ImgExtent.m_height / m_ImgPxSize.y));
-	
+	// invert y axis
+	pxcoordy = m_ImgPxSize.y - pxcoordy;
 	
 	// get data for all bands
 	wxASSERT(m_Dataset);

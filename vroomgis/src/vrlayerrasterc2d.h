@@ -25,8 +25,9 @@
     #include <wx/wx.h>
 #endif
 
-
+#include <wx/image.h>
 #include "vrlayerraster.h"
+
 
 class vrRealRect;
 class vrRender;
