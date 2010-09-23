@@ -415,7 +415,7 @@ bool vrViewerLayerManager::_GetLayersData() {
 			if (m_Renderers.Item(i)->GetBitmapData( m_Images.Item(iImageIndex),
 												   myCoordinate->GetExtent(),
 												   myCoordinate->GetPixelSize())==false) {
-				wxLogWarning("No data to display for '%s' !",
+				wxLogMessage("No data to display for '%s' !",
 						   m_Renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
 				bReturn = false;
 			}

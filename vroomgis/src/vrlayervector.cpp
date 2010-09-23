@@ -24,8 +24,8 @@
 wxPoint vrLayerVector::_GetPointFromReal(const wxPoint2DDouble & realpt, 
 										 const wxPoint2DDouble & origin, double pxsize) {
 	wxPoint myPt;
-	myPt.x = (realpt.m_x - origin.m_x) / pxsize;
-	myPt.y = (origin.m_y - realpt.m_y) / pxsize;
+	myPt.x = wxRound((realpt.m_x - origin.m_x) / pxsize);
+	myPt.y = wxRound((origin.m_y - realpt.m_y) / pxsize);
 	return myPt;
 }
 

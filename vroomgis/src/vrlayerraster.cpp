@@ -95,20 +95,20 @@ bool vrLayerRasterGDAL::_ComputeDisplayPosSize(const wxSize & pximgsize,
 	
 	
 	// width of image to display (in pixels)
-	int pxWidthVisible = myIntersect.m_width * pximgsize.GetWidth() / imgextent.m_width;
-	int pxHeightVisible = myIntersect.m_height * pximgsize.GetHeight() / imgextent.m_height;
+	int pxWidthVisible = wxRound(myIntersect.m_width * pximgsize.GetWidth() / imgextent.m_width);
+	int pxHeightVisible = wxRound(myIntersect.m_height * pximgsize.GetHeight() / imgextent.m_height);
 	
 	// starting position from where we get image data (px)
-	int ximg = (myIntersect.GetLeft() - imgextent.GetLeft())  * pximgsize.GetWidth() / imgextent.m_width;
-	int yimg = (myIntersect.GetTop() - imgextent.GetTop()) * pximgsize.GetHeight() / imgextent.m_height;
+	int ximg = wxRound((myIntersect.GetLeft() - imgextent.GetLeft())  * pximgsize.GetWidth() / imgextent.m_width);
+	int yimg = wxRound((myIntersect.GetTop() - imgextent.GetTop()) * pximgsize.GetHeight() / imgextent.m_height);
 	
 	// position for displaying the bitmap (in pixels)
-	int vx = (myIntersect.GetLeft() - wndextent.GetLeft()) / pxsize;
-	int vy = (wndextent.GetTop()- myIntersect.GetTop()) / pxsize;
+	int vx = wxRound((myIntersect.GetLeft() - wndextent.GetLeft()) / pxsize);
+	int vy = wxRound((wndextent.GetTop()- myIntersect.GetTop()) / pxsize);
 	
 	//pixels size of displayed bitmap
-	int vw = fabs(myIntersect.m_width / pxsize);
-	int vh = fabs(myIntersect.m_height / pxsize);
+	int vw = wxRound(fabs(myIntersect.m_width / pxsize));
+	int vh = wxRound(fabs(myIntersect.m_height / pxsize));
 	
 	
 	// returning values
