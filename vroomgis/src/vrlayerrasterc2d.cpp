@@ -20,6 +20,7 @@
 #include "vrrender.h"
 #include "vrlabel.h"
 
+
 vrLayerRasterC2D::vrLayerRasterC2D() {
 }
 
@@ -86,19 +87,22 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & o
 	
 	// convert to RGB
 	for (unsigned int i = 0; i< myimgRGBLen; i += 3) {
-		int r, g, b;
 		double mySlpDouble = _ReadGDALValueToDouble(mySlopeData, GDT_Float32, i/3);
 		double myAspDouble = _ReadGDALValueToDouble(myAspectData, GDT_Float32, i/3);
 		
-		// normalize slope
-		mySlpDouble = mySlpDouble * 255 / 90;
+		// normalize slope and aspect to 0.0 - 1.0
+		myAspDouble = myAspDouble / 360.0;
+		mySlpDouble = mySlpDouble / 90.0;
 		
-		_HSVtoRGB(&r, &g, &b, wxRound(myAspDouble),wxRound(mySlpDouble), 250);
+		wxImage::HSVValue myHSVValue (myAspDouble,
+									  mySlpDouble,
+									  1);
+		wxImage::RGBValue myRGBValue = wxImage::HSVtoRGB(myHSVValue);
 		
 		// fill buffer
-		*(*imgdata + i)	= r;
-		*(*imgdata + i + 1) = g;
-		*(*imgdata + i + 2) = b;
+		*(*imgdata + i)	= myRGBValue.red;
+		*(*imgdata + i + 1) = myRGBValue.green;
+		*(*imgdata + i + 2) = myRGBValue.blue;
 	}
 	
 	
@@ -110,7 +114,7 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & o
 }
 
 
-
+// NOT used anymore, using wxImage::HSVtoRGB instead
 void vrLayerRasterC2D::_HSVtoRGB (int *r,int *g,int *b, int h, int s, int v){
 	long p, q, t;
 	int f;
