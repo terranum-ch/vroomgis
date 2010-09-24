@@ -34,6 +34,8 @@ protected:
     OGRDataSource * m_Dataset;
 	OGRLayer * m_Layer;
 	OGRwkbGeometryType m_GeometryType;
+	wxArrayLong m_SelectedIDs;
+
 
 	wxPoint _GetPointFromReal(const wxPoint2DDouble & realpt, 
 							  const wxPoint2DDouble & origin, double pxsize);
@@ -55,7 +57,17 @@ public:
 	virtual bool AddFeature(OGRGeometry * geometry, void * data = NULL){return false;}
 	bool IsOK();
 	
+	inline wxArrayLong * GetSelectedIDs();
+    void SetSelectedIDs(const wxArrayLong & value);
+    virtual bool SearchFeatures(OGRGeometry * geometry, wxArrayLong & results);
+	bool IsFeatureSelected(long id);
+
+	
 };
+
+inline wxArrayLong * vrLayerVector::GetSelectedIDs() {
+	return &m_SelectedIDs;
+}
 
 
 class vrLayerVectorOGR : public vrLayerVector {

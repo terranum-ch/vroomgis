@@ -137,6 +137,42 @@ OGRwkbGeometryType  vrLayerVector::GetGeometryType() {
 
 
 
+void vrLayerVector::SetSelectedIDs(const wxArrayLong & value) {
+	m_SelectedIDs = value;
+}
+
+
+
+bool vrLayerVector::SearchFeatures(OGRGeometry * geometry, wxArrayLong & results) {
+	wxASSERT(geometry);
+	wxASSERT(m_Layer);
+	results.Clear();
+	
+	m_Layer->ResetReading();
+	m_Layer->SetSpatialFilter(geometry);
+	
+	// searching all features
+	OGRFeature * poFeature = NULL;
+	while( (poFeature = m_Layer->GetNextFeature()) != NULL )
+	{
+		results.Add(poFeature->GetFID());
+		OGRFeature::DestroyFeature(poFeature);
+	}
+	return true;
+}
+
+
+
+bool vrLayerVector::IsFeatureSelected(long id) {
+	for (unsigned int i = 0; i<m_SelectedIDs.GetCount(); i++) {
+		if (id == m_SelectedIDs.Item(i)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+
 
 
 
