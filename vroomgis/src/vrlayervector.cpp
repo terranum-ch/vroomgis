@@ -91,6 +91,22 @@ OGRFeature * vrLayerVector::GetNextFeature(bool restart) {
 
 
 
+bool vrLayerVector::MoveToFeatureIndex(long index) {
+	if (IsOK() == false) {
+		return false;
+	}
+	
+	OGRErr myErr = m_Layer->SetNextByIndex(index);
+	if (myErr != OGRERR_NONE) {
+		wxLogError(_("Error going to index : %ld, (code %d)"),
+				   index, myErr);
+		return false;
+	}
+	return true;
+	
+}
+
+
 
 OGRwkbGeometryType  vrLayerVector::GetGeometryType() {
 	

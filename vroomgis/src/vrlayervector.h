@@ -48,7 +48,9 @@ public:
 	
 	OGRFeature * GetFeature(long fid);
     OGRFeature * GetNextFeature(bool restart);
+	virtual bool MoveToFeatureIndex(long index);
 	OGRwkbGeometryType GetGeometryType();
+
 
 	virtual bool AddFeature(OGRGeometry * geometry, void * data = NULL){return false;}
 	bool IsOK();
