@@ -36,8 +36,9 @@ enum vrRENDER_TYPE {
 class vrRender {
   protected:
     vrRENDER_TYPE  m_Type;
-
     int m_Transparency;
+	wxColour m_SelectionColour;
+	
     unsigned char GetTransparencyChar();
 
   public:
@@ -49,12 +50,18 @@ class vrRender {
     inline const int GetTransparency() const;	
     virtual void SetTransparency(int value);
 
-	virtual bool Serialize(vrSerialize & serialobj);
+	inline const wxColour GetSelectionColour() const;
+    void SetSelectionColour(wxColour value);
+	
+	virtual bool Serialize(vrSerialize & serialobj);	
 };
+
 
 inline const int vrRender::GetTransparency() const {
   return m_Transparency;
 }
+
+
 
 
 

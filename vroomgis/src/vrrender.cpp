@@ -20,6 +20,7 @@
 vrRender::vrRender() {
 	m_Type = vrRENDER_UNKNOWN;
 	m_Transparency = 0;
+	m_SelectionColour = *wxRED;
 }
 
 
@@ -47,13 +48,27 @@ unsigned char vrRender::GetTransparencyChar() {
 }
 
 
+
+void vrRender::SetSelectionColour(wxColour value) {
+	m_SelectionColour = value;
+}
+
+// TODO: ici
+wxColour vrRender::GetSelectionColour(){
+	
+	return m_SelectionColour;
+}
+
+
 bool vrRender::Serialize(vrSerialize & serialobj) {
 	serialobj.EnterObject();
 	if (serialobj.IsStoring()) {
 		serialobj << GetTransparency();
+		serialobj << GetSelectionColour();
 	}
 	else {
 		serialobj >> m_Transparency;
+		serialobj >> m_SelectionColour;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();
