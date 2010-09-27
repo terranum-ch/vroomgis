@@ -53,10 +53,12 @@ void vrRender::SetSelectionColour(wxColour value) {
 	m_SelectionColour = value;
 }
 
-// TODO: ici
+
 wxColour vrRender::GetSelectionColour(){
-	
-	return m_SelectionColour;
+	char myBlue = m_SelectionColour.Blue();
+	char myGreen = m_SelectionColour.Green();
+	char myRed = m_SelectionColour.Red();
+	return wxColour(myRed, myGreen, myBlue, GetTransparencyChar());
 }
 
 

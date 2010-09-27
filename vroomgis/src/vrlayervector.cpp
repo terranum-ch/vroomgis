@@ -229,8 +229,8 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 	
 	wxPen myPen (myRender->GetColorPen(),
 				 myRender->GetSize());
-	gdc->SetPen(myPen);
-	
+	wxPen mySelPen (myRender->GetSelectionColour(),
+					myRender->GetSize());
 	
 	// iterating and drawing geometries
 	OGRLineString * myGeom = NULL;
@@ -277,6 +277,13 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 			continue;			
 		}
 		
+		
+		gdc->SetPen(myPen);
+		if (IsFeatureSelected(myFeat->GetFID())==true) {
+			gdc->SetPen(mySelPen);
+		}
+		
+		
 		iCount++;
 		gdc->StrokePath(myPath);
 		OGRFeature::DestroyFeature(myFeat);
@@ -303,7 +310,8 @@ bool vrLayerVectorOGR::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 	
 	wxPen myPen (myRender->GetColorPen(),
 				 myRender->GetSize());
-	gdc->SetPen(myPen);
+	wxPen mySelPen (myRender->GetSelectionColour(),
+					myRender->GetSize());
 	
 	
 	// iterating and drawing geometries
@@ -334,6 +342,12 @@ bool vrLayerVectorOGR::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		}
 		iCount++;
 
+		
+		gdc->SetPen(myPen);
+		if (IsFeatureSelected(myFeat->GetFID())==true) {
+			gdc->SetPen(mySelPen);
+		}
+		
 #ifdef __WXMSW__
 		gdc->StrokeLine (myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
 #else
@@ -382,7 +396,8 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 	wxPen myPen (myRender->GetColorPen(),myRender->GetSize());
 	// TODO: Add support for different brush style in vrRender
 	wxBrush myBrush (myRender->GetColorBrush(), wxBRUSHSTYLE_SOLID); 
-	gdc->SetPen(myPen);
+	wxPen mySelPen (myRender->GetSelectionColour(),
+					myRender->GetSize());
 	gdc->SetBrush(myBrush);
 	
 	
@@ -448,6 +463,11 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 			myFeat = NULL;
 			continue;
 		}
+		
+		gdc->SetPen(myPen);
+		if (IsFeatureSelected(myFeat->GetFID())==true) {
+			gdc->SetPen(mySelPen);
+		}		
 		
 		// draw path
 		iCount++;
