@@ -50,7 +50,7 @@ class vrRender {
     inline const int GetTransparency() const;	
     virtual void SetTransparency(int value);
 
-	inline const wxColour GetSelectionColour() const;
+	wxColour GetSelectionColour();
     void SetSelectionColour(wxColour value);
 	
 	virtual bool Serialize(vrSerialize & serialobj);	
