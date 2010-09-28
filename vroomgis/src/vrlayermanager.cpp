@@ -56,7 +56,7 @@ vrLayerManager::~vrLayerManager() {
 
 
 
-bool vrLayerManager::Open(const wxFileName & filename) {
+bool vrLayerManager::Open(const wxFileName & filename, bool readwrite) {
 	
 	if (filename.IsOk()==false){
 		wxLogError("Filename not initialised");
@@ -71,7 +71,6 @@ bool vrLayerManager::Open(const wxFileName & filename) {
 	
 	vrDrivers myDriver;
 	vrLayer * myLayer = NULL;
-	bool bReadWrite = false;
 	
 	switch (myDriver.GetType(filename.GetExt())){
 		case vrDRIVER_VECTOR_SHP:
@@ -102,7 +101,7 @@ bool vrLayerManager::Open(const wxFileName & filename) {
 	}
 	
 	wxASSERT(myLayer);
-	if (myLayer->Open(filename, bReadWrite)==false){
+	if (myLayer->Open(filename, readwrite)==false){
 		return false;
 	}
 	

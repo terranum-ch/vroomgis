@@ -205,3 +205,14 @@ bool vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
 }
 
 
+bool vrLayerVectorC2P::DeleteFeature(long fid) {
+	wxString myDelQuery = wxString::Format("DELETE FROM CT_DIP WHERE id=%ld", fid);
+	wxString myDialect ("generic");
+	wxASSERT(m_Dataset);
+	OGRLayer * myLayer = m_Dataset->ExecuteSQL(myDelQuery.mb_str(), NULL, NULL);
+	wxASSERT(myLayer == NULL);
+	return true;
+}
+
+
+

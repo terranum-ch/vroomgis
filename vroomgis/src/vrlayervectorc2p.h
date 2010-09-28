@@ -49,6 +49,8 @@ class vrLayerVectorC2P : public vrLayerVectorOGR {
 	virtual wxFileName GetDisplayName();
 
 	virtual bool AddFeature(OGRGeometry * geometry, void * data = NULL);
+	virtual bool DeleteFeature(long fid);
+
 
 };
 #endif
