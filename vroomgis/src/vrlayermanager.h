@@ -41,7 +41,7 @@ public:
 	vrLayerManager();
     virtual ~vrLayerManager();
 	
-    bool Open(const wxFileName & filename);	
+    bool Open(const wxFileName & filename, bool readwrite = false);
 	bool Close(vrLayer * layer);
 	int GetCount();
 	vrLayer * GetLayer(const wxFileName & filename);

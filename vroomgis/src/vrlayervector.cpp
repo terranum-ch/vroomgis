@@ -136,6 +136,19 @@ OGRwkbGeometryType  vrLayerVector::GetGeometryType() {
 
 
 
+bool vrLayerVector::DeleteFeature(long fid) {
+	wxASSERT(m_Layer);
+	
+	OGRErr myErr = m_Layer->DeleteFeature(fid);
+	
+	if(myErr != OGRERR_NONE){
+		wxLogError(_("Error deleting feature: %ld! (Error number: %d)"), fid, myErr);
+		return false;
+	}
+	return true;
+}
+
+
 
 void vrLayerVector::SetSelectedIDs(const wxArrayLong & value) {
 	m_SelectedIDs = value;
