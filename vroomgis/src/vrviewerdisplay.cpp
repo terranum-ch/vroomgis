@@ -120,7 +120,10 @@ void vrViewerDisplay::OnMouseDown(wxMouseEvent & event) {
 
 
 void vrViewerDisplay::OnMouseUp(wxMouseEvent & event) {
-	ReleaseMouse();
+	if (HasCapture() == true) {
+		ReleaseMouse();
+	}
+	
 	if (m_Tool != NULL) {
 		m_Tool->MouseUp(event);
 	}
