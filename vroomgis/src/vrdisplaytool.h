@@ -134,6 +134,25 @@ class vrDisplayToolDefault : public vrDisplayTool {
 
 
 /***************************************************************************//**
+@brief Selection tool
+@author Lucien Schreiber (c) CREALP 2010
+@date 28 september 2010
+*******************************************************************************/
+class vrDisplayToolSelect : public vrDisplayTool {
+public:
+    vrDisplayToolSelect(vrViewerDisplay * display);
+    virtual ~vrDisplayToolSelect();
+	
+    virtual bool MouseDown(const wxMouseEvent & event);
+	virtual bool MouseUp(const wxMouseEvent & event);
+	virtual bool MouseMove(const wxMouseEvent & event);
+};
+
+
+
+
+
+/***************************************************************************//**
 @brief Default Zoom tool
 @author Lucien Schreiber (c) CREALP 2010
 @date 20 avril 2010

@@ -180,6 +180,68 @@ bool vrDisplayToolDefault::MouseMove(const wxMouseEvent & event) {
 
 
 
+vrDisplayToolSelect::vrDisplayToolSelect(vrViewerDisplay * display) {
+	Create(display, wxID_DEFAULT, "Select", wxCursor(wxCURSOR_ARROW));
+}
+
+
+
+vrDisplayToolSelect::~vrDisplayToolSelect() {
+}
+
+
+bool vrDisplayToolSelect::MouseDown(const wxMouseEvent & event) {
+	wxASSERT(m_Rubber == NULL);
+	m_Rubber = new vrRubberBand(GetDisplay());
+	wxASSERT(m_Rubber);
+	m_Rubber->SetPointFirst(event.GetPosition());
+	return false;	
+}
+
+
+
+bool vrDisplayToolSelect::MouseUp(const wxMouseEvent & event) {
+	m_Rubber->SetPointLast(event.GetPosition());
+	
+	wxRect myRect;
+	myRect.SetLeftTop(event.GetPosition());
+	myRect.SetRightBottom(event.GetPosition());
+	if (m_Rubber->IsValid()==true) {
+		myRect = m_Rubber->GetRect();
+	}
+	wxDELETE(m_Rubber);
+	
+	wxLogMessage("Selection rect is %d, %d, %d, %d",
+				 myRect.GetLeft(),
+				 myRect.GetTop(),
+				 myRect.GetWidth(),
+				 myRect.GetHeight());
+	
+	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_SELECT,
+																GetDisplay(),
+																myRect);
+	wxASSERT(myMessage);
+	SendMessage(myMessage);
+	return true;
+	
+}
+
+bool vrDisplayToolSelect::MouseMove(const wxMouseEvent & event) {
+	if (event.Dragging()==true) {
+		wxASSERT(m_Rubber);
+		m_Rubber->SetPointLast(event.GetPosition());
+		m_Rubber->Update();
+	}
+	return false;
+}
+
+
+
+
+
+
+
+
 vrDisplayToolZoom::vrDisplayToolZoom(vrViewerDisplay * display) {
 	Create(display, wxID_ZOOM_100, "Zoom", wxCursor(wxCURSOR_MAGNIFIER));
 	

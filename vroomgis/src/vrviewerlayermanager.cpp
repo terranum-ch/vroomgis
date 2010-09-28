@@ -20,6 +20,7 @@
 #include "vrevent.h"
 #include "vrlayermanager.h"
 #include "vrlayer.h"
+#include "vrlayervector.h"
 #include "vrviewertoc.h"
 #include "vrviewerdisplay.h"
 #include "vrcoordinate.h"
@@ -283,6 +284,63 @@ bool vrViewerLayerManager::Zoom(const vrRealRect & extent) {
 void vrViewerLayerManager::ZoomToFit(bool onlyvisible) {
 	_GetLayersExtent(onlyvisible);
 }
+
+
+
+long vrViewerLayerManager::Select(const wxRect & extent) {
+	int myIndex = m_Toc->GetSelection();
+	if (myIndex == wxNOT_FOUND) {
+		return wxNOT_FOUND;
+	}
+	
+	if (m_Renderers.Item(myIndex)->GetLayer()->GetType() != vrDRIVER_VECTOR_C2P &&
+		m_Renderers.Item(myIndex)->GetLayer()->GetType() != vrDRIVER_VECTOR_SHP) {
+		wxLogMessage(_("Selection on raster isn't valid"));
+		return wxNOT_FOUND;
+	}
+	
+	// convert to real coordinates
+	vrRealRect myRealCoord;
+	wxRect myPxExtent = extent;
+	if (myPxExtent.GetWidth() == 1 && myPxExtent.GetHeight() == 1) {
+		myPxExtent.x = myPxExtent.x - 1;
+		myPxExtent.y = myPxExtent.y - 1;
+		myPxExtent.width = 3;
+		myPxExtent.height = 3;
+	}
+	m_Display->GetCoordinate()->ConvertFromPixels(myPxExtent, myRealCoord);
+	
+	
+	vrLayerVector * myLayer = (vrLayerVector*) m_Renderers.Item(myIndex)->GetLayer();
+	wxASSERT(myLayer);
+	OGRPolygon myGeom;
+	OGRLinearRing myLine;
+	myLine.addPoint(myRealCoord.GetLeft(), myRealCoord.GetTop());
+	myLine.addPoint(myRealCoord.GetRight(), myRealCoord.GetTop());
+	myLine.addPoint(myRealCoord.GetRight(), myRealCoord.GetBottom());
+	myLine.addPoint(myRealCoord.GetLeft(), myRealCoord.GetBottom());
+	myLine.addPoint(myRealCoord.GetLeft(), myRealCoord.GetTop());
+	myGeom.addRing(&myLine);
+	wxArrayLong mySelectedIDs;
+	bool mySearch = myLayer->SearchFeatures(&myGeom, mySelectedIDs);
+	wxASSERT(mySearch);
+	myLayer->SetSelectedIDs(mySelectedIDs);
+	return mySelectedIDs.GetCount();
+}
+
+
+
+void vrViewerLayerManager::ClearSelection() {
+	for (int i = 0; i< GetCount(); i++) {
+		if(m_Renderers.Item(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_SHP ||
+		   m_Renderers.Item(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_C2P){
+			vrLayerVector * myLayer = (vrLayerVector*) m_Renderers.Item(i)->GetLayer();
+			wxASSERT(myLayer);
+			myLayer->GetSelectedIDs()->Clear();
+		}
+	}
+}
+
 
 
 
