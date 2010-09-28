@@ -38,6 +38,8 @@ class vrRender {
     vrRENDER_TYPE  m_Type;
     int m_Transparency;
 	wxColour m_SelectionColour;
+	static wxColour m_DefaultSelectionColour;
+
 	
     unsigned char GetTransparencyChar();
 
@@ -52,6 +54,7 @@ class vrRender {
 
 	wxColour GetSelectionColour();
     void SetSelectionColour(wxColour value);
+	static void SetDefaultSelectionColour(wxColour value);
 	
 	virtual bool Serialize(vrSerialize & serialobj);	
 };

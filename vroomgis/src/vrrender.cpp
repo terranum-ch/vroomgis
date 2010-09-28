@@ -17,10 +17,12 @@
 
 #include "vrrender.h"
 
+wxColour vrRender::m_DefaultSelectionColour = *wxRED;
+
 vrRender::vrRender() {
 	m_Type = vrRENDER_UNKNOWN;
 	m_Transparency = 0;
-	m_SelectionColour = *wxRED;
+	m_SelectionColour = m_DefaultSelectionColour;
 }
 
 
@@ -54,6 +56,11 @@ void vrRender::SetSelectionColour(wxColour value) {
 }
 
 
+void vrRender::SetDefaultSelectionColour(wxColour value)
+{
+	m_DefaultSelectionColour = value;
+}
+
 wxColour vrRender::GetSelectionColour(){
 	char myBlue = m_SelectionColour.Blue();
 	char myGreen = m_SelectionColour.Green();
@@ -66,11 +73,11 @@ bool vrRender::Serialize(vrSerialize & serialobj) {
 	serialobj.EnterObject();
 	if (serialobj.IsStoring()) {
 		serialobj << GetTransparency();
-		serialobj << GetSelectionColour();
+		//serialobj << GetSelectionColour();
 	}
 	else {
 		serialobj >> m_Transparency;
-		serialobj >> m_SelectionColour;
+		//serialobj >> m_SelectionColour;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();

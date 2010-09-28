@@ -201,6 +201,10 @@ bool vrDisplayToolSelect::MouseDown(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolSelect::MouseUp(const wxMouseEvent & event) {
+	if (m_Rubber == NULL) {
+		return true;
+	}
+	
 	m_Rubber->SetPointLast(event.GetPosition());
 	
 	wxRect myRect;
@@ -227,8 +231,7 @@ bool vrDisplayToolSelect::MouseUp(const wxMouseEvent & event) {
 }
 
 bool vrDisplayToolSelect::MouseMove(const wxMouseEvent & event) {
-	if (event.Dragging()==true) {
-		wxASSERT(m_Rubber);
+	if (event.Dragging()==true && m_Rubber != NULL) {
 		m_Rubber->SetPointLast(event.GetPosition());
 		m_Rubber->Update();
 	}
