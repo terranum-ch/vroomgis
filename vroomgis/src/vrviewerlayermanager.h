@@ -84,6 +84,8 @@ class vrViewerLayerManager : public wxEvtHandler {
     void ZoomToFit(bool onlyvisible = false);
 	long Select(const wxRect & extent);
     void ClearSelection();
+	int GetSelectionCount(int * sellayers = NULL);
+
 
 	vrRenderer * GetRenderer(const unsigned int & index);
 	inline vrViewerDisplay * GetDisplay() const;

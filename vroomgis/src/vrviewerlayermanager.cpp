@@ -322,8 +322,7 @@ long vrViewerLayerManager::Select(const wxRect & extent) {
 	myLine.addPoint(myRealCoord.GetLeft(), myRealCoord.GetTop());
 	myGeom.addRing(&myLine);
 	wxArrayLong mySelectedIDs;
-	bool mySearch = myLayer->SearchFeatures(&myGeom, mySelectedIDs);
-	wxASSERT(mySearch);
+	myLayer->SearchFeatures(&myGeom, mySelectedIDs);
 	myLayer->SetSelectedIDs(mySelectedIDs);
 	return mySelectedIDs.GetCount();
 }
@@ -341,6 +340,25 @@ void vrViewerLayerManager::ClearSelection() {
 	}
 }
 
+
+int vrViewerLayerManager::GetSelectionCount(int * sellayers) {
+	int iTotal = 0;
+	for (int i = 0; i< GetCount(); i++) {
+		if(m_Renderers.Item(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_SHP ||
+		   m_Renderers.Item(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_C2P){
+			vrLayerVector * myLayer = (vrLayerVector*) m_Renderers.Item(i)->GetLayer();
+			wxASSERT(myLayer);
+			int mySelCount = myLayer->GetSelectedIDs()->GetCount();
+			if (mySelCount > 0) {
+				iTotal += mySelCount;
+				if (sellayers != NULL) {
+					*sellayers++;
+				}
+			}
+		}
+	}
+	return iTotal;
+}
 
 
 
