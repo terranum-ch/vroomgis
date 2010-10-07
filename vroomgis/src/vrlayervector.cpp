@@ -135,6 +135,17 @@ OGRwkbGeometryType  vrLayerVector::GetGeometryType() {
 }
 
 
+void vrLayerVector::ClearSpatialFilter(){
+	if (IsOK() == false) {
+		return;
+	}
+	
+	m_Layer->SetSpatialFilter(NULL);
+}
+
+
+
+
 
 bool vrLayerVector::DeleteFeature(long fid) {
 	wxASSERT(m_Layer);
