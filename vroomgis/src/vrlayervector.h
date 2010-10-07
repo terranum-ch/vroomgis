@@ -52,6 +52,7 @@ public:
     OGRFeature * GetNextFeature(bool restart);
 	virtual bool MoveToFeatureIndex(long index);
 	OGRwkbGeometryType GetGeometryType();
+	void ClearSpatialFilter();
 
 
 	virtual bool AddFeature(OGRGeometry * geometry, void * data = NULL){return false;}
