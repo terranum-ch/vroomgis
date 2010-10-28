@@ -109,7 +109,7 @@ void vrViewerTOC::OnSetTransparency(wxCommandEvent & event) {
 	wxASSERT(myRender);
 	
 	wxNumberEntryDialog myNumDlg(this,
-								 "Adjust the transparency percent\n0 is fully transparent, 100 is fully opaque",
+								 "Adjust the transparency percent\n0 is fully opaque, 100 is fully transparent",
 								 "Transparency percent:",
 								 "Adjust Opacity",
 								 myRender->GetTransparency(),
