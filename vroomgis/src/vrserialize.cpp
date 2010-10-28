@@ -180,7 +180,10 @@ vrSerialize & vrSerialize::operator >> (bool & value)
 	wxString partstream = wxEmptyString;
 	if (ReadStream(partstream))
 	{
-		value = (bool) ReadInt(partstream);
+        value = false;
+        if (ReadInt(partstream) > 0) {
+            value = true;
+        }
 	}
 	return * this;
 }
