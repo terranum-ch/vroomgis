@@ -75,23 +75,68 @@ wxString lsVersion::GetGEOSNumber()
 	return myGEOS;
 }
 
+
+wxString lsVersion::GetCurlNumber(){
+    wxString myCurl = wxEmptyString;
+#ifdef lsVERSION_HAS_CURL    
+    myCurl = wxString(LIBCURL_VERSION);
+#endif
+    return myCurl;
+}
+
+
+
+wxString lsVersion::GetSQLiteNumber(){
+    wxString mySQlite = wxEmptyString;
+#ifdef lsVERSION_HAS_SQLITE
+    mySQlite  = wxString(sqlite3_libversion());
+#endif
+    return mySQlite;
+}
+
+
+wxString lsVersion::GetVroomGISNumber(){
+    wxString myVroomGIS = wxEmptyString;
+#ifdef lsVERSION_VROOMGIS_SVN
+    myVroomGIS = lsVERSION_VROOMGIS_SVN;
+#endif
+    return myVroomGIS;
+}
+
+
+
 wxString lsVersion::GetAllModules()
 {
-	wxString myModules = _T("wxWidgets : ") + GetwxWidgetsNumber();
-#ifdef lsVERSION_WXWIDGETS_SVN
-	myModules.Append(wxString::Format(" (%s)", GetwxWidgetsSVN()));
-#endif
+	wxString myModules = _T("wxWidgets: ") + GetwxWidgetsNumber();
+
+    if (GetwxWidgetsSVN().IsEmpty() == false) {
+        myModules.Append(wxString::Format(" (%s)", GetwxWidgetsSVN()));
+    }
 	myModules.Append(_T("\n"));
+    
+    
+    if (GetVroomGISNumber().IsEmpty() == false) {
+        myModules.Append(_T("vroomGIS: ") + GetVroomGISNumber() + _T("\n"));
+    }
 	
-	// GDAL
-#ifdef lsVERSION_HAS_GDAL
-	myModules.Append(_T("GDAL : ") + GetGDALNumber() + _T("\n"));
-#endif
+    if (GetSQLiteNumber().IsEmpty() == false) {
+        myModules.Append(_T("SQLite: ") + GetSQLiteNumber() + _T("\n"));
+    }
+    
+    if (GetGDALNumber().IsEmpty() == false) {
+        myModules.Append(_T("GDAL: ") + GetGDALNumber() + _T("\n"));
+    }
+    
+    if (GetGEOSNumber().IsEmpty() == false) {
+        myModules.Append(_T("GEOS: ") + GetGEOSNumber() + _T("\n"));
+    }
+    
 
-#ifdef lsVERSION_HAS_GEOS
-	myModules.Append(_T("GEOS : ") + GetGEOSNumber() + _T("\n"));
-#endif	
-
+    if (GetCurlNumber().IsEmpty() == false ) {
+        myModules.Append(_T("libCURL: ") + GetCurlNumber() + _T("\n"));
+    }
+    
+    
 	myModules.Append(wxGetOsDescription());	
 	return myModules;
 }
