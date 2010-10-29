@@ -48,10 +48,21 @@ email                : lucien.schreiber at crealp dot vs dot ch
   #include "geos_c.h"
 #endif
 
+// USING CURL
+#cmakedefine lsVERSION_HAS_CURL
+#ifdef lsVERSION_HAS_CURL
+  #include <curl/curl.h>
+#endif
+
+// USING SQLITE
+#cmakedefine lsVERSION_HAS_SQLITE
+#ifdef lsVERSION_HAS_SQLITE
+ #include <sqlite3.h>
+#endif
 
 
-
-
+// USING VROOMGIS
+#cmakedefine lsVERSION_VROOMGIS_SVN "@lsVERSION_VROOMGIS_SVN@"
 
 
 #endif

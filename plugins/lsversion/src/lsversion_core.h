@@ -36,6 +36,9 @@ class lsVersion {
     static wxString GetwxWidgetsSVN();
     static wxString GetGDALNumber();
     static wxString GetGEOSNumber();
+    static wxString GetCurlNumber();
+    static wxString GetSQLiteNumber();
+    static wxString GetVroomGISNumber();
     static wxString GetAllModules();
 };
 #endif
