@@ -92,13 +92,13 @@ void vrViewerDisplay::OnSizeChange(wxSizeEvent & event) {
 	if (m_ViewerManager == NULL){
 		return;
 	}
-	
-	m_ViewerManager->Reload();
 		
 	wxASSERT(m_Coordinate);
 	if (m_Coordinate->IsOk() == true) {
 		m_Coordinate->UpdateExtent();
 	}
+	
+	m_ViewerManager->Reload();
 	
 	_InvalidateView(false);
 	
