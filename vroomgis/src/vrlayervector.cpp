@@ -514,6 +514,7 @@ bool vrLayerVectorOGR::GetExtent(vrRealRect & rect) {
 	}
 	
 	wxASSERT(m_Layer);
+	m_Layer->SetSpatialFilter(NULL);
 	rect = vrRealRect();
 	if (m_Layer->GetFeatureCount() == 0) {
 		rect.SetLeftBottom(wxPoint2DDouble(0.0, 0.0));
