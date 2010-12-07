@@ -108,9 +108,6 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		myFeat = NULL;
 	}
 	
-	if (iCount <= 0) {
-		wxLogWarning("No data drawn.");
-	}
 	wxLogMessage("%ld dips drawed in %ldms", iCount, sw.Time());
 	return true;
 }

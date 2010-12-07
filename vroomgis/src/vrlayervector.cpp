@@ -314,9 +314,6 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 		myFeat = NULL;
 	}
 	
-	if (iCount <= 0) {
-		wxLogWarning("No data drawn.");
-	}
 	wxLogMessage("%ld lines drawed in %ldms", iCount, sw.Time());
 	return true;
 }
@@ -382,9 +379,6 @@ bool vrLayerVectorOGR::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		myFeat = NULL;
 	}
 	
-	if (iCount <= 0) {
-		wxLogWarning("No data drawn.");
-	}
 	wxLogMessage("%ld points drawed in %ldms", iCount, sw.Time());
 	return true;
 }
@@ -500,9 +494,6 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 		myFeat = NULL;
 	}
 	
-	if (iCount <= 0) {
-		wxLogWarning("No data drawn.");
-	}
 	wxLogMessage("%ld Polygon drawed in %ldms", iCount, sw.Time());
 	return true;
 }
