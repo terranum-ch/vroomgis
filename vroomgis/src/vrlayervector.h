@@ -87,8 +87,12 @@ public:
     virtual ~vrLayerVectorOGR();
 	
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
-    virtual bool Create(const wxFileName & filename);
+    virtual bool Create(const wxFileName & filename, int spatialtype = wkbPoint);
 	
+    bool AddField(const OGRFieldDefn & fielddef);
+    virtual bool AddFeature(OGRGeometry * geometry, void * data = NULL);
+
+    
 	virtual bool GetExtent(vrRealRect & rect);
 	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 						 const vrRender * render = NULL, const vrLabel * label = NULL);
