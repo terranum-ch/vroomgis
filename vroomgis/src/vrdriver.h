@@ -49,6 +49,16 @@ static const wxString vrDRIVERS_EXTENSION []= {
 };
 
 
+const wxString vrDRIVERS_GDAL_NAMES [] = {
+    "ESRI Shapefile",
+    "SQLite",
+    "Memory",
+    "GTiff",
+    "JPEG",
+    "AIG",
+    "C2D"
+};
+
 const wxString vrDRIVERS_NAMES [] = {
 	"Shapefiles",
 	"ColtopGIS project",

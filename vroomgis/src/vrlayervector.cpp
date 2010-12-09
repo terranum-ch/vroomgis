@@ -241,6 +241,81 @@ bool vrLayerVectorOGR::Open(const wxFileName & filename, bool readwrite){
 }
 
 
+bool vrLayerVectorOGR::Create(const wxFileName & filename, int spatialtype) {
+    _Close();
+    wxASSERT(m_Dataset == NULL);
+    
+    // get driver type
+    vrDrivers myDriver;
+    vrDRIVERS_TYPE myDriverType = myDriver.GetType(filename.GetExt());
+    if (myDriverType == vrDRIVER_UNKNOWN) {
+        wxLogError (".%s file extension not supported", filename.GetExt());
+        return false;
+    }
+    
+    wxString myDriverName = vrDRIVERS_GDAL_NAMES[myDriverType];
+    OGRSFDriver * poDriver = OGRSFDriverRegistrar::GetRegistrar()->
+        GetDriverByName((const char *) myDriverName.mb_str(wxConvUTF8));
+    
+    if( poDriver == NULL){
+       wxLogError("%s driver not available.", myDriverName);
+        return false;
+    }
+    
+    // create dataset
+    m_Dataset = poDriver->CreateDataSource((const char *)filename.GetFullPath().mb_str(wxConvUTF8), NULL );
+    if( m_Dataset == NULL ){
+        wxLogError( "Creation of output file : %s failed.", filename.GetFullName());
+        return false;
+    }
+    
+    // create layer
+    m_Layer = m_Dataset->CreateLayer((const char *)filename.GetFullName().mb_str(wxConvUTF8), NULL, (OGRwkbGeometryType) spatialtype, NULL );
+    if( m_Layer == NULL ){
+        wxLogError( "Layer creation failed." );
+        return false;
+    }
+	return true;
+}
+
+
+
+bool vrLayerVectorOGR::AddField(const OGRFieldDefn & fielddef) {
+    wxASSERT(m_Layer);
+    OGRFieldDefn * myField = new OGRFieldDefn(fielddef);
+    if( m_Layer->CreateField(myField) != OGRERR_NONE){
+        wxLogError("Error creating field : %s", myField->GetNameRef());
+        wxDELETE(myField);
+        return false;
+    }
+    return true;
+}
+
+
+bool vrLayerVectorOGR::AddFeature(OGRGeometry * geometry, void * data) {
+    wxASSERT(m_Layer);
+	OGRFeature * myFeature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
+	wxASSERT(m_Layer);
+	myFeature->SetGeometry(geometry);
+	
+	if (data != NULL) {
+		wxArrayString * myArray = (wxArrayString*) data;
+		wxASSERT((signed) myArray->GetCount() == myFeature->GetFieldCount());
+		for (unsigned int i = 0; i< myArray->GetCount(); i++) {
+            myFeature->SetField(i, myArray->Item(i));
+        }
+	}
+	
+	if(m_Layer->CreateFeature(myFeature) != OGRERR_NONE){
+		wxLogError(_("Error creating feature"));
+		OGRFeature::DestroyFeature(myFeature);
+		return false;
+	}
+	OGRFeature::DestroyFeature(myFeature);
+	return true;
+    
+}
+
 
 bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 								  const vrRender * render, const vrLabel * label, double pxsize) {
@@ -502,9 +577,7 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 
 
 
-bool vrLayerVectorOGR::Create(const wxFileName & filename) {
-	return false;
-}
+
 
 
 bool vrLayerVectorOGR::GetExtent(vrRealRect & rect) {
