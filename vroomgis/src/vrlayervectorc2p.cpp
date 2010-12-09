@@ -109,6 +109,9 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 	}
 	
 	wxLogMessage("%ld dips drawed in %ldms", iCount, sw.Time());
+	if (iCount == 0){
+		return false;
+	}
 	return true;
 }
 
