@@ -40,13 +40,13 @@ bool vrSerialize::CanRead ()
 {
 	if (m_outdirection)
 	{
-		wxLogDebug(_T("Error, stream is in writing mode"));
+		wxLogError(_T("Error, stream is in writing mode"));
 		return false;
 	}
 	
 	if (m_stream.IsEmpty())
 	{
-		wxLogDebug(_T("Nothing to read, stream empty"));
+		wxLogWarning(_T("Nothing to read, stream empty"));
 		return false;
 	}
 	return true;
@@ -69,7 +69,7 @@ int vrSerialize::ReadInt (const wxString & part)
 {
 	long lvalue = 0;
 	if(!part.ToLong(&lvalue))
-		wxLogDebug(_T("Error trying to convert string to integer"));
+		wxLogError(_T("Error trying to convert string to integer"));
 	
 	return lvalue;
 }
@@ -218,6 +218,8 @@ vrSerialize & vrSerialize::operator >> (wxFont & value)
 	wxString partstream = wxEmptyString;
 	if (ReadStream(partstream))
 	{
+        // TODO: This message is needed, otherwise crash in release mode (Mac) ?
+        wxLogMessage("font steam = " + partstream);
 		wxFont tmpfont (partstream);
 		if (tmpfont.IsOk()){
 			value = tmpfont;
