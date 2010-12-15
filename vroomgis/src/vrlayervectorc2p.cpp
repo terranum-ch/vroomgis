@@ -90,7 +90,14 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		}
 		iCount++;
 		
-		
+        // draw outline if asked
+        if (myRender->GetOutline() == true) {
+            wxPen myTempPen (*wxWHITE, myRender->GetSize()+2);
+            gdc->SetPen(myTempPen);
+            gdc->StrokePath(myHPath);
+            gdc->StrokePath(myVPath);
+        }
+        
 		// create family pen if needed
 		if (myUseDefaultColour == false) {
 			int myFamily = myFeat->GetFieldAsInteger(3);
@@ -104,6 +111,8 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		
 		gdc->StrokePath(myHPath);
 		gdc->StrokePath(myVPath);
+        
+          
 		OGRFeature::DestroyFeature(myFeat);
 		myFeat = NULL;
 	}

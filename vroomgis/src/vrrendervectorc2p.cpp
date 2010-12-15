@@ -36,6 +36,7 @@ vrRenderVectorC2PDips::vrRenderVectorC2PDips(const wxColour & defaultcolour, int
 	m_DipWidth = dipwith;
 	m_Size = size;
 	m_UseDefaultColour = true;
+    m_UseOutline = true;
 	ClearDipColours();
 	AddDipColour(defaultcolour, 0);
 	m_MemoryFamilyID = wxNOT_FOUND;
@@ -76,6 +77,11 @@ void vrRenderVectorC2PDips::SetTransparency(int value) {
 
 void vrRenderVectorC2PDips::SetSize(int value) {
   m_Size = value;
+}
+
+
+void vrRenderVectorC2PDips::SetOutline(bool value) {
+    m_UseOutline = value;
 }
 
 
@@ -160,12 +166,14 @@ bool vrRenderVectorC2PDips::Serialize(vrSerialize & serialobj) {
 		serialobj << GetDipWidth();
 		serialobj << IsUsingDefaultColour();
 		serialobj << m_DipColours.Item(0).m_Colour;
+        serialobj << GetOutline();
 	}
 	else {
 		serialobj >> m_Size;
 		serialobj >> m_DipWidth;
 		serialobj >> m_UseDefaultColour;
 		serialobj >> m_DipColours.Item(0).m_Colour;
+        serialobj >> m_UseOutline;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();
