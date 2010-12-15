@@ -93,6 +93,10 @@ bool vrLayerManager::Open(const wxFileName & filename, bool readwrite) {
 		case vrDRIVER_VECTOR_C2P:
 			myLayer = new vrLayerVectorC2P();
 			break;
+            
+        case vrDRIVER_RASTER_EASC:
+            myLayer = new vrLayerRasterGDAL();
+            break;
 			
 		default:
 			wxLogError("Extension \"%s\" not supported",filename.GetExt());

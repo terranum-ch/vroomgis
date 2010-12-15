@@ -275,13 +275,15 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
                 {
 					
 					double myGrayValDouble = _ReadGDALValueToDouble(myScanData,myDataType, i / 3);
+					// set nodata values to white!
+                    // TODO: take nodata into account
+                    int myGrayValInt = 255;
+                    if (wxIsSameDouble(myGrayValDouble, m_OneBandNoData)==false) {
+                        myGrayValInt = static_cast < int >((myGrayValDouble - m_OneBandMin) * (255 / myRange));
+                    }
 					
-					int myGrayValInt = static_cast < int >((myGrayValDouble - m_OneBandMin) * (255 / myRange));
-					
-					wxASSERT(myGrayValInt >= 0);
-					wxASSERT(myGrayValInt <= 255);
-					//if (myGrayValInt < 0) myGrayValInt = 0;
-					//if (myGrayValInt > 255) myGrayValInt = 255;
+					if (myGrayValInt < 0) myGrayValInt = 0;
+					if (myGrayValInt > 255) myGrayValInt = 255;
 					
 					*(*imgdata + i)		= myGrayValInt;
 					*(*imgdata + i + 1) = myGrayValInt;
@@ -400,8 +402,10 @@ double vrLayerRasterGDAL::_ReadGDALValueToDouble(void* & data, const GDALDataTyp
 
 
 bool vrLayerRasterGDAL::_ComputeStat() {
-	int bResult = false;
-	bool bReturn = true;
+	int bResultMin = false;
+    int bResultMax = false;
+    int bResultNoData = false;
+	//bool bReturn = true;
 
 	m_OneBandMin = 0;
 	m_OneBandMax = 0;
@@ -409,31 +413,23 @@ bool vrLayerRasterGDAL::_ComputeStat() {
 	
 	
 	GDALRasterBand * myRasterBand = m_Dataset->GetRasterBand(1);
-	m_OneBandMin = myRasterBand->GetMinimum(&bResult);
-	if (bResult == false)
-	{
-		bReturn = false;
-	}
+	m_OneBandMin = myRasterBand->GetMinimum(&bResultMin);
+	m_OneBandMax = myRasterBand->GetMaximum(&bResultMax);
+	m_OneBandNoData = myRasterBand->GetNoDataValue(&bResultNoData);
 	
-	
-	m_OneBandMax = myRasterBand->GetMaximum(&bResult);
-	if (bResult == false)
-	{
-		bReturn = false;
-	}
-	
-	
-	m_OneBandNoData = myRasterBand->GetNoDataValue(&bResult);
-	if (bResult == false)
-	{
+    if (bResultNoData == false){
 		m_OneBandNoData = 0;
 	}
-	
-	if (bReturn == false) {
-		wxLogWarning("Computing minimum statistics for raster %s isn't accurate", m_FileName.GetFullName());
-	}
-	
-	
+    
+    if (bResultMin == true && bResultMax == true) {
+        return true;
+    }
+    
+    // try computing statistics (take more time...)
+    if (myRasterBand->ComputeStatistics(true, &m_OneBandMin, &m_OneBandMax, NULL, NULL, NULL, NULL) != CE_None) {
+        wxLogWarning("Computing statistics for raster %s failed!", m_FileName.GetFullName());
+        return false;
+    }
 	return true;
 }
 

@@ -33,8 +33,8 @@ enum vrDRIVERS_TYPE {
 	vrDRIVER_RASTER_TIFF,
 	vrDRIVER_RASTER_JPEG,
 	vrDRIVER_RASTER_ESRIGRID,
-	vrDRIVER_RASTER_C2D
-	
+	vrDRIVER_RASTER_C2D,
+    vrDRIVER_RASTER_EASC
 };
 
 
@@ -45,7 +45,8 @@ static const wxString vrDRIVERS_EXTENSION []= {
 	"*.tif;*.tiff",
 	"*.jpg;*.jpeg",
 	"*.adf",
-	"*.c2d"
+	"*.c2d",
+    "*.asc"
 };
 
 
@@ -56,7 +57,8 @@ const wxString vrDRIVERS_GDAL_NAMES [] = {
     "GTiff",
     "JPEG",
     "AIG",
-    "C2D"
+    "C2D",
+    "AAIGrid"
 };
 
 const wxString vrDRIVERS_NAMES [] = {
@@ -66,7 +68,8 @@ const wxString vrDRIVERS_NAMES [] = {
 	"Tiff",
 	"JPEG",
 	"ESRI's binary GRID",
-	"ColtopGIS"
+	"ColtopGIS",
+    "ESRI ASCII grid"
 };
 
 
