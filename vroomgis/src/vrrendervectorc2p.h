@@ -68,7 +68,8 @@ public:
     
     inline const bool GetOutline() const;
     void SetOutline(bool value);
-    
+    wxColour GetOutlineColour(const wxColour & dipcolour);
+
 	
     void ClearDipColours();
     bool AddDipColour(const wxColour & colour, long familyid);
