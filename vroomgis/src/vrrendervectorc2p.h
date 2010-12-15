@@ -48,6 +48,7 @@ private:
     int m_DipWidth;
     int m_Size;
 	bool m_UseDefaultColour;
+    bool m_UseOutline;
 
 	
 	long m_MemoryFamilyID;
@@ -64,6 +65,10 @@ public:
 	
     inline const int GetSize() const;
     void SetSize(int value);
+    
+    inline const bool GetOutline() const;
+    void SetOutline(bool value);
+    
 	
     void ClearDipColours();
     bool AddDipColour(const wxColour & colour, long familyid);
@@ -87,6 +92,9 @@ inline const bool vrRenderVectorC2PDips::IsUsingDefaultColour() const {
 	return m_UseDefaultColour;
 }
 
+inline const bool vrRenderVectorC2PDips::GetOutline() const {
+    return m_UseOutline;
+}
 
 
 #endif
