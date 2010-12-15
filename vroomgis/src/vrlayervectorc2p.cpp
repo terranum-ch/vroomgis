@@ -89,26 +89,36 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 			continue;			
 		}
 		iCount++;
-		
-        // draw outline if asked
-        if (myRender->GetOutline() == true) {
-            wxPen myTempPen (*wxWHITE, myRender->GetSize()+2);
-            gdc->SetPen(myTempPen);
-            gdc->StrokePath(myHPath);
-            gdc->StrokePath(myVPath);
-        }
-        
+         
 		// create family pen if needed
 		if (myUseDefaultColour == false) {
 			int myFamily = myFeat->GetFieldAsInteger(3);
 			myDefaultPen.SetColour(myRender->GetDipColour(myFamily));
 			myDefaultPen.SetWidth(myRender->GetSize());
 		}
-		gdc->SetPen(myDefaultPen);
+        wxPen myActualPen = myDefaultPen;
+		//gdc->SetPen(myDefaultPen);
 		if (IsFeatureSelected(myFeat->GetFID())==true) {
-			gdc->SetPen(mySelPen);
+			//gdc->SetPen(mySelPen);
+            myActualPen = mySelPen;
 		}		
-		
+        
+        // draw outline if asked
+        if (myRender->GetOutline() == true) {
+            wxPen myOutlinePen (*wxBLACK, myRender->GetSize() + 2);
+            wxColour myActualPenColour = myActualPen.GetColour();
+            int myColourLimit = 70;
+            if (myActualPenColour.Green() < myColourLimit && 
+                myActualPenColour.Red() < myColourLimit && 
+                myActualPenColour.Blue() < myColourLimit) {
+                myOutlinePen.SetColour(*wxWHITE);
+            }
+            gdc->SetPen(myOutlinePen);
+            gdc->StrokePath(myHPath);
+            gdc->StrokePath(myVPath);
+        }
+        
+		gdc->SetPen(myActualPen);
 		gdc->StrokePath(myHPath);
 		gdc->StrokePath(myVPath);
         
