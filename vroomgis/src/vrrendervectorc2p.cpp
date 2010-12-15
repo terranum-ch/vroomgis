@@ -62,6 +62,7 @@ void vrRenderVectorC2PDips::SetDipWidth(int value) {
 }
 
 
+
 void vrRenderVectorC2PDips::SetTransparency(int value) {
 	vrRender::SetTransparency(value);
 	// change all colours
@@ -75,13 +76,27 @@ void vrRenderVectorC2PDips::SetTransparency(int value) {
 }
 
 
+
 void vrRenderVectorC2PDips::SetSize(int value) {
   m_Size = value;
 }
 
 
+
 void vrRenderVectorC2PDips::SetOutline(bool value) {
     m_UseOutline = value;
+}
+
+
+
+wxColour vrRenderVectorC2PDips::GetOutlineColour(const wxColour & dipcolour) {
+    int myColourLimit = 70;
+    if (dipcolour.Green() < myColourLimit && 
+        dipcolour.Red() < myColourLimit && 
+        dipcolour.Blue() < myColourLimit) {
+        return *wxWHITE;
+    }
+    return *wxBLACK;
 }
 
 

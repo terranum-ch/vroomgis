@@ -106,13 +106,7 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
         // draw outline if asked
         if (myRender->GetOutline() == true) {
             wxPen myOutlinePen (*wxBLACK, myRender->GetSize() + 2);
-            wxColour myActualPenColour = myActualPen.GetColour();
-            int myColourLimit = 70;
-            if (myActualPenColour.Green() < myColourLimit && 
-                myActualPenColour.Red() < myColourLimit && 
-                myActualPenColour.Blue() < myColourLimit) {
-                myOutlinePen.SetColour(*wxWHITE);
-            }
+            myOutlinePen.SetColour(myRender->GetOutlineColour(myActualPen.GetColour()));
             gdc->SetPen(myOutlinePen);
             gdc->StrokePath(myHPath);
             gdc->StrokePath(myVPath);
