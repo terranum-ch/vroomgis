@@ -302,7 +302,7 @@ bool vrLayerVectorOGR::AddField(const OGRFieldDefn & fielddef) {
 }
 
 
-bool vrLayerVectorOGR::AddFeature(OGRGeometry * geometry, void * data) {
+long vrLayerVectorOGR::AddFeature(OGRGeometry * geometry, void * data) {
     wxASSERT(m_Layer);
 	OGRFeature * myFeature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
 	wxASSERT(m_Layer);
@@ -319,10 +319,12 @@ bool vrLayerVectorOGR::AddFeature(OGRGeometry * geometry, void * data) {
 	if(m_Layer->CreateFeature(myFeature) != OGRERR_NONE){
 		wxLogError(_("Error creating feature"));
 		OGRFeature::DestroyFeature(myFeature);
-		return false;
+		return wxNOT_FOUND;
 	}
+	long myFeatureID = myFeature->GetFID();
+	wxASSERT(myFeatureID != OGRNullFID);
 	OGRFeature::DestroyFeature(myFeature);
-	return true;
+	return myFeatureID;
     
 }
 
