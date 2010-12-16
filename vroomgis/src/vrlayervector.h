@@ -56,7 +56,7 @@ public:
 	void ClearSpatialFilter();
 
 
-	virtual bool AddFeature(OGRGeometry * geometry, void * data = NULL){return false;}
+	virtual long AddFeature(OGRGeometry * geometry, void * data = NULL){return wxNOT_FOUND;}
 	virtual bool DeleteFeature(long fid);
 	bool IsOK();
 	
@@ -91,7 +91,7 @@ public:
     virtual bool Create(const wxFileName & filename, int spatialtype = wkbPoint);
 	
     bool AddField(const OGRFieldDefn & fielddef);
-    virtual bool AddFeature(OGRGeometry * geometry, void * data = NULL);
+    virtual long AddFeature(OGRGeometry * geometry, void * data = NULL);
 
     
 	virtual bool GetExtent(vrRealRect & rect);
