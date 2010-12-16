@@ -49,6 +49,7 @@ public:
 	virtual bool GetExtent(vrRealRect & rect){return false;}
 	
 	OGRFeature * GetFeature(long fid);
+    long GetFeatureCount(bool onlyvisible = true);
     OGRFeature * GetNextFeature(bool restart);
 	virtual bool MoveToFeatureIndex(long index);
 	OGRwkbGeometryType GetGeometryType();

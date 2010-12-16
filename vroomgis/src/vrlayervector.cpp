@@ -71,6 +71,16 @@ OGRFeature * vrLayerVector::GetFeature(long fid) {
 	return myFeature;
 }
 
+
+long vrLayerVector::GetFeatureCount(bool onlyvisible) {
+    wxASSERT(m_Layer);
+    if (onlyvisible == false) {
+        ClearSpatialFilter();
+    }
+    return m_Layer->GetFeatureCount();
+}
+
+
 OGRFeature * vrLayerVector::GetNextFeature(bool restart) {
 	if (IsOK() == false) {
 		return NULL;
