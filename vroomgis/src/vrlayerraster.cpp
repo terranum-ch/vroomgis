@@ -18,6 +18,9 @@
 
 #include "vrlayerraster.h"
 #include "vrrender.h"	// for symbology;
+#include <wx/rawbmp.h>
+
+
 
 vrLayerRaster::vrLayerRaster() {
 	m_Dataset = NULL;
@@ -151,8 +154,8 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
 	}
 	
 	// create array for image data (RGBRGBRGB...)
-	unsigned int myimgRGBLen = outimgpxsize.GetWidth() * outimgpxsize.GetHeight() * 3;
-	*imgdata = (unsigned char *) malloc(myimgRGBLen);
+	unsigned int myimgLen = outimgpxsize.GetWidth() * outimgpxsize.GetHeight() * 3;
+	*imgdata = (unsigned char *) malloc(myimgLen);
 	if (*imgdata == NULL) {
 		wxLogError("Image creation failed, out of memory");
 		return false;
@@ -206,7 +209,7 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
 				}
 				
 					
-				for (unsigned char *data = *imgdata; data != (*imgdata + myimgRGBLen);data += 3){
+				for (unsigned char *data = *imgdata; data != (*imgdata + myimgLen);data += 3){
 					unsigned short int val = *((unsigned short int *)data);
 					const GDALColorEntry *color = pal->GetColorEntry(val);
 					if (pal_interp == GPI_Gray){
@@ -271,7 +274,7 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
 					
 				
 				// transform monoband in RGB
-				for (unsigned int i = 0; i< myimgRGBLen ; i += 3)
+				for (unsigned int i = 0; i< myimgLen ; i += 3)
                 {
 					
 					double myGrayValDouble = _ReadGDALValueToDouble(myScanData,myDataType, i / 3);
@@ -363,6 +366,91 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char ** imgdata,
 	
 	return true;
 }
+
+
+bool vrLayerRasterGDAL::_GetRasterNoData(unsigned char ** imgdata, const wxSize & outimgpxsize,
+										 const wxRect & readimgpxinfo, const vrRender * render) {
+	wxASSERT(m_Dataset);
+	m_Dataset->FlushCache();
+    //int myRasterCount  = m_Dataset->GetRasterCount();
+	
+	// check image size bigger than 0
+	if (outimgpxsize.GetWidth() <= 0 || outimgpxsize.GetHeight() <= 0) {
+		wxLogError("Dimentions of the image are invalid (%d, %d)",
+				   outimgpxsize.GetWidth(),
+				   outimgpxsize.GetHeight());
+		return false;
+	}
+	
+
+	// computing statistics if not existing
+	if (_HasStat() == false) {
+		if (_ComputeStat() == false) {
+			return false;
+		}
+	}
+	
+	
+	/*double myRange = 0;
+	
+	
+	void * myScanData = NULL;
+	GDALColorTable *pal = NULL;
+	GDALPaletteInterp pal_interp;*/
+	
+	GDALRasterBand *band = m_Dataset->GetRasterBand(1)->GetMaskBand();
+	wxASSERT(band);
+	int myMaskFlag = m_Dataset->GetRasterBand(1)->GetMaskFlags();
+	if (myMaskFlag == GMF_ALL_VALID) {
+		wxLogMessage("this raster hasn't nodata values");
+		return false;
+	}
+	
+	// create array for image data (RGBRGBRGB...)
+	/*unsigned int myimgLen = outimgpxsize.GetWidth() * outimgpxsize.GetHeight();
+	*imgdata = (unsigned char *) malloc(myimgLen);
+	if (*imgdata == NULL) {
+		wxLogError("Image creation failed, out of memory");
+		return false;
+	}*/
+	
+	GDALDataType myDataType;		
+	int myScanSize = 0;	
+	myDataType = band->GetRasterDataType();
+	myScanSize = GDALGetDataTypeSize(myDataType) / 8;
+	*imgdata = (unsigned char *) malloc(myScanSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight());
+	if (*imgdata == NULL) {
+		wxLogError("Alpha Image creation failed, out of memory");
+		return false;
+	}
+	
+	/*for (int i = 0; i< myScanSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight(); i++) {
+		*(*imgdata + i) = 0;
+		if (i >= (myScanSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight()) / 2) {
+			*(*imgdata + i) = 255;
+		}
+		
+	}
+	return true;*/
+	
+	if (band->RasterIO(GF_Read,
+					   readimgpxinfo.GetX(), readimgpxinfo.GetY(),
+					   readimgpxinfo.GetWidth(), readimgpxinfo.GetHeight(), 
+					   *imgdata,
+					   outimgpxsize.GetWidth(), outimgpxsize.GetHeight(),
+					   myDataType, 0, 0) != CE_None) {
+		
+		// if reading doesn't work, clean and exit.
+		wxLogError("Error gettign Alpha raster, maybe out of memory");
+		if (*imgdata != NULL) {
+			CPLFree(*imgdata);
+			*imgdata = NULL;
+		}
+		return false;
+	}
+	return true;	
+}
+
 
 
 
@@ -639,43 +727,67 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 	if(_ComputeDisplayPosSize(m_ImgPxSize, myImgExtent, coord, 
 							  pxsize, myImgInfo, myImgPos)==false){
 		wxLogMessage("Raster %s invalid. Maybe outside the display", m_FileName.GetFullName());
+		return false;
 	}
-	else { // raster inside display
-		
-		unsigned char * myimgdata = NULL;
-		if (_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
-						   myImgInfo, render) == false) {
-			wxASSERT(myimgdata == NULL);
-			return false;
-		}
-		
-		wxImage myImg (myImgPos.GetWidth(), myImgPos.GetHeight());
-		myImg.SetData(myimgdata, false);
-		if (myImg.IsOk() == false) {
-			wxLogError("Creating raster failed");
-			return false;
-		}
-		
-		
-		// drawing the image on the passed bmp
-		wxBitmap myBmp(bmp->GetSize());
-		wxMemoryDC dc (myBmp);
-		dc.Clear();
-		
-		dc.DrawBitmap(myImg, myImgPos.GetX(), myImgPos.GetY(), false);
-		
-		dc.SelectObject(wxNullBitmap);
-		*bmp = myBmp.ConvertToImage();
+	
+	// raster inside display
+	unsigned char * myimgdata = NULL;
+	if (_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
+					   myImgInfo, render) == false) {
+		wxASSERT(myimgdata == NULL);
+		return false;
 	}
+	
+	wxImage myImg (myImgPos.GetWidth(), myImgPos.GetHeight());
+	myImg.SetData(myimgdata, false);
+	if (myImg.IsOk() == false) {
+		wxLogError("Creating raster failed");
+		return false;
+	}
+	
+	unsigned char * mynodata = NULL;
+	if (_GetRasterNoData(&mynodata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
+						 myImgInfo, render) != false) {
+		wxASSERT(mynodata != NULL);
+		myImg.SetAlpha(mynodata, false);
+	}
+	
+	// user transparency
+	int myUserTransparency = 255 - (render->GetTransparency() * 255 / 100);
+	if (myUserTransparency != 255) {
+		wxImagePixelData data(myImg);
+		wxImagePixelData::Iterator row (data);
+		for (int y = 0; y < myImgPos.GetHeight();y++){
+			wxImagePixelData::Iterator col = row;
+			for (int x = 0; x < myImgPos.GetWidth(); x++, ++row) {
+				if (row.Alpha() != 0) {
+					row.Alpha() = myUserTransparency;
+				}
+			}
+			row = col;
+			row.OffsetY(data, 1);
+		}
+	}
+	
+	// drawing the image on the passed bmp
+	wxBitmap myBmp(bmp->GetSize());
+	wxMemoryDC dc (myBmp);
+	//dc.Clear();
+	
+	dc.DrawBitmap(myImg, myImgPos.GetX(), myImgPos.GetY(), true);
+	
+	dc.SelectObject(wxNullBitmap);
+	*bmp = myBmp.ConvertToImage();
+	
 	
 	
 	// set image transparency. Image is fully transparent, except for pixels where bitmap 
 	// was drawn. Those are set the the user defined transparency
-	char myBackgroundTransparency = 0;
+	/*char myBackgroundTransparency = 0;
 	int myUserTransparency = 255 - (render->GetTransparency() * 255 / 100);
 	unsigned char * alphachar = NULL;
 
-	unsigned int myimglen = bmp->GetWidth() * bmp->GetHeight();
+	/*unsigned int myimglen = bmp->GetWidth() * bmp->GetHeight();
 	alphachar= (unsigned char*)malloc(myimglen);
 	if (alphachar == NULL)
 	{
@@ -712,8 +824,7 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 		for (int y = myImgPos.y; y < myImgPos.GetHeight() + myImgPos.y ; y++) {
 			bmp->SetAlpha(x, y, (char) myUserTransparency);
 		}
-	}
-	
+	}*/
 	return true;
 }
 
