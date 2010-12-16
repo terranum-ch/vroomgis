@@ -98,6 +98,9 @@ protected:
 	double _ReadGDALValueToDouble(void* & data, const GDALDataType & type, int index);
 	virtual bool _GetRasterData(unsigned char ** imgdata, const wxSize & outimgpxsize,
 								const wxRect & readimgpxinfo, const vrRender * render);
+	virtual bool _GetRasterNoData(unsigned char ** imgdata, const wxSize & outimgpxsize,
+								  const wxRect & readimgpxinfo, const vrRender * render);
+
 	
 	
 public:
