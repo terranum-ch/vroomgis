@@ -48,11 +48,11 @@ copy  /Y %trunkdir%\include\wx\msw\setup0.h %trunkdir%\include\wx\msw\setup.h
 
 ECHO 3a) BUILDING DEBUG VERSION
 cd %builddir%
-nmake -f makefile.vc BUILD=debug CPPFLAGS="/MTd" UNICODE=1 MONOLITHIC=1
+nmake -f makefile.vc BUILD=debug CPPFLAGS="/MTd /MP" UNICODE=1 MONOLITHIC=1
 
 ECHO 3b) BUILDING RELEASE VERSION
 cd %builddir%
-nmake -f makefile.vc BUILD=release CPPFLAGS="/MT" UNICODE=1 MONOLITHIC=1
+nmake -f makefile.vc BUILD=release CPPFLAGS="/MT /MP" UNICODE=1 MONOLITHIC=1
 
 
 
