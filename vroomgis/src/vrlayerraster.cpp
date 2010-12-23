@@ -863,7 +863,7 @@ bool vrLayerRasterGDAL::GetPixelValue(double coordx, double coordy, wxArrayDoubl
 							1, 1,
 							GDT_Float32, 
 							myRasterCount, NULL, 0,0,0) != CE_None) {
-		wxLogError("Error reading value at pixel (%d, %d) in %s",
+		wxLogMessage("Error reading value at pixel (%d, %d) in %s",
 				   pxcoordx, pxcoordy, m_FileName.GetFullName());
 		if (pData != NULL) {
 			CPLFree(pData);
@@ -873,7 +873,13 @@ bool vrLayerRasterGDAL::GetPixelValue(double coordx, double coordy, wxArrayDoubl
 	}
 	double myVal = 0.0;
 	for (int i = 0; i<myRasterCount; i++) {
-		myVal = _ReadGDALValueToDouble(pData, GDT_Float32, i); 
+		myVal = _ReadGDALValueToDouble(pData, GDT_Float32, i);
+        if (wxIsSameDouble(myVal, m_OneBandNoData)) {
+            //wxLogMessage("Reading no data !");
+            CPLFree(pData);
+            values.Clear();
+            return false;
+        }
 		values.Add(myVal);
 	}
 	CPLFree(pData);
