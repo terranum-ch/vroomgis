@@ -32,6 +32,7 @@ private:
     vrCoordinate * m_Coordinate;
 	wxBitmap * m_bmp;
 	vrDisplayTool * m_Tool;
+    vrDisplayTool * m_ToolSecondary;
     vrViewerLayerManager * m_ViewerManager;
 	wxStatusBar * m_Status;
 	int m_StatusField;
@@ -69,6 +70,7 @@ public:
 	void SetToolPan();
 	void SetToolSight();
     void SetTool(vrDisplayTool * tool);
+    void SetToolSecondary(vrDisplayTool * tool);
     inline const vrDisplayTool * GetTool() const;
 
 	

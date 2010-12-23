@@ -135,6 +135,10 @@ void vrViewerDisplay::OnMouseMove(wxMouseEvent & event) {
 		m_Tool->MouseMove(event);
 	}
 	
+    if (m_ToolSecondary != NULL) {
+        m_ToolSecondary->MouseMove(event); 
+    }
+    
 	if (m_Status != NULL) {
 		wxPoint2DDouble myCoord;
 		if (GetCoordinate()->GetExtent().IsOk() == false || m_bmp == NULL) {
@@ -142,7 +146,7 @@ void vrViewerDisplay::OnMouseMove(wxMouseEvent & event) {
 			return;
 		}
 		GetCoordinate()->ConvertFromPixels(event.GetPosition(), myCoord);
-		m_Status->SetStatusText(wxString::Format("%.2f : %.2f", myCoord.m_x, myCoord.m_y),
+		m_Status->SetStatusText(wxString::Format("%.2f  %.2f", myCoord.m_x, myCoord.m_y),
 								m_StatusField);
 	}
 }
@@ -161,6 +165,7 @@ vrViewerDisplay::vrViewerDisplay(){
 	m_Coordinate = NULL;
 	m_bmp = NULL;
 	m_Tool = NULL;
+    m_ToolSecondary = NULL;
 	m_ViewerManager = NULL;
 	m_Status = NULL;
 	m_StatusField = 0;
@@ -212,6 +217,7 @@ vrViewerDisplay::~vrViewerDisplay() {
 	
 	wxDELETE(m_Coordinate);
 	wxDELETE(m_Tool);
+    wxDELETE(m_ToolSecondary);
 	wxDELETE(m_bmp);
 }
 
@@ -292,6 +298,25 @@ void vrViewerDisplay::SetTool(vrDisplayTool * tool) {
 	SetCursor(m_Tool->GetCursor());
 }
 
+
+/*********************************************//**
+@brief Set a secondary Tool
+@details Cursor from the secondary tool is not
+ used, he is mainly used for displaying live
+ informations when mouse move for exemple
+@param tool the tool (derived from vrDisplayTool)
+@date 23 décembre 2010
+*************************************************/
+void vrViewerDisplay::SetToolSecondary(vrDisplayTool * tool) {
+    wxDELETE(m_ToolSecondary);
+    wxASSERT(m_ToolSecondary == NULL);
+    
+    if (tool == NULL) {
+        return;
+    }
+    
+    m_ToolSecondary = tool;
+}
 
 
 
