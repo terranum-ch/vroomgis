@@ -181,6 +181,7 @@ wxPanel(parent, id){
 	m_Coordinate = new vrCoordinate(this);
 	m_bmp = NULL;
 	m_Tool = NULL;
+	m_ToolSecondary = NULL;
 	m_ViewerManager = NULL;
 	m_Status = NULL;
 	m_StatusField = 0;
