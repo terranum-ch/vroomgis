@@ -152,6 +152,14 @@ void vrViewerDisplay::OnMouseMove(wxMouseEvent & event) {
 }
 
 
+void vrViewerDisplay::OnMouseDClickLeft(wxMouseEvent & event) {
+    SetFocus();
+    if (m_Tool != NULL) {
+        m_Tool->MouseDClickLeft(event);
+    }
+}
+
+
 void vrViewerDisplay::OnMouseCaptureLost(wxMouseEvent & event){
 	// Only used under Windows. Mouse capture is lost when a dialog is displayed.
 	if (HasCapture() == true){
@@ -198,6 +206,7 @@ wxPanel(parent, id){
 	Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown),NULL,this);
 	Connect(wxEVT_LEFT_UP, wxMouseEventHandler(vrViewerDisplay::OnMouseUp),NULL,this);
 	Connect(wxEVT_MOTION, wxMouseEventHandler(vrViewerDisplay::OnMouseMove),NULL,this);
+    Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(vrViewerDisplay::OnMouseDClickLeft),NULL,this);
 	Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(vrViewerDisplay::OnMouseCaptureLost),NULL,this);
 	
 }
@@ -214,6 +223,7 @@ vrViewerDisplay::~vrViewerDisplay() {
 	Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown),NULL,this);
 	Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(vrViewerDisplay::OnMouseUp),NULL,this);
 	Disconnect(wxEVT_MOTION, wxMouseEventHandler(vrViewerDisplay::OnMouseMove),NULL,this);
+    Disconnect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(vrViewerDisplay::OnMouseDClickLeft),NULL,this);
 	Disconnect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(vrViewerDisplay::OnMouseCaptureLost),NULL,this);
 	
 	wxDELETE(m_Coordinate);

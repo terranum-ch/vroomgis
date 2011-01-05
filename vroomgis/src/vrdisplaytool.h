@@ -89,6 +89,7 @@ public:
     virtual bool MouseDown(const wxMouseEvent & event);
     virtual bool MouseUp(const wxMouseEvent & event);
     virtual bool MouseMove(const wxMouseEvent & event);
+    virtual bool MouseDClickLeft(const wxMouseEvent & event);
 	
 	void SendMessage(vrDisplayToolMessage * message);
 	
@@ -187,6 +188,8 @@ public:
     virtual bool MouseDown(const wxMouseEvent & event);
     virtual bool MouseUp(const wxMouseEvent & event);
     virtual bool MouseMove(const wxMouseEvent & event);
+    virtual bool MouseDClickLeft(const wxMouseEvent & event);
+
 	
 };
 

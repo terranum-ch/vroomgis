@@ -118,6 +118,11 @@ bool vrDisplayTool::MouseMove(const wxMouseEvent & event) {
 }
 
 
+bool vrDisplayTool::MouseDClickLeft(const wxMouseEvent & event) {
+    return false;
+}
+
+
 
 /***************************************************************************//**
 @brief Send a message to the parent
@@ -352,7 +357,10 @@ bool vrDisplayToolPan::MouseDown(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolPan::MouseUp(const wxMouseEvent & event) {
-	
+    if (m_PanBitmap == NULL) {
+        return false;
+    }
+    
 	// compute the new raster origin
 	wxPoint myNewPos(m_Point.x - event.GetPosition().x,
 					 m_Point.y - event.GetPosition().y);
@@ -364,7 +372,6 @@ bool vrDisplayToolPan::MouseUp(const wxMouseEvent & event) {
 	wxASSERT(myMessage);
 	SendMessage(myMessage);
 	
-	wxASSERT(m_PanBitmap);
 	wxDELETE(m_PanBitmap);
 	m_Point = wxDefaultPosition;
 	return true;
@@ -373,12 +380,10 @@ bool vrDisplayToolPan::MouseUp(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolPan::MouseMove(const wxMouseEvent & event) {
-	if (event.Dragging()==false) {
+	if (event.Dragging()==false || m_PanBitmap == NULL) {
 		return false;
 	}
 	
-	wxASSERT(m_PanBitmap);
-
 	// compute the new raster origin
 	wxPoint myNewPos(event.GetPosition().x - m_Point.x,
 					 event.GetPosition().y - m_Point.y);
@@ -403,6 +408,25 @@ bool vrDisplayToolPan::MouseMove(const wxMouseEvent & event) {
 }
 
 
+bool vrDisplayToolPan::MouseDClickLeft(const wxMouseEvent & event) {
+    // compute middle pixel
+    wxSize myDisplaySize = GetDisplay()->GetSize();
+    if (myDisplaySize.IsFullySpecified() == false || myDisplaySize == wxSize(0,0)) {
+        wxLogError("Error getting display size!");
+        return false;
+    }
+    wxPoint myMiddlePoint(wxRound(myDisplaySize.GetWidth() / 2.0),
+                          wxRound(myDisplaySize.GetHeight() / 2.0));
+    // computing moved point
+    wxPoint myMovedPoint (event.GetPosition() - myMiddlePoint);
+
+    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_PAN,
+																GetDisplay(),
+																myMovedPoint);
+	wxASSERT(myMessage);
+	SendMessage(myMessage);
+    return true;
+}
 
 
 
