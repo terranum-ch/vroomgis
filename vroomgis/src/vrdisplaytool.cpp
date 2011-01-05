@@ -265,7 +265,11 @@ bool vrDisplayToolZoom::MouseDown(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
-	m_Rubber->SetPointLast(event.GetPosition());
+	if (!m_Rubber) {
+        return false;
+    }
+    
+    m_Rubber->SetPointLast(event.GetPosition());
 	if (m_Rubber->IsValid()==false) {
 		wxDELETE(m_Rubber);
 		return false;
@@ -291,9 +295,11 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolZoom::MouseMove(const wxMouseEvent & event) {
-
+	if (!m_Rubber) {
+        return false;
+    }
+    
 	if (event.Dragging()==true) {
-		wxASSERT(m_Rubber);
 		m_Rubber->SetPointLast(event.GetPosition());
 		m_Rubber->Update();
 	}
