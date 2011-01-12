@@ -312,7 +312,7 @@ long vrLayerVectorOGR::AddFeature(OGRGeometry * geometry, void * data) {
 		wxArrayString * myArray = (wxArrayString*) data;
 		wxASSERT((signed) myArray->GetCount() == myFeature->GetFieldCount());
 		for (unsigned int i = 0; i< myArray->GetCount(); i++) {
-            myFeature->SetField(i, myArray->Item(i));
+            myFeature->SetField(i, myArray->Item(i).mb_str(wxCSConv(wxFONTENCODING_ISO8859_1)));
         }
 	}
 	
