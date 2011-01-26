@@ -60,6 +60,11 @@ email                : lucien.schreiber at crealp dot vs dot ch
  #include <sqlite3.h>
 #endif
 
+// USING MYSQL
+#cmakedefine lsVERSION_HAS_MYSQL
+#ifdef lsVERSION_HAS_MYSQL
+	#include "mysql.h"
+#endif
 
 // USING VROOMGIS
 #cmakedefine lsVERSION_VROOMGIS_SVN "@lsVERSION_VROOMGIS_SVN@"

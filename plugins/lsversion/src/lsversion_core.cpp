@@ -95,6 +95,16 @@ wxString lsVersion::GetSQLiteNumber(){
 }
 
 
+wxString lsVersion::GetMySQLNumber(){
+	wxString myMySQL = wxEmptyString;
+#ifdef lsVERSION_HAS_MYSQL
+	myMySQL = wxString(mysql_get_client_info(), wxConvUTF8);
+#endif
+	return myMySQL;
+}
+
+
+
 wxString lsVersion::GetVroomGISNumber(){
     wxString myVroomGIS = wxEmptyString;
 #ifdef lsVERSION_VROOMGIS_SVN
@@ -114,10 +124,13 @@ wxString lsVersion::GetAllModules()
     }
 	myModules.Append(_T("\n"));
     
-    
     if (GetVroomGISNumber().IsEmpty() == false) {
         myModules.Append(_T("vroomGIS: ") + GetVroomGISNumber() + _T("\n"));
     }
+	
+	if (GetMySQLNumber().IsEmpty() == false){
+		myModules.Append(_T("MySQL: ") + GetMySQLNumber() + _T("\n"));
+	}
 	
     if (GetSQLiteNumber().IsEmpty() == false) {
         myModules.Append(_T("SQLite: ") + GetSQLiteNumber() + _T("\n"));
@@ -131,11 +144,9 @@ wxString lsVersion::GetAllModules()
         myModules.Append(_T("GEOS: ") + GetGEOSNumber() + _T("\n"));
     }
     
-
     if (GetCurlNumber().IsEmpty() == false ) {
         myModules.Append(_T("libCURL: ") + GetCurlNumber() + _T("\n"));
     }
-    
     
 	myModules.Append(wxGetOsDescription());	
 	return myModules;
