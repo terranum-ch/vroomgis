@@ -38,6 +38,7 @@ class lsVersion {
     static wxString GetGEOSNumber();
     static wxString GetCurlNumber();
     static wxString GetSQLiteNumber();
+	static wxString GetMySQLNumber();
     static wxString GetVroomGISNumber();
     static wxString GetAllModules();
 };
