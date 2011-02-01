@@ -88,13 +88,13 @@ IF (SEARCH_GDAL)
 	IF (WIN32)
 		
 		FIND_PATH(GDAL_INCLUDE_DIR gdal.h
-  				${SEARCH_GIS_LIB_PATH}/include
+  				PATHS ${SEARCH_GIS_LIB_PATH}/include
   				${SEARCH_GIS_LIB_PATH}
-  				NO_DEFAULT_PATH)
+                NO_DEFAULT_PATH)
   		
   		FIND_LIBRARY(GDAL_LIBRARIES
 	  		gdal_i
-	  		PATH ${SEARCH_GIS_LIB_PATH}/lib
+	  		PATHS ${SEARCH_GIS_LIB_PATH}/lib
   			${SEARCH_GIS_LIB_PATH}
   			NO_DEFAULT_PATH)
 	
@@ -102,14 +102,15 @@ IF (SEARCH_GDAL)
 	ELSE (WIN32)
 		
 		FIND_PATH(GDAL_INCLUDE_DIR gdal.h
-  				${SEARCH_GIS_LIB_PATH}/include
+  				PATHS ${SEARCH_GIS_LIB_PATH}/include
   				${SEARCH_GIS_LIB_PATH}
+                PATH_SUFFIXES gdal  				
   				NO_DEFAULT_PATH)
   		
   		FIND_LIBRARY(GDAL_LIBRARIES
-	  		gdal
-	  		PATH ${SEARCH_GIS_LIB_PATH}/lib
-  			${SEARCH_GIS_LIB_PATH}
+	  		gdal NAMES gdal1 gdal1.6.0
+	  		PATHS ${SEARCH_GIS_LIB_PATH}/lib
+  			${SEARCH_GIS_LIB_PATH}  				
   			NO_DEFAULT_PATH)
   		  		  			
 	ENDIF (WIN32)
@@ -132,7 +133,7 @@ IF (SEARCH_GDAL)
   ENDIF(GDAL_LIBRARIES)
 	
 	#debug message
-	MESSAGE ("DBG : GDAL lis is ${GDAL_LIBRARIES}")
+	MESSAGE ("DBG : GDAL lib is ${GDAL_LIBRARIES}")
 	MESSAGE ("DBG : GDAL include is ${GDAL_INCLUDE_DIR}")
 
 
