@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gdal_frmts.h 18207 2009-12-07 21:37:49Z rouault $
+ * $Id: gdal_frmts.h 21249 2010-12-13 23:43:02Z rouault $
  *
  * Project:  GDAL
  * Purpose:  Prototypes for all format specific driver initializations.
@@ -58,8 +58,10 @@ void CPL_DLL GDALRegister_PNG(void);
 void CPL_DLL GDALRegister_JPEG(void);
 void CPL_DLL GDALRegister_JPEG2000(void);
 void CPL_DLL GDALRegister_JP2KAK(void);
+void CPL_DLL GDALRegister_JPIPKAK(void);
 void CPL_DLL GDALRegister_MEM(void);
 void CPL_DLL GDALRegister_JDEM(void);
+void CPL_DLL GDALRegister_RASDAMAN(void);
 void CPL_DLL GDALRegister_GRASS(void);
 void CPL_DLL GDALRegister_PNM(void);
 void CPL_DLL GDALRegister_GIF(void);
@@ -85,6 +87,7 @@ void CPL_DLL GDALRegister_GSC(void);
 void CPL_DLL GDALRegister_NITF(void);
 void CPL_DLL GDALRegister_RPFTOC(void);
 void CPL_DLL GDALRegister_MrSID(void);
+void CPL_DLL GDALRegister_MG4Lidar(void);
 void CPL_DLL GDALRegister_PCIDSK(void);
 void CPL_DLL GDALRegister_BT(void);
 void CPL_DLL GDALRegister_DODS(void);
@@ -142,10 +145,21 @@ void CPL_DLL GDALRegister_TIL(void);
 void CPL_DLL GDALRegister_R(void);
 void CPL_DLL GDALRegister_Rasterlite(void);
 void CPL_DLL GDALRegister_EPSILON(void);
-void CPL_DLL GDALRegister_WKTRaster(void);
+void CPL_DLL GDALRegister_PostGISRaster(void);
 void CPL_DLL GDALRegister_NWT_GRD(void);
 void CPL_DLL GDALRegister_NWT_GRC(void);
 void CPL_DLL GDALRegister_SAGA(void);
+void CPL_DLL GDALRegister_KMLSUPEROVERLAY(void);
+void CPL_DLL GDALRegister_GTX(void);
+void CPL_DLL GDALRegister_LOSLAS(void);
+void CPL_DLL GDALRegister_Istar(void);
+void CPL_DLL GDALRegister_NTv2(void);
+void CPL_DLL GDALRegister_JP2OpenJPEG(void);
+void CPL_DLL GDALRegister_XYZ(void);
+void CPL_DLL GDALRegister_HF2(void);
+void CPL_DLL GDALRegister_PDF(void);
+void CPL_DLL GDALRegister_JPEGLS(void);
+void CPL_DLL GDALRegister_OZI(void);
 void CPL_DLL GDALRegister_C2D(void);
 CPL_C_END
 

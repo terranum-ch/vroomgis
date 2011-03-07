@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gdalallregister.cpp 18207 2009-12-07 21:37:49Z rouault $
+ * $Id: gdalallregister.cpp 21249 2010-12-13 23:43:02Z rouault $
  *
  * Project:  GDAL Core
  * Purpose:  Implementation of GDALAllRegister(), primary format registration.
@@ -30,7 +30,7 @@
 #include "gdal_priv.h"
 #include "gdal_frmts.h"
 
-CPL_CVSID("$Id: gdalallregister.cpp 18207 2009-12-07 21:37:49Z rouault $");
+CPL_CVSID("$Id: gdalallregister.cpp 21249 2010-12-13 23:43:02Z rouault $");
 
 #ifdef notdef
 // we may have a use for this some day
@@ -153,6 +153,10 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_JDEM();
 #endif
 
+#ifdef FRMT_rasdaman
+    GDALRegister_RASDAMAN();
+#endif
+
 #ifdef FRMT_gif
     GDALRegister_GIF();
     GDALRegister_BIGGIF();
@@ -247,9 +251,19 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_JP2KAK();
 #endif
 
+#ifdef FRMT_jpipkak
+// JPEG2000 support using Kakadu toolkit
+    GDALRegister_JPIPKAK();
+#endif
+
 #ifdef FRMT_ecw
     GDALRegister_ECW();
     GDALRegister_JP2ECW();
+#endif
+
+#ifdef FRMT_openjpeg
+// JPEG2000 support using OpenJPEG library
+    GDALRegister_JP2OpenJPEG();
 #endif
 
 #ifdef FRMT_jpeg2000
@@ -273,6 +287,10 @@ void CPL_STDCALL GDALAllRegister()
 
 #ifdef FRMT_mrsid
     GDALRegister_MrSID();
+#endif
+
+#ifdef FRMT_mrsid_lidar
+    GDALRegister_MG4Lidar();
 #endif
 
 #ifdef FRMT_rmf
@@ -361,6 +379,9 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_EIR();
     GDALRegister_DIPEx();
     GDALRegister_LCP();
+    GDALRegister_GTX();
+    GDALRegister_LOSLAS();
+    GDALRegister_NTv2();
 #endif
 
 /* -------------------------------------------------------------------- */
@@ -428,18 +449,41 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_EPSILON();
 #endif
 
-#ifdef FRMT_wktraster
-    GDALRegister_WKTRaster();
+#ifdef FRMT_postgisraster
+    GDALRegister_PostGISRaster();
 #endif
 
 #ifdef FRMT_saga
     GDALRegister_SAGA();
 #endif
-	
+
+#ifdef FRMT_kmlsuperoverlay
+    GDALRegister_KMLSUPEROVERLAY();
+#endif
+
+#ifdef FRMT_xyz
+    GDALRegister_XYZ();
+#endif
+
+#ifdef FRMT_hf2
+    GDALRegister_HF2();
+#endif
+
+#ifdef FRMT_pdf
+    GDALRegister_PDF();
+#endif
+
+#ifdef FRMT_jpegls
+    GDALRegister_JPEGLS();
+#endif
+
+#ifdef FRMT_ozi
+    GDALRegister_OZI();
+#endif
+
 #ifdef FRMT_c2d
 	GDALRegister_C2D();
 #endif
-	
 /* -------------------------------------------------------------------- */
 /*      Deregister any drivers explicitly marked as supressed by the    */
 /*      GDAL_SKIP environment variable.                                 */
