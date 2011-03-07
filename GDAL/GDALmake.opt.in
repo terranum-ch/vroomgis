@@ -4,6 +4,12 @@ top_builddir	=	$(GDAL_ROOT)
 #
 # the library can be built by the native build or with the help of libtool
 #
+
+# Solaris users: the LIBTOOL line is expanded to $(SHELL) $(top_builddir)/libtool
+# but the libtool script uses bashism, so you may need to uncomment the following
+# line :
+#SHELL=/usr/bin/bash
+
 HAVE_LIBTOOL	=	@HAVE_LIBTOOL@
 LIBTOOL	=	@LIBTOOL@
 ifeq ($(HAVE_LIBTOOL),yes)
@@ -31,7 +37,9 @@ INSTALL_DIR	= 	$(GDAL_ROOT)/install-sh -d
 # SDE_LIB needs to be first because it embeds zlib.  We need to use its symbols instead of -lz's
 
 LIBS	=	$(SDE_LIB) @LIBS@ $(KAK_LIBS) $(DWG_LIBS) $(CURL_LIB) \
-		$(MRSID_LIBS) $(INGRES_LIB) $(PCIDSK_LIB)
+		$(MRSID_LIBS) $(MRSID_LIDAR_LIBS) $(INGRES_LIB) \
+		$(PCIDSK_LIB) $(RASDAMAN_LIB) $(CHARLS_LIB) \
+		$(OPENCL_LIB)
 
 PYTHON_INCLUDES = @PYTHON_INCLUDES@
 PYTHON_LIBS = @PYTHON_LIBS@
@@ -85,9 +93,9 @@ GDAL_INCLUDE	=	-I$(GDAL_ROOT)/port -I$(GDAL_ROOT)/gcore \
 
 # libtool targets and help variables
 LIBGDAL	:=		libgdal.la
-LIBGDAL_CURRENT	:=	15
-LIBGDAL_REVISION	:=	3
-LIBGDAL_AGE	:=	14
+LIBGDAL_CURRENT	:=	16
+LIBGDAL_REVISION	:=	0
+LIBGDAL_AGE	:=	15
 
 # native build targets and variables
 GDAL_VER	=	@GDAL_VER@
@@ -108,7 +116,7 @@ MACOSX_FRAMEWORK = @MACOSX_FRAMEWORK@
 # GDAL/OGR PostgreSQL support.
 #
 HAVE_OGR_PG     = @HAVE_PG@
-HAVE_WKTRASTER  = @HAVE_PG@
+HAVE_POSTGISRASTER  = @HAVE_PG@
 PG_INC	=	@PG_INC@
 
 #
@@ -174,6 +182,11 @@ HAVE_JASPER     = @HAVE_JASPER@
 JASPER_FLAGS	= @JASPER_FLAGS@
 
 #
+# JPEG-2000 Support via OpenJPEG library.
+#
+HAVE_OPENJPEG   = @HAVE_OPENJPEG@
+
+#
 # MrSID support via LizardTech's DSDK
 #
 MRSID_FLAGS	= @MRSID_FLAGS@
@@ -181,6 +194,12 @@ MRSID_INCLUDE	= @MRSID_INCLUDE@
 MRSID_LIBS	= @MRSID_LIBS@
 
 #
+#
+# MrSID/MG4 support via LizardTech LiDAR SDK
+#
+MRSID_LIDAR_INCLUDE	= @MRSID_LIDAR_INCLUDE@
+MRSID_LIDAR_LIBS	= @MRSID_LIDAR_LIBS@
+
 # Xerces C++ XML Parser for GML and ILI
 #
 HAVE_XERCES	= @HAVE_XERCES@
@@ -196,6 +215,12 @@ HAVE_NAS	= @HAVE_NAS@
 #
 HAVE_EXPAT = @HAVE_EXPAT@
 EXPAT_INCLUDE = @EXPAT_INCLUDE@
+
+#
+# Google libkml for the new OGR KML driver written by Brian Case
+#
+HAVE_LIBKML = @HAVE_LIBKML@
+LIBKML_INCLUDE = @LIBKML_INCLUDE@
 
 #
 # Oracle Spatial Support
@@ -223,6 +248,14 @@ SDE_LIB	= @SDE_LIB@
 SDE_INC = @SDE_INC@
 
 # 
+# ArcObjects
+#
+HAVE_ARCOBJECTS = @ARCOBJECTS_ENABLED@
+ARCOBJECTS_LIB	= @ARCOBJECTS_LIB@
+ARCOBJECTS_INC = @ARCOBJECTS_INC@
+
+
+# 
 # VFK
 #
 HAVE_VFK = @HAVE_VFK@
@@ -233,6 +266,12 @@ HAVE_VFK = @HAVE_VFK@
 CURL_SETTING 	=	@CURL_SETTING@
 CURL_LIB	=	@CURL_LIB@
 CURL_INC	=	@CURL_INC@
+
+# 
+# OpenCL support
+#
+OPENCL_LIB	=	@OPENCL_LIB@
+OPENCL_FLAGS	=	@OPENCL_FLAGS@
 
 #
 # PCIDSK SDK
@@ -306,8 +345,34 @@ OGDI_SETTING	=	@HAVE_OGDI@
 ODBC_SETTING    =       @ODBC_SETTING@
 # PGeo driver is built-in when ODBC is available
 PGEO_SETTING    =       @ODBC_SETTING@
+MSSQLSPATIAL_SETTING    =       @ODBC_SETTING@
 NETCDF_SETTING  =       @NETCDF_SETTING@
 LIBZ_SETTING	=	@LIBZ_SETTING@
+LIBLZMA_SETTING	=	@LIBLZMA_SETTING@
+
+#
+# Rasdaman stuff
+#
+RASDAMAN_ENABLED  =       @RASDAMAN_ENABLED@
+RASDAMAN_INC  =   @RASDAMAN_INC@
+RASDAMAN_LIB  =   @RASDAMAN_LIB@
+
+#
+# Poppler stuff
+#
+
+HAVE_POPPLER = @HAVE_POPPLER@
+POPPLER_HAS_OPTCONTENT = @POPPLER_HAS_OPTCONTENT@
+POPPLER_BASE_STREAM_HAS_TWO_ARGS = @POPPLER_BASE_STREAM_HAS_TWO_ARGS@
+POPPLER_INC = @POPPLER_INC@
+
+#
+# CharLs stuff
+# Uncomment and adapt paths to enable JPEGLS driver
+#
+#HAVE_CHARLS = yes
+#CHARLS_INC = -I/path/to/charls_include
+#CHARLS_LIB = -L/path/to/charls_lib -lCharLS
 
 #
 # PROJ.4 stuff
@@ -336,7 +401,8 @@ GDAL_FORMATS = 	gxf gtiff hfa aigrid aaigrid ceos ceos2 iso8211 xpm \
 		sdts raw dted mem jdem envisat elas fit vrt usgsdem l1b \
 		nitf bmp pcidsk airsar rs2 ilwis rmf leveller sgi srtmhgt \
 		idrisi gsg ingr ers jaxapalsar dimap gff cosar pds adrg \
-		coasp tsx terragen blx msgn til r northwood saga c2d \
+		coasp tsx terragen blx msgn til r northwood saga xyz hf2 \
+		kmlsuperoverlay ozi c2d \
 		@OPT_GDAL_FORMATS@
 
 ifneq ($(LIBZ_SETTING),no)
@@ -349,8 +415,12 @@ GDAL_FORMATS := $(GDAL_FORMATS) rasterlite
 endif
 endif
 
-ifeq ($(HAVE_WKTRASTER),yes)
-GDAL_FORMATS := $(GDAL_FORMATS) wktraster
+ifeq ($(HAVE_POSTGISRASTER),yes)
+GDAL_FORMATS := $(GDAL_FORMATS) postgisraster
+endif
+
+ifeq ($(HAVE_CHARLS),yes)
+GDAL_FORMATS := $(GDAL_FORMATS) jpegls
 endif
 
 #
