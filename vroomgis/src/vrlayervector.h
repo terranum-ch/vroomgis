@@ -98,6 +98,7 @@ public:
 	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 						 const vrRender * render = NULL, const vrLabel * label = NULL);
 
+    bool SetAttributeFilter(const wxString & query);
 
 	
 };
