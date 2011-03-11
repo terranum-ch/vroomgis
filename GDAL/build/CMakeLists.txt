@@ -73,12 +73,28 @@ ELSE(WIN32)
 	#CONFIGURE GDAL ? ONLY NEEDED IF GDALMake.opt.in WAS CHANGED
 	SET (GDAL_CONFIGURE CACHE BOOL "Configure GDAL ? only needed if GDALMake.opt.in was changed")
 	IF(GDAL_CONFIGURE)
+		SET(USE_SYSTEM_LIBS CACHE BOOL "Use GEOS and PROJ library from the system. If not checked, will take them from : ${GDAL_PREFIX}")
+		#SET (GEOS_PATH "")
+		IF(USE_SYSTEM_LIBS)
+			MESSAGE(DEBUG "Using GEOS and PROJ from the system...")
+			SET (GEOS_PATH "/usr/bin/")
+			SET (PROJ_PATH "/usr")
+
+		ELSE (USE_SYSTEM_LIBS)
+			MESSAGE(DEBUG "Using GEOS and PROJ from ${GDAL_PREFIX}")
+			SET (GEOS_PATH "${GDAL_PREFIX}/bin/")
+			SET (PROJ_PATH "${GDAL_PREFIX}")
+
+		ENDIF(USE_SYSTEM_LIBS)
+		MESSAGE ("Geos PATH = ${GEOS_PATH}")
+
 		SET(GDAL_PREFIX CACHE PATH "Path the the LIBGIS directory")
 		IF(NOT GDAL_PREFIX)
 			MESSAGE(FATAL_ERROR "No LIBGIS directory defined")
 		ENDIF(NOT GDAL_PREFIX)
 
-		EXECUTE_PROCESS(COMMAND ./configure --prefix=${GDAL_PREFIX} --with-geos=${GDAL_PREFIX}/bin/geos-config --with-python=no --with-sqlite3=yes --with-static-proj4=${GDAL_PREFIX} 
+		MESSAGE (DEBUG "./configure --prefix=${GDAL_PREFIX} --with-geos=${GEOS_PATH}geos-config --with-python=no --with-sqlite3=yes --with-static-proj4=${PROJ_PATH}")
+		EXECUTE_PROCESS(COMMAND ./configure --prefix=${GDAL_PREFIX} --with-geos=${GEOS_PATH}geos-config --with-python=no --with-sqlite3=yes --with-static-proj4=${PROJ_PATH} 
 WORKING_DIRECTORY ${GDAL_SOURCE_PATH}
 RESULT_VARIABLE MYCONFIGRESULT
 OUTPUT_VARIABLE MYCONFIGOUTPUT
