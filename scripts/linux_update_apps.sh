@@ -3,7 +3,7 @@
 # Script for updating vroomloader
 # (c) Lucien Schreiber CREALP 2010
 #PARAMETERS
-# script for updating vroomloader app under linuxe
+# script for updating vroomloader app under linux
 # works only for linux
 # 1) Update the svn repositories
 # 2) Run cmake to configure
@@ -11,9 +11,9 @@
 # 4) Launch the resulting program
 
 
-TRUNKDIR=/home/lucien/Documents/ColtopGIS/trunk-vroomgis
-BINDIR=/home/lucien/Documents/ColtopGIS/bin/vroomloader
-BINDIR2=/home/lucien/Documents/ColtopGIS/bin/vroomtwin
+TRUNKDIR=/home/lucien/programmation/ColtopGIS/vroomgis-trunk
+BINDIR=/home/lucien/programmation/ColtopGIS/bin/vroomloader
+BINDIR2=/home/lucien/programmation/ColtopGIS/bin/vroomtwin
 
 VARLINE="----------------------------------"
 
@@ -52,16 +52,16 @@ fi
 echo "3) configuring ..."
 cd $BINDIR
 
-cmake $TRUNKDIR/app/vroomloader/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config" -DUSE_VERSION:BOOL=1 -DwxWIDGETS_USING_SVN:BOOL=1 -DwxWIDGETS_PATH_SVN="/home/lucien/Documents/LIB/wxWidgets-svn"
+cmake $TRUNKDIR/app/vroomloader/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/programmation/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/programmation/LIB/_LIBWX/bin/wx-config" -DUSE_VERSION:BOOL=1 -DwxWIDGETS_USING_SVN:BOOL=1 -DwxWIDGETS_PATH_SVN="/home/lucien/programmation/LIB/wxWidgets-SVN"
 
 echo $VARLINE
 echo "4) Making the binary"
-make
+make --jobs=8
 echo "4) Making the binary ... DONE"
 
 echo $VARLINE
 echo "5) Running..-"
-./vroomLoader 
+./vroomLoader &
 echo "5) vroomloader LAUNCHED"
 
 
@@ -85,7 +85,7 @@ fi
 echo "3) configuring ..."
 cd $BINDIR2
 
-cmake $TRUNKDIR/app/vroomtwin/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/Documents/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/Documents/LIB/_LIBWXSVN/bin/wx-config" -DUSE_VERSION:BOOL=1 -DwxWIDGETS_USING_SVN:BOOL=1 -DwxWIDGETS_PATH_SVN="/home/lucien/Documents/LIB/wxWidgets-svn"
+cmake $TRUNKDIR/app/vroomtwin/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH="/home/lucien/programmation/LIB/_LIBGIS" -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE="/home/lucien/programmation/LIB/_LIBWX/bin/wx-config" -DUSE_VERSION:BOOL=1 -DwxWIDGETS_USING_SVN:BOOL=1 -DwxWIDGETS_PATH_SVN="/home/lucien/programmation/LIB/wxWidgets-SVN"
 
 echo $VARLINE
 echo "4) Making the binary"
@@ -94,7 +94,7 @@ echo "4) Making the binary ... DONE"
 
 echo $VARLINE
 echo "5) Running..-"
-./vroomTwin 
+./vroomTwin &
 echo "5) vroomloader LAUNCHED"
 
 
