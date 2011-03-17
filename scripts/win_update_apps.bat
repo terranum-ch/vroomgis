@@ -30,7 +30,7 @@ ECHO 1) Updating repositories ...
 
 REM RUN VCVARS SCRIPT
 C:
-start %VCVARS% 
+call %VCVARS% 
 
 
 D:
