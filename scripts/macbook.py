@@ -1,16 +1,6 @@
 # VARIABLES FOR BUILDING ON OSX 
 
 # Variables to define, see update_vroomgis.py:
-# gwxWidgets = wxconfig binary
-# gwxWidgetsVersion = trunk of wxwidgets when using SVN version
-# gTrunk = Path to the vroomgis trunk
-# gDirBin = Path to the vroomgis binary dir (will contain : vroomloader, vroomtwin, vroomtests)
-# 
-# gDirGis = Path to the GIS directory (GDAL, GEOS, PROJ), may be empty if installed in standard directory
-# gDirTestData = Path to the test data, only needed for vroomgistests
-# gDirCxx = Path to the cxxtest library
-# gDirSQLite = Path to the sqlite library, may be empty if using standard library.
-
 gwxWidgets = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBWXSVN/bin/wx-config" #wxWIDGETS config
 gwxWidgetsVersion = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/wxWidgets-svn/"
 gDirTrunk = "/Users/lucien/DATA/PRJ/COLTOP-GIS/trunk_vroomgis"
