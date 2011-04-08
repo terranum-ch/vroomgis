@@ -89,7 +89,7 @@ cmake $TRUNKDIR/app/vroomtwin/build -G "CodeBlocks - Unix Makefiles" -DSEARCH_GD
 
 echo $VARLINE
 echo "4) Making the binary"
-make
+make --jobs=8
 echo "4) Making the binary ... DONE"
 
 echo $VARLINE
