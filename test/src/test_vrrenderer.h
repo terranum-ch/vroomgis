@@ -27,6 +27,7 @@
 
 #include "test_param.h"	//for test parameters
 #include "vrrenderer.h"
+#include "vrrender.h"
 
 
 class TEST_vrRenderer : public CxxTest::TestSuite
