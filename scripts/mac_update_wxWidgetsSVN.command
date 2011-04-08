@@ -41,7 +41,7 @@ echo $VARLINE
 #running configure
 echo "2) Configuring library..."
 cd $VARTRUNKDIR/build64/
-../configure --prefix=$VARBINDIR --enable-unicode --disable-monolithic --disable-shared  --with-osx_cocoa --with-macosx-version-min=10.5
+../configure --prefix=$VARBINDIR --enable-unicode --disable-monolithic --disable-shared  --with-osx_cocoa --with-macosx-version-min=10.5 --without-libtiff
 echo "2) Configuring library.. DONE"
 echo $VARLINE
 
