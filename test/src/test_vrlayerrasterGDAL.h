@@ -102,165 +102,32 @@ public:
 	}
 
 
-	void testRasterOutside(){
-#ifndef __WXMSW__
-
-		vrRealRect myWndExtent (0, 1000, 4000, -1000);
-		vrRealRect myImgExtent (5000, 800, 1000, -600);
-
-		wxSize myImgPxSize (200, 60);
-		double pixelsize = 10;
-
-
-		// tests
-		wxRect myImgInfo;
-		wxRect myImgPos;
-		vrLayerRasterGDAL myLayer;
-		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize, myImgInfo, myImgPos)==false);
-
-		TS_ASSERT(myImgInfo.IsEmpty());
-		TS_ASSERT(myImgPos == wxRect(0,0,0,0));
-#endif
-
-
-	}
 
 
 
-	void testForRasterIO1(){
-#ifndef __WXMSW__
-
-		// this code is for testing how to get data ready
-		// for RasterIO function
-
-		//Param
-		vrRealRect myWndExtent (0, 1000, 4000, -1000);
-		vrRealRect myImgExtent (1000, 800, 2000, -600);
-
-		wxSize myImgPxSize (200, 60);
-		double pixelsize = 10;
 
 
-		// tests
-		wxRect myImgInfo;
-		wxRect myImgPos;
-		vrLayerRasterGDAL myLayer;
-		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
-									 myImgInfo, myImgPos)==true);
-		TS_ASSERT_EQUALS(myImgInfo.GetX(), 0);
-		TS_ASSERT_EQUALS(myImgInfo.GetY(), 0);
-		TS_ASSERT_EQUALS(myImgInfo.GetWidth(), 200);
-		TS_ASSERT_EQUALS(myImgInfo.GetHeight(), 60);
-
-		TS_ASSERT_EQUALS(myImgPos.GetX(), 100);
-		TS_ASSERT_EQUALS(myImgPos.GetY(), 20);
-#endif
-	}
-
-	void testForRasterIO2(){
-#ifndef __WXMSW__
-
-		// this code is for testing how to get data ready
-		// for RasterIO function
-
-		//Param
-		vrRealRect myWndExtent (0, 1000, 4000, -1000);
-		vrRealRect myImgExtent (2000, 1500, 4000, -1000);
-
-		wxSize myImgPxSize (200, 100);
-		double pixelsize = 10;
 
 
-		// tests
-		wxRect myImgInfo;
-		wxRect myImgPos;
-		vrLayerRasterGDAL myLayer;
-		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
-									 myImgInfo, myImgPos)==true);
-		TS_ASSERT_EQUALS(myImgInfo.GetX(), 0);
-		TS_ASSERT_EQUALS(myImgInfo.GetY(), 50);
-		TS_ASSERT_EQUALS(myImgInfo.GetWidth(), 100);
-		TS_ASSERT_EQUALS(myImgInfo.GetHeight(), 50);
 
-		TS_ASSERT_EQUALS(myImgPos.GetX(), 200);
-		TS_ASSERT_EQUALS(myImgPos.GetY(), 0);
-#endif
-	}
-
-	void testForRasterIO3(){
-#ifndef __WXMSW__
-
-		// this code is for testing how to get data ready
-		// for RasterIO function
-
-		//Param
-		vrRealRect myWndExtent (1000, 1500, 4000, -1000);
-		vrRealRect myImgExtent (0, 1000, 2000, -1000);
-
-		wxSize myImgPxSize (200, 100);
-		double pixelsize = 10;
-
-
-		// tests
-		wxRect myImgInfo;
-		wxRect myImgPos;
-		vrLayerRasterGDAL myLayer;
-		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
-									 myImgInfo, myImgPos)==true);
-		TS_ASSERT_EQUALS(myImgInfo.GetX(), 100);
-		TS_ASSERT_EQUALS(myImgInfo.GetY(), 0);
-		TS_ASSERT_EQUALS(myImgInfo.GetWidth(), 100);
-		TS_ASSERT_EQUALS(myImgInfo.GetHeight(), 50);
-
-		TS_ASSERT_EQUALS(myImgPos.GetX(), 0);
-		TS_ASSERT_EQUALS(myImgPos.GetY(), 50);
-#endif
-	}
-
-
-	void testRasterIntersection(){
-#ifndef __WXMSW__
-
-		//Param
-		vrRealRect myWndExtent (0, 2000, 2000, -1000);
-		vrRealRect myImgExtent (1000, 1500, 1000, -1000);
-
-		wxSize myImgPxSize (200, 100);
-		double pixelsize = 10;
-
-
-		// tests
-		wxRect myImgInfo;
-		wxRect myImgPos;
-		vrLayerRasterGDAL myLayer;
-		TS_ASSERT(myLayer._ComputeDisplayPosSize(myImgPxSize, myImgExtent, myWndExtent, pixelsize,
-											 myImgInfo, myImgPos)==true);
-
-		TS_ASSERT_EQUALS(myImgPos.GetX(), 100);
-		TS_ASSERT_EQUALS(myImgPos.GetY(), 50);
-		TS_ASSERT_EQUALS(myImgPos.GetWidth(), 100);
-		TS_ASSERT_EQUALS(myImgPos.GetHeight(), 50);
-#endif
-	}
-	
 	void testGetPixelValueGDAL(){
 		wxLogMessage("Testing getting pixel value for GDAL raster");
 		vrRealRect myExtent;
 		TS_ASSERT(myExtent.IsEmpty()==true);
-		
+
 		// extent failed, layer not opened
 		vrLayerRasterGDAL myLayer;
 		TS_ASSERT(myLayer.GetExtent(myExtent)==false);
-		
+
 		// extent ok for layer GDAL
 		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileMNT), false),true);
 		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
 		wxArrayDouble myValues;
 		TS_ASSERT(myLayer.GetPixelValue(598100, 115000, myValues));
 		TS_ASSERT(myValues.GetCount() != 0)
-		
+
 		TS_ASSERT_DELTA (myValues.Item(0), 754.5999, 0.001);
-		
+
 		wxString myTxtValues = "Value of px 598100 - 115000 = ";
 		for (unsigned int i = 0; i<myValues.GetCount(); i++) {
 			myTxtValues.Append(wxString::Format(" %.2f -", myValues.Item(i)));
@@ -269,7 +136,7 @@ public:
 		wxLogMessage(myTxtValues);
 
 	}
-	
+
 
 
 };
