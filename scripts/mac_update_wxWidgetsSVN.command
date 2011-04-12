@@ -47,7 +47,7 @@ echo $VARLINE
 
 #compiling project
 echo "3)Building library..."
-make
+make --jobs=4
 echo "3)Building library... DONE"
 echo $VARLINE
 
