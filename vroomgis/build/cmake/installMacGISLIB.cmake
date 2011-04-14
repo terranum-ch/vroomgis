@@ -57,7 +57,7 @@ IF (APPLE)
 			# we have to change the programm (but only after build...)
 			#GET_TARGET_PROPERTY (PROG_LOCATION ${CMAKE_PROJECT_NAME} LOCATION)
 			ADD_CUSTOM_COMMAND( TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-	       COMMAND install_name_tool  ARGS -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
+	       COMMAND install_name_tool  ARGS -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
 	       COMMENT "Updating program GEOS libs")
 	
 	
@@ -125,7 +125,7 @@ IF (APPLE)
 			# we have to change the programm (but only after build...)
 			#GET_TARGET_PROPERTY (PROG_LOCATION ${CMAKE_PROJECT_NAME} LOCATION)
 			ADD_CUSTOM_COMMAND( TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-	       COMMAND install_name_tool  ARGS -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
+	       COMMAND install_name_tool  ARGS -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.dylib @executable_path/../${LIBNAME}/libgeos_c.${GEOS_C_VERSION}.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
 	       COMMENT "Updating program GEOS libs")
 	
 	
