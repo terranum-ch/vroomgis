@@ -288,11 +288,11 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
         wxDELETE(m_Rubber);
 
         // Check that no dimension is too small
-        if(myRect.GetWidth()<2) {
-            myRect.SetWidth(2);
+        if(myRect.GetWidth()<5) {
+            myRect.SetWidth(5);
         }
-        if(myRect.GetHeight()<2) {
-            myRect.SetHeight(2);
+        if(myRect.GetHeight()<5) {
+            myRect.SetHeight(5);
         }
 
         wxLogMessage("Selection rect is %d, %d, %d, %d",
@@ -359,11 +359,11 @@ bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent & event) {
         wxDELETE(m_Rubber);
 
         // Check that no dimension is too small
-        if(myRect.GetWidth()<2) {
-            myRect.SetWidth(2);
+        if(myRect.GetWidth()<5) {
+            myRect.SetWidth(5);
         }
-        if(myRect.GetHeight()<2) {
-            myRect.SetHeight(2);
+        if(myRect.GetHeight()<5) {
+            myRect.SetHeight(5);
         }
 
         wxLogMessage("Selection rect is %d, %d, %d, %d",
