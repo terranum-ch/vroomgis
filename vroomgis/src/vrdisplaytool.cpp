@@ -2,7 +2,7 @@
  vrdisplaytool.cpp
 
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -35,7 +35,7 @@ void vrDisplayToolMessage::_InitMembers() {
 	m_ParentManager = NULL;
 }
 
-vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype, 
+vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
 										   vrViewerDisplay * parent, const wxRect & rect) {
 	_InitMembers();
 	m_EvtType = eventtype;
@@ -49,7 +49,7 @@ vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
 	m_EvtType = eventtype;
 	m_Position = pos;
 	m_ParentManager = parent->GetViewerLayerManager();
-	
+
 }
 
 vrDisplayToolMessage::~vrDisplayToolMessage() {
@@ -84,7 +84,7 @@ void vrDisplayTool::Create(vrViewerDisplay * display, int id, wxString name, wxC
 	wxASSERT(id != wxNOT_FOUND);
 	wxASSERT(name.IsEmpty() == false);
 	wxASSERT(display != NULL);
-	
+
 	m_ID = id;
 	m_Name = name;
 	m_Cursor = cursor;
@@ -126,9 +126,9 @@ bool vrDisplayTool::MouseDClickLeft(const wxMouseEvent & event) {
 
 /***************************************************************************//**
 @brief Send a message to the parent
-@param void 
-@param vrDisplayTool::SendMessage 
-@param vrDisplayToolMessage 
+@param void
+@param vrDisplayTool::SendMessage
+@param vrDisplayToolMessage
 @param message valid pointer, will be sent to parent throught SetClientData.
  Should be deleted when intercepting event
 @author Lucien Schreiber (c) CREALP 2010
@@ -138,17 +138,17 @@ void vrDisplayTool::SendMessage(vrDisplayToolMessage * message) {
 	wxASSERT(m_Display);
 	wxASSERT(message);
 	wxASSERT(message->m_EvtType != wxEVT_NULL);
-	
+
 	wxCommandEvent myEvt (message->m_EvtType);
 	myEvt.SetClientData(message);
-	
+
 	// send message to the top level window if found
 	wxWindow * myTopWin = wxGetTopLevelParent(m_Display);
 	if (myTopWin != NULL) {
 		myTopWin->ProcessWindowEvent(myEvt);
 		return;
 	}
-	
+
 	// send message to the display if not found
 	m_Display->ProcessWindowEvent(myEvt);
 }
@@ -162,7 +162,7 @@ vrDisplayToolDefault::~vrDisplayToolDefault() {
 }
 
 bool vrDisplayToolDefault::MouseDown(const wxMouseEvent & event) {
-	
+
 	vrDisplayToolMessage * myMsG = new vrDisplayToolMessage(vrEVT_TOOL_SELECT,
 															GetDisplay(),
 															event.GetPosition());
@@ -200,7 +200,7 @@ bool vrDisplayToolSelect::MouseDown(const wxMouseEvent & event) {
 	m_Rubber = new vrRubberBand(GetDisplay());
 	wxASSERT(m_Rubber);
 	m_Rubber->SetPointFirst(event.GetPosition());
-	return false;	
+	return false;
 }
 
 
@@ -209,9 +209,9 @@ bool vrDisplayToolSelect::MouseUp(const wxMouseEvent & event) {
 	if (m_Rubber == NULL) {
 		return true;
 	}
-	
+
 	m_Rubber->SetPointLast(event.GetPosition());
-	
+
 	wxRect myRect;
 	myRect.SetLeftTop(event.GetPosition());
 	myRect.SetRightBottom(event.GetPosition());
@@ -219,20 +219,20 @@ bool vrDisplayToolSelect::MouseUp(const wxMouseEvent & event) {
 		myRect = m_Rubber->GetRect();
 	}
 	wxDELETE(m_Rubber);
-	
+
 	wxLogMessage("Selection rect is %d, %d, %d, %d",
 				 myRect.GetLeft(),
 				 myRect.GetTop(),
 				 myRect.GetWidth(),
 				 myRect.GetHeight());
-	
+
 	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_SELECT,
 																GetDisplay(),
 																myRect);
 	wxASSERT(myMessage);
 	SendMessage(myMessage);
 	return true;
-	
+
 }
 
 bool vrDisplayToolSelect::MouseMove(const wxMouseEvent & event) {
@@ -246,13 +246,9 @@ bool vrDisplayToolSelect::MouseMove(const wxMouseEvent & event) {
 
 
 
-
-
-
-
 vrDisplayToolZoom::vrDisplayToolZoom(vrViewerDisplay * display) {
 	Create(display, wxID_ZOOM_100, "Zoom", wxCursor(wxCURSOR_MAGNIFIER));
-	
+
 }
 
 vrDisplayToolZoom::~vrDisplayToolZoom() {
@@ -270,25 +266,42 @@ bool vrDisplayToolZoom::MouseDown(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
+
+    wxRect myRect;
+
 	if (!m_Rubber) {
         return false;
     }
-    
+
     m_Rubber->SetPointLast(event.GetPosition());
-	if (m_Rubber->IsValid()==false) {
+	if (m_Rubber->IsValid()==false) { // e.g. if user only clicks
 		wxDELETE(m_Rubber);
-		return false;
+
+        // Set a rectangle centered with a size 5 times smaller
+        myRect = wxRect(event.GetPosition().x - GetDisplay()->GetSize().GetWidth()/10,
+                              event.GetPosition().y - GetDisplay()->GetSize().GetHeight()/10,
+                              GetDisplay()->GetSize().GetWidth()/5,
+                              GetDisplay()->GetSize().GetHeight()/5);
 	}
-	
-	wxRect myRect = m_Rubber->GetRect();
-	wxDELETE(m_Rubber);
-	
-	wxLogMessage("Selection rect is %d, %d, %d, %d",
-				 myRect.GetLeft(),
-				 myRect.GetTop(),
-				 myRect.GetWidth(),
-				 myRect.GetHeight());
-	
+    else {
+        myRect = m_Rubber->GetRect();
+        wxDELETE(m_Rubber);
+
+        // Check that no dimension is too small
+        if(myRect.GetWidth()<2) {
+            myRect.SetWidth(2);
+        }
+        if(myRect.GetHeight()<2) {
+            myRect.SetHeight(2);
+        }
+
+        wxLogMessage("Selection rect is %d, %d, %d, %d",
+                     myRect.GetLeft(),
+                     myRect.GetTop(),
+                     myRect.GetWidth(),
+                     myRect.GetHeight());
+    }
+
 	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_ZOOM,
 																GetDisplay(),
 																myRect);
@@ -303,7 +316,7 @@ bool vrDisplayToolZoom::MouseMove(const wxMouseEvent & event) {
 	if (!m_Rubber) {
         return false;
     }
-    
+
 	if (event.Dragging()==true) {
 		m_Rubber->SetPointLast(event.GetPosition());
 		m_Rubber->Update();
@@ -311,6 +324,62 @@ bool vrDisplayToolZoom::MouseMove(const wxMouseEvent & event) {
 	return false;
 }
 
+
+vrDisplayToolZoomOut::vrDisplayToolZoomOut(vrViewerDisplay * display)
+:vrDisplayToolZoom(display) {
+	Create(display, wxID_ZOOM_OUT, "Zoom out", wxCursor(wxCURSOR_SIZING)); // Or wxCURSOR_BULLSEYE
+
+}
+
+vrDisplayToolZoomOut::~vrDisplayToolZoomOut() {
+
+}
+
+
+bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent & event) {
+
+	wxRect myRect;
+
+	if (!m_Rubber) {
+        return false;
+    }
+
+    m_Rubber->SetPointLast(event.GetPosition());
+    if (m_Rubber->IsValid()==false) { // e.g. if user only clicks
+        wxDELETE(m_Rubber);
+
+        // Set a rectangle centered with a size 5 times smaller
+        myRect = wxRect(event.GetPosition().x - GetDisplay()->GetSize().GetWidth()/10,
+                              event.GetPosition().y - GetDisplay()->GetSize().GetHeight()/10,
+                              GetDisplay()->GetSize().GetWidth()/5,
+                              GetDisplay()->GetSize().GetHeight()/5);
+    }
+    else {
+        myRect = m_Rubber->GetRect();
+        wxDELETE(m_Rubber);
+
+        // Check that no dimension is too small
+        if(myRect.GetWidth()<2) {
+            myRect.SetWidth(2);
+        }
+        if(myRect.GetHeight()<2) {
+            myRect.SetHeight(2);
+        }
+
+        wxLogMessage("Selection rect is %d, %d, %d, %d",
+                     myRect.GetLeft(),
+                     myRect.GetTop(),
+                     myRect.GetWidth(),
+                     myRect.GetHeight());
+    }
+
+	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_ZOOMOUT,
+																GetDisplay(),
+																myRect);
+	wxASSERT(myMessage);
+	SendMessage(myMessage);
+	return true;
+}
 
 
 
@@ -338,11 +407,11 @@ bool vrDisplayToolPan::MouseDown(const wxMouseEvent & event) {
 	m_Point = event.GetPosition();
 
 	wxASSERT(m_PanBitmap == NULL);
-	
+
 	wxClientDC myDc (GetDisplay());
 	m_PanBitmap = new wxBitmap (myDc.GetSize());
 	wxASSERT(m_PanBitmap);
-	
+
 	wxMemoryDC memdc;
 	memdc.SelectObject(*m_PanBitmap);
 	memdc.Blit(0,0,
@@ -360,18 +429,18 @@ bool vrDisplayToolPan::MouseUp(const wxMouseEvent & event) {
     if (m_PanBitmap == NULL) {
         return false;
     }
-    
+
 	// compute the new raster origin
 	wxPoint myNewPos(m_Point.x - event.GetPosition().x,
 					 m_Point.y - event.GetPosition().y);
-	
-	
+
+
 	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_PAN,
 																GetDisplay(),
 																myNewPos);
 	wxASSERT(myMessage);
 	SendMessage(myMessage);
-	
+
 	wxDELETE(m_PanBitmap);
 	m_Point = wxDefaultPosition;
 	return true;
@@ -383,15 +452,15 @@ bool vrDisplayToolPan::MouseMove(const wxMouseEvent & event) {
 	if (event.Dragging()==false || m_PanBitmap == NULL) {
 		return false;
 	}
-	
+
 	// compute the new raster origin
 	wxPoint myNewPos(event.GetPosition().x - m_Point.x,
 					 event.GetPosition().y - m_Point.y);
-	
+
 	if (myNewPos.x == 0 && myNewPos.y == 0) {
 		return false;
 	}
-	
+
 	wxMemoryDC memdc;
 	wxBitmap * myMovedBmp = new wxBitmap(m_PanBitmap->GetSize());
 	wxASSERT(myMovedBmp);
@@ -401,7 +470,7 @@ bool vrDisplayToolPan::MouseMove(const wxMouseEvent & event) {
 	memdc.DrawRectangle (0,0, m_PanBitmap->GetSize().x,m_PanBitmap->GetSize().y);
 	memdc.DrawBitmap (*m_PanBitmap, myNewPos.x, myNewPos.y);
 	memdc.SelectObject(wxNullBitmap);
-	
+
 	GetDisplay()->SetBitmap(myMovedBmp);
 	wxDELETE(myMovedBmp);
 	return true;
@@ -449,8 +518,8 @@ bool vrDisplayToolSight::MouseDown(const wxMouseEvent & event) {
 	overlaydc.Clear();
 	myDC.SetPen(*wxRED_PEN);
 	myDC.CrossHair(event.GetPosition());
-	
-	
+
+
 	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
 															GetDisplay(),
 															event.GetPosition());
@@ -462,15 +531,15 @@ bool vrDisplayToolSight::MouseUp(const wxMouseEvent & event) {
 	{
 		wxClientDC myDC (GetDisplay());
 		wxDCOverlay overlaydc (m_Overlay, &myDC);
-		overlaydc.Clear();	
+		overlaydc.Clear();
 	}
 	m_Overlay.Reset();
-	
+
 	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
 															GetDisplay(),
 															wxDefaultPosition);
 	SendMessage(myMsg);
-	
+
 	return true;
 }
 
@@ -478,23 +547,23 @@ bool vrDisplayToolSight::MouseMove(const wxMouseEvent & event) {
 	if (event.Dragging() == false) {
 		return false;
 	}
-	
-	
+
+
 	{
 		wxClientDC myDC (GetDisplay());
 		wxDCOverlay overlaydc (m_Overlay, &myDC);
-		overlaydc.Clear();	
+		overlaydc.Clear();
 	}
 	m_Overlay.Reset();
-	
-	
+
+
 	wxClientDC myDC (GetDisplay());
 	wxDCOverlay overlaydc (m_Overlay, &myDC);
 	overlaydc.Clear();
 	myDC.SetPen(*wxRED_PEN);
 	myDC.CrossHair(event.GetPosition());
-	
-	
+
+
 	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
 															GetDisplay(),
 															event.GetPosition());

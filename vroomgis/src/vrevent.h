@@ -1,9 +1,9 @@
 /***************************************************************************
  vrevent.h
  Event definition for vroomgis
- 
+
  -------------------
- copyright            : (C) 2009 CREALP Lucien Schreiber 
+ copyright            : (C) 2009 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -29,6 +29,7 @@
 // Event definition.
 wxDECLARE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
 wxDECLARE_EVENT(vrEVT_TOOL_ZOOM, wxCommandEvent);
+wxDECLARE_EVENT(vrEVT_TOOL_ZOOMOUT, wxCommandEvent);
 wxDECLARE_EVENT(vrEVT_TOOL_SELECT, wxCommandEvent);
 wxDECLARE_EVENT(vrEVT_TOOL_PAN, wxCommandEvent);
 wxDECLARE_EVENT(vrEVT_TOOL_SIGHT, wxCommandEvent);
