@@ -2,7 +2,7 @@
  vrviewerdisplay.h
  Default display
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -38,22 +38,22 @@ private:
 	int m_StatusField;
 	wxString m_StatusErrText;
 
-	
+
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
 	void _InvalidateView(bool updatenow);
-	
+
 	void OnPaint(wxPaintEvent & event);
 	void OnSizeChange(wxSizeEvent & event);
 	void OnEraseBackground (wxPaintEvent & event);
-	
+
 	// mouse event functions
 	void OnMouseDown(wxMouseEvent & event);
     void OnMouseUp(wxMouseEvent & event);
     void OnMouseMove(wxMouseEvent & event);
     void OnMouseDClickLeft(wxMouseEvent & event);
 	void OnMouseCaptureLost(wxMouseEvent & event);
-    
-	
+
+
 public:
 	vrViewerDisplay();
     vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, const wxColour & colour = *wxWHITE);
@@ -61,21 +61,22 @@ public:
 	void SetViewerLayerManager(vrViewerLayerManager * value);
 	vrViewerLayerManager * GetViewerLayerManager();
 
-	
+
 	void SetBitmap(wxBitmap * bmp);
 	vrCoordinate * GetCoordinate() {return m_Coordinate;}
 	void SetStatusCoordinates(wxStatusBar * status, int field = 0, const wxString & errmsg = wxEmptyString);
 
-	
+
 	void SetToolDefault();
     void SetToolZoom();
+    void SetToolZoomOut();
 	void SetToolPan();
 	void SetToolSight();
     void SetTool(vrDisplayTool * tool);
     void SetToolSecondary(vrDisplayTool * tool);
     inline const vrDisplayTool * GetTool() const;
 
-	
+
 };
 
 inline const vrDisplayTool * vrViewerDisplay::GetTool() const {

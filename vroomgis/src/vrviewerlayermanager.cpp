@@ -28,6 +28,7 @@
 
 wxDEFINE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_ZOOM, wxCommandEvent);
+wxDEFINE_EVENT(vrEVT_TOOL_ZOOMOUT, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_SELECT, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_PAN, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_SIGHT, wxCommandEvent);
@@ -243,13 +244,14 @@ bool vrViewerLayerManager::ZoomOut(const vrRealRect & extent) {
 	if (DivRatio < 1.0) {
 		DivRatio = 1.0;
 	}
+	if (DivRatio > 10.0) { // For convenience purposes
+		DivRatio = 10.0;
+	}
 	wxPoint2DDouble myCenter = extent.GetCentre();
 	myFullExtent.Scale(DivRatio);
 	myFullExtent.SetCentre(myCenter);
 	return Zoom(myFullExtent);
 }
-
-
 
 
 bool vrViewerLayerManager::Zoom(const vrRealRect & extent) {
