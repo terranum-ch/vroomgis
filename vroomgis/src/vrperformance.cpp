@@ -38,8 +38,8 @@ size_t vrPerformance::_GetUsedMemory (bool resident){
 #elif defined(__WXMSW__)
     // According to MSDN...
     PROCESS_MEMORY_COUNTERS counters;
-    if (GetProcessMemoryInfo (GetCurrentProcess(), &count, sizeof (count)))
-        return count.PagefileUsage;
+    if (GetProcessMemoryInfo (GetCurrentProcess(), &counters, sizeof (counters)))
+        return counters.PagefileUsage;
     else return 0;
 	
 #else
