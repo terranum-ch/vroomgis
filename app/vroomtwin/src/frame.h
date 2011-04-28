@@ -28,10 +28,6 @@
 #endif
 
 
-#if !defined(__WXMSW__) && !defined(__WXPM__)
-#include "../../../vroomgis/art/vroomgis.xpm"
-#endif
-
 #include <wx/splitter.h>	//splitter bar
 #include <wx/dnd.h>			// dnd
 #include "vroomgis.h"
