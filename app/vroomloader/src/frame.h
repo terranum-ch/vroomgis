@@ -27,11 +27,7 @@
 #include "wx/wx.h"
 #endif
 
-
-#if !defined(__WXMSW__) && !defined(__WXPM__)
-#include "../../../vroomgis/art/vroomgis.xpm"
-#endif
-
+#include <wx/filename.h>
 #include <wx/splitter.h>	//splitter bar
 #include <wx/dnd.h>			// dnd
 //#include <wx/treectrl.h>	// temp treectrl
@@ -43,6 +39,7 @@ class vrDisplayValueDlg;
 const int vlID_MOVE_LAYER		= wxID_HIGHEST + 1;
 const int vlID_DISPLAY_VALUE    = wxID_HIGHEST + 2;
 const int vlID_DISPLAY_VALUE_DLG= wxID_HIGHEST + 3;
+const int vlID_PERFORMANCE		= wxID_HIGHEST + 4;
 
 const int vl_POPUP_OFFSET = 50;
 const int vlID_MENU_POPUP_LAYER = wxID_HIGHEST + 2 + vl_POPUP_OFFSET; 
@@ -87,7 +84,8 @@ private:
 	vrViewerLayerManager * m_ViewerLayerManager;
 	
 	vrViewerDisplay * m_DisplayCtrl;
-	
+	wxFileName m_PerfLogFile;
+
 	
 	void _CreateControls();
 	
@@ -112,6 +110,7 @@ public:
 	void OnToolZoomToFit (wxCommandEvent & event);
 	void OnMoveLayer (wxCommandEvent & event);
 	void OnToolDisplayValue (wxCommandEvent & event);
+	void OnLogPerformance (wxCommandEvent & event);
 	
 	void OnToolAction (wxCommandEvent & event);
 	
