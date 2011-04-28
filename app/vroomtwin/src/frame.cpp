@@ -72,7 +72,7 @@ bool vroomTwin::OnInit()
         return false;
 	
 	wxImage::AddHandler(new wxPNGHandler);
-	initialize_images();
+	vroomgis_initialize_images();
 	
     vroomTwinFrame *frame = new vroomTwinFrame("vroomTwin");
 	frame->SetSize(50, 50, 800, 500);
@@ -141,7 +141,12 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
        : wxFrame(NULL, wxID_ANY, title)
 {
 	m_SyncroTool = true;
-    SetIcon(wxICON(vroomgis));
+    //SetIcon(wxICON(vroomgis));
+	
+	// add icon (windows / linux)
+	wxIcon myVroomGISIcon;
+	myVroomGISIcon.CopyFromBitmap(*_img_vroomgis);
+	SetIcon(myVroomGISIcon);
 
 	// MENU
     wxMenu *fileMenu = new wxMenu;
@@ -206,7 +211,7 @@ vroomTwinFrame::~vroomTwinFrame()
 	wxDELETE(m_LayerManager);
 	delete wxLog::SetActiveTarget (NULL);
 	
-	clear_images();
+	vroomgis_clear_images();
 }
 
 

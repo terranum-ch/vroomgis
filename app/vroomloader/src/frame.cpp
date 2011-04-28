@@ -33,7 +33,7 @@ bool vroomLoader::OnInit()
         return false;
 
 	wxInitAllImageHandlers();
-	initialize_images();
+	vroomgis_initialize_images();
 
     vroomLoaderFrame *frame = new vroomLoaderFrame("vroomLoader");
     //frame->CenterOnScreen(wxBOTH);
@@ -138,9 +138,11 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 {
 	m_PerfLogFile = wxFileName(wxGetHomeDir(), "vroomgis-performance.txt");
 	
-#ifndef __WXOSX__
-    SetIcon(wxICON(vroomgis));
-#endif
+
+	wxIcon myVroomGISIcon;
+	myVroomGISIcon.CopyFromBitmap(*_img_vroomgis);
+	SetIcon(myVroomGISIcon);
+
 	m_DisplayValueDlg = NULL;
 
 	// MENU
@@ -214,7 +216,7 @@ vroomLoaderFrame::~vroomLoaderFrame()
 	wxDELETE(m_LayerManager);
 
 	delete wxLog::SetActiveTarget (NULL);
-	clear_images();
+	vroomgis_clear_images();
 }
 
 

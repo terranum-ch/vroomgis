@@ -7,8 +7,8 @@
 #	include <wx/wx.h>
 #endif
 
-extern void initialize_images(void);
-extern void clear_images(void);
+extern void vroomgis_initialize_images(void);
+extern void vroomgis_clear_images(void);
 
 extern wxBitmap *_img_vroomgis;
 
