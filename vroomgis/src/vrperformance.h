@@ -26,8 +26,9 @@
 #endif
 
 
-#ifdef _WXMSW__
+#ifdef __WXMSW__
 # include <windows.h>
+#include <psapi.h>
 #else
 # include <sys/resource.h>
 #endif
