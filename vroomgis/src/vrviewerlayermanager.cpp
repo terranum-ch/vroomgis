@@ -24,6 +24,9 @@
 #include "vrviewertoc.h"
 #include "vrviewerdisplay.h"
 #include "vrcoordinate.h"
+#include "vrperformance.h"
+
+
 
 
 wxDEFINE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
@@ -50,6 +53,7 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 	m_LayerManager = parent;
 	m_FreezeStatus = false;
 	m_ComputeExtentStatus = false;
+	m_PerfMonitorFile.Clear();
 	if (window) {
 		m_WindowParent = window;
 		m_WindowParent->PushEventHandler(this);
@@ -411,10 +415,24 @@ void vrViewerLayerManager::FreezeEnd() {
 
 
 void vrViewerLayerManager::Reload() {
+	vrPerformance * myPerf = NULL;
+	if (m_PerfMonitorFile.IsOk() == true) {
+		myPerf = new vrPerformance(m_PerfMonitorFile.GetFullPath(),
+								   "Number of layers;Window Resolution(x);Window Resolution(y);");
+	}
+	
 	_BitmapArrayInit();
 
 	_GetLayersData();
 	wxBitmap * myFinalBmp = _MergeBitmapData();
+	
+	long myLayersNumber = m_Images.GetCount();
+	wxSize myBmpSize = wxDefaultSize;
+	
+	if(myLayersNumber > 0){
+		myBmpSize = m_Images.Item(0)->GetSize();
+	}
+		
 	_BitmapArrayDelete();
 
 	// pass bitmap to dispaly
@@ -422,6 +440,30 @@ void vrViewerLayerManager::Reload() {
 	m_Display->SetBitmap(myFinalBmp);
 
 	wxDELETE(myFinalBmp);
+
+	if (myLayersNumber == 0) {
+		wxDELETE(myPerf);
+		return;
+	}
+	
+	if (myPerf != NULL) {
+		myPerf->StopWork(wxString::Format("%ld;%d;%d;",
+										  myLayersNumber,
+										  myBmpSize.GetWidth(),
+										  myBmpSize.GetHeight())) ;
+	}
+}
+
+
+
+void vrViewerLayerManager::StartPerfMonitor(const wxFileName & filename) {
+	m_PerfMonitorFile = filename;
+}
+
+
+
+void vrViewerLayerManager::StopPerfMonitor() {
+	m_PerfMonitorFile.Clear();
 }
 
 

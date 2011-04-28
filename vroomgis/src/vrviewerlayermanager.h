@@ -20,7 +20,6 @@
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
-
 #endif
 #include <wx/filename.h>
 #include "vrrenderer.h"
@@ -46,6 +45,8 @@ class vrViewerLayerManager : public wxEvtHandler {
     vrViewerDisplay * m_Display;
     vrViewerTOC * m_Toc;
 	wxWindow * m_WindowParent;
+	wxFileName m_PerfMonitorFile;
+
 	
 	
 	// using array of wxImages instead of array of wxBitmap because bitmap are
@@ -95,7 +96,8 @@ class vrViewerLayerManager : public wxEvtHandler {
     void FreezeEnd();	
 	void Reload();
 
-
+	void StartPerfMonitor(const wxFileName & filename);
+    void StopPerfMonitor();
 };
 
 inline vrViewerDisplay * vrViewerLayerManager::GetDisplay() const {

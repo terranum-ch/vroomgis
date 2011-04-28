@@ -57,6 +57,7 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_MENU (wxID_MOVE_FRAME, vroomLoaderFrame::OnToolPan)
 	EVT_MENU (vlID_MOVE_LAYER, vroomLoaderFrame::OnMoveLayer)
 	EVT_MENU (vlID_DISPLAY_VALUE, vroomLoaderFrame::OnToolDisplayValue)
+	EVT_MENU (vlID_PERFORMANCE, vroomLoaderFrame::OnLogPerformance)
 
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
@@ -135,6 +136,8 @@ void  vroomLoaderFrame::_CreateControls()
 vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
        : wxFrame(NULL, wxID_ANY, title)
 {
+	m_PerfLogFile = wxFileName(wxGetHomeDir(), "vroomgis-performance.txt");
+	
 #ifndef __WXOSX__
     SetIcon(wxICON(vroomgis));
 #endif
@@ -161,7 +164,12 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	toolMenu->Append(vlID_MOVE_LAYER, "Move layer...\tCtrl+M", "Move the selected layer");
 	toolMenu->AppendSeparator();
 	toolMenu->Append(vlID_DISPLAY_VALUE, "Display raster value...\tCtrl+I", "Display pixel values for raster");
+	toolMenu->AppendSeparator();
+	toolMenu->AppendCheckItem(vlID_PERFORMANCE, "Enable performance logging...\tCtrl+T", 
+					 "Log vroomgis performance into: " + m_PerfLogFile.GetFullPath());
+	toolMenu->Check(vlID_PERFORMANCE, false);
 
+	
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
 	menuBar->Append(toolMenu, "&Tools");
@@ -432,6 +440,16 @@ void vroomLoaderFrame::OnToolDisplayValue (wxCommandEvent & event){
 	vrDisplayValueTool * myDisplayTool = new vrDisplayValueTool(m_DisplayCtrl,
 																m_DisplayValueDlg);
 	m_DisplayCtrl->SetTool(myDisplayTool);
+}
+
+
+void vroomLoaderFrame::OnLogPerformance (wxCommandEvent & event){
+	if (event.IsChecked() == true) {
+		m_ViewerLayerManager->StartPerfMonitor(m_PerfLogFile);
+	}
+	else {
+		m_ViewerLayerManager->StopPerfMonitor();
+	}
 }
 
 
