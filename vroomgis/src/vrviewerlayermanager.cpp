@@ -54,7 +54,7 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 	m_FreezeStatus = false;
 	m_ComputeExtentStatus = false;
 	m_PerfMonitorFile.Clear();
-	m_ReloadThread = true;
+	m_ReloadThread = false;
 	if (window) {
 		m_WindowParent = window;
 		m_WindowParent->PushEventHandler(this);
@@ -650,6 +650,10 @@ int vrViewerLayerManager::_Reload() {
 	wxASSERT(myCoordinate);
 	
 	wxBitmap * myBmp = new wxBitmap(m_Display->GetSize());
+	wxMemoryDC dc (*myBmp);
+	dc.SetBackground(wxBrush(m_Display->GetBackgroundColour()));
+	dc.Clear();
+	dc.SelectObject(wxNullBitmap);
 
 	// getting data from vrRenderer -> vrLayer
 	bool bIsAtLeastOneVisible = false;
@@ -672,11 +676,6 @@ int vrViewerLayerManager::_Reload() {
 		wxDELETE(myBmp);
 		return 0;
 	}
-
-	wxMemoryDC dc (*myBmp);
-	dc.SetBackground(*wxRED_BRUSH);
-	dc.Clear();
-	dc.SelectObject(wxNullBitmap);
 		
 	wxASSERT(m_Display);
 	m_Display->SetBitmap(myBmp);

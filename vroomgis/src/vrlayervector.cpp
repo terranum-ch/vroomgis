@@ -720,7 +720,44 @@ bool vrLayerVectorOGR::GetDataThread(wxImage * bmp, const vrRealRect & coord,  d
 
 bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, 
 							   const vrRender * render, const vrLabel * label) {
-	return false;
+	wxASSERT(m_Layer);
+	wxASSERT(render);
+	
+	// setting spatial filter
+	m_Layer->SetSpatialFilterRect(coord.GetLeft(), coord.GetBottom(), coord.GetRight(), coord.GetTop());
+	m_Layer->ResetReading();
+	
+	// draw
+	wxMemoryDC dc (*bmp);
+	wxGraphicsContext * pgdc = wxGraphicsContext::Create(dc);
+	
+	bool bReturn = true;
+	OGRwkbGeometryType myGeomType = GetGeometryType();
+	switch (myGeomType) {
+		case wkbLineString:
+			bReturn = _DrawLines(pgdc, coord, render, label, pxsize);
+			break;
+			
+		case wkbPoint:
+			bReturn = _DrawPoints(pgdc, coord, render, label, pxsize);
+			break;
+			
+		case wkbPolygon:
+			bReturn = _DrawPolygons(pgdc, coord, render, label, pxsize);
+			break;
+			
+		default: // unsupported case
+			wxLogMessage("Geometry type of %s isn't supported or defined (%d)",
+						 m_FileName.GetFullName(), myGeomType);
+			bReturn = false;
+			break;
+	}
+	
+	wxDELETE(pgdc);
+	if (bReturn == false) {
+		return false;
+	}	
+	return true;
 }
 
 
