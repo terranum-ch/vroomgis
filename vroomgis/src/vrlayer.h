@@ -53,10 +53,10 @@ public:
 	virtual wxFileName GetDisplayName();
     virtual vrDRIVERS_TYPE GetType();
 	virtual bool GetExtent(vrRealRect & rect){return false;}
-	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
+	virtual bool GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 						 const vrRender * render = NULL, const vrLabel * label = NULL){return false;}
-
-
+    virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, 
+						 const vrRender * render = NULL, const vrLabel * label = NULL){return false;}
 	virtual bool IsOK(){return false;}
 	
 };

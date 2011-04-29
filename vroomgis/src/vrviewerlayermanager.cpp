@@ -54,6 +54,7 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 	m_FreezeStatus = false;
 	m_ComputeExtentStatus = false;
 	m_PerfMonitorFile.Clear();
+	m_ReloadThread = true;
 	if (window) {
 		m_WindowParent = window;
 		m_WindowParent->PushEventHandler(this);
@@ -421,36 +422,24 @@ void vrViewerLayerManager::Reload() {
 								   "Number of layers;Window Resolution(x);Window Resolution(y);");
 	}
 	
-	_BitmapArrayInit();
-
-	_GetLayersData();
-	wxBitmap * myFinalBmp = _MergeBitmapData();
-	
-	long myLayersNumber = m_Images.GetCount();
-	wxSize myBmpSize = wxDefaultSize;
-	
-	if(myLayersNumber > 0){
-		myBmpSize = m_Images.Item(0)->GetSize();
+	int myCountLayer = 0;
+	if (m_ReloadThread == true) {
+		myCountLayer = _ReloadThread();
 	}
-		
-	_BitmapArrayDelete();
+	else {
+		myCountLayer = _Reload();
+	}
 
-	// pass bitmap to dispaly
-	wxASSERT(m_Display);
-	m_Display->SetBitmap(myFinalBmp);
-
-	wxDELETE(myFinalBmp);
-
-	if (myLayersNumber == 0) {
+	if (myCountLayer == 0) {
 		wxDELETE(myPerf);
 		return;
 	}
 	
 	if (myPerf != NULL) {
-		myPerf->StopWork(wxString::Format("%ld;%d;%d;",
-										  myLayersNumber,
-										  myBmpSize.GetWidth(),
-										  myBmpSize.GetHeight())) ;
+		myPerf->StopWork(wxString::Format("%d;%d;%d;",
+										  myCountLayer,
+										  m_Display->GetSize().GetWidth(),
+										  m_Display->GetSize().GetHeight())) ;
 	}
 }
 
@@ -533,11 +522,11 @@ bool vrViewerLayerManager::_GetLayersData() {
 	int iTotLayers = m_Renderers.GetCount();
 	for (int i = iTotLayers-1; i>= 0; i--) {
 		if (m_Renderers.Item(i)->GetVisible() == true) {
-			if (m_Renderers.Item(i)->GetBitmapData( m_Images.Item(iImageIndex),
-												   myCoordinate->GetExtent(),
-												   myCoordinate->GetPixelSize())==false) {
+			if (m_Renderers.Item(i)->GetBitmapDataThread( m_Images.Item(iImageIndex),
+														 myCoordinate->GetExtent(),
+														 myCoordinate->GetPixelSize())==false) {
 				wxLogMessage("No data to display for '%s' !",
-						   m_Renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
+							 m_Renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
 				bReturn = false;
 				myInvalidRaster.Add(iImageIndex);
 			}
@@ -626,6 +615,76 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 	return myAggregatedBmp;
 
 }
+
+
+
+int vrViewerLayerManager::_ReloadThread() {
+	_BitmapArrayInit();
+	
+	_GetLayersData();
+	wxBitmap * myFinalBmp = _MergeBitmapData();
+	
+	int myLayersNumber = m_Images.GetCount();
+	wxSize myBmpSize = wxDefaultSize;
+	
+	if(myLayersNumber > 0){
+		myBmpSize = m_Images.Item(0)->GetSize();
+	}
+	
+	_BitmapArrayDelete();
+	
+	// pass bitmap to dispaly
+	wxASSERT(m_Display);
+	m_Display->SetBitmap(myFinalBmp);
+	
+	wxDELETE(myFinalBmp);
+	return myLayersNumber;
+}
+
+
+
+int vrViewerLayerManager::_Reload() {
+	// gettting display coordinates
+	wxASSERT(m_Display);
+	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
+	wxASSERT(myCoordinate);
+	
+	wxBitmap * myBmp = new wxBitmap(m_Display->GetSize());
+
+	// getting data from vrRenderer -> vrLayer
+	bool bIsAtLeastOneVisible = false;
+	int iTotLayers = m_Renderers.GetCount();
+	for (int i = iTotLayers-1; i>= 0; i--) {
+		if (m_Renderers.Item(i)->GetVisible() == true) {
+			if (m_Renderers.Item(i)->GetBitmapData(myBmp,
+												   myCoordinate->GetExtent(),
+												   myCoordinate->GetPixelSize())==false) {
+				wxLogMessage("No data to display for '%s' !",
+							 m_Renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
+			}
+			bIsAtLeastOneVisible = true;
+		}
+	}
+	
+	// no visible raster!
+	if (bIsAtLeastOneVisible == false) {
+		m_Display->SetBitmap(NULL);
+		wxDELETE(myBmp);
+		return 0;
+	}
+
+	wxMemoryDC dc (*myBmp);
+	dc.SetBackground(*wxRED_BRUSH);
+	dc.Clear();
+	dc.SelectObject(wxNullBitmap);
+		
+	wxASSERT(m_Display);
+	m_Display->SetBitmap(myBmp);
+	wxDELETE(myBmp);
+	return 0;
+}
+
+
 
 
 

@@ -111,8 +111,11 @@ public:
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
 	
 	virtual bool GetExtent(vrRealRect & rect);
-	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
+	virtual bool GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 						 const vrRender * render = NULL, const vrLabel * label = NULL);
+	virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,
+						 const vrRender * render = NULL, const vrLabel * label = NULL);
+
 	
 	virtual bool GetPixelValue(double coordx, double coordy, wxArrayDouble & values);
     bool BuildOverviews(const wxArrayInt & factors,

@@ -620,8 +620,8 @@ bool vrLayerVectorOGR::GetExtent(vrRealRect & rect) {
 
 
 
-bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
-							   const vrRender * render, const vrLabel * label) {
+bool vrLayerVectorOGR::GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
+									 const vrRender * render, const vrLabel * label) {
 	wxASSERT(m_Layer);
 	wxASSERT(render);
 	
@@ -714,6 +714,15 @@ bool vrLayerVectorOGR::GetData(wxImage * bmp, const vrRealRect & coord,  double 
 
 	return true;
 }
+
+
+
+
+bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, 
+							   const vrRender * render, const vrLabel * label) {
+	return false;
+}
+
 
 
 

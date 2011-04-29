@@ -46,6 +46,7 @@ class vrViewerLayerManager : public wxEvtHandler {
     vrViewerTOC * m_Toc;
 	wxWindow * m_WindowParent;
 	wxFileName m_PerfMonitorFile;
+    bool m_ReloadThread;
 
 	
 	
@@ -64,6 +65,9 @@ class vrViewerLayerManager : public wxEvtHandler {
     bool _GetLayersData();
 	bool _GetLayersExtent(bool onlyvisible);
     wxBitmap * _MergeBitmapData();
+	int _ReloadThread();
+    int _Reload();
+	
 	
 	// event function
     void OnReload(wxCommandEvent & event);

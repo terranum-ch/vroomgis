@@ -713,8 +713,8 @@ bool vrLayerRasterGDAL::GetExtent(vrRealRect & rect) {
 
 
 
-bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
-								const vrRender * render, const vrLabel * label) {
+bool vrLayerRasterGDAL::GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
+									  const vrRender * render, const vrLabel * label) {
 
 	// get extent of raster
 	vrRealRect myImgExtent;
@@ -832,6 +832,14 @@ bool vrLayerRasterGDAL::GetData(wxImage * bmp, const vrRealRect & coord,  double
 
 	return true;
 }
+
+
+
+bool vrLayerRasterGDAL::GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, 
+							   const vrRender * render, const vrLabel * label) {
+	return false;
+}
+
 
 
 bool vrLayerRasterGDAL::GetPixelValue(double coordx, double coordy, wxArrayDouble & values) {

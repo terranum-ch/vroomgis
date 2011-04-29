@@ -73,6 +73,9 @@ inline wxArrayLong * vrLayerVector::GetSelectedIDs() {
 }
 
 
+
+
+
 class vrLayerVectorOGR : public vrLayerVector {
 protected:
 	virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
@@ -95,8 +98,11 @@ public:
 
     
 	virtual bool GetExtent(vrRealRect & rect);
-	virtual bool GetData(wxImage * bmp, const vrRealRect & coord,  double pxsize,
+	virtual bool GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
+							   const vrRender * render = NULL, const vrLabel * label = NULL);
+	virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,
 						 const vrRender * render = NULL, const vrLabel * label = NULL);
+
 
     bool SetAttributeFilter(const wxString & query);
 
