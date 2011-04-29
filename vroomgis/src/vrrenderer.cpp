@@ -123,13 +123,20 @@ vrRenderer::~vrRenderer() {
 
 
 
-bool vrRenderer::GetBitmapData(wxImage * bmp, const vrRealRect & coord,  double pxsize) {
+bool vrRenderer::GetBitmapDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize) {
 	wxASSERT(bmp);
 	wxASSERT(GetVisible());
 	
 	// TODO: GetRender and GetLabel aren't working in thread mode
 	// we should create copy and send them to the get layer function
-	return GetLayer()->GetData(bmp, coord, pxsize, GetRender(), GetLabel());
+	return GetLayer()->GetDataThread(bmp, coord, pxsize, GetRender(), GetLabel());
+}
+
+
+bool vrRenderer::GetBitmapData(wxBitmap * bmp, const vrRealRect & coord, double pxsize) {
+	wxASSERT(bmp);
+	wxASSERT(GetVisible());
+	return GetLayer()->GetData(bmp, coord, pxsize, GetRender(), GetLabel());	
 }
 
 
