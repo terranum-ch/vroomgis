@@ -837,7 +837,65 @@ bool vrLayerRasterGDAL::GetDataThread(wxImage * bmp, const vrRealRect & coord,  
 
 bool vrLayerRasterGDAL::GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, 
 							   const vrRender * render, const vrLabel * label) {
-	return false;
+	// get extent of raster
+	vrRealRect myImgExtent;
+	if (GetExtent(myImgExtent) == false) {
+		return false;
+	}
+	
+	// compute visible part, position for raster
+	wxRect myImgInfo;
+	wxRect myImgPos;
+	
+	if(_ComputeDisplayPosSize(m_ImgPxSize, myImgExtent, coord,
+							  pxsize, myImgInfo, myImgPos)==false){
+		wxLogMessage("Raster %s invalid. Maybe outside the display", m_FileName.GetFullName());
+		return false;
+	}
+	
+	// raster inside display
+	unsigned char * myimgdata = NULL;
+	if (_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
+					   myImgInfo, render) == false) {
+		wxASSERT(myimgdata == NULL);
+		return false;
+	}
+	
+	wxImage myImg (myImgPos.GetWidth(), myImgPos.GetHeight());
+	myImg.SetData(myimgdata, false);
+	if (myImg.IsOk() == false) {
+		wxLogError("Creating raster failed");
+		return false;
+	}
+	
+	unsigned char * mynodata = NULL;
+	if (_GetRasterNoData(&mynodata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
+						 myImgInfo, render) != false) {
+		wxASSERT(mynodata != NULL);
+		myImg.SetAlpha(mynodata, false);
+	}
+	
+	// user transparency
+	int myUserTransparency = 255 - (render->GetTransparency() * 255 / 100);
+	if (myUserTransparency != 255) {
+		wxImagePixelData data(myImg);
+		wxImagePixelData::Iterator row (data);
+		for (int y = 0; y < myImgPos.GetHeight();y++){
+			wxImagePixelData::Iterator col = row;
+			for (int x = 0; x < myImgPos.GetWidth(); x++, ++row) {
+				if (row.Alpha() != 0) {
+					row.Alpha() = myUserTransparency;
+				}
+			}
+			row = col;
+			row.OffsetY(data, 1);
+		}
+	}
+	
+	// drawing the image on the passed bmp
+	wxMemoryDC dc (*bmp);	
+	dc.DrawBitmap(myImg, myImgPos.GetX(), myImgPos.GetY(), true);
+	return true;
 }
 
 
