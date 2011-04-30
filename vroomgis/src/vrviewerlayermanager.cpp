@@ -657,6 +657,7 @@ int vrViewerLayerManager::_Reload() {
 
 	// getting data from vrRenderer -> vrLayer
 	bool bIsAtLeastOneVisible = false;
+	int iShownLayer = 0;
 	int iTotLayers = m_Renderers.GetCount();
 	for (int i = iTotLayers-1; i>= 0; i--) {
 		if (m_Renderers.Item(i)->GetVisible() == true) {
@@ -666,6 +667,10 @@ int vrViewerLayerManager::_Reload() {
 				wxLogMessage("No data to display for '%s' !",
 							 m_Renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
 			}
+			else {
+				iShownLayer++;
+			}
+
 			bIsAtLeastOneVisible = true;
 		}
 	}
@@ -680,7 +685,7 @@ int vrViewerLayerManager::_Reload() {
 	wxASSERT(m_Display);
 	m_Display->SetBitmap(myBmp);
 	wxDELETE(myBmp);
-	return 0;
+	return iShownLayer;
 }
 
 
