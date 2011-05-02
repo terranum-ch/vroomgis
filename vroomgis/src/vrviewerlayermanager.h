@@ -62,11 +62,11 @@ class vrViewerLayerManager : public wxEvtHandler {
 	// Member function for loading data 
 	bool _BitmapArrayInit();
     void _BitmapArrayDelete();
-    bool _GetLayersData();
+    bool _GetLayersData(long & vectorcount);
 	bool _GetLayersExtent(bool onlyvisible);
     wxBitmap * _MergeBitmapData();
-	int _ReloadThread();
-    int _Reload();
+	int _ReloadThread(long & vectorcount);
+    int _Reload(long & vectorcount);
 	
 	
 	// event function
@@ -102,6 +102,7 @@ class vrViewerLayerManager : public wxEvtHandler {
 
 	void StartPerfMonitor(const wxFileName & filename);
     void StopPerfMonitor();
+	void SetEngineThreaded(bool enable);
 };
 
 inline vrViewerDisplay * vrViewerLayerManager::GetDisplay() const {

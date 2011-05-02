@@ -33,6 +33,7 @@ wxPoint vrLayerVector::_GetPointFromReal(const wxPoint2DDouble & realpt,
 vrLayerVector::vrLayerVector() {
 	m_Dataset = NULL;
 	m_Layer = NULL;
+	m_ObjectDrawn = 0;
 }
 
 vrLayerVector::~vrLayerVector() {
@@ -331,6 +332,7 @@ long vrLayerVectorOGR::AddFeature(OGRGeometry * geometry, void * data) {
 
 bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 								  const vrRender * render, const vrLabel * label, double pxsize) {
+	m_ObjectDrawn = 0;
 	wxASSERT(gdc);
 	wxStopWatch sw;
 	// creating pen
@@ -401,6 +403,7 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 		myFeat = NULL;
 	}
 	
+	m_ObjectDrawn = iCount;
 	wxLogMessage("%ld lines drawed in %ldms", iCount, sw.Time());
 	return true;
 }
@@ -409,6 +412,7 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 
 bool vrLayerVectorOGR::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 								   const vrRender * render, const vrLabel * label, double pxsize) {
+	m_ObjectDrawn = 0;
 	wxASSERT(gdc);
 	wxStopWatch sw;
 	// creating pen
@@ -466,6 +470,7 @@ bool vrLayerVectorOGR::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		myFeat = NULL;
 	}
 	
+	m_ObjectDrawn = iCount;
 	wxLogMessage("%ld points drawed in %ldms", iCount, sw.Time());
 	return true;
 }
@@ -491,6 +496,7 @@ bool vrLayerVectorOGR::_Close() {
 
 bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 									 const vrRender * render, const vrLabel * label, double pxsize) {
+	m_ObjectDrawn = 0;
 	wxASSERT(gdc);
 	wxStopWatch sw;
 	
@@ -581,6 +587,7 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 		myFeat = NULL;
 	}
 	
+	m_ObjectDrawn = iCount;
 	wxLogMessage("%ld Polygon drawed in %ldms", iCount, sw.Time());
 	return true;
 }
