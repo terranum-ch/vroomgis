@@ -20,6 +20,7 @@
 #include "vrrender.h"
 #include "vrrendervectorc2p.h"
 #include "vrlabel.h"
+#include "vrlayervector.h"
 
 
 bool vrRenderer::_IsCorrectRender() {
@@ -123,20 +124,32 @@ vrRenderer::~vrRenderer() {
 
 
 
-bool vrRenderer::GetBitmapDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize) {
+bool vrRenderer::GetBitmapDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize, long & vectorcount) {
 	wxASSERT(bmp);
 	wxASSERT(GetVisible());
 	
 	// TODO: GetRender and GetLabel aren't working in thread mode
 	// we should create copy and send them to the get layer function
-	return GetLayer()->GetDataThread(bmp, coord, pxsize, GetRender(), GetLabel());
+	bool bValue = GetLayer()->GetDataThread(bmp, coord, pxsize, GetRender(), GetLabel());
+	
+	vectorcount = 0;
+	if (GetLayer()->GetType() != vrDRIVER_UNKNOWN && GetLayer()->GetType() < vrDRIVER_RASTER_TIFF){
+		vectorcount =  ((vrLayerVector*)GetLayer())->GetObjectDrawn();
+	}
+	return bValue;
 }
 
 
-bool vrRenderer::GetBitmapData(wxBitmap * bmp, const vrRealRect & coord, double pxsize) {
+bool vrRenderer::GetBitmapData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, long & vectorcount) {
 	wxASSERT(bmp);
 	wxASSERT(GetVisible());
-	return GetLayer()->GetData(bmp, coord, pxsize, GetRender(), GetLabel());	
+
+	bool bValue = GetLayer()->GetData(bmp, coord, pxsize, GetRender(), GetLabel());
+	vectorcount = 0;
+	if (GetLayer()->GetType() != vrDRIVER_UNKNOWN && GetLayer()->GetType() < vrDRIVER_RASTER_TIFF){
+		vectorcount =  ((vrLayerVector*)GetLayer())->GetObjectDrawn();
+	}
+	return bValue;
 }
 
 

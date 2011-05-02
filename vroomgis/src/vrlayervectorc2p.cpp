@@ -21,6 +21,7 @@
 
 bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 								   const vrRender * render, const vrLabel * label, double pxsize) {
+	m_ObjectDrawn = 0;
 	wxASSERT(gdc);
 	wxStopWatch sw;
 	// creating pen
@@ -121,6 +122,7 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		myFeat = NULL;
 	}
 	
+	m_ObjectDrawn = iCount;
 	wxLogMessage("%ld dips drawed in %ldms", iCount, sw.Time());
 	if (iCount == 0){
 		return false;
@@ -132,14 +134,16 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 
 bool vrLayerVectorC2P::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 								  const vrRender * render, const vrLabel * label, double pxsize) {
-  return false;
+	m_ObjectDrawn = 0;
+	return false;
 }
 
 
 
 bool vrLayerVectorC2P::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 									 const vrRender * render, const vrLabel * label, double pxsize) {
-  return false;
+	m_ObjectDrawn = 0;
+	return false;
 }
 
 vrLayerVectorC2P::vrLayerVectorC2P() {

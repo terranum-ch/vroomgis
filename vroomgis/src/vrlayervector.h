@@ -36,6 +36,8 @@ protected:
 	OGRwkbGeometryType m_GeometryType;
 	wxArrayLong m_SelectedIDs;
 
+	long m_ObjectDrawn;
+	
 
 	wxPoint _GetPointFromReal(const wxPoint2DDouble & realpt, 
 							  const wxPoint2DDouble & origin, double pxsize);
@@ -65,14 +67,16 @@ public:
     virtual bool SearchFeatures(OGRGeometry * geometry, wxArrayLong & results);
 	bool IsFeatureSelected(long id);
 
-	
+	inline const long GetObjectDrawn() const;
 };
 
 inline wxArrayLong * vrLayerVector::GetSelectedIDs() {
 	return &m_SelectedIDs;
 }
 
-
+inline const long vrLayerVector::GetObjectDrawn() const {
+	return m_ObjectDrawn;
+}
 
 
 

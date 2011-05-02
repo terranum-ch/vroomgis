@@ -48,9 +48,8 @@ public:
     inline  vrRender * GetRender() ;
     inline  vrLabel * GetLabel() ;
 	inline const bool GetVisible() const;
-	bool GetBitmapDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize);
-    bool GetBitmapData(wxBitmap * bmp, const vrRealRect & coord, double pxsize);
-
+	bool GetBitmapDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize, long & vectorcount);
+	bool GetBitmapData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, long & vectorcount);
 	
     void SetRender(vrRender * value);
     void SetLabel(vrLabel * value);

@@ -419,25 +419,31 @@ void vrViewerLayerManager::Reload() {
 	vrPerformance * myPerf = NULL;
 	if (m_PerfMonitorFile.IsOk() == true) {
 		myPerf = new vrPerformance(m_PerfMonitorFile.GetFullPath(),
-								   "Number of layers;Window Resolution(x);Window Resolution(y);");
+								   "Number of layers;Total Vector Objects;Window Resolution(x);Window Resolution(y);");
 	}
 	
 	int myCountLayer = 0;
+	long myVectorCount = 0;
 	if (m_ReloadThread == true) {
-		myCountLayer = _ReloadThread();
+		myCountLayer = _ReloadThread(myVectorCount);
 	}
 	else {
-		myCountLayer = _Reload();
+		myCountLayer = _Reload(myVectorCount);
 	}
-
+	
+	//if (myVectorCount > 0) {
+		wxLogMessage(_("Total Vector drawn: %ld"), myVectorCount);
+	//}
+	
 	if (myCountLayer == 0) {
 		wxDELETE(myPerf);
 		return;
 	}
 	
 	if (myPerf != NULL) {
-		myPerf->StopWork(wxString::Format("%d;%d;%d;",
+		myPerf->StopWork(wxString::Format("%d;%ld;%d;%d;",
 										  myCountLayer,
+										  myVectorCount,
 										  m_Display->GetSize().GetWidth(),
 										  m_Display->GetSize().GetHeight())) ;
 	}
@@ -453,6 +459,19 @@ void vrViewerLayerManager::StartPerfMonitor(const wxFileName & filename) {
 
 void vrViewerLayerManager::StopPerfMonitor() {
 	m_PerfMonitorFile.Clear();
+}
+
+
+void vrViewerLayerManager::SetEngineThreaded(bool enable) {
+#ifdef __LINUX__
+	if (enable == true) {
+		if (wxMessageBox(_("Engine not fully compatible with Linux, vector layers will not be rendered! Continue ?"),
+						   _("Linux Problem"), wxYES_NO) == wxNO {
+			return;
+		}
+	}
+#endif
+	m_ReloadThread = enable;
 }
 
 
@@ -503,13 +522,14 @@ void vrViewerLayerManager::_BitmapArrayDelete() {
 
 
 
-bool vrViewerLayerManager::_GetLayersData() {
+bool vrViewerLayerManager::_GetLayersData(long & vectorcount) {
 
 	// gettting display coordinates
 	wxASSERT(m_Display);
 	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
 	wxASSERT(myCoordinate);
 
+	vectorcount = 0;
 	// getting data from vrRenderer -> vrLayer
 	bool bReturn = true;
 	int iImageIndex = 0;
@@ -522,14 +542,17 @@ bool vrViewerLayerManager::_GetLayersData() {
 	int iTotLayers = m_Renderers.GetCount();
 	for (int i = iTotLayers-1; i>= 0; i--) {
 		if (m_Renderers.Item(i)->GetVisible() == true) {
+			long myVectorCount = 0;
 			if (m_Renderers.Item(i)->GetBitmapDataThread( m_Images.Item(iImageIndex),
 														 myCoordinate->GetExtent(),
-														 myCoordinate->GetPixelSize())==false) {
+														 myCoordinate->GetPixelSize(),
+														 myVectorCount)==false) {
 				wxLogMessage("No data to display for '%s' !",
 							 m_Renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
 				bReturn = false;
 				myInvalidRaster.Add(iImageIndex);
 			}
+			vectorcount = vectorcount + myVectorCount;
 			iImageIndex++;
 		}
 	}
@@ -618,10 +641,10 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 
 
 
-int vrViewerLayerManager::_ReloadThread() {
+int vrViewerLayerManager::_ReloadThread(long & vectorcount) {
 	_BitmapArrayInit();
 	
-	_GetLayersData();
+	_GetLayersData(vectorcount);
 	wxBitmap * myFinalBmp = _MergeBitmapData();
 	
 	int myLayersNumber = m_Images.GetCount();
@@ -643,7 +666,7 @@ int vrViewerLayerManager::_ReloadThread() {
 
 
 
-int vrViewerLayerManager::_Reload() {
+int vrViewerLayerManager::_Reload(long & vectorcount) {
 	// gettting display coordinates
 	wxASSERT(m_Display);
 	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
@@ -654,23 +677,26 @@ int vrViewerLayerManager::_Reload() {
 	dc.SetBackground(wxBrush(m_Display->GetBackgroundColour()));
 	dc.Clear();
 	dc.SelectObject(wxNullBitmap);
-
+	
+	vectorcount = 0;
 	// getting data from vrRenderer -> vrLayer
 	bool bIsAtLeastOneVisible = false;
 	int iShownLayer = 0;
 	int iTotLayers = m_Renderers.GetCount();
 	for (int i = iTotLayers-1; i>= 0; i--) {
 		if (m_Renderers.Item(i)->GetVisible() == true) {
+			long myVectorCount = 0;
 			if (m_Renderers.Item(i)->GetBitmapData(myBmp,
 												   myCoordinate->GetExtent(),
-												   myCoordinate->GetPixelSize())==false) {
+												   myCoordinate->GetPixelSize(),
+												   myVectorCount)==false) {
 				wxLogMessage("No data to display for '%s' !",
 							 m_Renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
 			}
 			else {
 				iShownLayer++;
 			}
-
+			vectorcount = vectorcount + myVectorCount;
 			bIsAtLeastOneVisible = true;
 		}
 	}
