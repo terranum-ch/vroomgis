@@ -421,7 +421,7 @@ void vrViewerLayerManager::Reload() {
 		myPerf = new vrPerformance(m_PerfMonitorFile.GetFullPath(),
 								   "Number of layers;Total Vector Objects;Window Resolution(x);Window Resolution(y);");
 	}
-	
+
 	int myCountLayer = 0;
 	long myVectorCount = 0;
 	if (m_ReloadThread == true) {
@@ -430,16 +430,16 @@ void vrViewerLayerManager::Reload() {
 	else {
 		myCountLayer = _Reload(myVectorCount);
 	}
-	
+
 	if (myVectorCount > 0) {
 		wxLogMessage(_("Total Vector drawn: %ld"), myVectorCount);
 	}
-	
+
 	if (myCountLayer == 0) {
 		wxDELETE(myPerf);
 		return;
 	}
-	
+
 	if (myPerf != NULL) {
 		myPerf->StopWork(wxString::Format("%d;%ld;%d;%d;",
 										  myCountLayer,
@@ -466,7 +466,7 @@ void vrViewerLayerManager::SetEngineThreaded(bool enable) {
 #ifdef __LINUX__
 	if (enable == true) {
 		if (wxMessageBox(_("Engine not fully compatible with Linux, vector layers will not be rendered! Continue ?"),
-						   _("Linux Problem"), wxYES_NO) == wxNO {
+						   _("Linux Problem"), wxYES_NO) == wxNO) {
 			return;
 		}
 	}
@@ -643,23 +643,23 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 
 int vrViewerLayerManager::_ReloadThread(long & vectorcount) {
 	_BitmapArrayInit();
-	
+
 	_GetLayersData(vectorcount);
 	wxBitmap * myFinalBmp = _MergeBitmapData();
-	
+
 	int myLayersNumber = m_Images.GetCount();
 	wxSize myBmpSize = wxDefaultSize;
-	
+
 	if(myLayersNumber > 0){
 		myBmpSize = m_Images.Item(0)->GetSize();
 	}
-	
+
 	_BitmapArrayDelete();
-	
+
 	// pass bitmap to dispaly
 	wxASSERT(m_Display);
 	m_Display->SetBitmap(myFinalBmp);
-	
+
 	wxDELETE(myFinalBmp);
 	return myLayersNumber;
 }
@@ -671,13 +671,13 @@ int vrViewerLayerManager::_Reload(long & vectorcount) {
 	wxASSERT(m_Display);
 	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
 	wxASSERT(myCoordinate);
-	
+
 	wxBitmap * myBmp = new wxBitmap(m_Display->GetSize());
 	wxMemoryDC dc (*myBmp);
 	dc.SetBackground(wxBrush(m_Display->GetBackgroundColour()));
 	dc.Clear();
 	dc.SelectObject(wxNullBitmap);
-	
+
 	vectorcount = 0;
 	// getting data from vrRenderer -> vrLayer
 	bool bIsAtLeastOneVisible = false;
@@ -700,14 +700,14 @@ int vrViewerLayerManager::_Reload(long & vectorcount) {
 			bIsAtLeastOneVisible = true;
 		}
 	}
-	
+
 	// no visible raster!
 	if (bIsAtLeastOneVisible == false) {
 		m_Display->SetBitmap(NULL);
 		wxDELETE(myBmp);
 		return 0;
 	}
-		
+
 	wxASSERT(m_Display);
 	m_Display->SetBitmap(myBmp);
 	wxDELETE(myBmp);
