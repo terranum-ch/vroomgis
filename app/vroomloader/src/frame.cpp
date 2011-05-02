@@ -486,10 +486,9 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 
 		// moving view
 		m_ViewerLayerManager->Zoom(myFittedRect);
-		m_ViewerLayerManager->Reload();
 
-
-	}else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
+	}
+	else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
 		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
 

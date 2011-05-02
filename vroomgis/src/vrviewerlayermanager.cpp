@@ -431,9 +431,9 @@ void vrViewerLayerManager::Reload() {
 		myCountLayer = _Reload(myVectorCount);
 	}
 	
-	//if (myVectorCount > 0) {
+	if (myVectorCount > 0) {
 		wxLogMessage(_("Total Vector drawn: %ld"), myVectorCount);
-	//}
+	}
 	
 	if (myCountLayer == 0) {
 		wxDELETE(myPerf);
