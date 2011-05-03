@@ -20,6 +20,7 @@
 #include "vrviewerdisplay.h"
 #include "vrrubberband.h"
 #include "vrevent.h"
+#include "../art/vroomgis_bmp.h"
 
 
 /***************************************************************************//**
@@ -247,8 +248,7 @@ bool vrDisplayToolSelect::MouseMove(const wxMouseEvent & event) {
 
 
 vrDisplayToolZoom::vrDisplayToolZoom(vrViewerDisplay * display) {
-	Create(display, wxID_ZOOM_100, "Zoom", wxCursor(wxCURSOR_MAGNIFIER));
-
+	Create(display, wxID_ZOOM_IN, "Zoom", wxCursor(_img_cursor_zoomin->ConvertToImage()));
 }
 
 vrDisplayToolZoom::~vrDisplayToolZoom() {
@@ -327,8 +327,7 @@ bool vrDisplayToolZoom::MouseMove(const wxMouseEvent & event) {
 
 vrDisplayToolZoomOut::vrDisplayToolZoomOut(vrViewerDisplay * display)
 :vrDisplayToolZoom(display) {
-	Create(display, wxID_ZOOM_OUT, "Zoom out", wxCursor(wxCURSOR_SIZING)); // Or wxCURSOR_BULLSEYE
-
+	Create(display, wxID_ZOOM_OUT, "Zoom out", wxCursor(_img_cursor_zoomout->ConvertToImage()));
 }
 
 vrDisplayToolZoomOut::~vrDisplayToolZoomOut() {
