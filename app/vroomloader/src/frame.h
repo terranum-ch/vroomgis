@@ -83,6 +83,8 @@ private:
 	// vroomgis engine
 	vrLayerManager * m_LayerManager;
 	vrViewerLayerManager * m_ViewerLayerManager;
+
+	wxKeyboardState m_KeyBoardState;
 	
 	vrViewerDisplay * m_DisplayCtrl;
 	wxFileName m_PerfLogFile;
@@ -91,14 +93,10 @@ private:
 	void _CreateControls();
 	
 	virtual void OnRightClick( wxMouseEvent& event ){ wxLogMessage("right clicked"); event.Skip(); }
+	void OnKeyDown(wxKeyEvent & event);
+	void OnKeyUp(wxKeyEvent & event);
 	
-public:
-    vroomLoaderFrame(const wxString& title);
-	~vroomLoaderFrame();
-	
-	bool OpenLayers (const wxArrayString & names);
-	
-    void OnQuit(wxCommandEvent& event);
+	void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 	void OnOpenLayer(wxCommandEvent & event);
 	
@@ -115,9 +113,14 @@ public:
 	void OnEngineThreaded (wxCommandEvent & event);
 	
 	void OnToolAction (wxCommandEvent & event);
-	
-private:
     DECLARE_EVENT_TABLE()
+	
+public:
+    vroomLoaderFrame(const wxString& title);
+	~vroomLoaderFrame();
+	
+	bool OpenLayers (const wxArrayString & names);
+		
 };
 
 

@@ -59,8 +59,11 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_MENU (vlID_DISPLAY_VALUE, vroomLoaderFrame::OnToolDisplayValue)
 	EVT_MENU (vlID_PERFORMANCE, vroomLoaderFrame::OnLogPerformance)
 	EVT_MENU (vlID_THREADED, vroomLoaderFrame::OnEngineThreaded)
+	EVT_KEY_DOWN(vroomLoaderFrame::OnKeyDown)
+	EVT_KEY_UP(vroomLoaderFrame::OnKeyUp)	
 
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
+	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomLoaderFrame::OnToolAction)
 END_EVENT_TABLE()
@@ -199,6 +202,8 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 
 	// Connect Events
 	m_DisplayCtrl->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
+	m_DisplayCtrl->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomLoaderFrame::OnKeyDown),NULL, this);
+	m_DisplayCtrl->Connect(wxEVT_KEY_UP, wxKeyEventHandler(vroomLoaderFrame::OnKeyUp),NULL, this);
 
 	// DND
 	m_TocCtrl->SetDropTarget(new vroomDropFiles(this));
@@ -215,7 +220,10 @@ vroomLoaderFrame::~vroomLoaderFrame()
 {
 	// Disconnect Events
 	m_DisplayCtrl->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( vroomLoaderFrame::OnRightClick ), NULL, this );
+	m_DisplayCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomLoaderFrame::OnKeyDown),NULL, this);
+	m_DisplayCtrl->Disconnect(wxEVT_KEY_UP, wxKeyEventHandler(vroomLoaderFrame::OnKeyUp),NULL, this);
 
+	
 	// don't delete m_ViewerLayerManager, will be deleted by the manager
 	wxDELETE(m_LayerManager);
 
@@ -363,6 +371,47 @@ void vroomLoaderFrame::OnShowLog (wxCommandEvent & event)
 }
 
 
+void vroomLoaderFrame::OnKeyDown(wxKeyEvent & event){
+	m_KeyBoardState = wxKeyboardState(event.ControlDown(),
+									  event.ShiftDown(),
+									  event.AltDown(),
+									  event.MetaDown());
+	if (m_KeyBoardState.GetModifiers() != wxMOD_CMD) {
+		event.Skip();
+		return;
+	}
+	
+	const vrDisplayTool * myTool = m_DisplayCtrl->GetTool();
+	if (myTool == NULL) {
+		event.Skip();
+		return;
+	}
+		
+	if (myTool->GetID() == wxID_ZOOM_IN) {
+		m_DisplayCtrl->SetToolZoomOut();
+		wxLogMessage("Zoom in");
+	}
+	event.Skip();
+}
+
+void vroomLoaderFrame::OnKeyUp(wxKeyEvent & event){
+	if (m_KeyBoardState.GetModifiers() != wxMOD_CMD) {
+		event.Skip();
+		return;
+	}
+	
+	const vrDisplayTool * myTool = m_DisplayCtrl->GetTool();
+	if (myTool == NULL) {
+		event.Skip();
+		return;
+	}
+	
+	if (myTool->GetID() == wxID_ZOOM_OUT || myTool->GetID() == wxID_ZOOM_IN) {
+		m_DisplayCtrl->SetToolZoom();
+		wxLogMessage("Zoom out");
+	}
+	event.Skip();
+}
 
 
 void vroomLoaderFrame::OnToolSelect (wxCommandEvent & event){
@@ -470,7 +519,7 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
 	wxASSERT(myMsg);
 
-	if(myMsg->m_EvtType == vrEVT_TOOL_ZOOM){
+	if(myMsg->m_EvtType == vrEVT_TOOL_ZOOM || myMsg->m_EvtType == vrEVT_TOOL_ZOOMOUT){
 		// getting rectangle
 		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
@@ -485,8 +534,12 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 		wxASSERT(myFittedRect.IsOk());
 
 		// moving view
-		m_ViewerLayerManager->Zoom(myFittedRect);
-
+		if (myMsg->m_EvtType == vrEVT_TOOL_ZOOM) {
+			m_ViewerLayerManager->Zoom(myFittedRect);
+		}
+		else {
+			m_ViewerLayerManager->ZoomOut(myFittedRect);
+		}
 	}
 	else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
 		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();

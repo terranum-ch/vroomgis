@@ -10,6 +10,11 @@
 extern void vroomgis_initialize_images(void);
 extern void vroomgis_clear_images(void);
 
+// main bitmap
 extern wxBitmap *_img_vroomgis;
+
+// cursors
+extern wxBitmap *_img_cursor_zoomin;
+extern wxBitmap *_img_cursor_zoomout;
 
 #endif /* VROOMGIS_BITMAP */
