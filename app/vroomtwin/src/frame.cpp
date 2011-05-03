@@ -227,7 +227,7 @@ void vroomTwinFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 void vroomTwinFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
 	lsVersionDlg myDlg (this, wxID_ANY, "About vroomTwin");
-	myDlg.SetBitmapLogo(*_img_vroomgis);
+	myDlg.SetBitmapLogo(*_img_vroomgis_sml);
 	myDlg.ShowModal();
 }
 
