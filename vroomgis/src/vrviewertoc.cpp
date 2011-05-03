@@ -38,6 +38,8 @@ BEGIN_EVENT_TABLE(vrViewerTOC, wxCheckListBox)
 	EVT_MENU(vrID_POPUP_BRUSH_COLOR, vrViewerTOC::OnSetColorBrush)
 	EVT_MENU(vrID_POPUP_TRANSPARENCY, vrViewerTOC::OnSetTransparency)
 	EVT_MENU(vrID_POPUP_DRAWING_WIDTH, vrViewerTOC::OnSetWidth)
+	EVT_MENU_RANGE(vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL, vrViewerTOC::OnSetBrushStyle)
+
 END_EVENT_TABLE()
 
 
@@ -170,6 +172,42 @@ void vrViewerTOC::OnSetWidth(wxCommandEvent & event) {
 
 
 
+void vrViewerTOC::OnSetBrushStyle(wxCommandEvent & event){
+	int mySelItem = GetSelection();
+	wxASSERT(mySelItem != wxNOT_FOUND);
+	wxASSERT(m_ViewerManager);
+	
+	vrRenderVector * myRenderVector = (vrRenderVector*) m_ViewerManager->GetRenderer(mySelItem)->GetRender();
+	wxASSERT(myRenderVector);
+	
+	// displaying colour dialog
+	wxBrushStyle myOldStyle = myRenderVector->GetBrushStyle();
+	wxBrushStyle myStyle = wxBRUSHSTYLE_SOLID;
+	switch (event.GetId()) {
+		case vrID_POPUP_BRUSH_SOLID:
+			myStyle = wxBRUSHSTYLE_SOLID;
+			break;
+			
+		case vrID_POPUP_BRUSH_TRANSPARENT:
+			myStyle = wxBRUSHSTYLE_TRANSPARENT;
+			break;
+
+		case vrID_POPUP_BRUSH_BDIAGONAL:
+			myStyle = wxBRUSHSTYLE_BDIAGONAL_HATCH;
+			break;
+			
+		default:
+			wxLogError(_("Brush style not supported: %d"), event.GetId());
+			break;
+	}
+	myRenderVector->SetBrushStyle(myStyle);
+	if (myOldStyle != myStyle) {
+		_ReloadData();
+	}
+}
+
+
+
 void vrViewerTOC::OnMouseRightDown(wxMouseEvent & event) {
 	if (GetCount() == 0) {
 		return;
@@ -264,7 +302,15 @@ void vrViewerTOC::_ShowMenuContextual(int id, vrRenderer * renderer) {
 			myPopMenu.Append(vrID_POPUP_PEN_COLOR, _("Set Pen color..."));	
 			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, _("Set Pen width..."));
 			myPopMenu.AppendSeparator();
-			myPopMenu.Append(vrID_POPUP_BRUSH_COLOR, _("Set Brush color..."));
+		{
+			wxMenu * myBrushMenu = new wxMenu();
+			myBrushMenu->Append(vrID_POPUP_BRUSH_COLOR, _("Set Brush color..."));
+			myBrushMenu->AppendSeparator();
+			myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_SOLID, _("Solid Brush"));
+			myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_TRANSPARENT, _("Transparent Brush"));
+			myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_BDIAGONAL, _("Diagonal Brush"));
+			myPopMenu.AppendSubMenu(myBrushMenu, _T("Brush"));
+		}
 			break;
 			
 		case vrRENDER_VECTOR_C2P_DIPS:

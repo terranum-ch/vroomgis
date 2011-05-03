@@ -389,7 +389,6 @@ void vroomLoaderFrame::OnKeyDown(wxKeyEvent & event){
 		
 	if (myTool->GetID() == wxID_ZOOM_IN) {
 		m_DisplayCtrl->SetToolZoomOut();
-		wxLogMessage("Zoom in");
 	}
 	event.Skip();
 }
@@ -408,7 +407,6 @@ void vroomLoaderFrame::OnKeyUp(wxKeyEvent & event){
 	
 	if (myTool->GetID() == wxID_ZOOM_OUT || myTool->GetID() == wxID_ZOOM_IN) {
 		m_DisplayCtrl->SetToolZoom();
-		wxLogMessage("Zoom out");
 	}
 	event.Skip();
 }
