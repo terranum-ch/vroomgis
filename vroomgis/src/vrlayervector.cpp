@@ -505,8 +505,7 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 	
 	// creating brush and pen
 	wxPen myPen (myRender->GetColorPen(),myRender->GetSize());
-	// TODO: Add support for different brush style in vrRender
-	wxBrush myBrush (myRender->GetColorBrush(), wxBRUSHSTYLE_SOLID); 
+	wxBrush myBrush (myRender->GetColorBrush(), myRender->GetBrushStyle()); 
 	wxPen mySelPen (myRender->GetSelectionColour(),
 					myRender->GetSize());
 	gdc->SetBrush(myBrush);

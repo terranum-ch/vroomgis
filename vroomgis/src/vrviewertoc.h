@@ -34,6 +34,11 @@ const int vrID_POPUP_TRANSPARENCY = wxID_HIGHEST +	2 + vrID_VIEWERTOC_BASE;
 const int vrID_POPUP_PEN_COLOR = wxID_HIGHEST +		3 + vrID_VIEWERTOC_BASE;
 const int vrID_POPUP_BRUSH_COLOR = wxID_HIGHEST +	4 + vrID_VIEWERTOC_BASE;
 const int vrID_POPUP_DRAWING_WIDTH = wxID_HIGHEST +	5 + vrID_VIEWERTOC_BASE;
+const int vrID_POPUP_BRUSH_SOLID = wxID_HIGHEST +	6 + vrID_VIEWERTOC_BASE;
+const int vrID_POPUP_BRUSH_TRANSPARENT = wxID_HIGHEST +	7 + vrID_VIEWERTOC_BASE;
+const int vrID_POPUP_BRUSH_BDIAGONAL = wxID_HIGHEST +	8 + vrID_VIEWERTOC_BASE;
+
+
 
 
 class vrViewerTOC : public wxCheckListBox {
@@ -50,6 +55,7 @@ private:
     void OnSetColorBrush(wxCommandEvent & event);
     void OnSetTransparency(wxCommandEvent & event);
     void OnSetWidth(wxCommandEvent & event);
+	void OnSetBrushStyle(wxCommandEvent & event);
 	
 	DECLARE_EVENT_TABLE();
 	

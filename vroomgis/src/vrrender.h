@@ -73,6 +73,7 @@ class vrRenderVector : public vrRender {
 private:
 	wxColour m_ColorPen;
     wxColour m_ColorBrush;
+	wxBrushStyle m_BrushStyle;
 	int m_Size;
 
 
@@ -85,6 +86,9 @@ private:
 	
     wxColour GetColorBrush();
     void SetColorBrush(const wxColour & color);
+	
+	wxBrushStyle GetBrushStyle();
+	void SetBrushStyle (wxBrushStyle brushstyle);
 		
     inline const int GetSize() const;
     void SetSize(int value);

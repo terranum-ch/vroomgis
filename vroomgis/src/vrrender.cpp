@@ -93,6 +93,7 @@ vrRenderVector::vrRenderVector() {
 	m_Size = 1;
 	m_ColorPen = *wxBLACK;
 	m_ColorBrush = *wxBLACK;
+	m_BrushStyle = wxBRUSHSTYLE_SOLID;
 }
 
 
@@ -131,6 +132,16 @@ wxColour vrRenderVector::GetColorBrush(){
 	
 	m_ColorBrush.Set(myRed, myGreen, myBlue, GetTransparencyChar());	
 	return m_ColorBrush;
+}
+
+
+wxBrushStyle vrRenderVector::GetBrushStyle(){
+	return m_BrushStyle;
+}
+
+
+void vrRenderVector::SetBrushStyle (wxBrushStyle brushstyle){
+	m_BrushStyle = brushstyle;
 }
 
 
