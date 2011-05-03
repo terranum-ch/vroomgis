@@ -144,7 +144,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	
 
 	wxIcon myVroomGISIcon;
-	myVroomGISIcon.CopyFromBitmap(*_img_vroomgis);
+	myVroomGISIcon.CopyFromBitmap(*_img_vroomgis_sml);
 	SetIcon(myVroomGISIcon);
 
 	m_DisplayValueDlg = NULL;
