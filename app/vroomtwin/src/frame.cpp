@@ -155,7 +155,7 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 	
 	// add icon (windows / linux)
 	wxIcon myVroomGISIcon;
-	myVroomGISIcon.CopyFromBitmap(*_img_vroomgis);
+	myVroomGISIcon.CopyFromBitmap(*_img_vroomgis_sml);
 	SetIcon(myVroomGISIcon);
 
 	// MENU
@@ -237,7 +237,7 @@ void vroomTwinFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 void vroomTwinFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
 	lsVersionDlg myDlg (this, wxID_ANY, "About vroomTwin");
-	myDlg.SetBitmapLogo(*_img_vroomgis_sml);
+	myDlg.SetBitmapLogo(*_img_vroomgis);
 	myDlg.ShowModal();
 }
 
