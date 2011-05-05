@@ -277,11 +277,11 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 	if (m_Rubber->IsValid()==false) { // e.g. if user only clicks
 		wxDELETE(m_Rubber);
 
-        // Set a rectangle centered with a size 5 times smaller
-        myRect = wxRect(event.GetPosition().x - GetDisplay()->GetSize().GetWidth()/10,
-                              event.GetPosition().y - GetDisplay()->GetSize().GetHeight()/10,
-                              GetDisplay()->GetSize().GetWidth()/5,
-                              GetDisplay()->GetSize().GetHeight()/5);
+        // Set a rectangle centered with a size 1.5 times smaller
+        myRect = wxRect(event.GetPosition().x - GetDisplay()->GetSize().GetWidth()/3,
+                              event.GetPosition().y - GetDisplay()->GetSize().GetHeight()/3,
+                              GetDisplay()->GetSize().GetWidth()/1.5,
+                              GetDisplay()->GetSize().GetHeight()/1.5);
 	}
     else {
         myRect = m_Rubber->GetRect();
@@ -347,11 +347,11 @@ bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent & event) {
     if (m_Rubber->IsValid()==false) { // e.g. if user only clicks
         wxDELETE(m_Rubber);
 
-        // Set a rectangle centered with a size 5 times smaller
-        myRect = wxRect(event.GetPosition().x - GetDisplay()->GetSize().GetWidth()/10,
-                              event.GetPosition().y - GetDisplay()->GetSize().GetHeight()/10,
-                              GetDisplay()->GetSize().GetWidth()/5,
-                              GetDisplay()->GetSize().GetHeight()/5);
+        // Set a rectangle centered with a size 1.5 times smaller
+        myRect = wxRect(event.GetPosition().x - GetDisplay()->GetSize().GetWidth()/3,
+                              event.GetPosition().y - GetDisplay()->GetSize().GetHeight()/3,
+                              GetDisplay()->GetSize().GetWidth()/1.5,
+                              GetDisplay()->GetSize().GetHeight()/1.5);
     }
     else {
         myRect = m_Rubber->GetRect();
