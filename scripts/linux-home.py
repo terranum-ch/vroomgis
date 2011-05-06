@@ -14,6 +14,8 @@ gDirSQLite = ""
 gCmakeEnv = "CodeBlocks - Unix Makefiles" #result of cmake --help
 gCmakeSpecific = []
 gCmakeSpecific.append("-DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=" + gwxWidgets)
+# comment line bellow to build debug version (default is debug)
+gCmakeSpecific.append("-DCMAKE_BUILD_TYPE:STRING=Release")
 
 # PLATEFORM SPECIFIC FUNCTION
 # CONFIG SPECIFIC
