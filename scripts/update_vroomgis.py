@@ -43,6 +43,7 @@ def createEmptyDirs(bindir):
 		os.makedirs(bindir + os.sep + "vroomloader")
 		os.makedirs(bindir + os.sep + "vroomtwin")
 		os.makedirs(bindir + os.sep + "vroomgistests")
+		os.makedirs(bindir + os.sep + "vroomdrawer")
 
 
    
@@ -127,6 +128,7 @@ except:
 doClean = askUserWithCheck("Clean all before building ? (Y / N): ").upper()
 doBuildVroomloader = askUserWithCheck("Build Vroomloader ? (Y / N): ").upper()
 doBuildVroomTwin = askUserWithCheck("Build VroomTwin ? (Y / N): ").upper()
+doBuildVroomDrawer = askUserWithCheck("Build VroomDrawer ? (Y / N): ").upper()
 doBuildVroomgistests = askUserWithCheck("Build Vroomgistests ? (Y / N): ").upper()
 doRunTests = askUserWithCheck("Run tests after build ? (Y/N): ").upper()
 print ("----------------------------------------------------------\n")
@@ -251,6 +253,40 @@ if (doBuildVroomTwin == 'Y'):
 	print ("----------------------------------------------------------\n")
 
 
+
+#
+# Configure vroomDrawer using CMAKE
+#
+if (doBuildVroomDrawer == 'Y'):
+	mycmakeCommandLine = ['cmake']
+	mycmakeCommandLine.append("-G" + gCmakeEnv)
+	mycmakeCommandLine.append(gDirTrunk + os.sep + "app" + os.sep + "vroomdrawer" + os.sep + "build")
+	mycmakeCommandLine = mycmakeCommandLine + gCmakeSpecific
+	mycmakeCommandLine.append("-DSEARCH_GDAL:BOOL=1")
+	mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
+	mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
+	mycmakeCommandLine.append("-DUSE_VERSION:BOOL=1")
+	if(gwxWidgetsVersion != ""):
+		mycmakeCommandLine.append("-DwxWIDGETS_USING_SVN:BOOL=1")
+		mycmakeCommandLine.append("-DwxWIDGETS_PATH_SVN:PATH=" + gwxWidgetsVersion)
+
+	if (gDirSQLite != ''):
+		mycmakeCommandLine.append("-DSQLITE_PATH:PATH=" + gDirSQLite)
+	print (" ".join(mycmakeCommandLine))
+	try:
+		myProcess = subprocess.Popen(mycmakeCommandLine, 0, None, None, None,  None, None, False, False, gDirBin + os.sep + "vroomdrawer")
+		myProcess.wait()
+		if (doClean == 'Y'):
+			print ("\n****Configuring again to be sure after a clean****")
+			myProcess2 = subprocess.Popen(mycmakeCommandLine, 0, None, None, None,	None, None, False, False, gDirBin + os.sep + "vroomdrawer")
+			myProcess2.wait()
+	except:
+		print("Configuring VROOMDRAWER project FAILED!")
+		exit()
+	print ("Configuration VROOMDRAWER DONE")
+	print ("----------------------------------------------------------\n")
+
+
 #
 # Configure vroomgistests using CMAKE
 #
@@ -313,6 +349,18 @@ if (doBuildVroomTwin == 'Y'):
 		exit()
 	print ("Building VroomTwin DONE")
 	print ("----------------------------------------------------------\n")
+
+
+if (doBuildVroomDrawer == 'Y'):
+	print ("Building VroomDrawer DEBUG ")
+	myProcess = subprocess.Popen(gBuildCommand("Debug",gDirBin + os.sep + "vroomdrawer"), 0, None, None, None,  None, None, False, False, gDirBin + os.sep + "vroomdrawer")
+	myRetcode = myProcess.wait()
+	if(myRetcode != 0):
+		print ("Building VroomDrawer failed, Error code is: ", myRetcode)
+		exit()
+	print ("Building VroomDrawer DONE")
+	print ("----------------------------------------------------------\n")
+
 
 
 if (doBuildVroomgistests == 'Y'):
