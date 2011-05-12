@@ -62,6 +62,7 @@ private:
 	wxSlider * m_NbStarCtrl;
 	
 	void _CreateControls();
+	double _GetRandomNumber(double min, double max);
 	
 	void OnKeyDown(wxKeyEvent & event);
 	void OnKeyUp(wxKeyEvent & event);
@@ -81,7 +82,9 @@ private:
 	void OnToolActionZoom (wxCommandEvent & event);
 	void OnToolActionPan (wxCommandEvent & event);
 	void OnToolActionSelect (wxCommandEvent & event);
-    DECLARE_EVENT_TABLE()
+	void OnStarLayerAdd (wxCommandEvent & event);
+	
+	DECLARE_EVENT_TABLE()
 	
 public:
     vroomDrawerFrame(const wxString& title);

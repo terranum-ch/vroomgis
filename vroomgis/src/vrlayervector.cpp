@@ -55,6 +55,16 @@ bool vrLayerVector::IsOK() {
 }
 
 
+wxFileName vrLayerVector::GetDisplayName(){
+	if (m_DriverType == vrDRIVER_VECTOR_MEMORY) {
+		wxFileName myName (m_FileName);
+		myName.SetExt(wxEmptyString);
+		return myName;
+	}
+	
+	return m_FileName;
+}
+
 
 OGRFeature * vrLayerVector::GetFeature(long fid) {
 	
@@ -252,10 +262,13 @@ bool vrLayerVectorOGR::Open(const wxFileName & filename, bool readwrite){
 }
 
 
+
 bool vrLayerVectorOGR::Create(const wxFileName & filename, int spatialtype) {
     _Close();
     wxASSERT(m_Dataset == NULL);
     
+	m_FileName = filename;
+	
     // get driver type
     vrDrivers myDriver;
     vrDRIVERS_TYPE myDriverType = myDriver.GetType(filename.GetExt());
@@ -263,6 +276,7 @@ bool vrLayerVectorOGR::Create(const wxFileName & filename, int spatialtype) {
         wxLogError (".%s file extension not supported", filename.GetExt());
         return false;
     }
+	m_DriverType = myDriverType;
     
     wxString myDriverName = vrDRIVERS_GDAL_NAMES[myDriverType];
     OGRSFDriver * poDriver = OGRSFDriverRegistrar::GetRegistrar()->

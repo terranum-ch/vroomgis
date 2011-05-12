@@ -24,6 +24,14 @@
 #include <wx/wx.h>
 #endif
 
+enum vrDRIVERS_FLAG {
+	vrDRIVERS_FLAG_GENERIC    = 0x0010,
+    vrDRIVERS_FLAG_COLTOP     = 0x0020,
+	
+	vrDRIVERS_FLAG_ALL		  = (vrDRIVERS_FLAG_GENERIC | vrDRIVERS_FLAG_COLTOP)
+};
+
+
 
 enum vrDRIVERS_TYPE {
 	vrDRIVER_UNKNOWN = -1,
@@ -42,7 +50,7 @@ enum vrDRIVERS_TYPE {
 static const wxString vrDRIVERS_EXTENSION []= {
 	"*.shp",
 	"*.c2p",
-	wxEmptyString,
+	"*.memory",
 	"*.tif;*.tiff",
 	"*.jpg;*.jpeg",
 	"*.adf",
@@ -67,7 +75,7 @@ const wxString vrDRIVERS_GDAL_NAMES [] = {
 const wxString vrDRIVERS_NAMES [] = {
 	"Shapefiles",
 	"ColtopGIS project",
-	wxEmptyString,
+	"Memory vector",
 	"Tiff",
 	"JPEG",
 	"ESRI's binary GRID",
@@ -79,7 +87,7 @@ const wxString vrDRIVERS_NAMES [] = {
 
 class vrDrivers {
   public:
-    wxString GetWildcards();
+    wxString GetWildcards(const vrDRIVERS_FLAG & flags = vrDRIVERS_FLAG_GENERIC);
 	wxString GetSpecificWildcards(const wxArrayInt & types);
 	vrDRIVERS_TYPE GetType(const wxString & extension);
     bool IsSupported(const wxString & extension);

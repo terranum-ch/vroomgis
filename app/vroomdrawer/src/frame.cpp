@@ -21,6 +21,7 @@
 #include "tmlog.h"	// for double logging process
 #include <lsversion_dlg.h>
 #include "vrrendervectorc2p.h"
+#include "vrlayervector.h"
 
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
@@ -63,8 +64,8 @@ BEGIN_EVENT_TABLE(vroomDrawerFrame, wxFrame)
 	EVT_MENU( ID_MENU_SELECT, vroomDrawerFrame::OnToolSelect )
 	EVT_MENU( ID_MENU_PAN, vroomDrawerFrame::OnToolPan )
 	EVT_MENU( wxID_ZOOM_FIT, vroomDrawerFrame::OnZoomToFit )
-
 	EVT_MENU (wxID_INFO, vroomDrawerFrame::OnShowLog)
+	EVT_BUTTON(ID_MENU_ADDMEMORYLAYER, vroomDrawerFrame::OnStarLayerAdd)
 
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomDrawerFrame::OnToolActionZoom)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomDrawerFrame::OnToolActionZoom)
@@ -76,52 +77,7 @@ END_EVENT_TABLE()
 
 
 
-void  vroomDrawerFrame::_CreateControls()
-{
-	/*wxBoxSizer* bSizer1;
-	bSizer1 = new wxBoxSizer( wxVERTICAL );
-
-	wxSplitterWindow* m_splitter2;
-	m_splitter2 = new wxSplitterWindow( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSP_BORDER|wxSP_LIVE_UPDATE );
-	wxPanel* m_panel1;
-	m_panel1 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer4;
-	bSizer4 = new wxBoxSizer( wxVERTICAL );
-
-	m_TocCtrl = new vrViewerTOC( m_panel1, wxID_ANY);
-	bSizer4->Add( m_TocCtrl, 2, wxEXPAND, 5 );
-
-	//wxFilePickerCtrl * myPicker = new wxFilePickerCtrl(m_panel1, wxID_ANY,wxEmptyString,
-	//												   wxFileSelectorPromptStr,
-	//												   wxFileSelectorDefaultWildcardStr,
-	//												   wxDefaultPosition,
-	//												   wxDefaultSize,
-	//												   wxFLP_SAVE | wxFLP_USE_TEXTCTRL);
-
-	//bSizer4->Add(myPicker, 0, wxEXPAND | wxALL, 5);
-
-
-	m_panel1->SetSizer( bSizer4 );
-	m_panel1->Layout();
-	bSizer4->Fit( m_panel1 );
-	wxPanel* m_panel2;
-	m_panel2 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxBoxSizer* bSizer5;
-	bSizer5 = new wxBoxSizer( wxVERTICAL );
-
-	m_DisplayCtrl = new vrViewerDisplay( m_panel2, wxID_ANY, wxColour(120,120,120));
-
-	bSizer5->Add( m_DisplayCtrl, 1, wxEXPAND, 5 );
-
-	m_panel2->SetSizer( bSizer5 );
-	m_panel2->Layout();
-	bSizer5->Fit( m_panel2 );
-	m_splitter2->SplitVertically( m_panel1, m_panel2, 300 );
-	bSizer1->Add( m_splitter2, 1, wxEXPAND, 5 );
-
-	this->SetSizer( bSizer1 );
-	//this->Layout();*/
-	
+void  vroomDrawerFrame::_CreateControls(){
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 	
 	wxBoxSizer* bSizer1;
@@ -188,6 +144,10 @@ void  vroomDrawerFrame::_CreateControls()
 	wxMenuItem* m_menuItem2;
 	m_menuItem2 = new wxMenuItem( myFileMenu, wxID_REMOVE, wxString( _("Remove Layer...") ) , wxEmptyString, wxITEM_NORMAL );
 	myFileMenu->Append( m_menuItem2 );
+	myFileMenu->AppendSeparator();
+	myFileMenu->Append(wxID_INFO, _("Show Log...\tCtrl+L"));
+	myFileMenu->Append(wxID_ABOUT, _("About"));
+	myFileMenu->Append(wxID_EXIT, _("Quit"));
 	
 	m_menubar1->Append( myFileMenu, _("File") ); 
 	
@@ -215,9 +175,15 @@ void  vroomDrawerFrame::_CreateControls()
 	m_menubar1->Append( myToolMenu, _("Tools") ); 
 	
 	this->SetMenuBar( m_menubar1 );
-	
-	
 	this->Centre( wxBOTH );
+}
+
+
+
+double vroomDrawerFrame::_GetRandomNumber(double min, double max){
+	double multiply=((double)rand()/(double)RAND_MAX);
+	double myNumber = (max - min) * multiply;
+	return myNumber + min;
 }
 
 
@@ -239,7 +205,6 @@ vroomDrawerFrame::vroomDrawerFrame(const wxString& title)
 	delete wxLog::SetActiveTarget(myDlgLog);
 	m_LogWnd = new wxLogWindow(this, "vroomDrawer Log", true, true);
 
-
 	// Connect Events
 	m_DisplayCtrl->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomDrawerFrame::OnKeyDown),NULL, this);
 	m_DisplayCtrl->Connect(wxEVT_KEY_UP, wxKeyEventHandler(vroomDrawerFrame::OnKeyUp),NULL, this);
@@ -252,8 +217,7 @@ vroomDrawerFrame::vroomDrawerFrame(const wxString& title)
 
 
 
-vroomDrawerFrame::~vroomDrawerFrame()
-{
+vroomDrawerFrame::~vroomDrawerFrame(){
 	// Disconnect Events
 	m_DisplayCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomDrawerFrame::OnKeyDown),NULL, this);
 	m_DisplayCtrl->Disconnect(wxEVT_KEY_UP, wxKeyEventHandler(vroomDrawerFrame::OnKeyUp),NULL, this);
@@ -266,16 +230,13 @@ vroomDrawerFrame::~vroomDrawerFrame()
 
 
 
-
-void vroomDrawerFrame::OnQuit(wxCommandEvent& event)
-{
-	event.Skip();
+void vroomDrawerFrame::OnQuit(wxCommandEvent& event){
+	Close();
 }
 
 
 
-void vroomDrawerFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
-{
+void vroomDrawerFrame::OnAbout(wxCommandEvent& WXUNUSED(event)){
 	lsVersionDlg * myDlg = new lsVersionDlg(this, wxID_ANY, "About");
 	myDlg->SetBitmapLogo(*_img_vroomgis);
 	myDlg->ShowModal();
@@ -464,7 +425,7 @@ void vroomDrawerFrame::OnToolPan (wxCommandEvent & event){
 
 void vroomDrawerFrame::OnZoomToFit (wxCommandEvent & event)
 {
-	m_ViewerLayerManager->ZoomToFit(false);
+	m_ViewerLayerManager->ZoomToFit(true);
 	m_ViewerLayerManager->Reload();
 }
 
@@ -473,92 +434,136 @@ void vroomDrawerFrame::OnZoomToFit (wxCommandEvent & event)
 void vroomDrawerFrame::OnToolActionZoom (wxCommandEvent & event){
 	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
 	wxASSERT(myMsg);
+	
+	vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
+	wxASSERT(myCoord);
+	
+	// get real rectangle
+	vrRealRect myRealRect;
+	bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_Rect, myRealRect);
+	wxASSERT(bSuccess == true);
+	
+	// get fitted rectangle
+	vrRealRect myFittedRect =myCoord->GetRectFitted(myRealRect);
+	wxASSERT(myFittedRect.IsOk());
+	
+	// moving view
+	if (myMsg->m_EvtType == vrEVT_TOOL_ZOOM) {
+		m_ViewerLayerManager->Zoom(myFittedRect);
+	}
+	else {
+		m_ViewerLayerManager->ZoomOut(myFittedRect);
+	}
 	wxDELETE(myMsg);
 }
+
 
 
 void vroomDrawerFrame::OnToolActionSelect (wxCommandEvent & event){
 	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
 	wxASSERT(myMsg);
+	
+	vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
+	wxASSERT(myCoord);
+	
+	wxPoint myClickedPos = myMsg->m_Position;
+	if (myClickedPos != wxDefaultPosition) {
+		wxPoint2DDouble myRealClickedPos;
+		myCoord->ConvertFromPixels(myClickedPos, myRealClickedPos);
+		wxMessageBox(wxString::Format("Selected coordinate :\nx:\t%.4f\ny:\t%.4f",
+									  myRealClickedPos.m_x,
+									  myRealClickedPos.m_y),
+					 "Selected coordinate");
+	}	
+	
 	wxDELETE(myMsg);
 }
+
 
 
 void vroomDrawerFrame::OnToolActionPan (wxCommandEvent & event){
 	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
 	wxASSERT(myMsg);
+	
+	vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
+	wxASSERT(myCoord);
+	
+	wxPoint myMovedPos = myMsg->m_Position;
+	wxPoint2DDouble myMovedRealPt;
+	if (myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)==false){
+		wxLogError("Error converting point : %d, %d to real coordinate",
+				   myMovedPos.x, myMovedPos.y);
+		wxDELETE(myMsg);
+		return;
+	}
+	
+	vrRealRect myActExtent = myCoord->GetExtent();
+	myActExtent.MoveLeftTopTo(myMovedRealPt);
+	myCoord->SetExtent(myActExtent);
+	m_ViewerLayerManager->Reload();
+	
 	wxDELETE(myMsg);
 }
 
 
-/*
-void vroomDrawerFrame::OnToolAction (wxCommandEvent & event){
-	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
-	wxASSERT(myMsg);
 
-	if(myMsg->m_EvtType == vrEVT_TOOL_ZOOM || myMsg->m_EvtType == vrEVT_TOOL_ZOOMOUT){
-		// getting rectangle
-		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
-		wxASSERT(myCoord);
-
-		// get real rectangle
-		vrRealRect myRealRect;
-		bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_Rect, myRealRect);
-		wxASSERT(bSuccess == true);
-
-		// get fitted rectangle
-		vrRealRect myFittedRect =myCoord->GetRectFitted(myRealRect);
-		wxASSERT(myFittedRect.IsOk());
-
-		// moving view
-		if (myMsg->m_EvtType == vrEVT_TOOL_ZOOM) {
-			m_ViewerLayerManager->Zoom(myFittedRect);
-		}
-		else {
-			m_ViewerLayerManager->ZoomOut(myFittedRect);
+void vroomDrawerFrame::OnStarLayerAdd (wxCommandEvent & event){
+	wxFileName myMemoryLayerName ("", _("Stars"), "memory");
+	wxASSERT(myMemoryLayerName.GetExt() == "memory");
+	
+	// check if memory layer allready added
+	m_ViewerLayerManager->FreezeBegin();
+	for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
+		if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetFileName() == myMemoryLayerName) {
+			vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(i);
+			vrLayer * myLayer = myRenderer->GetLayer();
+			wxASSERT(myRenderer);
+			m_ViewerLayerManager->Remove(myRenderer);
+			
+			// close layer (not used anymore);
+			m_LayerManager->Close(myLayer);
 		}
 	}
-	else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
-		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
-		wxASSERT(myCoord);
-
-		wxPoint myClickedPos = myMsg->m_Position;
-		if (myClickedPos != wxDefaultPosition) {
-			wxPoint2DDouble myRealClickedPos;
-			myCoord->ConvertFromPixels(myClickedPos, myRealClickedPos);
-			wxMessageBox(wxString::Format("Selected coordinate :\nx:\t%.4f\ny:\t%.4f",
-										  myRealClickedPos.m_x,
-										  myRealClickedPos.m_y),
-						 "Selected coordinate");
-		}
-
+	
+	// create manually a layer and add it to the vrLayerManager for management
+	vrLayerVectorOGR * myLayer = new vrLayerVectorOGR();
+	if(myLayer->Create(myMemoryLayerName, wkbPoint)==false){
+		wxFAIL;
+		m_ViewerLayerManager->FreezeEnd();
+		return;
 	}
-	else if (myMsg->m_EvtType == vrEVT_TOOL_PAN) {
-		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
-		wxASSERT(myCoord);
-
-		wxPoint myMovedPos = myMsg->m_Position;
-		wxPoint2DDouble myMovedRealPt;
-		if (myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)==false){
-			wxLogError("Error converting point : %d, %d to real coordinate",
-					   myMovedPos.x, myMovedPos.y);
-			wxDELETE(myMsg);
-			return;
-		}
-
-		vrRealRect myActExtent = myCoord->GetExtent();
-		myActExtent.MoveLeftTopTo(myMovedRealPt);
-		myCoord->SetExtent(myActExtent);
-		m_ViewerLayerManager->Reload();
+	
+	wxASSERT(myLayer);
+	m_LayerManager->Add(myLayer);
+	
+	// get viewer extent
+	vrRealRect myExtent = m_DisplayCtrl->GetCoordinate()->GetExtent();
+	if (myExtent.IsOk() == false) {
+		myExtent = vrRealRect(0,
+							  m_DisplayCtrl->GetSize().GetHeight(),
+							  m_DisplayCtrl->GetSize().GetWidth(),
+							  m_DisplayCtrl->GetSize().GetHeight() * -1.0);
 	}
-
-
-	else {
-		wxLogError("Operation not supported now");
+	
+	
+	vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) m_LayerManager->GetLayer(myMemoryLayerName);
+	// init random engine
+	srand((unsigned)time(NULL));
+	
+	// adding features to the layer
+	for (int i = 0; i<m_NbStarCtrl->GetValue(); i++) {
+		OGRPoint myPt;
+		myPt.setX(_GetRandomNumber(myExtent.GetLeft(), myExtent.GetRight()));
+		myPt.setY(_GetRandomNumber(myExtent.GetBottom(), myExtent.GetTop()));
+		myMemoryLayer->AddFeature(&myPt, NULL);
 	}
-
-
-	wxDELETE(myMsg);
+	
+	// change default render
+	vrRenderVector * myRender = new vrRenderVector();
+	myRender->SetSize(4);
+	myRender->SetColorPen(*wxGREEN);
+	
+	m_ViewerLayerManager->Add(-1, myMemoryLayer, myRender);
+	m_ViewerLayerManager->FreezeEnd();
 }
-*/
 

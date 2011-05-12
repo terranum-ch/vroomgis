@@ -122,6 +122,23 @@ bool vrLayerManager::Open(const wxFileName & filename, bool readwrite) {
 }
 
 
+
+bool vrLayerManager::Add(vrLayer * layer) {
+	wxASSERT(layer);
+	if (layer == NULL) {
+		return false;
+	}
+	
+	if (GetLayer(layer->GetFileName()) != NULL) {
+		wxLogMessage(_("Layer with same name allready exists '%s'"),layer->GetFileName().GetFullName());
+		return false;
+	}
+	
+	m_Layers.Add(layer);
+	return true;
+}
+
+
 // true if layer isn't any more used. false otherwise
 bool vrLayerManager::Close(vrLayer * layer) {
 	wxASSERT(layer);
@@ -172,6 +189,7 @@ vrLayer * vrLayerManager::GetLayer(const wxFileName & filename){
 	
 	for (unsigned int i = 0; i<m_Layers.GetCount(); i++)
 	{
+		wxLogMessage("'%s' filename, '%s' layername", filename.GetFullPath(), m_Layers.Item(i)->GetFileName().GetFullPath());
 		if (m_Layers.Item(i)->GetFileName().SameAs(filename)){
 			myLayer = m_Layers.Item(i);
 			break;

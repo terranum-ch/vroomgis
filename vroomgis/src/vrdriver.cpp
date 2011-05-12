@@ -18,10 +18,27 @@
 #include "vrdriver.h"
 
 
-wxString vrDrivers::GetWildcards() 
+wxString vrDrivers::GetWildcards(const vrDRIVERS_FLAG & flags) 
 {
-	wxString myWildcards = wxEmptyString;
+	wxArrayInt myTypes;
+	if (flags & vrDRIVERS_FLAG_GENERIC ) {
+		myTypes.Add(vrDRIVER_VECTOR_SHP);
+		myTypes.Add(vrDRIVER_RASTER_TIFF);
+		myTypes.Add(vrDRIVER_RASTER_JPEG);
+		myTypes.Add(vrDRIVER_RASTER_ESRIGRID);
+		myTypes.Add(vrDRIVER_RASTER_EASC);
+		myTypes.Add(vrDRIVER_RASTER_SGRD7);
+	}
 	
+	if (flags & vrDRIVERS_FLAG_COLTOP ) {
+		myTypes.Add(vrDRIVER_VECTOR_C2P);
+		myTypes.Add(vrDRIVER_RASTER_C2D);
+	}
+	
+	return GetSpecificWildcards(myTypes);
+	
+	/*
+	wxString myWildcards = wxEmptyString;
 	// return all supported extensions
 	myWildcards.Append(_("All supported formats|"));
 	for (unsigned int j = 0 ; j< sizeof(vrDRIVERS_EXTENSION) / sizeof(wxString); j++) {
@@ -40,7 +57,7 @@ wxString vrDrivers::GetWildcards()
 							   + vrDRIVERS_EXTENSION[i] + "|");
 	}
 	myWildcards.RemoveLast(1);
-	return myWildcards;
+	return myWildcards;*/
 }
 
 
