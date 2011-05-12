@@ -94,7 +94,7 @@ vrDRIVERS_TYPE vrDrivers::GetType(const wxString & extension) {
 	}
 	
 	if (extension.Len() < 3){
-		wxLogError("Only %d character in the extension (need 3 character)", extension.Len());
+		wxLogError("Only %d character in the extension (need 3 character)", (int)extension.Len());
 		return vrDRIVER_UNKNOWN;
 	}
 	
