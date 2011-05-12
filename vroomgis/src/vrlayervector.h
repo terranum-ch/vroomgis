@@ -48,6 +48,7 @@ public:
     virtual bool Create(const wxFileName & filename){return false;}
     virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
 	
+	virtual wxFileName GetDisplayName();
 	virtual bool GetExtent(vrRealRect & rect){return false;}
 	
 	OGRFeature * GetFeature(long fid);
