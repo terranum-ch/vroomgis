@@ -60,9 +60,13 @@ private:
 
 	wxKeyboardState m_KeyBoardState;
 	wxSlider * m_NbStarCtrl;
+	wxRadioBox* m_FeatureTypeCtrl;
 	
 	void _CreateControls();
 	double _GetRandomNumber(double min, double max);
+	vrLayer * _GetMemoryLayerPoints(const wxFileName & name, int number, const vrRealRect & extent);
+	vrLayer * _GetMemoryLayerLine (const wxFileName & name, int number, const vrRealRect & extent);
+	vrLayer * _GetMemoryLayerStar (const wxFileName & name, int number, const vrRealRect & extent);
 	
 	void OnKeyDown(wxKeyEvent & event);
 	void OnKeyUp(wxKeyEvent & event);

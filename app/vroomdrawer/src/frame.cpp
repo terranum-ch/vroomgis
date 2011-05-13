@@ -22,6 +22,7 @@
 #include <lsversion_dlg.h>
 #include "vrrendervectorc2p.h"
 #include "vrlayervector.h"
+#include "vrlayervectorstar.h"
 
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
@@ -96,12 +97,18 @@ void  vroomDrawerFrame::_CreateControls(){
 	bSizer51 = new wxBoxSizer( wxVERTICAL );
 	
 	wxStaticText* m_staticText1;
-	m_staticText1 = new wxStaticText( m_panel3, wxID_ANY, _("Number of stars:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText1 = new wxStaticText( m_panel3, wxID_ANY, _("Number of features:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
 	bSizer51->Add( m_staticText1, 0, wxALL|wxEXPAND, 5 );
 	
 	m_NbStarCtrl = new wxSlider( m_panel3, wxID_ANY, 500, 1, 2000, wxDefaultPosition, wxDefaultSize, wxSL_LABELS );
 	bSizer51->Add( m_NbStarCtrl, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxEXPAND, 5 );
+	
+	wxString m_FeatureTypeCtrlChoices[] = { _("Points"), _("Lines"), _("Stars") };
+	int m_FeatureTypeCtrlNChoices = sizeof( m_FeatureTypeCtrlChoices ) / sizeof( wxString );
+	m_FeatureTypeCtrl = new wxRadioBox( m_panel3, wxID_ANY, _("Feature's type"), wxDefaultPosition, wxDefaultSize, m_FeatureTypeCtrlNChoices, m_FeatureTypeCtrlChoices, 1, wxRA_SPECIFY_COLS );
+	m_FeatureTypeCtrl->SetSelection( 0 );
+	bSizer51->Add( m_FeatureTypeCtrl, 0, wxALL|wxEXPAND, 5 );
 	
 	wxButton * m_button1 = new wxButton( m_panel3, ID_MENU_ADDMEMORYLAYER, _("Add memory layer"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer51->Add( m_button1, 0, wxALL, 5 );
@@ -185,6 +192,79 @@ double vroomDrawerFrame::_GetRandomNumber(double min, double max){
 	double myNumber = (max - min) * multiply;
 	return myNumber + min;
 }
+
+vrLayer * vroomDrawerFrame::_GetMemoryLayerPoints(const wxFileName & name, int number, 
+												  const vrRealRect & extent){
+	vrLayerVectorOGR * myLayer = new vrLayerVectorOGR();
+	if(myLayer->Create(name, wkbPoint)==false){
+		wxFAIL;
+		return NULL;
+	}
+				
+	// adding features to the layer
+	for (int i = 0; i<number; i++) {
+		OGRPoint myPt;
+		myPt.setX(_GetRandomNumber(extent.GetLeft(), extent.GetRight()));
+		myPt.setY(_GetRandomNumber(extent.GetBottom(), extent.GetTop()));
+		myLayer->AddFeature(&myPt, NULL);
+	}
+	return myLayer;
+}
+
+
+
+vrLayer * vroomDrawerFrame::_GetMemoryLayerLine (const wxFileName & name, int number, 
+												 const vrRealRect & extent){
+	vrLayerVectorOGR * myLayer = new vrLayerVectorOGR();
+	if(myLayer->Create(name, wkbLineString)==false){
+		wxFAIL;
+		return NULL;
+	}
+	
+	// adding features to the layer
+	OGRLineString * myLine = new OGRLineString();
+	for (int i = 0; i<number; i++) {
+		myLine->addPoint(_GetRandomNumber(extent.GetLeft(), extent.GetRight()),
+						_GetRandomNumber(extent.GetBottom(), extent.GetTop()));
+		if (myLine->getNumPoints() >= 10) {
+			myLayer->AddFeature(myLine, NULL);
+			wxDELETE(myLine);
+			myLine = new OGRLineString();
+		}
+	}
+	if (myLine->getNumPoints() > 2) {
+		myLayer->AddFeature(myLine, NULL);
+	}
+	wxDELETE(myLine);
+	return myLayer;
+}
+
+
+
+vrLayer * vroomDrawerFrame::_GetMemoryLayerStar (const wxFileName & name, int number, 
+												 const vrRealRect & extent){
+	vrLayerVectorStar * myLayer = new vrLayerVectorStar();
+	if(myLayer->Create(name, wkbPoint)==false){
+		wxFAIL;
+		return NULL;
+	}
+	// adding size field
+    OGRFieldDefn myFieldStarSize ("starsize", OFTInteger);
+	myLayer->AddField(myFieldStarSize);
+	
+	
+	// adding features to the layer
+	for (int i = 0; i<number; i++) {
+		int myStarSize = wxRound(_GetRandomNumber(3.0, 20.0));
+		OGRPoint myPt;
+		myPt.setX(_GetRandomNumber(extent.GetLeft(), extent.GetRight()));
+		myPt.setY(_GetRandomNumber(extent.GetBottom(), extent.GetTop()));
+		myLayer->AddFeature(&myPt, &myStarSize);
+	}
+	return myLayer;
+}
+
+
 
 
 vroomDrawerFrame::vroomDrawerFrame(const wxString& title)
@@ -508,7 +588,7 @@ void vroomDrawerFrame::OnToolActionPan (wxCommandEvent & event){
 
 
 void vroomDrawerFrame::OnStarLayerAdd (wxCommandEvent & event){
-	wxFileName myMemoryLayerName ("", _("Stars"), "memory");
+	wxFileName myMemoryLayerName ("", _("Memory Features"), "memory");
 	wxASSERT(myMemoryLayerName.GetExt() == "memory");
 	
 	// check if memory layer allready added
@@ -525,17 +605,6 @@ void vroomDrawerFrame::OnStarLayerAdd (wxCommandEvent & event){
 		}
 	}
 	
-	// create manually a layer and add it to the vrLayerManager for management
-	vrLayerVectorOGR * myLayer = new vrLayerVectorOGR();
-	if(myLayer->Create(myMemoryLayerName, wkbPoint)==false){
-		wxFAIL;
-		m_ViewerLayerManager->FreezeEnd();
-		return;
-	}
-	
-	wxASSERT(myLayer);
-	m_LayerManager->Add(myLayer);
-	
 	// get viewer extent
 	vrRealRect myExtent = m_DisplayCtrl->GetCoordinate()->GetExtent();
 	if (myExtent.IsOk() == false) {
@@ -545,25 +614,34 @@ void vroomDrawerFrame::OnStarLayerAdd (wxCommandEvent & event){
 							  m_DisplayCtrl->GetSize().GetHeight() * -1.0);
 	}
 	
-	
-	vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) m_LayerManager->GetLayer(myMemoryLayerName);
 	// init random engine
 	srand((unsigned)time(NULL));
 	
-	// adding features to the layer
-	for (int i = 0; i<m_NbStarCtrl->GetValue(); i++) {
-		OGRPoint myPt;
-		myPt.setX(_GetRandomNumber(myExtent.GetLeft(), myExtent.GetRight()));
-		myPt.setY(_GetRandomNumber(myExtent.GetBottom(), myExtent.GetTop()));
-		myMemoryLayer->AddFeature(&myPt, NULL);
-	}
-	
-	// change default render
+	vrLayer * myLayer = NULL;	
 	vrRenderVector * myRender = new vrRenderVector();
-	myRender->SetSize(4);
-	myRender->SetColorPen(*wxGREEN);
-	
-	m_ViewerLayerManager->Add(-1, myMemoryLayer, myRender);
+
+	switch (m_FeatureTypeCtrl->GetSelection()) {
+		case 1: // points
+			myLayer = _GetMemoryLayerLine(myMemoryLayerName, m_NbStarCtrl->GetValue(), myExtent);
+			break;
+			
+		case 2: // stars
+			myLayer = _GetMemoryLayerStar(myMemoryLayerName, m_NbStarCtrl->GetValue(), myExtent);
+			myRender->SetSize(1);
+			myRender->SetColorPen(*wxBLUE);
+			break;
+			
+			
+		default: // points
+			myLayer = _GetMemoryLayerPoints(myMemoryLayerName, m_NbStarCtrl->GetValue(), myExtent);
+			myRender->SetSize(4);
+			myRender->SetColorPen(*wxGREEN);
+			break;
+	}
+	wxASSERT(myLayer);
+	m_LayerManager->Add(myLayer);
+	//vrLayer * myMemoryLayer =  m_LayerManager->GetLayer(myMemoryLayerName);	
+	m_ViewerLayerManager->Add(-1, myLayer, myRender);
 	m_ViewerLayerManager->FreezeEnd();
 }
 
