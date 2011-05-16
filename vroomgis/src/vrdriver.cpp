@@ -31,33 +31,11 @@ wxString vrDrivers::GetWildcards(const vrDRIVERS_FLAG & flags)
 	}
 	
 	if (flags & vrDRIVERS_FLAG_COLTOP ) {
-		myTypes.Add(vrDRIVER_VECTOR_C2P);
+		//myTypes.Add(vrDRIVER_VECTOR_C2P);
 		myTypes.Add(vrDRIVER_RASTER_C2D);
 	}
 	
 	return GetSpecificWildcards(myTypes);
-	
-	/*
-	wxString myWildcards = wxEmptyString;
-	// return all supported extensions
-	myWildcards.Append(_("All supported formats|"));
-	for (unsigned int j = 0 ; j< sizeof(vrDRIVERS_EXTENSION) / sizeof(wxString); j++) {
-		if (vrDRIVERS_NAMES[j] != wxEmptyString) {
-			myWildcards.Append(vrDRIVERS_EXTENSION[j] + ";");
-		}
-	}
-	myWildcards.RemoveLast(1);
-	myWildcards.Append("|");
-	
-	
-	for (unsigned int i = 0; i< sizeof(vrDRIVERS_EXTENSION) / sizeof(wxString); i++)
-	{
-		if (vrDRIVERS_NAMES[i] != wxEmptyString)
-			myWildcards.Append(vrDRIVERS_NAMES[i] + " files ("  + vrDRIVERS_EXTENSION[i] + ")|"
-							   + vrDRIVERS_EXTENSION[i] + "|");
-	}
-	myWildcards.RemoveLast(1);
-	return myWildcards;*/
 }
 
 
