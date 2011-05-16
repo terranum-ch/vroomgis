@@ -38,12 +38,30 @@ def askUserWithCheck (msg, allowedval=['Y', 'y', 'N', 'n'], errormsg = "Unsuppor
 
 def createEmptyDirs(bindir):
 	"""Creating vroomtwin, vroomloader, vroomgistests if not existing"""
-	if not os.path.exists(bindir):
+	try:
 		os.makedirs(bindir)
+	except:
+		print ("Error creating '{}', dir exists!".format(bindir))
+	
+	try:
 		os.makedirs(bindir + os.sep + "vroomloader")
+	except:
+		print ("Error creating '{}', dir exists!".format(bindir + os.sep + "vroomloader"))
+	
+	try:
 		os.makedirs(bindir + os.sep + "vroomtwin")
+	except:
+		print ("Error creating '{}', dir exists!".format(bindir + os.sep + "vroomtwin"))
+	
+	try:
 		os.makedirs(bindir + os.sep + "vroomgistests")
+	except:
+		print ("Error creating '{}', dir exists!".format(bindir + os.sep + "vroomgistests"))
+	
+	try:
 		os.makedirs(bindir + os.sep + "vroomdrawer")
+	except:
+		print ("Error creating '{}', dir exists!".format(bindir + os.sep + "vroomdrawer"))
 
 
    
