@@ -2,7 +2,7 @@
 								vrlayermanager.cpp
 				Manage the layers. Keep a list of all opened layers
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2009 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -33,7 +33,7 @@ vrLayerManager::vrLayerManager() {
 
 
 vrLayerManager::~vrLayerManager() {
-	
+
 	// manually clearing array of layers, Clear() or Empty() didn't work
 	unsigned int iCount = m_Layers.GetCount();
 	for (unsigned int i = 0; i<iCount; i++)
@@ -43,7 +43,7 @@ vrLayerManager::~vrLayerManager() {
 		m_Layers.RemoveAt(0);
 	}
 	wxASSERT(m_Layers.GetCount()==0);
-	
+
 	// manually clearing array of viewermanagers
 	int iCountVM = m_ViewerManagers.GetCount();
 	for (int j = iCountVM - 1; j >= 0; j--){
@@ -57,30 +57,30 @@ vrLayerManager::~vrLayerManager() {
 
 
 bool vrLayerManager::Open(const wxFileName & filename, bool readwrite) {
-	
+
 	if (filename.IsOk()==false){
 		wxLogError("Filename not initialised");
 		return false;
 	}
-	
+
 	// search if layer allready opened
 	if (GetLayer(filename) != NULL){
 		wxLogMessage("Data %s allready opened", filename.GetFullName());
 		return true;
 	}
-	
+
 	vrDrivers myDriver;
 	vrLayer * myLayer = NULL;
-	
+
 	switch (myDriver.GetType(filename.GetExt())){
 		case vrDRIVER_VECTOR_SHP:
 			myLayer = new vrLayerVectorOGR();
 			break;
-		
+
 		case vrDRIVER_RASTER_ESRIGRID:
 			myLayer = new vrLayerRasterEGRID();
 			break;
-			
+
 		case vrDRIVER_RASTER_JPEG:
 		case vrDRIVER_RASTER_TIFF:
 			myLayer = new vrLayerRasterGDAL();
@@ -89,35 +89,35 @@ bool vrLayerManager::Open(const wxFileName & filename, bool readwrite) {
 		case vrDRIVER_RASTER_C2D:
 			myLayer = new vrLayerRasterC2D();
 			break;
-			
+
 		case vrDRIVER_VECTOR_C2P:
 			myLayer = new vrLayerVectorC2P();
 			break;
-            
+
         case vrDRIVER_RASTER_EASC:
             myLayer = new vrLayerRasterGDAL();
             break;
-            
+
         case vrDRIVER_RASTER_SGRD7:
             myLayer = new vrLayerRasterGDAL();
             break;
 
-			
+
 		default:
 			wxLogError("Extension \"%s\" not supported",filename.GetExt());
 			return false;
 			break;
 	}
-	
+
 	wxASSERT(myLayer);
 	if (myLayer->Open(filename, readwrite)==false){
 		return false;
 	}
-	
+
 	m_Layers.Add(myLayer);
-	wxLogMessage("%ld layers in the layermanager", m_Layers.GetCount());
+	//7wxLogMessage("%ld layers in the layermanager", m_Layers.GetCount());
 	bool bValue = m_Layers.Item(0)->IsOK();
-	wxLogMessage("added layer is %d", bValue);
+	//wxLogMessage("added layer is %d", bValue);
 	return true;
 }
 
@@ -128,12 +128,12 @@ bool vrLayerManager::Add(vrLayer * layer) {
 	if (layer == NULL) {
 		return false;
 	}
-	
+
 	if (GetLayer(layer->GetFileName()) != NULL) {
 		wxLogMessage(_("Layer with same name allready exists '%s'"),layer->GetFileName().GetFullName());
 		return false;
 	}
-	
+
 	m_Layers.Add(layer);
 	return true;
 }
@@ -142,7 +142,7 @@ bool vrLayerManager::Add(vrLayer * layer) {
 // true if layer isn't any more used. false otherwise
 bool vrLayerManager::Close(vrLayer * layer) {
 	wxASSERT(layer);
-	
+
 	//check all viewerlayermanagers to ensure that this layer
 	//isn't open anywhere.
 	for (unsigned int i = 0; i<m_ViewerManagers.GetCount(); i++) {
@@ -155,7 +155,7 @@ bool vrLayerManager::Close(vrLayer * layer) {
 			}
 		}
 	}
-	
+
 	// Layer isn't anymore used we can close now
 	int iRemoveIndex = wxNOT_FOUND;
 	for (unsigned int i = 0; i< m_Layers.GetCount(); i++) {
@@ -163,13 +163,13 @@ bool vrLayerManager::Close(vrLayer * layer) {
 			iRemoveIndex = i;
 		}
 	}
-	
+
 	if (iRemoveIndex == wxNOT_FOUND) {
 		wxLogError("Unable to close '%s', layer not present into layermanager",
 				   layer->GetDisplayName().GetFullName());
 		return false;
 	}
-	
+
 	vrLayer * myLayer = m_Layers.Item(iRemoveIndex);
 	wxASSERT(myLayer);
 	wxDELETE(myLayer);
@@ -186,10 +186,10 @@ int vrLayerManager::GetCount() {
 
 vrLayer * vrLayerManager::GetLayer(const wxFileName & filename){
 	vrLayer * myLayer = NULL;
-	
+
 	for (unsigned int i = 0; i<m_Layers.GetCount(); i++)
 	{
-		wxLogMessage("'%s' filename, '%s' layername", filename.GetFullPath(), m_Layers.Item(i)->GetFileName().GetFullPath());
+		//wxLogMessage("'%s' filename, '%s' layername", filename.GetFullPath(), m_Layers.Item(i)->GetFileName().GetFullPath());
 		if (m_Layers.Item(i)->GetFileName().SameAs(filename)){
 			myLayer = m_Layers.Item(i);
 			break;
@@ -200,17 +200,17 @@ vrLayer * vrLayerManager::GetLayer(const wxFileName & filename){
 
 
 
-bool vrLayerManager::AddViewerLayerManager(vrViewerLayerManager * manager){	
+bool vrLayerManager::AddViewerLayerManager(vrViewerLayerManager * manager){
 	wxASSERT(manager);
-	
+
 	for (unsigned int i = 0; i< m_ViewerManagers.GetCount(); i++){
 		if (m_ViewerManagers.Item(i)==manager){
-			wxLogError("This manager was allready added into the vrLayerManager");
+			wxLogError("This manager was already added into the vrLayerManager");
 			return false;
 		}
 	}
-	
-	
+
+
 	m_ViewerManagers.Add(manager);
 	return true;
 }

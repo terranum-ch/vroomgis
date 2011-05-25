@@ -126,7 +126,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	}
 
 	if (m_ComputeExtentStatus == true){
-		wxLogMessage("Computing extent required");
+		//wxLogMessage("Computing extent required");
 	}
 
 
@@ -432,7 +432,7 @@ void vrViewerLayerManager::Reload() {
 	}
 
 	if (myVectorCount > 0) {
-		wxLogMessage(_("Total Vector drawn: %ld"), myVectorCount);
+		//wxLogMessage(_("Total Vector drawn: %ld"), myVectorCount);
 	}
 
 	if (myCountLayer == 0) {
@@ -596,11 +596,11 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible) {
 
 	// TODO: Remove Temp logging code
 	myLayerExtent = myCoordinate->GetExtent();
-	wxLogMessage("Windows extent is :\n left : %.3f\nright : %.3f\ntop : %.3f\nbottom : %.3f",
+	/*wxLogMessage("Windows extent is :\n left : %.3f\nright : %.3f\ntop : %.3f\nbottom : %.3f",
 				 myLayerExtent.GetLeft(),
 				 myLayerExtent.GetRight(),
 				 myLayerExtent.GetTop(),
-				 myLayerExtent.GetBottom());
+				 myLayerExtent.GetBottom());*/
 
 	return true;
 }

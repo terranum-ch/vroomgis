@@ -178,7 +178,7 @@ bool vrDisplayToolDefault::MouseUp(const wxMouseEvent & event) {
 
 bool vrDisplayToolDefault::MouseMove(const wxMouseEvent & event) {
 	if (event.Dragging()==true) {
-		wxLogMessage("Dragging with selection");
+		//wxLogMessage("Dragging with selection");
 	}
 	return true;
 }
@@ -221,11 +221,11 @@ bool vrDisplayToolSelect::MouseUp(const wxMouseEvent & event) {
 	}
 	wxDELETE(m_Rubber);
 
-	wxLogMessage("Selection rect is %d, %d, %d, %d",
+	/*wxLogMessage("Selection rect is %d, %d, %d, %d",
 				 myRect.GetLeft(),
 				 myRect.GetTop(),
 				 myRect.GetWidth(),
-				 myRect.GetHeight());
+				 myRect.GetHeight());*/
 
 	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_SELECT,
 																GetDisplay(),
