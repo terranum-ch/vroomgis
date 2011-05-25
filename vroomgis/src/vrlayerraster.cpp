@@ -54,7 +54,7 @@ bool vrLayerRasterGDAL::_Close() {
 		return false;
 	}
 
-	wxLogMessage("Closing raster data NOW");
+	//wxLogMessage("Closing raster data NOW");
 	GDALClose(m_Dataset);
 	m_Dataset = NULL;
 	return true;
@@ -685,7 +685,7 @@ bool vrLayerRasterGDAL::Open(const wxFileName & filename, bool readwrite) {
 		wxLogError("Unable to open %s, maybe driver not registered -  GDALAllRegister()\nGDAL Error: '%s'",
 				   filename.GetFullName(),
 				   wxString(CPLGetLastErrorMsg()));
-		
+
 		return false;
 	}
 
@@ -835,24 +835,24 @@ bool vrLayerRasterGDAL::GetDataThread(wxImage * bmp, const vrRealRect & coord,  
 
 
 
-bool vrLayerRasterGDAL::GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, 
+bool vrLayerRasterGDAL::GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,
 							   const vrRender * render, const vrLabel * label) {
 	// get extent of raster
 	vrRealRect myImgExtent;
 	if (GetExtent(myImgExtent) == false) {
 		return false;
 	}
-	
+
 	// compute visible part, position for raster
 	wxRect myImgInfo;
 	wxRect myImgPos;
-	
+
 	if(_ComputeDisplayPosSize(m_ImgPxSize, myImgExtent, coord,
 							  pxsize, myImgInfo, myImgPos)==false){
 		wxLogMessage("Raster %s invalid. Maybe outside the display", m_FileName.GetFullName());
 		return false;
 	}
-	
+
 	// raster inside display
 	unsigned char * myimgdata = NULL;
 	if (_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
@@ -860,21 +860,21 @@ bool vrLayerRasterGDAL::GetData(wxBitmap * bmp, const vrRealRect & coord, double
 		wxASSERT(myimgdata == NULL);
 		return false;
 	}
-	
+
 	wxImage myImg (myImgPos.GetWidth(), myImgPos.GetHeight());
 	myImg.SetData(myimgdata, false);
 	if (myImg.IsOk() == false) {
 		wxLogError("Creating raster failed");
 		return false;
 	}
-	
+
 	unsigned char * mynodata = NULL;
 	if (_GetRasterNoData(&mynodata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()),
 						 myImgInfo, render) != false) {
 		wxASSERT(mynodata != NULL);
 		myImg.SetAlpha(mynodata, false);
 	}
-	
+
 	// user transparency
 	int myUserTransparency = 255 - (render->GetTransparency() * 255 / 100);
 	if (myUserTransparency != 255) {
@@ -891,9 +891,9 @@ bool vrLayerRasterGDAL::GetData(wxBitmap * bmp, const vrRealRect & coord, double
 			row.OffsetY(data, 1);
 		}
 	}
-	
+
 	// drawing the image on the passed bmp
-	wxMemoryDC dc (*bmp);	
+	wxMemoryDC dc (*bmp);
 	dc.DrawBitmap(myImg, myImgPos.GetX(), myImgPos.GetY(), true);
 	return true;
 }

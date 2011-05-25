@@ -46,7 +46,7 @@ END_EVENT_TABLE()
 
 void vrViewerTOC::OnVisibleStatusChanged(wxCommandEvent & event) {
 
-	wxLogMessage("Value changed for item : %d value is %d", event.GetInt(), IsChecked(event.GetInt()));
+	//wxLogMessage("Value changed for item : %d value is %d", event.GetInt(), IsChecked(event.GetInt()));
 
 	// change visibility status for layer
 	wxASSERT(m_ViewerManager);
