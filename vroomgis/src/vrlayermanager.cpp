@@ -116,7 +116,7 @@ bool vrLayerManager::Open(const wxFileName & filename, bool readwrite) {
 
 	m_Layers.Add(myLayer);
 	//7wxLogMessage("%ld layers in the layermanager", m_Layers.GetCount());
-	bool bValue = m_Layers.Item(0)->IsOK();
+	//bool bValue = m_Layers.Item(0)->IsOK();
 	//wxLogMessage("added layer is %d", bValue);
 	return true;
 }
