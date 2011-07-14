@@ -785,6 +785,17 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
 
 bool vrLayerVectorOGR::SetAttributeFilter(const wxString & query) {
 	wxASSERT(m_Layer);
+	if (query == wxEmptyString) {
+		OGRErr myErr = m_Layer->SetAttributeFilter(NULL);
+		if (myErr != OGRERR_NONE) {
+			wxLogError(_("Error cleaning attribute filter: (code %d)"), myErr);
+			return false;
+		}
+		m_Layer->ResetReading();
+		return true;
+	}
+	
+	
 	OGRErr myErr = m_Layer->SetAttributeFilter((const char*) query.mb_str(wxConvUTF8));
 	if (myErr != OGRERR_NONE) {
 		wxLogError(_("Error setting following attribute filter : %s, (code %d)"),
