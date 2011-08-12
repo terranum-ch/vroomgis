@@ -169,12 +169,3 @@ vrRenderRaster::vrRenderRaster() {
 
 vrRenderRaster::~vrRenderRaster() {
 }
-
-
-vrRenderRasterColtop::vrRenderRasterColtop() {
-	m_Type = vrRENDER_RASTER_C2D;
-}
-
-vrRenderRasterColtop::~vrRenderRasterColtop() {
-}
-

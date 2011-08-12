@@ -110,15 +110,4 @@ class vrRenderRaster : public vrRender {
 
 };
 
-
-
-class vrRenderRasterColtop : public vrRenderRaster {
-  public:
-    vrRenderRasterColtop();
-
-    virtual ~vrRenderRasterColtop();
-
-};
-
-
 #endif
