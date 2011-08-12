@@ -19,6 +19,7 @@
 #include "vrlayer.h"
 #include "vrrender.h"
 #include "vrrendervectorc2p.h"
+#include "vrrendercoltop.h"
 #include "vrlabel.h"
 #include "vrlayervector.h"
 

@@ -17,7 +17,7 @@
 
 #include "vrlayerrasterc2d.h"
 #include "vrrealrect.h"
-#include "vrrender.h"
+#include "vrrendercoltop.h"
 #include "vrlabel.h"
 
 
@@ -84,27 +84,22 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & o
 		return false;
 	}
 	
+	vrRenderRasterColtop * myColtopRender = (vrRenderRasterColtop*) render;
+	wxASSERT(myColtopRender);
+	wxASSERT(myColtopRender->GetType() == vrRENDER_RASTER_C2D);
 	
 	// convert to RGB
 	for (unsigned int i = 0; i< myimgRGBLen; i += 3) {
 		double mySlpDouble = _ReadGDALValueToDouble(mySlopeData, GDT_Float32, i/3);
 		double myAspDouble = _ReadGDALValueToDouble(myAspectData, GDT_Float32, i/3);
 		
-		// normalize slope and aspect to 0.0 - 1.0
-		myAspDouble = myAspDouble / 360.0;
-		mySlpDouble = mySlpDouble / 90.0;
-		
-		wxImage::HSVValue myHSVValue (myAspDouble,
-									  mySlpDouble,
-									  1);
-		wxImage::RGBValue myRGBValue = wxImage::HSVtoRGB(myHSVValue);
+		wxImage::RGBValue myRGBValue = myColtopRender->GetColorFromDipDir(mySlpDouble, myAspDouble);
 		
 		// fill buffer
 		*(*imgdata + i)	= myRGBValue.red;
 		*(*imgdata + i + 1) = myRGBValue.green;
 		*(*imgdata + i + 2) = myRGBValue.blue;
 	}
-	
 	
 	CPLFree(myAspectData);
 	myAspectData = NULL;
