@@ -50,11 +50,26 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
 	if (wxIsSameDouble(myDir, 360.0)) {
 		myDir = 0;
 	}
-	
 	wxASSERT(myDir <= 360.0);
 	
 	// normalize
 	double myNDip = myDip / 90.0;
+	
+	// normalize between 10 and 50 degree
+	/*double myNDip = 0;
+	if (myDip >= 10.0 && myDip <= 50.0) {
+		myNDip = (myDip - 10.0) * 90 / 40.0  / 90.0;
+	}*/
+	
+	/*
+	double myNDip = 0;
+	int myValue = 360 - m_NorthAngle;
+	if (myDip >= 0 && myDip <= myValue) {
+		myNDip = (myDip - 0) * 90 / (myValue - 0.0)  / 90.0;
+	}*/
+	
+	
+	
 	double myNDir = myDir / 360.0;
 	
 	if (m_IsColorInverted == true) {
@@ -110,7 +125,7 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint & 
 
 
 void vrRenderRasterColtop::SetNorthAngle(int value) {
-  m_NorthAngle = value;
+  m_NorthAngle = 360.0 - value;
 }
 
 
