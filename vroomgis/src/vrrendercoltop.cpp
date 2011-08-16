@@ -36,14 +36,22 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
 	double myDip = dip;
 	
 	if (m_IsLowerHemisphere == false) {
-		myDip = 180.0 - myDip;
+		myDir = myDir + 180.0;
 	}
+	
 	
 	myDir = myDir + m_NorthAngle;
 	if (myDir > 360.0) {
 		myDir = myDir - 360.0;
 	}
-	wxASSERT(myDir < 360.0);
+	if (myDir < 0) {
+		myDir = myDir + 360;
+	}
+	if (wxIsSameDouble(myDir, 360.0)) {
+		myDir = 0;
+	}
+	
+	wxASSERT(myDir <= 360.0);
 	
 	// normalize
 	double myNDip = myDip / 90.0;
@@ -62,9 +70,41 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
 
 
 
-wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint & coord, double radius) {
-	wxImage::RGBValue myValue;
-	return myValue;
+wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint & coord, int radius) {
+	
+	// HUE (Color rotation)
+	double myHue = 0;
+	if (m_IsColorInverted == false){
+		myHue = 180.0*(1.0 + atan2(wxDouble(coord.x), wxDouble(coord.y))*(1/M_PI));
+		myHue = myHue + m_NorthAngle;
+	}
+	else {
+		myHue = 180.0*(1.0 - atan2(wxDouble(coord.x), wxDouble(coord.y))*(1/M_PI));
+		myHue = myHue - m_NorthAngle;
+	}
+	if (myHue > 360.0) {
+		myHue = myHue - 360.0;
+	}
+	if (myHue < 0 ) {
+		myHue = myHue + 360.0;
+	}
+	if (wxIsSameDouble(myHue, 360.0)) {
+		myHue = 0;
+	}
+	
+	
+	// SATURATION (Color intensity)
+	int myRadius = sqrt(wxDouble(coord.x * coord.x + coord.y * coord.y));
+	if (myRadius > radius) {
+		myRadius = radius;
+	}
+	double mySature = (2.0*asin(sqrt(2.0)*0.5*myRadius*(1.0/radius)))*(1.0/M_PI)*2.0;
+	
+	wxImage::HSVValue myHSVValue (myHue / 360.0,
+								  mySature,
+								  1);
+	wxImage::RGBValue myRGBValue = wxImage::HSVtoRGB(myHSVValue);
+	return myRGBValue;
 }
 
 
