@@ -41,7 +41,7 @@ public:
     virtual ~vrRenderRasterColtop();
 	
     virtual wxImage::RGBValue GetColorFromDipDir(double dip, double dipdir);
-    virtual wxImage::RGBValue GetColorFromCircleCoord(const wxPoint & coord, double radius);
+    virtual wxImage::RGBValue GetColorFromCircleCoord(const wxPoint & coord, int radius);
 	
     void SetNorthAngle(int value);
     void SetColorInverted(bool value);
