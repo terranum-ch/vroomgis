@@ -32,9 +32,11 @@
 class vrRenderRasterColtop : public vrRenderRaster {
 protected:
     int m_NorthAngle;
-    bool m_IsColorInverted;
+	int m_ColorStretchMin;
+    int m_ColorStretchMax;
+	bool m_IsColorInverted;
     bool m_IsLowerHemisphere;
-	
+
 	
 public:
     vrRenderRasterColtop();
@@ -46,6 +48,9 @@ public:
     void SetNorthAngle(int value);
     void SetColorInverted(bool value);
     void SetLowerHemisphere(bool value);
+	void SetColorStretchMin(int value);
+    void SetColorStretchMax(int value);
+	
 	
     virtual bool Serialize(vrSerialize & serialobj);
 	

@@ -22,6 +22,8 @@ vrRenderRasterColtop::vrRenderRasterColtop() {
 	m_NorthAngle = 0;
 	m_IsColorInverted = false;
 	m_IsLowerHemisphere = true;
+	m_ColorStretchMin = 0;
+	m_ColorStretchMax = 90;
 }
 
 
@@ -41,10 +43,10 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
 	
 	
 	myDir = myDir + m_NorthAngle;
-	if (myDir > 360.0) {
+	while (myDir > 360.0) {
 		myDir = myDir - 360.0;
 	}
-	if (myDir < 0) {
+	while (myDir < 0) {
 		myDir = myDir + 360;
 	}
 	if (wxIsSameDouble(myDir, 360.0)) {
@@ -52,26 +54,14 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
 	}
 	wxASSERT(myDir <= 360.0);
 	
-	// normalize
-	double myNDip = myDip / 90.0;
 	
-	// normalize between 10 and 50 degree
-	/*double myNDip = 0;
-	if (myDip >= 10.0 && myDip <= 50.0) {
-		myNDip = (myDip - 10.0) * 90 / 40.0  / 90.0;
-	}*/
-	
-	/*
+	// Stretch colors
 	double myNDip = 0;
-	int myValue = 360 - m_NorthAngle;
-	if (myDip >= 0 && myDip <= myValue) {
-		myNDip = (myDip - 0) * 90 / (myValue - 0.0)  / 90.0;
-	}*/
+	if (myDip >= m_ColorStretchMin && myDip <= m_ColorStretchMax) {
+		myNDip = (myDip - m_ColorStretchMin) * 90.0 / (m_ColorStretchMax - m_ColorStretchMin)  / 90.0;
+	}
 	
-	
-	
-	double myNDir = myDir / 360.0;
-	
+	double myNDir = myDir / 360.0;	
 	if (m_IsColorInverted == true) {
 		myNDir = 1.0 - myNDir;
 	}
@@ -97,10 +87,10 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint & 
 		myHue = 180.0*(1.0 - atan2(wxDouble(coord.x), wxDouble(coord.y))*(1/M_PI));
 		myHue = myHue - m_NorthAngle;
 	}
-	if (myHue > 360.0) {
+	while (myHue > 360.0) {
 		myHue = myHue - 360.0;
 	}
-	if (myHue < 0 ) {
+	while (myHue < 0 ) {
 		myHue = myHue + 360.0;
 	}
 	if (wxIsSameDouble(myHue, 360.0)) {
@@ -138,6 +128,17 @@ void vrRenderRasterColtop::SetColorInverted(bool value) {
 
 void vrRenderRasterColtop::SetLowerHemisphere(bool value) {
   m_IsLowerHemisphere = value;
+}
+
+
+void vrRenderRasterColtop::SetColorStretchMin(int value) {
+	m_ColorStretchMin = value;
+}
+
+
+
+void vrRenderRasterColtop::SetColorStretchMax(int value) {
+	m_ColorStretchMax = value;
 }
 
 
