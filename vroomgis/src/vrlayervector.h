@@ -1,8 +1,8 @@
 /***************************************************************************
 				vrlayervector.h
-                    
+
                              -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
+    copyright            : (C) 2009 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -37,9 +37,9 @@ protected:
 	wxArrayLong m_SelectedIDs;
 
 	long m_ObjectDrawn;
-	
 
-	wxPoint _GetPointFromReal(const wxPoint2DDouble & realpt, 
+
+	wxPoint _GetPointFromReal(const wxPoint2DDouble & realpt,
 							  const wxPoint2DDouble & origin, double pxsize);
 
 public:
@@ -47,10 +47,10 @@ public:
     virtual ~vrLayerVector();
     virtual bool Create(const wxFileName & filename){return false;}
     virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
-	
+
 	virtual wxFileName GetDisplayName();
 	virtual bool GetExtent(vrRealRect & rect){return false;}
-	
+
 	OGRFeature * GetFeature(long fid);
     long GetFeatureCount(bool onlyvisible = true);
     OGRFeature * GetNextFeature(bool restart);
@@ -62,7 +62,7 @@ public:
 	virtual long AddFeature(OGRGeometry * geometry, void * data = NULL){return wxNOT_FOUND;}
 	virtual bool DeleteFeature(long fid);
 	bool IsOK();
-	
+
 	inline wxArrayLong * GetSelectedIDs();
     void SetSelectedIDs(const wxArrayLong & value);
     virtual bool SearchFeatures(OGRGeometry * geometry, wxArrayLong & results);
@@ -88,20 +88,22 @@ protected:
 	virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							 const vrRender * render, const vrLabel * label, double pxsize);
     virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							   const vrRender * render, const vrLabel * label, double pxsize);	
+							   const vrRender * render, const vrLabel * label, double pxsize);
+    virtual bool _DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+							   const vrRender * render, const vrLabel * label, double pxsize);
     virtual bool _Close();
-	
+
 public:
 	vrLayerVectorOGR();
     virtual ~vrLayerVectorOGR();
-	
+
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
     virtual bool Create(const wxFileName & filename, int spatialtype = wkbPoint);
-	
+
     bool AddField(const OGRFieldDefn & fielddef);
     virtual long AddFeature(OGRGeometry * geometry, void * data = NULL);
 
-    
+
 	virtual bool GetExtent(vrRealRect & rect);
 	virtual bool GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
 							   const vrRender * render = NULL, const vrLabel * label = NULL);
@@ -111,6 +113,6 @@ public:
 
     bool SetAttributeFilter(const wxString & query);
 
-	
+
 };
 #endif

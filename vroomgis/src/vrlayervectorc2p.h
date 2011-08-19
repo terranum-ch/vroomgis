@@ -1,8 +1,8 @@
 /***************************************************************************
 				vrlayervectorsc2p.h
-                    
+
                              -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
+    copyright            : (C) 2010 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -39,6 +39,8 @@ class vrLayerVectorC2P : public vrLayerVectorOGR {
     virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							const vrRender * render, const vrLabel * label, double pxsize);
     virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+							   const vrRender * render, const vrLabel * label, double pxsize);
+    virtual bool _DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							   const vrRender * render, const vrLabel * label, double pxsize);
 
   public:
