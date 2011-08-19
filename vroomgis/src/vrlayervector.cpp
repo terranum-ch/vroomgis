@@ -606,9 +606,148 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 }
 
 
+bool vrLayerVectorOGR::_DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+									 const vrRender * render, const vrLabel * label, double pxsize) {
+	m_ObjectDrawn = 0;
+	wxASSERT(gdc);
+	wxStopWatch sw;
+
+	wxASSERT(render->GetType() == vrRENDER_VECTOR);
+	vrRenderVector * myRender = (vrRenderVector*) render;
+
+	// creating brush and pen
+	wxPen myPen (myRender->GetColorPen(),myRender->GetSize());
+	wxBrush myBrush (myRender->GetColorBrush(), myRender->GetBrushStyle());
+	wxPen mySelPen (myRender->GetSelectionColour(),
+					myRender->GetSize());
+	gdc->SetBrush(myBrush);
 
 
+	// iterating and drawing geometries
+	OGRMultiPolygon * myMultiGeom = NULL;
+	long iCount = 0;
+	while (1) {
+		OGRFeature * myFeat = GetNextFeature(false);
+		if (myFeat == NULL) {
+			break;
+		}
+		//iCount++;
 
+		myMultiGeom = NULL;
+		myMultiGeom = (OGRMultiPolygon*) myFeat->GetGeometryRef();
+		wxASSERT(myMultiGeom);
+
+		// Force rings to be closed.
+		myMultiGeom->closeRings();
+
+		int numGeom = myMultiGeom->getNumGeometries();
+		OGRGeometry * myGeom = NULL;
+
+        for (int iPoly = 0; iPoly < numGeom; iPoly++) {
+
+            myGeom = myMultiGeom->getGeometryRef(iPoly);
+            wxASSERT(myGeom);
+
+            // create path for polygon
+            wxGraphicsPath myPath = gdc->CreatePath();
+
+            switch (myGeom->getGeometryType())
+            {
+                case (wkbPolygon):
+                {
+                    OGRPolygon * polygon = (OGRPolygon*) myGeom;
+                    wxASSERT(polygon);
+
+                    int numRing = polygon->getNumInteriorRings() + 1;
+                    wxASSERT(numRing >= 1); // Polygon should have at least one ring
+
+                    for (int i = 0; i < numRing; i++) {
+                        wxGraphicsPath myPolyPath = gdc->CreatePath();
+                        OGRLinearRing * myRing  = NULL;
+                        if (i == 0) {
+                            myRing = polygon->getExteriorRing();
+                        }
+                        else {
+                            myRing = polygon->getInteriorRing(i -1);
+                        }
+
+                        wxASSERT(myRing);
+                        int iNumVertex = myRing->getNumPoints();
+                        wxASSERT(iNumVertex > 1);
+                        myPolyPath.MoveToPoint(_GetPointFromReal(wxPoint2DDouble(myRing->getX(0),
+                                                                                 myRing->getY(0)),
+                                                                 coord.GetLeftTop(),
+                                                                 pxsize));
+                        for (int v = 0; v < iNumVertex; v++) {
+                            myPolyPath.AddLineToPoint(_GetPointFromReal(wxPoint2DDouble(myRing->getX(v),
+                                                                                     myRing->getY(v)),
+                                                                     coord.GetLeftTop(),
+                                                                     pxsize));
+                        }
+                        myPolyPath.CloseSubpath();
+                        myPath.AddPath(myPolyPath);
+                    }
+                    break;
+                }
+                case (wkbLineString):
+                {
+                    wxGraphicsPath myPolyPath = gdc->CreatePath();
+
+                    OGRLineString * line = (OGRLineString*) myGeom;
+                    wxASSERT(line);
+
+                    int iNumVertex = line->getNumPoints();
+                    if (iNumVertex < 2) continue;
+
+                    myPolyPath.MoveToPoint(_GetPointFromReal(wxPoint2DDouble(line->getX(0),
+                                                                            line->getY(0)),
+                                                         coord.GetLeftTop(),
+                                                         pxsize));
+                    for (int v = 0; v < iNumVertex; v++) {
+                        myPolyPath.AddLineToPoint(_GetPointFromReal(wxPoint2DDouble(line->getX(v),
+                                                                                line->getY(v)),
+                                                                coord.GetLeftTop(),
+                                                                pxsize));
+                    }
+                    myPolyPath.CloseSubpath();
+                    myPath.AddPath(myPolyPath);
+                    break;
+                }
+                default:
+                    continue;
+            }
+
+            // check intersection and minimum size
+            double myWidth = 0, myHeight = 0;
+            gdc->GetSize(&myWidth, &myHeight);
+            wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
+            wxRect2DDouble myPathRect = myPath.GetBox();
+            if(myPathRect.Intersects(myWndRect)==false){
+                continue;
+            }
+
+            if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
+                continue;
+            }
+
+            gdc->SetPen(myPen);
+            if (IsFeatureSelected(myFeat->GetFID())==true) {
+                gdc->SetPen(mySelPen);
+            }
+
+            // draw path
+            iCount++;
+            gdc->DrawPath(myPath);
+        }
+
+        OGRFeature::DestroyFeature(myFeat);
+        myFeat = NULL;
+	}
+
+	m_ObjectDrawn = iCount;
+	//wxLogMessage("%ld Polygon drawn in %ldms", iCount, sw.Time());
+	return true;
+}
 
 
 
@@ -717,6 +856,10 @@ bool vrLayerVectorOGR::GetDataThread(wxImage * bmp, const vrRealRect & coord,  d
 			bReturn = _DrawPolygons(pgdc, coord, render, label, pxsize);
 			break;
 
+        case wkbMultiPolygon:
+            bReturn = _DrawMultiPolygons(pgdc, coord, render, label, pxsize);
+			break;
+
 		default: // unsupported case
 			wxLogMessage("Geometry type of %s isn't supported or defined (%d)",
 					   m_FileName.GetFullName(), myGeomType);
@@ -766,6 +909,10 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
 			bReturn = _DrawPolygons(pgdc, coord, render, label, pxsize);
 			break;
 
+        case wkbMultiPolygon:
+            bReturn = _DrawMultiPolygons(pgdc, coord, render, label, pxsize);
+			break;
+
 		default: // unsupported case
 			wxLogMessage("Geometry type of %s isn't supported or defined (%d)",
 						 m_FileName.GetFullName(), myGeomType);
@@ -794,8 +941,8 @@ bool vrLayerVectorOGR::SetAttributeFilter(const wxString & query) {
 		m_Layer->ResetReading();
 		return true;
 	}
-	
-	
+
+
 	OGRErr myErr = m_Layer->SetAttributeFilter((const char*) query.mb_str(wxConvUTF8));
 	if (myErr != OGRERR_NONE) {
 		wxLogError(_("Error setting following attribute filter : %s, (code %d)"),

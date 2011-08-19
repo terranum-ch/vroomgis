@@ -1,8 +1,8 @@
 /***************************************************************************
 				vrlayervectorc2p.cpp
-                    
+
                              -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
+    copyright            : (C) 2010 CREALP Lucien Schreiber
     email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -25,14 +25,14 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 	wxASSERT(gdc);
 	wxStopWatch sw;
 	// creating pen
-	
+
 	wxASSERT(render->GetType() == vrRENDER_VECTOR_C2P_DIPS);
 	vrRenderVectorC2PDips * myRender = (vrRenderVectorC2PDips*) render;
 	const int myDipWidth = myRender->GetDipWidth();
 	const bool myUseDefaultColour = myRender->IsUsingDefaultColour();
 	wxPen myDefaultPen (myRender->GetDipColour(0), myRender->GetSize());
 	wxPen mySelPen (myRender->GetSelectionColour(), myRender->GetSize());
-	
+
 	// iterating and drawing geometries
 	OGRPoint * myGeom = NULL;
 	long iCount = 0;
@@ -47,29 +47,29 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		myGeom = NULL;
 		myGeom = (OGRPoint*) myFeat->GetGeometryRef();
 		wxASSERT(myGeom);
-				
+
 		// get direction
 		double myDir = myFeat->GetFieldAsDouble(1);
 		wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(),myGeom->getY()),
 										 coord.GetLeftTop(),
 										 pxsize);
-		
-					
+
+
 		// Create | line
-		wxGraphicsPath myVPath = gdc->CreatePath();		
+		wxGraphicsPath myVPath = gdc->CreatePath();
 		myVPath.MoveToPoint(0.0, 0.0);
 		myVPath.AddLineToPoint(0.0, -1.0 * myDipWidth);
 		// Create -- line
 		wxGraphicsPath myHPath = gdc->CreatePath();
 		myHPath.MoveToPoint(-1.5 * myDipWidth, 0.0);
 		myHPath.AddLineToPoint(1.5 * myDipWidth, 0.0);
-		
+
 		// Rotate
 		wxGraphicsMatrix myRotateMatrix = gdc->CreateMatrix();
 		myRotateMatrix.Rotate((myDir * M_PI) / 180);
 		myVPath.Transform(myRotateMatrix);
 		myHPath.Transform(myRotateMatrix);
-		
+
 		// Translate to position
 		wxGraphicsMatrix myTranslateMatrix = gdc->CreateMatrix();
 		myTranslateMatrix.Translate(myPt.x, myPt.y);
@@ -87,10 +87,10 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
 			OGRFeature::DestroyFeature(myFeat);
 			myFeat = NULL;
-			continue;			
+			continue;
 		}
 		iCount++;
-         
+
 		// create family pen if needed
 		if (myUseDefaultColour == false) {
 			int myFamily = myFeat->GetFieldAsInteger(3);
@@ -102,8 +102,8 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		if (IsFeatureSelected(myFeat->GetFID())==true) {
 			//gdc->SetPen(mySelPen);
             myActualPen = mySelPen;
-		}		
-        
+		}
+
         // draw outline if asked
         if (myRender->GetOutline() == true) {
             wxPen myOutlinePen (*wxBLACK, myRender->GetSize() + 2);
@@ -112,16 +112,16 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
             gdc->StrokePath(myHPath);
             gdc->StrokePath(myVPath);
         }
-        
+
 		gdc->SetPen(myActualPen);
 		gdc->StrokePath(myHPath);
 		gdc->StrokePath(myVPath);
-        
-          
+
+
 		OGRFeature::DestroyFeature(myFeat);
 		myFeat = NULL;
 	}
-	
+
 	m_ObjectDrawn = iCount;
 	wxLogMessage("%ld dips drawed in %ldms", iCount, sw.Time());
 	if (iCount == 0){
@@ -146,6 +146,12 @@ bool vrLayerVectorC2P::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 	return false;
 }
 
+bool vrLayerVectorC2P::_DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+									 const vrRender * render, const vrLabel * label, double pxsize) {
+	m_ObjectDrawn = 0;
+	return false;
+}
+
 vrLayerVectorC2P::vrLayerVectorC2P() {
 	wxASSERT(m_Dataset==NULL);
 	wxASSERT(m_Layer==NULL);
@@ -162,31 +168,31 @@ bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 	// Need to reimplement Open to allow opening c2p files as if it was sqlite.
 	_Close();
 	wxASSERT(m_Dataset == NULL);
-	
+
 	m_FileName = filename;
-	
+
 	OGRSFDriverRegistrar * myRegistar = OGRSFDriverRegistrar::GetRegistrar();
 	OGRSFDriver * myDriver = myRegistar->GetDriverByName("SQLite");
 	if (myDriver == NULL) {
 		wxLogError(_("Unable to load SQLite Driver! GDAL is maybe not compiled with SQLite support"));
 		return false;
 	}
-	
+
 	m_Dataset = myDriver->Open(filename.GetFullPath(), readwrite);
 	if( m_Dataset == NULL ){
 		wxLogError("Unable to open %s", filename.GetFullName());
 		return false;
 	}
 	m_Dataset->SetDriver(myDriver);
-	
+
 	// get layer
 	wxASSERT(m_Layer == NULL);
 	wxLogMessage("Found %d layer", m_Dataset->GetLayerCount());
 	m_Layer = m_Dataset->GetLayer(0);
 	if (m_Layer == NULL) {
-		wxLogError("Unable to get layer 0, number of layer found : %d", 
+		wxLogError("Unable to get layer 0, number of layer found : %d",
 				   m_Dataset->GetLayerCount());
-		return false;		
+		return false;
 	}
 	return true;
 }
@@ -202,7 +208,7 @@ long vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
 	OGRFeature * myFeature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
 	wxASSERT(m_Layer);
 	myFeature->SetGeometry(geometry);
-	
+
 	if (data != NULL) {
 		wxArrayDouble * myArray = (wxArrayDouble*) data;
 		wxASSERT(myArray->GetCount() == 4);
@@ -211,7 +217,7 @@ long vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
 		myFeature->SetField(2, myArray->Item(0));
 		myFeature->SetField(3, myArray->Item(3));
 	}
-	
+
 	if(m_Layer->CreateFeature(myFeature) != OGRERR_NONE){
 		wxLogError(_("Error creating feature"));
 		OGRFeature::DestroyFeature(myFeature);
