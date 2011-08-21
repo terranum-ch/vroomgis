@@ -38,6 +38,7 @@ protected:
 
 	long m_ObjectDrawn;
 
+    bool _Intersects(const wxRect2DDouble & myPathRect, const wxRect2DDouble & myWndRect);
 
 	wxPoint _GetPointFromReal(const wxPoint2DDouble & realpt,
 							  const wxPoint2DDouble & origin, double pxsize);
