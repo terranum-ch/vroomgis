@@ -29,6 +29,21 @@ wxPoint vrLayerVector::_GetPointFromReal(const wxPoint2DDouble & realpt,
 	return myPt;
 }
 
+bool vrLayerVector::_Intersects(const wxRect2DDouble & myPathRect, const wxRect2DDouble & myWndRect)
+{
+    wxDouble left,right,bottom,top;
+    left = wxMax ( myPathRect.m_x , myWndRect.m_x );
+    right = wxMin ( myPathRect.m_x+myPathRect.m_width, myWndRect.m_x + myWndRect.m_width );
+    top = wxMax ( myPathRect.m_y , myWndRect.m_y );
+    bottom = wxMin ( myPathRect.m_y+myPathRect.m_height, myWndRect.m_y + myWndRect.m_height );
+
+    // Modification of the conditions from wxRect2DDouble::Intersects to allow horizontal and vertical lines.
+    if ( (left < right && top <= bottom) || (left <= right && top < bottom) )
+    {
+        return true;
+    }
+    return false;
+}
 
 vrLayerVector::vrLayerVector() {
 	m_Dataset = NULL;
@@ -343,7 +358,6 @@ long vrLayerVectorOGR::AddFeature(OGRGeometry * geometry, void * data) {
 
 }
 
-
 bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 								  const vrRender * render, const vrLabel * label, double pxsize) {
 	m_ObjectDrawn = 0;
@@ -393,7 +407,7 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 		}
 
 		wxRect2DDouble myPathRect = myPath.GetBox();
-		if(myPathRect.Intersects(myWndRect) == false){
+		if(_Intersects(myPathRect, myWndRect) == false){
 			OGRFeature::DestroyFeature(myFeat);
 			myFeat = NULL;
 			continue;
@@ -576,7 +590,7 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 		gdc->GetSize(&myWidth, &myHeight);
 		wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
 		wxRect2DDouble myPathRect = myPath.GetBox();
-		if(myPathRect.Intersects(myWndRect)==false){
+		if(_Intersects(myPathRect, myWndRect)==false){
 			OGRFeature::DestroyFeature(myFeat);
 			myFeat = NULL;
 			continue;
@@ -722,7 +736,7 @@ bool vrLayerVectorOGR::_DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2
             gdc->GetSize(&myWidth, &myHeight);
             wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
             wxRect2DDouble myPathRect = myPath.GetBox();
-            if(myPathRect.Intersects(myWndRect)==false){
+            if(_Intersects(myPathRect, myWndRect)==false){
                 continue;
             }
 
