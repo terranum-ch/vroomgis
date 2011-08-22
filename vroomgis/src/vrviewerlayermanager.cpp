@@ -52,6 +52,7 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 	m_Toc = toc;
 	m_LayerManager = parent;
 	m_FreezeStatus = false;
+	m_UserDefinedExtent = false;
 	m_ComputeExtentStatus = false;
 	m_PerfMonitorFile.Clear();
 	m_ReloadThread = false;
@@ -83,7 +84,7 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 
 
 vrViewerLayerManager::~vrViewerLayerManager() {
-	wxLogMessage("ViewerLayerManager Dtor called");
+	//wxLogMessage("ViewerLayerManager Dtor called");
 
 	if (m_WindowParent) {
 		m_WindowParent->RemoveEventHandler(this);
@@ -105,6 +106,32 @@ vrViewerLayerManager::~vrViewerLayerManager() {
 
 }
 
+void vrViewerLayerManager::InitializeExtent(const vrRealRect & extent)
+{
+    // Check input
+    vrRealRect myExtent(extent);
+    if (myExtent.m_height>0){
+        myExtent.m_height = -myExtent.m_height;
+    }
+
+    m_UserDefinedExtent = true;
+    m_ComputeExtentStatus = false;
+
+    vrCoordinate * coord = m_Display->GetCoordinate();
+	wxASSERT(coord);
+
+	coord->ClearLayersExtent();
+	coord->ClearPixelSize();
+	coord->AddLayersExtent(myExtent);
+
+	if ( coord->ComputeFullExtent()==false){
+        wxLogError(_("Couldn't apply the desired extent."));
+        m_UserDefinedExtent = false;
+        m_ComputeExtentStatus = true;
+		return;
+	}
+}
+
 
 
 bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrLabel * label, bool visible) {
@@ -115,7 +142,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 
 	// compute coordinate if layer added is visible and
 	// there is no other visible layers
-	if (visible == true && m_ComputeExtentStatus == false) {
+	if (visible == true && m_ComputeExtentStatus == false && m_UserDefinedExtent == false) {
 		m_ComputeExtentStatus = true;
 		for (unsigned int i = 0; i<m_Renderers.GetCount(); i++) {
 			if (m_Renderers.Item(i)->GetVisible() == true) {
@@ -594,9 +621,8 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible) {
 		return false;
 	}
 
-	// TODO: Remove Temp logging code
-	myLayerExtent = myCoordinate->GetExtent();
-	/*wxLogMessage("Windows extent is :\n left : %.3f\nright : %.3f\ntop : %.3f\nbottom : %.3f",
+	/*myLayerExtent = myCoordinate->GetExtent();
+	wxLogMessage("Windows extent is :\n left : %.3f\nright : %.3f\ntop : %.3f\nbottom : %.3f",
 				 myLayerExtent.GetLeft(),
 				 myLayerExtent.GetRight(),
 				 myLayerExtent.GetTop(),

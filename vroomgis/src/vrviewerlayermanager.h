@@ -2,7 +2,7 @@
  vrviewerlayermanager.h
  List of supported drivers and misc function for them
  -------------------
- copyright            : (C) 2009 CREALP Lucien Schreiber 
+ copyright            : (C) 2009 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -48,18 +48,19 @@ class vrViewerLayerManager : public wxEvtHandler {
 	wxFileName m_PerfMonitorFile;
     bool m_ReloadThread;
 
-	
-	
+
+
 	// using array of wxImages instead of array of wxBitmap because bitmap are
 	// limited ressources on some systems
 	wxArrayImage m_Images;
-	
+
 	bool m_FreezeStatus;
 	bool m_ComputeExtentStatus;
+	bool m_UserDefinedExtent;
 
 
-	
-	// Member function for loading data 
+
+	// Member function for loading data
 	bool _BitmapArrayInit();
     void _BitmapArrayDelete();
     bool _GetLayersData(long & vectorcount);
@@ -67,21 +68,22 @@ class vrViewerLayerManager : public wxEvtHandler {
     wxBitmap * _MergeBitmapData();
 	int _ReloadThread(long & vectorcount);
     int _Reload(long & vectorcount);
-	
-	
+
+
 	// event function
     void OnReload(wxCommandEvent & event);
-	
+
 	DECLARE_EVENT_TABLE();
 
   public:
     //if wxWindow is null we cannot link to event handling
-	vrViewerLayerManager(vrLayerManager * parent,wxWindow * window, 
+	vrViewerLayerManager(vrLayerManager * parent,wxWindow * window,
 						 vrViewerDisplay * viewer, vrViewerTOC * toc = NULL);
 
     virtual ~vrViewerLayerManager();
 
-    bool Add(long pos, vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL, bool visible = true); 
+    void InitializeExtent(const vrRealRect & extent);
+    bool Add(long pos, vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL, bool visible = true);
 	bool Move(long oldpos, long newpos);
 	bool Remove(vrRenderer * renderer);
     bool Zoom(const vrRealRect & extent);
@@ -95,9 +97,9 @@ class vrViewerLayerManager : public wxEvtHandler {
 	vrRenderer * GetRenderer(const unsigned int & index);
 	inline vrViewerDisplay * GetDisplay() const;
 	int GetCount();
-	
+
     void FreezeBegin();
-    void FreezeEnd();	
+    void FreezeEnd();
 	void Reload();
 
 	void StartPerfMonitor(const wxFileName & filename);
