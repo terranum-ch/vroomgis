@@ -295,11 +295,11 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
             myRect.SetHeight(5);
         }
 
-        wxLogMessage("Selection rect is %d, %d, %d, %d",
+        /*wxLogMessage("Selection rect is %d, %d, %d, %d",
                      myRect.GetLeft(),
                      myRect.GetTop(),
                      myRect.GetWidth(),
-                     myRect.GetHeight());
+                     myRect.GetHeight());*/
     }
 
 	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_ZOOM,
@@ -365,11 +365,11 @@ bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent & event) {
             myRect.SetHeight(5);
         }
 
-        wxLogMessage("Selection rect is %d, %d, %d, %d",
+        /*wxLogMessage("Selection rect is %d, %d, %d, %d",
                      myRect.GetLeft(),
                      myRect.GetTop(),
                      myRect.GetWidth(),
-                     myRect.GetHeight());
+                     myRect.GetHeight());*/
     }
 
 	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_ZOOMOUT,
