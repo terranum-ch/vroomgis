@@ -520,13 +520,13 @@ bool vrViewerLayerManager::_BitmapArrayInit() {
 				myImage->InitAlpha();
 			}*/
 
-			wxLogMessage("Creation des images : %p", myImage);
+			//wxLogMessage("Creation des images : %p", myImage);
 
 			m_Images.Add(myImage, 1);
 
 		}
 	}
-	wxLogMessage("Created %ld images", m_Images.GetCount());
+	//wxLogMessage("Created %ld images", m_Images.GetCount());
 	return true;
 }
 
@@ -534,7 +534,7 @@ bool vrViewerLayerManager::_BitmapArrayInit() {
 
 void vrViewerLayerManager::_BitmapArrayDelete() {
 	if (m_Images.GetCount() > 0) {
-		wxLogMessage("Deleting %ld images", m_Images.GetCount());
+		//wxLogMessage("Deleting %ld images", m_Images.GetCount());
 
 		unsigned int iCountImg = m_Images.GetCount();
 		for (unsigned j = 0; j<iCountImg; j++){
@@ -590,7 +590,7 @@ bool vrViewerLayerManager::_GetLayersData(long & vectorcount) {
         wxASSERT(myImage);
         wxDELETE(myImage);
         m_Images.RemoveAt(myInvalidRaster.Item(i));
-        wxLogMessage("Removing image at index : %d", i);
+        //wxLogMessage("Removing image at index : %d", i);
 	}
 	return bReturn;
 }
@@ -658,7 +658,7 @@ wxBitmap * vrViewerLayerManager::_MergeBitmapData() {
 		myDC.DrawBitmap(myBmp,0,0,true);
 	}
 
-	wxLogMessage("Merging bitmaps with mask took : %ldms", sw.Time());
+	//wxLogMessage("Merging bitmaps with mask took : %ldms", sw.Time());
 
 	myDC.SelectObject(wxNullBitmap);
 	return myAggregatedBmp;

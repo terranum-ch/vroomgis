@@ -809,7 +809,7 @@ bool vrLayerVectorOGR::GetDataThread(wxImage * bmp, const vrRealRect & coord,  d
 	// prepare bitmap for drawing
 	if (bmp->HasAlpha() == false){
 		bmp->InitAlpha();
-		wxLogMessage("Initing alpha");
+		//wxLogMessage("Initing alpha");
 	}
 
 	// adding transparency
@@ -855,7 +855,7 @@ bool vrLayerVectorOGR::GetDataThread(wxImage * bmp, const vrRealRect & coord,  d
 	bool bReturn = true;
 	OGRwkbGeometryType myGeomType = GetGeometryType();
 
-	wxLogMessage("Preparing data took %ldms", sw.Time());
+	//wxLogMessage("Preparing data took %ldms", sw.Time());
 
 	switch (myGeomType) {
 		case wkbLineString:

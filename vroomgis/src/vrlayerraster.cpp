@@ -804,7 +804,7 @@ bool vrLayerRasterGDAL::GetDataThread(wxImage * bmp, const vrRealRect & coord,  
 	}
 	if (bmp->HasAlpha() == false){
 		bmp->InitAlpha();
-		wxLogMessage("Initing alpha");
+		//wxLogMessage("Initing alpha");
 	}
 	bmp->SetAlpha(alphachar, false);
 
