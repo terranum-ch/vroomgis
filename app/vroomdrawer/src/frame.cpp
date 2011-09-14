@@ -605,15 +605,16 @@ void vroomDrawerFrame::OnStarLayerAdd (wxCommandEvent & event){
 		}
 	}
 	
-	// get viewer extent
+	// if extent not specified, init extent with window size
 	vrRealRect myExtent = m_DisplayCtrl->GetCoordinate()->GetExtent();
 	if (myExtent.IsOk() == false) {
-		myExtent = vrRealRect(0,
-							  m_DisplayCtrl->GetSize().GetHeight(),
-							  m_DisplayCtrl->GetSize().GetWidth(),
-							  m_DisplayCtrl->GetSize().GetHeight() * -1.0);
+		m_ViewerLayerManager->InitializeExtent(vrRealRect(0,
+														  m_DisplayCtrl->GetSize().GetHeight(),
+														  m_DisplayCtrl->GetSize().GetWidth(),
+														  m_DisplayCtrl->GetSize().GetHeight() * -1.0));
+		myExtent = m_DisplayCtrl->GetCoordinate()->GetExtent();
 	}
-	
+
 	// init random engine
 	srand((unsigned)time(NULL));
 	
