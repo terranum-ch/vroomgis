@@ -52,8 +52,7 @@ public:
     void SetColorStretchMax(int value);
 	
 	
-    virtual bool Serialize(vrSerialize & serialobj);
-	
+    virtual bool Serialize(vrSerialize & serialobj);	
 };
 #endif
 
