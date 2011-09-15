@@ -14,7 +14,7 @@ gDirSQLite = "D:\\LIB\\LIB_SQLITE"
 # CMAKE SPECIFIC
 gCmakeEnv = "Visual Studio 10"
 gCmakeSpecific = ['-DUSE_MT_LIBRARY:BOOL=1']
-gCmakeSpecific.append("-DSEARCH_GEOS_LIB_PATH:PATH=D:\\LIB\\geos-3.2.2")
+gCmakeSpecific.append("-DSEARCH_GEOS_LIB_PATH:PATH=D:\\LIB\\geos-3.3.0")
 
 
 # PLATEFORM SPECIFIC FUNCTION
