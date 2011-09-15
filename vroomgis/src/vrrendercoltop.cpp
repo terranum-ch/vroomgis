@@ -76,6 +76,26 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
 
 
 wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint & coord, int radius) {
+	double myStretchRadius = radius;
+	
+	// STRETCHING COORDINATES
+	double pixelbydegree = radius / 90.0;
+	double minstretchradius = pixelbydegree * m_ColorStretchMin;
+	if (m_ColorStretchMin > 0) {
+		
+		if (coord.x * coord.x + coord.y * coord.y < minstretchradius * minstretchradius) {
+			return wxImage::RGBValue(255,255,255);
+		}
+	}
+	
+	if (m_ColorStretchMax < 90){
+		double maxstretchradius = pixelbydegree * m_ColorStretchMax;
+		if (coord.x * coord.x + coord.y * coord.y >= maxstretchradius * maxstretchradius) {
+			return wxImage::RGBValue(255,255,255);
+		}	
+		myStretchRadius = maxstretchradius;
+	}
+	
 	
 	// HUE (Color rotation)
 	double myHue = 0;
@@ -97,14 +117,19 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint & 
 		myHue = 0;
 	}
 	
-	
 	// SATURATION (Color intensity)
 	int myRadius = sqrt(wxDouble(coord.x * coord.x + coord.y * coord.y));
-	if (myRadius > radius) {
-		myRadius = radius;
+	if (myRadius > myStretchRadius) {
+		myRadius = myStretchRadius;
+	}	
+	if (myRadius > minstretchradius) {
+		myRadius = (myRadius - minstretchradius) * myStretchRadius / (myStretchRadius - minstretchradius);
 	}
-	double mySature = (2.0*asin(sqrt(2.0)*0.5*myRadius*(1.0/radius)))*(1.0/M_PI)*2.0;
-	
+	else {
+		myRadius = 0;
+	}
+		
+	double mySature = (2.0*asin(sqrt(2.0)*0.5*myRadius*(1.0/myStretchRadius)))*(1.0/M_PI)*2.0;
 	wxImage::HSVValue myHSVValue (myHue / 360.0,
 								  mySature,
 								  1);
