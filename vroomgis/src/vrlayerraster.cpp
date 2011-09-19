@@ -61,6 +61,34 @@ bool vrLayerRasterGDAL::_Close() {
 }
 
 
+wxSize vrLayerRaster::GetPixelSize() {
+	wxSize mySize = wxDefaultSize;
+	if (m_Dataset != NULL) {
+		mySize.SetWidth(m_Dataset->GetRasterXSize());
+		mySize.SetHeight(m_Dataset->GetRasterYSize());
+	}
+	return mySize;
+}
+
+
+bool vrLayerRaster::GetGeoTransform(wxArrayDouble & geotransform) {
+	geotransform.Clear();
+	if (m_Dataset == NULL) {
+		return false;
+	}
+	
+	double myTransform[] = {0,0,0,0,0,0};
+	if (m_Dataset->GetGeoTransform(&myTransform[0]) != CE_None) {
+		wxLogError(_("Error getting geotransform data!"));
+		return false;
+	}
+	
+	for (int i = 0; i< 6; i++) {
+		geotransform.Add(myTransform[i]);
+	}
+	return true;
+}
+
 
 
 
