@@ -518,9 +518,9 @@ double vrLayerRasterGDAL::_ReadGDALValueToDouble(void* & data, const GDALDataTyp
 
 
 bool vrLayerRasterGDAL::_ComputeStat() {
-	int bResultMin = false;
-    int bResultMax = false;
-    int bResultNoData = false;
+	int bResultMin = 0;
+    int bResultMax = 0;
+    int bResultNoData = 0;
 	//bool bReturn = true;
 
 	m_OneBandMin = 0;
@@ -533,11 +533,11 @@ bool vrLayerRasterGDAL::_ComputeStat() {
 	m_OneBandMax = myRasterBand->GetMaximum(&bResultMax);
 	m_OneBandNoData = myRasterBand->GetNoDataValue(&bResultNoData);
 
-    if (bResultNoData == false){
+    if (bResultNoData == 0){
 		m_OneBandNoData = 0;
 	}
 
-    if (bResultMin == true && bResultMax == true) {
+    if (bResultMin == 1 && bResultMax == 1) {
         return true;
     }
 
