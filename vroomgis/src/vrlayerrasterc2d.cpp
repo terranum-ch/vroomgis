@@ -109,6 +109,12 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & o
 }
 
 
+bool vrLayerRasterC2D::GetRasterData(unsigned char ** imgdata, const wxSize & outimgpxsize,
+									 const wxRect & readimgpxinfo, const vrRender * render) {
+	return _GetRasterData(imgdata, outimgpxsize, readimgpxinfo, render);
+}
+
+
 // NOT used anymore, using wxImage::HSVtoRGB instead
 void vrLayerRasterC2D::_HSVtoRGB (int *r,int *g,int *b, int h, int s, int v){
 	long p, q, t;

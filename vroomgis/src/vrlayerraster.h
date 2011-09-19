@@ -63,6 +63,8 @@ class vrLayerRaster : public vrLayer {
     virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
 
 	virtual bool GetExtent(vrRealRect & rect){return false;}
+    virtual wxSize GetPixelSize();
+	bool GetGeoTransform(wxArrayDouble & geotransform);
 
 	virtual bool IsOK();
 

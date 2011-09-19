@@ -46,5 +46,8 @@ protected:
 public:
     vrLayerRasterC2D();
     virtual ~vrLayerRasterC2D();
+	virtual bool GetRasterData(unsigned char ** imgdata, const wxSize & outimgpxsize,
+							   const wxRect & readimgpxinfo, const vrRender * render);
+
 };
 #endif
