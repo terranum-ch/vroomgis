@@ -113,7 +113,7 @@ void  vroomLoaderFrame::_CreateControls()
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 
-	m_TocCtrl = new vrViewerTOC( m_panel1, wxID_ANY);
+    m_TocCtrl = new vrViewerTOC( m_panel1, wxID_ANY);
 	bSizer4->Add( m_TocCtrl, 2, wxEXPAND, 5 );
 
 	//wxFilePickerCtrl * myPicker = new wxFilePickerCtrl(m_panel1, wxID_ANY,wxEmptyString,
@@ -168,15 +168,15 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 
 	helpMenu->Append(wxID_ABOUT, "&About...\tF1", "Show about dialog");
 	helpMenu->Append(wxID_INFO, "Show Log Window", "Show log window");
-    fileMenu->Append(wxID_OPEN, "&Open\tCtrl+O","Open GIS layer(s)");
+    fileMenu->Append(wxID_OPEN, "","Open GIS layer(s)");
 	fileMenu->Append(wxID_REMOVE, "&Close\tCtrl+W", "Close GIS layer(s)");
-	fileMenu->Append(wxID_EXIT, "E&xit\tAlt-X", "Quit this program");
+	fileMenu->Append(wxID_EXIT);
 
 	toolMenu->Append(wxID_DEFAULT, "Select\tCtrl+S", "Select the selection tool");
 	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
 	toolMenu->Append(wxID_MOVE_FRAME, "Pan\tCtrl+P", "Select the pan tool");
 	toolMenu->AppendSeparator();
-	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to All layers", "Zoom view to the full extent of all layers");
+	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to All layers\tCtrl+0", "Zoom view to the full extent of all layers");
 	toolMenu->Append(wxID_ZOOM_100, "Zoom to visible layers", "Zoom view to the full extent of all visible layers");
 	toolMenu->AppendSeparator();
 	toolMenu->Append(vlID_MOVE_LAYER, "Move layer...\tCtrl+M", "Move the selected layer");
