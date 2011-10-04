@@ -21,7 +21,7 @@
 #ifndef WX_PRECOMP
 	#include <wx/wx.h>
 #endif
-
+#include <wx/treectrl.h>
 
 
 class vrRenderer;
@@ -83,7 +83,53 @@ public:
     void FreezeEnd();
 
 	void SetViewerLayerManager(vrViewerLayerManager * value);
-
-
 };
+
+
+
+
+
+
+class vrViewerTOCTree : public wxTreeCtrl {
+private:
+    bool m_FreezeStatus;
+    wxTreeItemId m_RootItem;
+    
+    void OnMouseRightDown(wxMouseEvent & event);
+    void OnMouseWheel(wxMouseEvent & event);
+    
+    void OnSetColorPen(wxCommandEvent & event);
+    void OnSetColorBrush(wxCommandEvent & event);
+    void OnSetTransparency(wxCommandEvent & event);
+    void OnSetWidth(wxCommandEvent & event);
+    
+    
+protected:
+    vrViewerLayerManager * m_ViewerManager;
+    void _ReloadData();
+    virtual void OnVisibleStatusChanged(wxCommandEvent & event);
+    virtual void _ShowMenuContextual(int id, vrRenderer * renderer);
+    
+    
+public:
+    vrViewerTOCTree(wxWindow * parent, wxWindowID id,
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize,
+                    long style = wxTR_HIDE_ROOT);
+    virtual ~vrViewerTOCTree();
+    
+    bool Add(int index, vrRenderer * renderer, int control);
+    bool Move(long oldpos, long newpos);
+    bool Remove(int index);
+    
+    void FreezeBegin();
+    void FreezeEnd();
+    
+    void SetViewerLayerManager(vrViewerLayerManager * value);
+};
+
+
+
+
+
 #endif

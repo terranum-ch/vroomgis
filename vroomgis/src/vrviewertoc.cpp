@@ -429,3 +429,120 @@ void vrViewerTOC::SetViewerLayerManager(vrViewerLayerManager * value) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+void vrViewerTOCTree::OnMouseRightDown(wxMouseEvent & event) {
+}
+
+
+
+void vrViewerTOCTree::OnMouseWheel(wxMouseEvent & event) {
+}
+
+
+
+void vrViewerTOCTree::OnSetColorPen(wxCommandEvent & event) {
+}
+
+
+
+void vrViewerTOCTree::OnSetColorBrush(wxCommandEvent & event) {
+}
+
+
+
+void vrViewerTOCTree::OnSetTransparency(wxCommandEvent & event) {
+}
+
+
+
+void vrViewerTOCTree::OnSetWidth(wxCommandEvent & event) {
+}
+
+
+
+void vrViewerTOCTree::OnVisibleStatusChanged(wxCommandEvent & event) {
+}
+
+
+
+void vrViewerTOCTree::_ShowMenuContextual(int id, vrRenderer * renderer) {
+}
+
+
+
+void vrViewerTOCTree::_ReloadData() {
+}
+
+
+
+vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id, const wxPoint & pos, const wxSize & size, long style) 
+: wxTreeCtrl(parent, id, pos, size, style) {
+    m_FreezeStatus = false;
+    m_ViewerManager = NULL;
+    m_RootItem = AddRoot("Root");
+}
+
+
+
+vrViewerTOCTree::~vrViewerTOCTree() {
+}
+
+
+
+bool vrViewerTOCTree::Add(int index, vrRenderer * renderer, int control) {
+    AppendItem(m_RootItem, renderer->GetLayer()->GetDisplayName().GetFullName());
+    // TODO: Check item
+    return true;
+}
+
+
+
+bool vrViewerTOCTree::Move(long oldpos, long newpos) {
+    return false;
+}
+
+
+
+bool vrViewerTOCTree::Remove(int index) {
+    return false;
+}
+
+
+
+void vrViewerTOCTree::FreezeBegin() {
+    wxASSERT(m_FreezeStatus==false);
+	m_FreezeStatus = true;
+	Freeze();
+}
+
+
+
+void vrViewerTOCTree::FreezeEnd() {
+    wxASSERT(m_FreezeStatus == true);
+	m_FreezeStatus = false;
+	Thaw();
+}
+
+
+
+void vrViewerTOCTree::SetViewerLayerManager(vrViewerLayerManager * value) {
+    wxASSERT(value);
+    m_ViewerManager = value;
+}
+
+
+
+
+
+
+
+
