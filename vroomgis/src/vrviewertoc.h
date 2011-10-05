@@ -41,50 +41,135 @@ const int vrID_POPUP_BRUSH_BDIAGONAL = wxID_HIGHEST +	8 + vrID_VIEWERTOC_BASE;
 
 
 
-class vrViewerTOC : public wxCheckListBox {
+class vrViewerTOC{
 private:
+    bool m_FreezeStatus;
+    vrViewerLayerManager * m_ViewerManager;
+    
+protected:
+    virtual void ShowMenuContextual(vrRenderer * renderer);
+    void ReloadData();
+    
+    inline vrViewerLayerManager * GetViewerLayerManager() const;
+    inline const bool IsFreezed() const;
+    
+    
+public:
+    vrViewerTOC();    
+    virtual ~vrViewerTOC();
+    
+    virtual bool Add(int index, vrRenderer * renderer) = 0;
+    virtual bool Move(long oldpos, long newpos) = 0;
+    virtual bool Remove(int index) = 0;
+    virtual int GetSelection() = 0;
+    
+    virtual void FreezeBegin();
+    virtual void FreezeEnd();
+    
+    void SetViewerLayerManager(vrViewerLayerManager * value);
+    virtual wxControl * GetControl() = 0;
+};
 
+
+
+inline vrViewerLayerManager * vrViewerTOC::GetViewerLayerManager() const{
+    return m_ViewerManager;
+}
+
+
+
+inline const bool vrViewerTOC::IsFreezed() const {
+    return m_FreezeStatus;
+}
+
+
+
+
+
+
+
+
+class vrViewerTOCList : public vrViewerTOC {
+private:
+    wxCheckListBox * m_CheckList;
+    
+    void OnMouseRightDown(wxMouseEvent & event);
+    void OnMouseWheel(wxMouseEvent & event);
+    void OnSetColorPen(wxCommandEvent & event);
+    void OnSetColorBrush(wxCommandEvent & event);
+    void OnSetTransparency(wxCommandEvent & event);
+    void OnSetWidth(wxCommandEvent & event);
+    
+protected:
+    virtual void OnVisibleStatusChanged(wxCommandEvent & event);
+    
+public:
+    vrViewerTOCList(wxWindow * parent, wxWindowID id, 
+                    const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize,
+                    int  n = 0, const wxString choices[] = NULL,
+                    long  style = 0);
+    virtual ~vrViewerTOCList();
+    
+    virtual bool Add(int index, vrRenderer * renderer);
+    virtual bool Move(long oldpos, long newpos);
+    virtual bool Remove(int index);
+    virtual int GetSelection();
+    virtual wxControl * GetControl();
+};
+
+
+
+
+/*
+
+class vrViewerTOCList : public vrViewerTOC, public wxCheckListBox {
+private:
+    
 	bool m_FreezeStatus;
-
+    
 	// event function
 	void OnMouseRightDown(wxMouseEvent & event);
     void OnMouseWheel(wxMouseEvent & event);
-
+    
 	// event function popup
 	void OnSetColorPen(wxCommandEvent & event);
     void OnSetColorBrush(wxCommandEvent & event);
     void OnSetTransparency(wxCommandEvent & event);
     void OnSetWidth(wxCommandEvent & event);
 	void OnSetBrushStyle(wxCommandEvent & event);
-
+    
 	DECLARE_EVENT_TABLE();
-
-
+    
+    
 protected:
 	vrViewerLayerManager * m_ViewerManager;
     void _ReloadData();
 	virtual void OnVisibleStatusChanged(wxCommandEvent & event);
 	virtual void _ShowMenuContextual(int id, vrRenderer * renderer);
-
-
-
+    
+    
+    
 public:
-    vrViewerTOC(wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition,
-				const wxSize & size = wxDefaultSize, int  n = 0, const wxString choices[] = NULL,
-                long  style = 0);
-
-    virtual ~vrViewerTOC();
-
-    bool Add(int index, vrRenderer * renderer, int control);
+    vrViewerTOCList(wxWindow * parent, wxWindowID id, const wxPoint & pos = wxDefaultPosition,
+                    const wxSize & size = wxDefaultSize, int  n = 0, const wxString choices[] = NULL,
+                    long  style = 0);
+    
+    virtual ~vrViewerTOCList();
+    
+    bool Add(int index, vrRenderer * renderer);
 	bool Move(long oldpos, long newpos);
-    void Remove(int index);
-
+    bool Remove(int index);
+    
     void FreezeBegin();
     void FreezeEnd();
-
+    
 	void SetViewerLayerManager(vrViewerLayerManager * value);
+    virtual int GetSelection();
+
 };
 
+*/
 
 
 

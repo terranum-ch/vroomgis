@@ -78,7 +78,7 @@ private:
 	vrDisplayValueDlg * m_DisplayValueDlg;
 	
 	// controls (vroomgis)
-	vrViewerTOC * m_TocCtrl;
+	vrViewerTOCList * m_TocCtrl;
 	
 	// vroomgis engine
 	vrLayerManager * m_LayerManager;
