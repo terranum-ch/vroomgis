@@ -169,7 +169,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	}
 
 	if (m_Toc) {
-		m_Toc->Add(pos, myRenderer, m_Renderers.GetCount());
+		m_Toc->Add(pos, myRenderer);
 	}
 
 	// if not freezed, refresh imediatelly.
