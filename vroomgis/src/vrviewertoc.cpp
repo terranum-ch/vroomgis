@@ -136,6 +136,55 @@ void vrViewerTOCList::OnMouseRightDown(wxMouseEvent & event) {
 
 
 void vrViewerTOCList::OnMouseWheel(wxMouseEvent & event) {
+    if (m_CheckList->GetCount() == 0) {
+		return;
+	}
+    
+	int myItemSelected = GetSelection();
+	if (myItemSelected == wxNOT_FOUND) {
+		wxLogWarning("No item selected, select an item (%d)", myItemSelected);
+		return;
+	}
+    
+	// check if not the y axis
+	if (event.GetWheelAxis() == 1) {
+		return;
+	}
+    
+	// Not used for now on...
+	/*
+     int myDelta = event.GetWheelDelta();
+     int myRotation = event.GetWheelRotation();
+     double myStep = myRotation / myDelta;
+     wxLogMessage("Wheel rotation is %d with delta : %d, result is :%f",
+     myRotation,
+     myDelta,
+     myStep);
+     */
+    
+	int myRotation = event.GetWheelRotation();
+	int myNewPosition = myItemSelected;
+	// going up
+	if (myRotation > 0) {
+		if (myItemSelected == 0) {
+			return;
+		}
+		myNewPosition--;
+	}
+	// going down
+	else if (myRotation < 0) {
+		if (myItemSelected == (signed) m_CheckList->GetCount() -1) {
+			return;
+		}
+		myNewPosition++;
+	}else {
+		// myRotation == 0 MBP trackpad...
+		return;
+	}
+    
+	wxASSERT(GetViewerLayerManager());
+	wxLogMessage("Moving item : %d to %d", myItemSelected, myNewPosition);
+	GetViewerLayerManager()->Move(myItemSelected, myNewPosition);
 }
 
 
@@ -249,6 +298,42 @@ void vrViewerTOCList::OnSetWidth(wxCommandEvent & event) {
 
 
 
+void vrViewerTOCList::OnSetBrushStyle(wxCommandEvent & event){
+	int mySelItem = GetSelection();
+	wxASSERT(mySelItem != wxNOT_FOUND);
+	wxASSERT(GetViewerLayerManager());
+    
+	vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(mySelItem)->GetRender();
+	wxASSERT(myRenderVector);
+    
+	// displaying colour dialog
+	wxBrushStyle myOldStyle = myRenderVector->GetBrushStyle();
+	wxBrushStyle myStyle = wxBRUSHSTYLE_SOLID;
+	switch (event.GetId()) {
+		case vrID_POPUP_BRUSH_SOLID:
+			myStyle = wxBRUSHSTYLE_SOLID;
+			break;
+            
+		case vrID_POPUP_BRUSH_TRANSPARENT:
+			myStyle = wxBRUSHSTYLE_TRANSPARENT;
+			break;
+            
+		case vrID_POPUP_BRUSH_BDIAGONAL:
+			myStyle = wxBRUSHSTYLE_BDIAGONAL_HATCH;
+			break;
+            
+		default:
+			wxLogError(_("Brush style not supported: %d"), event.GetId());
+			break;
+	}
+	myRenderVector->SetBrushStyle(myStyle);
+	if (myOldStyle != myStyle) {
+		ReloadData();
+	}
+}
+
+
+
 void vrViewerTOCList::OnVisibleStatusChanged(wxCommandEvent & event) {
     wxASSERT(GetViewerLayerManager());
 	vrRenderer * myItemRenderer = GetViewerLayerManager()->GetRenderer(event.GetInt());
@@ -267,15 +352,34 @@ vrViewerTOCList::vrViewerTOCList(wxWindow * parent, wxWindowID id,
     
     // connect event
     m_CheckList->Bind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &vrViewerTOCList::OnVisibleStatusChanged, this);
+    m_CheckList->Bind(wxEVT_RIGHT_DOWN, &vrViewerTOCList::OnMouseRightDown, this);
+    m_CheckList->Bind(wxEVT_MOUSEWHEEL, &vrViewerTOCList::OnMouseWheel, this);
+    
+    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
+    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
+    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
+    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
+    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
 }
+
 
 
 vrViewerTOCList::~vrViewerTOCList() {
     // disconnect event
+    m_CheckList->Unbind(wxEVT_RIGHT_DOWN, &vrViewerTOCList::OnMouseRightDown, this);
     m_CheckList->Unbind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &vrViewerTOCList::OnVisibleStatusChanged, this);
+    m_CheckList->Unbind(wxEVT_MOUSEWHEEL, &vrViewerTOCList::OnMouseWheel, this);
+
+    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
+    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
+    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
+    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
+    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
     
     wxDELETE(m_CheckList);
 }
+
+
 
 bool vrViewerTOCList::Add(int index, vrRenderer * renderer) {
 	if (index >= (signed) m_CheckList->GetCount()) {
@@ -356,435 +460,6 @@ wxControl * vrViewerTOCList::GetControl(){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#if (0)
-
-
-BEGIN_EVENT_TABLE(vrViewerTOCList, wxCheckListBox)
-EVT_CHECKLISTBOX(wxID_ANY, vrViewerTOCList::OnVisibleStatusChanged)
-EVT_RIGHT_DOWN(vrViewerTOCList::OnMouseRightDown)
-EVT_MOUSEWHEEL(vrViewerTOCList::OnMouseWheel)
-// POPUP EVENT
-EVT_MENU(vrID_POPUP_PEN_COLOR, vrViewerTOCList::OnSetColorPen)
-EVT_MENU(vrID_POPUP_BRUSH_COLOR, vrViewerTOCList::OnSetColorBrush)
-EVT_MENU(vrID_POPUP_TRANSPARENCY, vrViewerTOCList::OnSetTransparency)
-EVT_MENU(vrID_POPUP_DRAWING_WIDTH, vrViewerTOCList::OnSetWidth)
-EVT_MENU_RANGE(vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL, vrViewerTOCList::OnSetBrushStyle)
-
-END_EVENT_TABLE()
-
-
-
-void vrViewerTOCList::OnVisibleStatusChanged(wxCommandEvent & event) {
-    
-	//wxLogMessage("Value changed for item : %d value is %d", event.GetInt(), IsChecked(event.GetInt()));
-    
-	// change visibility status for layer
-	wxASSERT(m_ViewerManager);
-	vrRenderer * myItemRenderer = m_ViewerManager->GetRenderer(event.GetInt());
-	wxASSERT(myItemRenderer);
-	myItemRenderer->SetVisible(IsChecked(event.GetInt()));
-    
-	_ReloadData();
-}
-
-
-
-void vrViewerTOCList::OnSetColorPen(wxCommandEvent & event) {
-	int mySelItem = wxCheckListBox::GetSelection();
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(m_ViewerManager);
-    
-	vrRenderVector * myRenderVector = (vrRenderVector*) m_ViewerManager->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRenderVector);
-    
-	// displaying colour dialog
-	wxColourData myActualCol;
-	myActualCol.SetColour(myRenderVector->GetColorPen());
-	wxColourDialog myColDlg (this, &myActualCol);
-	if (myColDlg.ShowModal() == wxID_OK) {
-		myRenderVector->SetColorPen(myColDlg.GetColourData().GetColour());
-		_ReloadData();
-	}
-    
-}
-
-
-
-void vrViewerTOCList::OnSetColorBrush(wxCommandEvent & event) {
-	int mySelItem = wxCheckListBox::GetSelection();
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(m_ViewerManager);
-    
-	vrRenderVector * myRenderVector = (vrRenderVector*) m_ViewerManager->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRenderVector);
-    
-	// displaying colour dialog
-	wxColourData myActualCol;
-	myActualCol.SetColour(myRenderVector->GetColorBrush());
-	wxColourDialog myColDlg (this, &myActualCol);
-	if (myColDlg.ShowModal() == wxID_OK) {
-		myRenderVector->SetColorBrush(myColDlg.GetColourData().GetColour());
-		_ReloadData();
-	}
-    
-    
-}
-
-
-
-void vrViewerTOCList::OnSetTransparency(wxCommandEvent & event) {
-	int mySelItem = wxCheckListBox::GetSelection();
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(m_ViewerManager);
-    
-	vrRender * myRender = m_ViewerManager->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRender);
-    
-	wxNumberEntryDialog myNumDlg(this,
-								 "Adjust the transparency percent\n0 is fully opaque, 100 is fully transparent",
-								 "Transparency percent:",
-								 "Adjust Opacity",
-								 myRender->GetTransparency(),
-								 0,
-								 100);
-	if (myNumDlg.ShowModal()==wxID_OK) {
-		myRender->SetTransparency(myNumDlg.GetValue());
-		_ReloadData();
-	}
-}
-
-
-
-void vrViewerTOCList::OnSetWidth(wxCommandEvent & event) {
-	int mySelItem = wxCheckListBox::GetSelection();
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(m_ViewerManager);
-	vrRender * myRender = m_ViewerManager->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRender);
-	int mySize = 1;
-	if (myRender->GetType() == vrRENDER_VECTOR) {
-		vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
-		mySize = myRenderVector->GetSize();
-	}else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
-		vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
-		mySize = myRenderDips->GetSize();
-	}
-	else {
-		wxFAIL;
-		return;
-	}
-    
-    
-	// get width value
-	wxNumberEntryDialog myNumDlg(this,
-								 "Adjust the pen's width\nAllowed widths are between 0 and 50 pixels",
-								 "Width:",
-								 "Adjust pen's width",
-								 mySize,
-								 1,
-								 50);
-	if (myNumDlg.ShowModal()!=wxID_OK) {
-		return;
-	}
-	if (myRender->GetType() == vrRENDER_VECTOR) {
-		vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
-		myRenderVector->SetSize(myNumDlg.GetValue());
-	}else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
-		vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
-		myRenderDips->SetSize(myNumDlg.GetValue());
-	}
-	else {
-		wxFAIL;
-		return;
-	}
-	_ReloadData();
-}
-
-
-
-void vrViewerTOCList::OnSetBrushStyle(wxCommandEvent & event){
-	int mySelItem = wxCheckListBox::GetSelection();
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(m_ViewerManager);
-    
-	vrRenderVector * myRenderVector = (vrRenderVector*) m_ViewerManager->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRenderVector);
-    
-	// displaying colour dialog
-	wxBrushStyle myOldStyle = myRenderVector->GetBrushStyle();
-	wxBrushStyle myStyle = wxBRUSHSTYLE_SOLID;
-	switch (event.GetId()) {
-		case vrID_POPUP_BRUSH_SOLID:
-			myStyle = wxBRUSHSTYLE_SOLID;
-			break;
-            
-		case vrID_POPUP_BRUSH_TRANSPARENT:
-			myStyle = wxBRUSHSTYLE_TRANSPARENT;
-			break;
-            
-		case vrID_POPUP_BRUSH_BDIAGONAL:
-			myStyle = wxBRUSHSTYLE_BDIAGONAL_HATCH;
-			break;
-            
-		default:
-			wxLogError(_("Brush style not supported: %d"), event.GetId());
-			break;
-	}
-	myRenderVector->SetBrushStyle(myStyle);
-	if (myOldStyle != myStyle) {
-		_ReloadData();
-	}
-}
-
-
-
-void vrViewerTOCList::OnMouseRightDown(wxMouseEvent & event) {
-	if (GetCount() == 0) {
-		return;
-	}
-    
-	// hit test
-	wxPoint myPos = event.GetPosition();
-	int myItemID = HitTest(myPos);
-	wxLogMessage("Item seleced id is %d @ position %d - %d", myItemID, myPos.x, myPos.y);
-    
-	if (myItemID == wxNOT_FOUND) {
-		return;
-	}
-    
-	SetSelection(myItemID);
-	wxASSERT(m_ViewerManager);
-	vrRenderer * myRenderer = m_ViewerManager->GetRenderer(myItemID);
-	wxASSERT(myRenderer);
-    
-	_ShowMenuContextual(myItemID, myRenderer);
-    
-}
-
-
-void vrViewerTOCList::OnMouseWheel(wxMouseEvent & event) {
-	if (GetCount() == 0) {
-		return;
-	}
-    
-	int myItemSelected = wxCheckListBox::GetSelection();
-	if (myItemSelected == wxNOT_FOUND) {
-		wxLogWarning("No item selected, select an item (%d)", myItemSelected);
-		return;
-	}
-    
-	// check if not the y axis
-	if (event.GetWheelAxis() == 1) {
-		return;
-	}
-    
-	// Not used for now on...
-	/*
-     int myDelta = event.GetWheelDelta();
-     int myRotation = event.GetWheelRotation();
-     double myStep = myRotation / myDelta;
-     wxLogMessage("Wheel rotation is %d with delta : %d, result is :%f",
-     myRotation,
-     myDelta,
-     myStep);
-     */
-    
-	int myRotation = event.GetWheelRotation();
-	int myNewPosition = myItemSelected;
-	// going up
-	if (myRotation > 0) {
-		if (myItemSelected == 0) {
-			return;
-		}
-		myNewPosition--;
-	}
-	// going down
-	else if (myRotation < 0) {
-		if (myItemSelected == (signed) GetCount() -1) {
-			return;
-		}
-		myNewPosition++;
-	}else {
-		// myRotation == 0 MBP trackpad...
-		return;
-	}
-    
-	wxASSERT(m_ViewerManager);
-	wxLogMessage("Moving item : %d to %d", myItemSelected, myNewPosition);
-	m_ViewerManager->Move(myItemSelected, myNewPosition);
-}
-
-
-
-void vrViewerTOCList::_ShowMenuContextual(int id, vrRenderer * renderer) {
-	wxASSERT(renderer);
-	wxASSERT(id != wxNOT_FOUND);
-    
-	wxMenu myPopMenu;
-	//myPopMenu.Append(vrID_POPUP_REMOVE, "Remove Layer (not implemented)");
-	//myPopMenu.Enable(vrID_POPUP_REMOVE, false);
-	//myPopMenu.AppendSeparator();
-	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, _("Set Transparency..."));
-    
-	switch (renderer->GetRender()->GetType()) {
-		case vrRENDER_VECTOR:
-			myPopMenu.AppendSeparator();
-			myPopMenu.Append(vrID_POPUP_PEN_COLOR, _("Set Pen color..."));
-			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, _("Set Pen width..."));
-			myPopMenu.AppendSeparator();
-		{
-			wxMenu * myBrushMenu = new wxMenu();
-			myBrushMenu->Append(vrID_POPUP_BRUSH_COLOR, _("Set Brush color..."));
-			myBrushMenu->AppendSeparator();
-			myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_SOLID, _("Solid Brush"));
-			myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_TRANSPARENT, _("Transparent Brush"));
-			myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_BDIAGONAL, _("Diagonal Brush"));
-			myPopMenu.AppendSubMenu(myBrushMenu, _T("Brush"));
-		}
-			break;
-            
-		case vrRENDER_VECTOR_C2P_DIPS:
-			myPopMenu.AppendSeparator();
-			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, _("Set Pen width..."));
-			break;
-            
-            
-		default:
-			break;
-	}
-    
-	PopupMenu(&myPopMenu);
-}
-
-
-void vrViewerTOCList::_ReloadData() {
-	// ask for reloading data
-	wxASSERT(m_ViewerManager);
-	m_ViewerManager->Reload();
-}
-
-
-
-vrViewerTOCList::vrViewerTOCList(wxWindow * parent, wxWindowID id, const wxPoint & pos,
-                                 const wxSize & size, int  n, const wxString choices[],
-                                 long  style):
-vrViewerTOC(), wxCheckListBox(parent, id, pos, size, n, choices, style) {
-    
-	m_FreezeStatus = false;
-	m_ViewerManager = NULL;
-}
-
-
-
-vrViewerTOCList::~vrViewerTOCList() {
-}
-
-
-
-bool vrViewerTOCList::Add(int index, vrRenderer * renderer) {
-	if (index >= (signed) GetCount()) {
-		int myPos = Append(renderer->GetLayer()->GetDisplayName().GetFullName());
-		Check(myPos, renderer->GetVisible());
-		return true;
-	}
-    
-	// if index is -1, insert at the begining.
-	if (index == -1) {
-		index = 0;
-	}
-    
-	int myPos = Insert(renderer->GetLayer()->GetDisplayName().GetFullName(), index);
-	Check(myPos, renderer->GetVisible());
-	return true;
-}
-
-
-bool vrViewerTOCList::Move(long oldpos, long newpos) {
-	wxString myOldText = GetString(oldpos);
-	bool myOldChecked = IsChecked(oldpos);
-	bool myOldSelected = IsSelected(oldpos);
-    
-	// switching two values
-	if (abs(oldpos - newpos) == 1) {
-		SetString (oldpos, GetString(newpos));
-		Check(oldpos, IsChecked(newpos));
-		if (IsSelected(newpos)) {
-			Select(oldpos);
-		}
-        
-		SetString(newpos, myOldText);
-		Check(newpos, myOldChecked);
-		if (myOldSelected) {
-			Select(newpos);
-		}
-	}
-	else {
-		int myNewPos = newpos;
-		if (newpos > oldpos) {
-			myNewPos = myNewPos -1;
-		}
-        
-		Remove(oldpos);
-		Insert(myOldText, myNewPos);
-		Check(myNewPos, myOldChecked);
-		if (myOldSelected) {
-			Select(myNewPos);
-		}
-	}
-	return true;
-}
-
-
-bool vrViewerTOCList::Remove(int index) {
-	wxASSERT(index != wxNOT_FOUND);
-	Delete(index);
-    return true;
-}
-
-void vrViewerTOCList::FreezeBegin() {
-	wxASSERT(m_FreezeStatus==false);
-	m_FreezeStatus = true;
-	Freeze();
-}
-
-void vrViewerTOCList::FreezeEnd() {
-	wxASSERT(m_FreezeStatus == true);
-	m_FreezeStatus = false;
-	Thaw();
-}
-
-void vrViewerTOCList::SetViewerLayerManager(vrViewerLayerManager * value) {
-	wxASSERT(value);
-	m_ViewerManager = value;
-}
-
-
-int vrViewerTOCList::GetSelection() {
-    return wxCheckListBox::GetSelection();
-}
-
-
-
-
-
-#endif
 
 
 
