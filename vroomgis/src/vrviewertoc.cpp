@@ -26,6 +26,7 @@
 #include "vrlayer.h"
 #include "vrrender.h"
 #include "vrrendervectorc2p.h"
+#include "vroomgis_bmp.h"
 
 
 void vrViewerTOC::ShowMenuContextual(vrRenderer * renderer) {
@@ -539,9 +540,11 @@ void vrViewerTOCTree::_InitBitmapList() {
         myDC.SelectObject(wxNullBitmap);
     }
     
-    //m_IsImageInited = false;
+    wxBitmap myGroupBmp (*_img_tree_folder);
+    
     images->Add(myTempBmp);
     images->Add(myTempBmp2);
+    images->Add(myGroupBmp);
     m_Tree->AssignImageList(images);
 }
 
@@ -590,7 +593,11 @@ void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
 
 
 void vrViewerTOCTree::OnItemRightDown(wxTreeEvent & event) {
-    wxLogMessage("Right click on item detected!");
+	wxMenu myPopMenu;
+	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, _("Set Transparency..."));
+    myPopMenu.Append(vrID_POPUP_GROUP_ADD, _("Add Group"));
+    
+	GetControl()->PopupMenu(&myPopMenu);
     event.Skip();
 }
 
@@ -606,7 +613,8 @@ void vrViewerTOCTree::OnSetTransparency(wxCommandEvent & event) {
 void vrViewerTOCTree::OnSetWidth(wxCommandEvent & event) {
 }
 
-void vrViewerTOCTree::OnVisibleStatusChanged(wxCommandEvent & event) {
+void vrViewerTOCTree::OnNewGroup(wxCommandEvent & event) {
+    AddGroup(_("New Group"));
 }
 
 
@@ -621,6 +629,8 @@ vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id,
     
     m_Tree->Bind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
     m_Tree->Bind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
+    
+    m_Tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnNewGroup, this, vrID_POPUP_GROUP_ADD);
 }
 
 
@@ -629,6 +639,9 @@ vrViewerTOCTree::~vrViewerTOCTree() {
     m_Tree->Unbind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
     m_Tree->Unbind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
 
+    m_Tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnNewGroup, this, vrID_POPUP_GROUP_ADD);
+
+    
     wxDELETE(m_Tree);
 }
 
@@ -696,3 +709,13 @@ wxControl * vrViewerTOCTree::GetControl() {
     wxASSERT(m_Tree);
     return m_Tree;
 }
+
+
+bool vrViewerTOCTree::AddGroup(const wxString & name) {
+    vrViewerTOCTreeData * myData = new vrViewerTOCTreeData();
+    myData->m_ItemType = vrTREEDATA_TYPE_GROUP;
+    m_Tree->AppendItem(m_RootNode, name, vrVIEWERTOC_IMAGE_GROUP, -1, myData);
+    return true;
+}
+
+
