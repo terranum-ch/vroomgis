@@ -462,7 +462,7 @@ wxControl * vrViewerTOCList::GetControl(){
 
 /************************************ vrViewerTOCTreeData ******************************************/
 vrViewerTOCTreeData::vrViewerTOCTreeData() {
-    m_RendererIndex = wxNOT_FOUND;
+    m_ItemType = vrTREEDATA_TYPE_INVALID;
 }
 
 
@@ -537,8 +537,11 @@ vrViewerTOCTree::~vrViewerTOCTree() {
 
 
 bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
+    vrViewerTOCTreeData * myData = new vrViewerTOCTreeData();
+    myData->m_ItemType = vrTREEDATA_TYPE_LAYER;
+    
     if (index >= (signed) m_Tree->GetCount()) {
-		m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName());
+		m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),-1,-1, myData);
 		return true;
 	}
     
@@ -547,11 +550,7 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
 		index = 0;
 	}
     
-    
-    m_Tree->InsertItem(m_RootNode, index, 
-                       renderer->GetLayer()->GetDisplayName().GetFullName(),
-                       -1, -1);
-                       //myTreeData);
+    m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),-1, -1,myData);
     return true;
 }
 
@@ -565,12 +564,14 @@ bool vrViewerTOCTree::Move(long oldpos, long newpos) {
 
 bool vrViewerTOCTree::Remove(int index) {
     // search for item text
-    
     wxString myItemText = GetViewerLayerManager()->GetRenderer(index)->GetLayer()->GetDisplayName().GetFullName();
     wxTreeItemId myFound = _FindItem (m_RootNode, myItemText);    
     if (myFound.IsOk() == false) {
         wxLogError(_("Error, item %d not found!!!"), index);
         return false;
+    }
+    else{
+        wxLogMessage("Item : %s found (index = %d) ", myItemText, index);
     }
  
     m_Tree->Delete(myFound);

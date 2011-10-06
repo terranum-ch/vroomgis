@@ -240,17 +240,16 @@ bool vrViewerLayerManager::Remove(vrRenderer * renderer) {
 		return false;
 	}
 
+    // remove from TOC
+	if (m_Toc) {
+		m_Toc->Remove(myRemoveIndex);
+	}
 
 	// remove from Renderer array
 	vrRenderer * myRenderer = GetRenderer(myRemoveIndex);
 	wxASSERT(myRenderer);
 	wxDELETE(myRenderer);
 	m_Renderers.RemoveAt(myRemoveIndex);
-
-	// remove from TOC
-	if (m_Toc) {
-		m_Toc->Remove(myRemoveIndex);
-	}
 
 	// if not freezed, refresh imediatelly.
 	if (m_FreezeStatus==false) {

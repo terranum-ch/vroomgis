@@ -121,12 +121,19 @@ public:
 
 
 /************************************ vrViewerTOCTreeData ******************************************/
+enum vrVIEWERTOC_TREEDATA_TYPES {
+    vrTREEDATA_TYPE_INVALID = -1,
+    vrTREEDATA_TYPE_LAYER = 0,
+    vrTREEDATA_TYPE_LEGEND,
+    vrTREEDATA_TYPE_GROUP
+};
+
+
 class vrViewerTOCTreeData : public wxTreeItemData {
 public:
     vrViewerTOCTreeData();
     virtual ~vrViewerTOCTreeData();
-    
-    int m_RendererIndex;
+    vrVIEWERTOC_TREEDATA_TYPES m_ItemType;
 };
 
 
