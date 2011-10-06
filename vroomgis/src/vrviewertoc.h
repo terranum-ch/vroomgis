@@ -170,7 +170,7 @@ public:
     vrViewerTOCTree(wxWindow * parent, wxWindowID id,
                     const wxPoint & pos = wxDefaultPosition,
                     const wxSize & size = wxDefaultSize,
-                    long style = wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
+                    long style = wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT | wxTR_TWIST_BUTTONS | wxTR_NO_LINES);
     virtual ~vrViewerTOCTree();
     
     virtual bool Add(int index, vrRenderer * renderer);
