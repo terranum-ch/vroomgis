@@ -113,7 +113,7 @@ void  vroomLoaderFrame::_CreateControls()
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 
-    m_TocCtrl = new vrViewerTOCList( m_panel1, wxID_ANY);
+    m_TocCtrl = new vrViewerTOCTree( m_panel1, wxID_ANY);
 	bSizer4->Add( m_TocCtrl->GetControl(), 2, wxEXPAND, 5 );
 
 	//wxFilePickerCtrl * myPicker = new wxFilePickerCtrl(m_panel1, wxID_ANY,wxEmptyString,
