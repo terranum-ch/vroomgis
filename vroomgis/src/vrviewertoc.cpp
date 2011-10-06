@@ -14,6 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <wx/colordlg.h>	// colour dialog
+#include <wx/numdlg.h>		// number entry dialog
+#include <wx/imaglist.h>    // images list
+#include <wx/renderer.h>    // wxRenderNative
 
 
 #include "vrviewertoc.h"
@@ -22,11 +26,6 @@
 #include "vrlayer.h"
 #include "vrrender.h"
 #include "vrrendervectorc2p.h"
-
-#include <wx/colordlg.h>	// colour dialog
-#include <wx/numdlg.h>		// number entry dialog
-
-
 
 
 void vrViewerTOC::ShowMenuContextual(vrRenderer * renderer) {
@@ -473,7 +472,7 @@ vrViewerTOCTreeData::~vrViewerTOCTreeData() {
 
 
 /************************************ vrViewerTOCTree **********************************************/
-wxTreeItemId vrViewerTOCTree::_FindItem( wxTreeItemId root, const wxString& sSearchFor )
+wxTreeItemId vrViewerTOCTree::_IndexToTree( wxTreeItemId root, const wxString& searchtext, vrVIEWERTOC_TREEDATA_TYPES searchtype)
 {
 	wxTreeItemIdValue cookie;
 	wxTreeItemId search;
@@ -482,11 +481,12 @@ wxTreeItemId vrViewerTOCTree::_FindItem( wxTreeItemId root, const wxString& sSea
     
 	while( item.IsOk() ){
 		wxString sData = m_Tree->GetItemText(item);
-		if( sSearchFor.CompareTo(sData) == 0 ){
+        vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(item);
+		if( searchtext.CompareTo(sData) == 0 && myData->m_ItemType == searchtype){
 			return item;
 		}
 		if( m_Tree->ItemHasChildren( item ) ){
-			wxTreeItemId search = _FindItem( item, sSearchFor );
+			wxTreeItemId search = _IndexToTree( item, searchtext, searchtype);
 			if( search.IsOk() ){
 				return search;
 			}
@@ -500,7 +500,98 @@ wxTreeItemId vrViewerTOCTree::_FindItem( wxTreeItemId root, const wxString& sSea
 }
 
 
-void vrViewerTOCTree::OnMouseRightDown(wxMouseEvent & event) {
+
+int vrViewerTOCTree::_TreeToIndex(wxTreeItemId treeitem, vrVIEWERTOC_TREEDATA_TYPES searchtype) {
+    wxASSERT(m_Tree);
+    wxASSERT(GetViewerLayerManager());
+    
+    wxString myItemText =  m_Tree->GetItemText(treeitem);
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(treeitem);
+    
+    for (int i = 0; i< GetViewerLayerManager()->GetCount(); i++) {
+        wxString myTmpText = GetViewerLayerManager()->GetRenderer(i)->GetLayer()->GetDisplayName().GetFullName();
+        if (myTmpText.CompareTo(myItemText) == 0 && myData->m_ItemType == searchtype) {
+            return i;
+        }
+    }
+    return wxNOT_FOUND;
+}
+
+
+
+void vrViewerTOCTree::_InitBitmapList() {
+    wxImageList *images = new wxImageList(16, 16, true);
+    wxBitmap myTempBmp (16,16);
+    wxBitmap myTempBmp2 (16,16);
+    { 
+        // unchecked
+        wxMemoryDC myDC;
+        myDC.SelectObject(myTempBmp);
+        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxSOLID));
+        myDC.Clear();
+        wxRendererNative::Get().DrawCheckBox(GetControl(), myDC, wxRect(0, 0, 16, 16), 0);
+        
+        // checked
+        myDC.SelectObject(myTempBmp2);
+        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxSOLID));
+        myDC.Clear();
+        wxRendererNative::Get().DrawCheckBox(GetControl(), myDC, wxRect(0, 0, 16, 16), wxCONTROL_CHECKED);
+        myDC.SelectObject(wxNullBitmap);
+    }
+    
+    //m_IsImageInited = false;
+    images->Add(myTempBmp);
+    images->Add(myTempBmp2);
+    m_Tree->AssignImageList(images);
+}
+
+
+void vrViewerTOCTree::_SetItemImageUnique(wxTreeItemId item, vrVIEWERTOC_IMAGES_TYPES image) {
+    m_Tree->SetItemImage(item, image, wxTreeItemIcon_Normal);
+    m_Tree->SetItemImage(item, image, wxTreeItemIcon_Selected);
+}
+
+
+
+void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
+	int flags = 0;
+	wxTreeItemId clickedid = m_Tree->HitTest(event.GetPosition(), flags);
+	if (flags & wxTREE_HITTEST_ONITEMICON)
+	{
+        vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(clickedid);
+        switch (myData->m_ItemType) {
+            case vrTREEDATA_TYPE_LAYER:
+            {
+                int myItemIndex = _TreeToIndex(clickedid, myData->m_ItemType);
+                if (myItemIndex == wxNOT_FOUND){
+                    return;
+                }
+               
+                if(m_Tree->GetItemImage(clickedid) == vrVIEWERTOC_IMAGE_CHECKED){
+                    _SetItemImageUnique(clickedid, vrVIEWERTOC_IMAGE_UNCHECKED);
+                }
+                else{
+                    _SetItemImageUnique(clickedid, vrVIEWERTOC_IMAGE_CHECKED);
+                }
+                
+                bool IsVisible = GetViewerLayerManager()->GetRenderer(myItemIndex)->GetVisible();         
+                GetViewerLayerManager()->GetRenderer(myItemIndex)->SetVisible(!IsVisible);
+                ReloadData();
+            }   
+                break;
+                
+            default:
+                break;
+        }
+        return;
+	}
+	event.Skip();
+}
+
+
+void vrViewerTOCTree::OnItemRightDown(wxTreeEvent & event) {
+    wxLogMessage("Right click on item detected!");
+    event.Skip();
 }
 
 void vrViewerTOCTree::OnSetColorPen(wxCommandEvent & event) {
@@ -526,11 +617,18 @@ vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id,
                                  long style) {
     m_Tree = new wxTreeCtrl(parent, id, pos, size, style);
     m_RootNode = m_Tree->AddRoot("Project");
+    _InitBitmapList();
+    
+    m_Tree->Bind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
+    m_Tree->Bind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
 }
 
 
 
 vrViewerTOCTree::~vrViewerTOCTree() {
+    m_Tree->Unbind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
+    m_Tree->Unbind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
+
     wxDELETE(m_Tree);
 }
 
@@ -541,7 +639,8 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
     myData->m_ItemType = vrTREEDATA_TYPE_LAYER;
     
     if (index >= (signed) m_Tree->GetCount()) {
-		m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),-1,-1, myData);
+		wxTreeItemId myAddedId = m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),1,1, myData);
+        //m_Tree->SetItemState(myAddedId, wxTREE_ITEMSTATE_NONE);
 		return true;
 	}
     
@@ -550,7 +649,9 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
 		index = 0;
 	}
     
-    m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),-1, -1,myData);
+    wxTreeItemId myAddedId = m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),1,1,myData);
+    //m_Tree->SetItemState(myAddedId, wxTREE_ITEMSTATE_NONE);
+    
     return true;
 }
 
@@ -565,7 +666,7 @@ bool vrViewerTOCTree::Move(long oldpos, long newpos) {
 bool vrViewerTOCTree::Remove(int index) {
     // search for item text
     wxString myItemText = GetViewerLayerManager()->GetRenderer(index)->GetLayer()->GetDisplayName().GetFullName();
-    wxTreeItemId myFound = _FindItem (m_RootNode, myItemText);    
+    wxTreeItemId myFound = _IndexToTree (m_RootNode, myItemText, vrTREEDATA_TYPE_LAYER);    
     if (myFound.IsOk() == false) {
         wxLogError(_("Error, item %d not found!!!"), index);
         return false;
@@ -581,7 +682,12 @@ bool vrViewerTOCTree::Remove(int index) {
 
 
 int vrViewerTOCTree::GetSelection() {
-    return wxNOT_FOUND;
+    if (m_Tree->GetSelection().IsOk() == false) {
+        return wxNOT_FOUND;
+    }
+    
+    wxTreeItemId mySelTreeId = m_Tree->GetSelection();
+    return _TreeToIndex(mySelTreeId, vrTREEDATA_TYPE_LAYER);
 }
 
 

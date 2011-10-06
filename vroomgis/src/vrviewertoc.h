@@ -140,13 +140,26 @@ public:
 
 
 /************************************ vrViewerTOCTree **********************************************/
+enum vrVIEWERTOC_IMAGES_TYPES {
+    vrVIEWERTOC_IMAGE_CHECKED = 0,
+    vrVIEWERTOC_IMAGE_UNCHECKED,
+    vrVIEWER_IMAGE_GROUP
+    
+};
+
+
 class vrViewerTOCTree : public vrViewerTOC {
 private:
     wxTreeCtrl  * m_Tree;
     wxTreeItemId m_RootNode;
     
-    wxTreeItemId _FindItem(wxTreeItemId root, const wxString & sSearchFor);
-    void OnMouseRightDown(wxMouseEvent & event);
+    wxTreeItemId _IndexToTree(wxTreeItemId root, const wxString& searchtext, vrVIEWERTOC_TREEDATA_TYPES searchtype);
+    int _TreeToIndex(wxTreeItemId treeitem, vrVIEWERTOC_TREEDATA_TYPES searchtype);
+    void _InitBitmapList();
+    void _SetItemImageUnique(wxTreeItemId item, vrVIEWERTOC_IMAGES_TYPES image);
+
+    void OnMouseDown(wxMouseEvent & event);
+    void OnItemRightDown(wxTreeEvent & event);
     void OnSetColorPen(wxCommandEvent & event);
     void OnSetColorBrush(wxCommandEvent & event);
     void OnSetTransparency(wxCommandEvent & event);
