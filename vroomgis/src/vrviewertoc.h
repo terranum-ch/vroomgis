@@ -37,7 +37,7 @@ const int vrID_POPUP_DRAWING_WIDTH = wxID_HIGHEST +	5 + vrID_VIEWERTOC_BASE;
 const int vrID_POPUP_BRUSH_SOLID = wxID_HIGHEST +	6 + vrID_VIEWERTOC_BASE;
 const int vrID_POPUP_BRUSH_TRANSPARENT = wxID_HIGHEST +	7 + vrID_VIEWERTOC_BASE;
 const int vrID_POPUP_BRUSH_BDIAGONAL = wxID_HIGHEST +	8 + vrID_VIEWERTOC_BASE;
-
+const int vrID_POPUP_GROUP_ADD = wxID_HIGHEST + 9 + vrID_VIEWERTOC_BASE;
 
 
 
@@ -143,7 +143,7 @@ public:
 enum vrVIEWERTOC_IMAGES_TYPES {
     vrVIEWERTOC_IMAGE_CHECKED = 0,
     vrVIEWERTOC_IMAGE_UNCHECKED,
-    vrVIEWER_IMAGE_GROUP
+    vrVIEWERTOC_IMAGE_GROUP
     
 };
 
@@ -164,7 +164,7 @@ private:
     void OnSetColorBrush(wxCommandEvent & event);
     void OnSetTransparency(wxCommandEvent & event);
     void OnSetWidth(wxCommandEvent & event);
-    virtual void OnVisibleStatusChanged(wxCommandEvent & event);
+    void OnNewGroup(wxCommandEvent & event);
     
 public:
     vrViewerTOCTree(wxWindow * parent, wxWindowID id,
@@ -179,6 +179,8 @@ public:
     virtual int GetSelection();
     virtual wxControl * GetControl();
     
+    bool AddGroup(const wxString & name);
+
 };
 
 
