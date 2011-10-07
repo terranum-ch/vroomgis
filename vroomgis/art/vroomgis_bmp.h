@@ -18,6 +18,8 @@ extern wxBitmap *_img_vroomgis_sml; // 32x32 px
 extern wxBitmap *_img_cursor_zoomin;
 extern wxBitmap *_img_cursor_zoomout;
 
-extern wxBitmap *_img_tree_folder;
+extern wxBitmap *_img_tree_folder_on;
+extern wxBitmap *_img_tree_folder_off;
+
 
 #endif /* VROOMGIS_BITMAP */

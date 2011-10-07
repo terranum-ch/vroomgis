@@ -143,7 +143,8 @@ public:
 enum vrVIEWERTOC_IMAGES_TYPES {
     vrVIEWERTOC_IMAGE_CHECKED = 0,
     vrVIEWERTOC_IMAGE_UNCHECKED,
-    vrVIEWERTOC_IMAGE_GROUP
+    vrVIEWERTOC_IMAGE_GROUP_ON,
+    vrVIEWERTOC_IMAGE_GROUP_OFF
     
 };
 
@@ -166,11 +167,18 @@ private:
     void OnSetWidth(wxCommandEvent & event);
     void OnNewGroup(wxCommandEvent & event);
     
+    // dragging functions
+    wxTreeItemId m_DragItemID;
+    void OnDragStart(wxTreeEvent & event);
+    void OnDragStop(wxTreeEvent & event);
+    
+    void OnEditStart(wxTreeEvent & event);
+
 public:
     vrViewerTOCTree(wxWindow * parent, wxWindowID id,
                     const wxPoint & pos = wxDefaultPosition,
                     const wxSize & size = wxDefaultSize,
-                    long style = wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT | wxTR_TWIST_BUTTONS | wxTR_NO_LINES);
+                    long style = wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT | wxTR_TWIST_BUTTONS | wxTR_NO_LINES | wxTR_EDIT_LABELS);
     virtual ~vrViewerTOCTree();
     
     virtual bool Add(int index, vrRenderer * renderer);
