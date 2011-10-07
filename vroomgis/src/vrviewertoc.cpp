@@ -540,11 +540,13 @@ void vrViewerTOCTree::_InitBitmapList() {
         myDC.SelectObject(wxNullBitmap);
     }
     
-    wxBitmap myGroupBmp (*_img_tree_folder);
+    wxBitmap myGroupBmp (*_img_tree_folder_on);
+    wxBitmap myGroupBmpOff (*_img_tree_folder_off);
     
     images->Add(myTempBmp);
     images->Add(myTempBmp2);
     images->Add(myGroupBmp);
+    images->Add(myGroupBmpOff);
     m_Tree->AssignImageList(images);
 }
 
@@ -569,7 +571,7 @@ void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
                 if (myItemIndex == wxNOT_FOUND){
                     return;
                 }
-               
+                
                 if(m_Tree->GetItemImage(clickedid) == vrVIEWERTOC_IMAGE_CHECKED){
                     _SetItemImageUnique(clickedid, vrVIEWERTOC_IMAGE_UNCHECKED);
                 }
@@ -582,6 +584,16 @@ void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
                 ReloadData();
             }   
                 break;
+                
+                
+            case vrTREEDATA_TYPE_GROUP:
+                if (m_Tree->GetItemImage(clickedid) == vrVIEWERTOC_IMAGE_GROUP_ON) {
+                    _SetItemImageUnique(clickedid, vrVIEWERTOC_IMAGE_GROUP_OFF); 
+                }else{
+                    _SetItemImageUnique(clickedid, vrVIEWERTOC_IMAGE_GROUP_ON);
+                }
+                break;
+                
                 
             default:
                 break;
@@ -618,6 +630,165 @@ void vrViewerTOCTree::OnNewGroup(wxCommandEvent & event) {
 }
 
 
+void vrViewerTOCTree::OnDragStart(wxTreeEvent & event){
+    m_DragItemID = wxTreeItemId();
+	wxASSERT(m_DragItemID.IsOk() == false);
+	
+    m_DragItemID = event.GetItem();
+    if (m_DragItemID == m_RootNode) {
+        wxLogWarning("This can't be dragged!");
+        return;
+    }
+    
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(m_DragItemID);
+    wxASSERT(myData);
+    
+    switch (myData->m_ItemType) {
+        case vrTREEDATA_TYPE_LAYER:
+        case vrTREEDATA_TYPE_GROUP:
+            event.Allow();
+            break;
+            
+        default:
+            wxLogWarning("This can't be dragged!");
+            break;
+    }
+}
+
+
+void vrViewerTOCTree::OnDragStop(wxTreeEvent & event){
+    if (m_DragItemID.IsOk() == false) {
+        return;
+    }
+    
+    wxTreeItemId myItemStart = m_DragItemID;
+	wxTreeItemId myItemStop = event.GetItem();
+    
+    if (myItemStart == myItemStop){
+        return;
+    }
+    
+    bool m_AllreadyFreezed = IsFreezed();
+    if (m_AllreadyFreezed == false) {
+        FreezeBegin();
+    }
+    
+    vrViewerTOCTreeData * myDataStop = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItemStop);
+    // drag into group
+    if (myDataStop->m_ItemType == vrTREEDATA_TYPE_GROUP) {
+        // copy treectrl to group
+        vrViewerTOCTreeData * myDataCopied = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItemStart);
+        vrViewerTOCTreeData * myDataCopiedNew = new vrViewerTOCTreeData(*myDataCopied);
+        
+        m_Tree->AppendItem (myItemStop, m_Tree->GetItemText(myItemStart),
+                            m_Tree->GetItemImage(myItemStart), -1, myDataCopiedNew);
+        
+        // delete item
+        m_Tree->Delete(myItemStart);
+    }
+    
+    
+    if (m_AllreadyFreezed == false) {
+        FreezeEnd();
+    }
+}
+
+
+
+void vrViewerTOCTree::OnEditStart(wxTreeEvent & event) {
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(event.GetItem());
+    wxASSERT(myData);
+    
+    if (myData->m_ItemType != vrTREEDATA_TYPE_GROUP) {
+        event.Veto();
+    }
+    wxLogMessage("Starting edition");
+    event.Allow();
+    event.Skip();
+}
+
+/*
+void tmTOCCtrl::OnDragStart(wxTreeEvent & event){
+	m_DragItemID = wxTreeItemId();
+	wxASSERT(m_DragItemID.IsOk() == false);
+	
+	if ( event.GetItem() != GetRootItem() ){
+		event.Allow();
+		m_DragItemID = event.GetItem();
+	}
+	else {
+		wxLogWarning("This can't be dragged!");
+	}
+}
+
+
+
+void tmTOCCtrl::OnDragStop(wxTreeEvent & event){
+	wxLogMessage("Dragging stopped!");
+	
+	wxTreeItemId myItemStart = m_DragItemID;
+	wxTreeItemId myItemStop = event.GetItem();
+	
+	m_DragItemID = wxTreeItemId();
+	wxASSERT(m_DragItemID.IsOk() == false);
+	
+	if (myItemStop == myItemStart) {
+		return;
+	}
+	
+	if (myItemStop.IsOk()) {
+		int myItemStartPos = wxNOT_FOUND;
+		int myItemStopPos = wxNOT_FOUND;
+		
+		wxASSERT(m_root.IsOk());
+		wxTreeItemIdValue myCookie;
+		wxTreeItemId myFirstLayer = GetFirstChild(m_root, myCookie);
+		wxASSERT(myFirstLayer.IsOk());
+		if (myFirstLayer == myItemStart) {
+			myItemStartPos = 0;
+		}
+		if (myFirstLayer == myItemStop) {
+			myItemStopPos = 0;
+		}
+		
+		int myIterPosition = 1;
+		while (1) {
+			wxTreeItemId myIterLayer = GetNextChild(m_root, myCookie);
+			if (myIterLayer.IsOk() == false) {
+				break;
+			}
+			if (myIterLayer == myItemStart) {
+				myItemStartPos = myIterPosition;
+			}
+			if (myIterLayer == myItemStop) {
+				myItemStopPos = myIterPosition;
+			}
+			myIterPosition++;
+		}
+		
+		wxLogMessage("Item %d moved to %d", myItemStartPos, myItemStopPos);
+		
+		// move items
+		if (abs(myItemStopPos - myItemStartPos) == 1) {
+			SwapLayers(myItemStart, myItemStopPos);
+		}
+		else {
+			if (myItemStopPos == 0) {
+				MoveLayers(myItemStart, 0);
+			}
+			else {
+				MoveLayers(myItemStart, myItemStopPos+1);
+			}
+		}
+		
+		// update display
+		wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+		GetEventHandler()->AddPendingEvent(evt);
+	}
+}
+*/
+
+
 
 
 vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id,
@@ -627,8 +798,12 @@ vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id,
     m_RootNode = m_Tree->AddRoot("Project");
     _InitBitmapList();
     
+    // connect event
     m_Tree->Bind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
     m_Tree->Bind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
+    m_Tree->Bind(wxEVT_COMMAND_TREE_BEGIN_DRAG, &vrViewerTOCTree::OnDragStart, this);
+    m_Tree->Bind(wxEVT_COMMAND_TREE_END_DRAG, &vrViewerTOCTree::OnDragStop, this);
+    m_Tree->Bind(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT, &vrViewerTOCTree::OnEditStart, this);
     
     m_Tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnNewGroup, this, vrID_POPUP_GROUP_ADD);
 }
@@ -636,8 +811,12 @@ vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id,
 
 
 vrViewerTOCTree::~vrViewerTOCTree() {
+    // disconnect event
     m_Tree->Unbind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
     m_Tree->Unbind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
+    m_Tree->Unbind(wxEVT_COMMAND_TREE_BEGIN_DRAG, &vrViewerTOCTree::OnDragStart, this);
+    m_Tree->Unbind(wxEVT_COMMAND_TREE_END_DRAG, &vrViewerTOCTree::OnDragStop, this);
+    m_Tree->Unbind(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT, &vrViewerTOCTree::OnEditStart, this);
 
     m_Tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnNewGroup, this, vrID_POPUP_GROUP_ADD);
 
@@ -714,7 +893,7 @@ wxControl * vrViewerTOCTree::GetControl() {
 bool vrViewerTOCTree::AddGroup(const wxString & name) {
     vrViewerTOCTreeData * myData = new vrViewerTOCTreeData();
     myData->m_ItemType = vrTREEDATA_TYPE_GROUP;
-    m_Tree->AppendItem(m_RootNode, name, vrVIEWERTOC_IMAGE_GROUP, -1, myData);
+    m_Tree->AppendItem(m_RootNode, name, vrVIEWERTOC_IMAGE_GROUP_ON, -1, myData);
     return true;
 }
 
