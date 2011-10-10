@@ -463,6 +463,7 @@ wxControl * vrViewerTOCList::GetControl(){
 /************************************ vrViewerTOCTreeData ******************************************/
 vrViewerTOCTreeData::vrViewerTOCTreeData() {
     m_ItemType = vrTREEDATA_TYPE_INVALID;
+    m_CheckedImgType = vrVIEWERTOC_IMAGE_CHECKED;
 }
 
 
@@ -543,17 +544,94 @@ void vrViewerTOCTree::_InitBitmapList() {
     wxBitmap myGroupBmp (*_img_tree_folder_on);
     wxBitmap myGroupBmpOff (*_img_tree_folder_off);
     
-    images->Add(myTempBmp);
     images->Add(myTempBmp2);
+    images->Add(myTempBmp);
     images->Add(myGroupBmp);
     images->Add(myGroupBmpOff);
     m_Tree->AssignImageList(images);
 }
 
 
+
 void vrViewerTOCTree::_SetItemImageUnique(wxTreeItemId item, vrVIEWERTOC_IMAGES_TYPES image) {
     m_Tree->SetItemImage(item, image, wxTreeItemIcon_Normal);
     m_Tree->SetItemImage(item, image, wxTreeItemIcon_Selected);
+}
+
+
+
+void vrViewerTOCTree::_FillTreeList(wxTreeItemId root, wxArrayTreeItemIds & array) {
+    wxTreeItemIdValue cookie;
+	wxTreeItemId myItem = m_Tree->GetFirstChild( root, cookie );
+    
+	while( myItem.IsOk() ){
+        array.Add(myItem);
+		if( m_Tree->ItemHasChildren( myItem ) ){
+            _FillTreeList(myItem, array);
+		}
+		myItem = m_Tree->GetNextChild( root, cookie);
+	}
+}
+
+
+void vrViewerTOCTree::_CopyTreeItems(wxTreeItemId origin, wxTreeItemId destination, bool isRoot) {
+	wxTreeItemId myDestination = destination;
+    if (isRoot == true) {
+        // first loop, no recursivity
+        vrViewerTOCTreeData * myDataOrigin = (vrViewerTOCTreeData*) m_Tree->GetItemData(origin);
+        vrViewerTOCTreeData * myDataCopy = new vrViewerTOCTreeData(*myDataOrigin);
+        myDestination = m_Tree->AppendItem(destination, m_Tree->GetItemText(origin),
+                                           m_Tree->GetItemImage(origin), -1,
+                                           myDataCopy);
+    }
+    
+    wxTreeItemIdValue cookie;
+    wxTreeItemId myItem =  m_Tree->GetFirstChild( origin, cookie );;
+    
+	while( myItem.IsOk() ){
+        vrViewerTOCTreeData * myDataOrigin = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItem);
+        vrViewerTOCTreeData * myDataCopy = new vrViewerTOCTreeData(*myDataOrigin);
+        wxTreeItemId myCopyItem =  m_Tree->AppendItem(myDestination, m_Tree->GetItemText(myItem),
+                                                      m_Tree->GetItemImage(myItem), -1,
+                                                      myDataCopy);
+        
+		if( m_Tree->ItemHasChildren( myItem ) ){
+            _CopyTreeItems(myItem, myCopyItem, false);
+		}
+		myItem = m_Tree->GetNextChild( origin, cookie);
+	}
+}
+
+
+
+void vrViewerTOCTree::_SetVisible(wxTreeItemId item, bool visible) {
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(item);
+    wxASSERT(myData);
+    
+    int myImgOffset = 0;
+    if (visible == false) {
+        myImgOffset = 1;
+    }
+    int myImageIndex = (int) myData->m_CheckedImgType + myImgOffset;
+    _SetItemImageUnique(item, (vrVIEWERTOC_IMAGES_TYPES) myImageIndex);
+    
+    
+    if (myData->m_ItemType == vrTREEDATA_TYPE_LAYER) {
+        int myItemIndex = _TreeToIndex(item, vrTREEDATA_TYPE_LAYER);
+        wxASSERT(myItemIndex != wxNOT_FOUND);
+        GetViewerLayerManager()->GetRenderer(myItemIndex)->SetVisible(visible);
+    }
+}
+
+
+
+bool vrViewerTOCTree::_IsVisible(wxTreeItemId item) {
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(item);
+    wxASSERT(myData);
+    if (m_Tree->GetItemImage(item) - myData->m_CheckedImgType > 0) {
+        return false;
+    }
+    return true;
 }
 
 
@@ -572,30 +650,32 @@ void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
                     return;
                 }
                 
-                if(m_Tree->GetItemImage(clickedid) == vrVIEWERTOC_IMAGE_CHECKED){
-                    _SetItemImageUnique(clickedid, vrVIEWERTOC_IMAGE_UNCHECKED);
-                }
-                else{
-                    _SetItemImageUnique(clickedid, vrVIEWERTOC_IMAGE_CHECKED);
-                }
-                
-                bool IsVisible = GetViewerLayerManager()->GetRenderer(myItemIndex)->GetVisible();         
-                GetViewerLayerManager()->GetRenderer(myItemIndex)->SetVisible(!IsVisible);
+                bool visible = _IsVisible(clickedid);
+                _SetVisible(clickedid, !visible);
                 ReloadData();
             }   
                 break;
                 
                 
+                
             case vrTREEDATA_TYPE_GROUP:
-                if (m_Tree->GetItemImage(clickedid) == vrVIEWERTOC_IMAGE_GROUP_ON) {
-                    _SetItemImageUnique(clickedid, vrVIEWERTOC_IMAGE_GROUP_OFF); 
-                }else{
-                    _SetItemImageUnique(clickedid, vrVIEWERTOC_IMAGE_GROUP_ON);
+            {
+                bool visible = _IsVisible(clickedid);
+                _SetVisible(clickedid, !visible);
+                
+                wxArrayTreeItemIds myIds;
+                _FillTreeList(clickedid, myIds);
+                for (unsigned int i = 0; i< myIds.GetCount(); i++) {
+                    _SetVisible(myIds.Item(i), !visible);
                 }
+                ReloadData();
+            }
                 break;
                 
                 
+                
             default:
+                wxLogError(_("Case not supported!"));
                 break;
         }
         return;
@@ -674,16 +754,10 @@ void vrViewerTOCTree::OnDragStop(wxTreeEvent & event){
     }
     
     vrViewerTOCTreeData * myDataStop = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItemStop);
+    
     // drag into group
     if (myDataStop->m_ItemType == vrTREEDATA_TYPE_GROUP) {
-        // copy treectrl to group
-        vrViewerTOCTreeData * myDataCopied = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItemStart);
-        vrViewerTOCTreeData * myDataCopiedNew = new vrViewerTOCTreeData(*myDataCopied);
-        
-        m_Tree->AppendItem (myItemStop, m_Tree->GetItemText(myItemStart),
-                            m_Tree->GetItemImage(myItemStart), -1, myDataCopiedNew);
-        
-        // delete item
+        _CopyTreeItems(myItemStart, myItemStop);
         m_Tree->Delete(myItemStart);
     }
     
@@ -795,6 +869,7 @@ vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id,
                                  const wxPoint & pos, const wxSize & size,
                                  long style) {
     m_Tree = new wxTreeCtrl(parent, id, pos, size, style);
+    //m_TreeList.Clear();
     m_RootNode = m_Tree->AddRoot("Project");
     _InitBitmapList();
     
@@ -829,10 +904,10 @@ vrViewerTOCTree::~vrViewerTOCTree() {
 bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
     vrViewerTOCTreeData * myData = new vrViewerTOCTreeData();
     myData->m_ItemType = vrTREEDATA_TYPE_LAYER;
+    myData->m_CheckedImgType = vrVIEWERTOC_IMAGE_CHECKED;
     
     if (index >= (signed) m_Tree->GetCount()) {
-		wxTreeItemId myAddedId = m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),1,1, myData);
-        //m_Tree->SetItemState(myAddedId, wxTREE_ITEMSTATE_NONE);
+		wxTreeItemId myAddedId = m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),myData->m_CheckedImgType, -1, myData);
 		return true;
 	}
     
@@ -841,7 +916,7 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
 		index = 0;
 	}
     
-    wxTreeItemId myAddedId = m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),1,1,myData);
+    wxTreeItemId myAddedId = m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),myData->m_CheckedImgType,-1,myData);
     //m_Tree->SetItemState(myAddedId, wxTREE_ITEMSTATE_NONE);
     
     return true;
@@ -893,7 +968,9 @@ wxControl * vrViewerTOCTree::GetControl() {
 bool vrViewerTOCTree::AddGroup(const wxString & name) {
     vrViewerTOCTreeData * myData = new vrViewerTOCTreeData();
     myData->m_ItemType = vrTREEDATA_TYPE_GROUP;
-    m_Tree->AppendItem(m_RootNode, name, vrVIEWERTOC_IMAGE_GROUP_ON, -1, myData);
+    myData->m_CheckedImgType = vrVIEWERTOC_IMAGE_GROUP_ON;
+    
+    m_Tree->AppendItem(m_RootNode, name, myData->m_CheckedImgType, -1, myData);
     return true;
 }
 

@@ -129,17 +129,6 @@ enum vrVIEWERTOC_TREEDATA_TYPES {
 };
 
 
-class vrViewerTOCTreeData : public wxTreeItemData {
-public:
-    vrViewerTOCTreeData();
-    virtual ~vrViewerTOCTreeData();
-    vrVIEWERTOC_TREEDATA_TYPES m_ItemType;
-};
-
-
-
-
-/************************************ vrViewerTOCTree **********************************************/
 enum vrVIEWERTOC_IMAGES_TYPES {
     vrVIEWERTOC_IMAGE_CHECKED = 0,
     vrVIEWERTOC_IMAGE_UNCHECKED,
@@ -149,16 +138,34 @@ enum vrVIEWERTOC_IMAGES_TYPES {
 };
 
 
+class vrViewerTOCTreeData : public wxTreeItemData {
+public:
+    vrViewerTOCTreeData();
+    virtual ~vrViewerTOCTreeData();
+    vrVIEWERTOC_TREEDATA_TYPES m_ItemType;
+    vrVIEWERTOC_IMAGES_TYPES m_CheckedImgType;
+};
+
+
+
+
+/************************************ vrViewerTOCTree **********************************************/
 class vrViewerTOCTree : public vrViewerTOC {
 private:
     wxTreeCtrl  * m_Tree;
     wxTreeItemId m_RootNode;
+
     
     wxTreeItemId _IndexToTree(wxTreeItemId root, const wxString& searchtext, vrVIEWERTOC_TREEDATA_TYPES searchtype);
     int _TreeToIndex(wxTreeItemId treeitem, vrVIEWERTOC_TREEDATA_TYPES searchtype);
     void _InitBitmapList();
     void _SetItemImageUnique(wxTreeItemId item, vrVIEWERTOC_IMAGES_TYPES image);
+    void _FillTreeList(wxTreeItemId root, wxArrayTreeItemIds & array);
+    void _CopyTreeItems(wxTreeItemId origin, wxTreeItemId destination, bool isRoot = true);
+    void _SetVisible(wxTreeItemId item, bool visible);    
+    bool _IsVisible(wxTreeItemId item);
 
+ 
     void OnMouseDown(wxMouseEvent & event);
     void OnItemRightDown(wxTreeEvent & event);
     void OnSetColorPen(wxCommandEvent & event);
