@@ -278,10 +278,10 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 		wxDELETE(m_Rubber);
 
         // Set a rectangle centered with a size 1.5 times smaller
-        myRect = wxRect(event.GetPosition().x - GetDisplay()->GetSize().GetWidth()/3,
-                              event.GetPosition().y - GetDisplay()->GetSize().GetHeight()/3,
-                              GetDisplay()->GetSize().GetWidth()/1.5,
-                              GetDisplay()->GetSize().GetHeight()/1.5);
+        myRect = wxRect(event.GetPosition().x / 3,
+                        event.GetPosition().y / 3,
+                        GetDisplay()->GetSize().GetWidth()/1.5,
+                        GetDisplay()->GetSize().GetHeight()/1.5);
 	}
     else {
         myRect = m_Rubber->GetRect();
