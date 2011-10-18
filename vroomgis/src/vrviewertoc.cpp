@@ -523,18 +523,18 @@ int vrViewerTOCTree::_TreeToIndex(wxTreeItemId treeitem, vrVIEWERTOC_TREEDATA_TY
 
 void vrViewerTOCTree::_InitBitmapList() {
     wxImageList *images = new wxImageList(16, 16, true);
-    wxBitmap myTempBmp (16,16);
-    wxBitmap myTempBmp2 (16,16);
+    wxBitmap myCheckBmp (16,16);
+    wxBitmap myUnCheckBmp (16,16);
     { 
         // unchecked
         wxMemoryDC myDC;
-        myDC.SelectObject(myTempBmp);
+        myDC.SelectObject(myCheckBmp);
         myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxSOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(GetControl(), myDC, wxRect(0, 0, 16, 16), 0);
         
         // checked
-        myDC.SelectObject(myTempBmp2);
+        myDC.SelectObject(myUnCheckBmp);
         myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxSOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(GetControl(), myDC, wxRect(0, 0, 16, 16), wxCONTROL_CHECKED);
@@ -544,8 +544,8 @@ void vrViewerTOCTree::_InitBitmapList() {
     wxBitmap myGroupBmp (*_img_tree_folder_on);
     wxBitmap myGroupBmpOff (*_img_tree_folder_off);
     
-    images->Add(myTempBmp2);
-    images->Add(myTempBmp);
+    images->Add(myUnCheckBmp);
+    images->Add(myCheckBmp);
     images->Add(myGroupBmp);
     images->Add(myGroupBmpOff);
     m_Tree->AssignImageList(images);
@@ -696,17 +696,32 @@ void vrViewerTOCTree::OnItemRightDown(wxTreeEvent & event) {
 void vrViewerTOCTree::OnSetColorPen(wxCommandEvent & event) {
 }
 
+
+
 void vrViewerTOCTree::OnSetColorBrush(wxCommandEvent & event) {
 }
+
+
 
 void vrViewerTOCTree::OnSetTransparency(wxCommandEvent & event) {
 }
 
+
+
 void vrViewerTOCTree::OnSetWidth(wxCommandEvent & event) {
 }
 
+
+
 void vrViewerTOCTree::OnNewGroup(wxCommandEvent & event) {
-    AddGroup(_("New Group"));
+    wxString myGroupNameOrigin = _("New group");
+    wxString myGroupName = myGroupNameOrigin;
+    int index = 1;
+    while (_IndexToTree(m_RootNode, myGroupName, vrTREEDATA_TYPE_GROUP).IsOk() == true) {
+        myGroupName = myGroupNameOrigin + wxString::Format(_T(" %d"), index);
+        index++;
+    }
+    AddGroup(myGroupName);
 }
 
 
