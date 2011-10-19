@@ -162,8 +162,11 @@ private:
     void _SetItemImageUnique(wxTreeItemId item, vrVIEWERTOC_IMAGES_TYPES image);
     void _FillTreeList(wxTreeItemId root, wxArrayTreeItemIds & array);
     void _CopyTreeItems(wxTreeItemId origin, wxTreeItemId destination, bool isRoot = true);
+    void _MoveLayer (wxTreeItemId origin, wxTreeItemId destination);
     void _SetVisible(wxTreeItemId item, bool visible);    
     bool _IsVisible(wxTreeItemId item);
+    void _ReorderFromTree(wxTreeItemId moveditem);
+    int _SearchIntoViewerLayerManager(const wxString & layername);
 
  
     void OnMouseDown(wxMouseEvent & event);
