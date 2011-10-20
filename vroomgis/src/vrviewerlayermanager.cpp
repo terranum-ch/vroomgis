@@ -207,7 +207,7 @@ bool vrViewerLayerManager::Move(long oldpos, long newpos) {
 
 
 	if(m_Toc && m_Toc->Move(oldpos, newpos)==false){
-		wxLogError("Moving layer '%s' from position %d to %d failed",
+		wxLogError("Moving layer '%s' from position %ld to %ld failed",
 				   myRenderer->GetLayer()->GetDisplayName().GetFullName(),
 				   oldpos, newpos);
 		return false;

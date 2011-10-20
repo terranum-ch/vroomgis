@@ -623,8 +623,7 @@ void vrViewerTOCTree::_MoveLayer (wxTreeItemId origin, wxTreeItemId destination)
     m_Tree->SelectItem(myNewId);
     //_CopyTreeItems(origin, myNewId);
     
-    // TODO: Implement reorder process
-    //_ReorderFromTree(myNewId);
+    _ReorderFromTree(myNewId);
 }
 
 
@@ -672,15 +671,22 @@ void vrViewerTOCTree::_ReorderFromTree(wxTreeItemId moveditem) {
         if (myData->m_ItemType != vrTREEDATA_TYPE_LAYER) {
             continue;
         }
-        int iViewerLMIndex = _SearchIntoViewerLayerManager(m_Tree->GetItemText(myIdList.Item(i)));
-        if (wxNOT_FOUND) {
-            wxLogError(_("Error layer '%s' not found into ViewerLayerMaanger!"), m_Tree->GetItemText(myIdList.Item(i)));
+        wxString myLayerName = m_Tree->GetItemText(myIdList.Item(i));
+        int iViewerLMIndex = _SearchIntoViewerLayerManager(myLayerName);
+        if (iViewerLMIndex == wxNOT_FOUND) {
+            wxLogError(_("Error layer '%s' not found into ViewerLayerMaanger!"),myLayerName);
             continue;
         }
+        
+        if (iViewerLMIndex != myLayerIndex) {
+            GetViewerLayerManager()->Move(iViewerLMIndex, myLayerIndex);
+        }
         myLayerIndex ++;
-        //wxLogMessage("Index for layer '%s' is %d", m_Tree->GetItemText(myIdList.Item(i)),
-          //           iViewerLMIndex);
-        GetViewerLayerManager()->Move(iViewerLMIndex, myLayerIndex);
+        
+        wxTreeItemId myActualId = myIdList.Item(i);
+        if (myActualId == moveditem) {
+            break;
+        }
     }
     
 }
@@ -688,7 +694,8 @@ void vrViewerTOCTree::_ReorderFromTree(wxTreeItemId moveditem) {
 
 int vrViewerTOCTree::_SearchIntoViewerLayerManager(const wxString & layername){
     for (int i = 0; i< GetViewerLayerManager()->GetCount(); i++) {
-        if (GetViewerLayerManager()->GetRenderer(i)->GetLayer()->GetDisplayName() == layername) {
+        wxString myActualName = GetViewerLayerManager()->GetRenderer(i)->GetLayer()->GetDisplayName().GetFullName();
+        if (myActualName == layername) {
             return i;
         }
     }  
@@ -835,10 +842,14 @@ void vrViewerTOCTree::OnDragStop(wxTreeEvent & event){
     // drag into group
     if (myDataStop->m_ItemType == vrTREEDATA_TYPE_GROUP) {
         _CopyTreeItems(myItemStart, myItemStop);
+        //_ReorderFromTree(myItemStop);
         m_Tree->Delete(myItemStart);
     }
     
     if (myDataStop->m_ItemType == vrTREEDATA_TYPE_LAYER) {
+        if (myItemStop == m_Tree->GetNextSibling(myItemStart)) {
+            return;
+        }
         _MoveLayer(myItemStart, myItemStop);
         m_Tree->Delete(myItemStart);
     }
@@ -857,6 +868,7 @@ void vrViewerTOCTree::OnEditStart(wxTreeEvent & event) {
     
     if (myData->m_ItemType != vrTREEDATA_TYPE_GROUP) {
         event.Veto();
+        return;
     }
     wxLogMessage("Starting edition");
     event.Allow();
@@ -1007,7 +1019,8 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
 
 
 bool vrViewerTOCTree::Move(long oldpos, long newpos) {
-    return false;
+    // do nothing, move is made with drag'n'drop
+    return true;
 }
 
 
