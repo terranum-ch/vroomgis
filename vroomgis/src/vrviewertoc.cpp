@@ -755,6 +755,8 @@ void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
 
 
 void vrViewerTOCTree::OnItemRightDown(wxTreeEvent & event) {
+	m_Tree->SelectItem(event.GetItem());
+	
 	wxMenu myPopMenu;
     myPopMenu.Append(vrID_POPUP_GROUP_ADD, _("Add Group"));
     myPopMenu.AppendSeparator();
