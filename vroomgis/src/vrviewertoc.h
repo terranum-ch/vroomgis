@@ -54,6 +54,10 @@ protected:
     inline vrViewerLayerManager * GetViewerLayerManager() const;
     inline const bool IsFreezed() const;
     
+    bool SetColorPen(int itemindex);
+    bool SetWidth(int itemindex);
+    bool SetBrushStyle(int itemindex, int menuid);
+    bool SetColorBrush(int itemindex);
     
 public:
     vrViewerTOC();    
