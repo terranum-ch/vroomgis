@@ -173,6 +173,7 @@ private:
     void OnItemRightDown(wxTreeEvent & event);
     void OnSetColorPen(wxCommandEvent & event);
     void OnSetColorBrush(wxCommandEvent & event);
+    void OnSetBrushStyle (wxCommandEvent & event);
     void OnSetTransparency(wxCommandEvent & event);
     void OnSetWidth(wxCommandEvent & event);
     void OnNewGroup(wxCommandEvent & event);
