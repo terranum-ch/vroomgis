@@ -73,6 +73,139 @@ void vrViewerTOC::ReloadData() {
 
 
 
+bool vrViewerTOC::SetColorPen(int itemindex) {
+    if (itemindex == wxNOT_FOUND) {
+        wxLogError(_("Error getting selected layer!"));
+        return false;
+    }
+    
+    wxASSERT(GetViewerLayerManager());
+    vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(itemindex)->GetRender();
+    wxASSERT(myRenderVector);
+    wxColourData myActualCol;
+    myActualCol.SetColour(myRenderVector->GetColorPen());
+    wxColourDialog myColDlg (GetControl(), &myActualCol);
+    if (myColDlg.ShowModal() == wxID_OK) {
+        myRenderVector->SetColorPen(myColDlg.GetColourData().GetColour());
+        return true;
+    }
+    return false;
+}
+
+
+
+bool vrViewerTOC::SetWidth(int itemindex) {
+    if (itemindex == wxNOT_FOUND) {
+        wxLogError(_("Error getting selected layer!"));
+        return false;
+    }
+    wxASSERT(GetViewerLayerManager());
+    vrRender * myRender = GetViewerLayerManager()->GetRenderer(itemindex)->GetRender();
+    wxASSERT(myRender);
+    int mySize = 1;
+    if (myRender->GetType() == vrRENDER_VECTOR) {
+        vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
+        mySize = myRenderVector->GetSize();
+    }else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
+        vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
+        mySize = myRenderDips->GetSize();
+    }
+    else {
+        wxFAIL;
+        return false;
+    }
+    
+    
+    // get width value
+    wxNumberEntryDialog myNumDlg(GetControl(),
+                                 "Adjust the pen's width\nAllowed widths are between 0 and 50 pixels",
+                                 "Width:",
+                                 "Adjust pen's width",
+                                 mySize,
+                                 1,
+                                 50);
+    if (myNumDlg.ShowModal()!=wxID_OK) {
+        return false;
+    }
+    
+    if (myRender->GetType() == vrRENDER_VECTOR) {
+        vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
+        myRenderVector->SetSize(myNumDlg.GetValue());
+    }else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
+        vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
+        myRenderDips->SetSize(myNumDlg.GetValue());
+    }
+    else {
+        wxFAIL;
+        return false;
+    }
+    return true;
+}
+
+
+
+bool vrViewerTOC::SetBrushStyle(int itemindex, int menuid) {
+    if (itemindex == wxNOT_FOUND) {
+        wxLogError(_("Error getting selected layer!"));
+        return false;
+    }
+	wxASSERT(GetViewerLayerManager());
+    
+	vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(itemindex)->GetRender();
+	wxASSERT(myRenderVector);
+    
+	// displaying colour dialog
+	wxBrushStyle myOldStyle = myRenderVector->GetBrushStyle();
+	wxBrushStyle myStyle = wxBRUSHSTYLE_SOLID;
+	switch (menuid) {
+		case vrID_POPUP_BRUSH_SOLID:
+			myStyle = wxBRUSHSTYLE_SOLID;
+			break;
+            
+		case vrID_POPUP_BRUSH_TRANSPARENT:
+			myStyle = wxBRUSHSTYLE_TRANSPARENT;
+			break;
+            
+		case vrID_POPUP_BRUSH_BDIAGONAL:
+			myStyle = wxBRUSHSTYLE_BDIAGONAL_HATCH;
+			break;
+            
+		default:
+			wxLogError(_("Brush style not supported: %d"), menuid);
+			break;
+	}
+	myRenderVector->SetBrushStyle(myStyle);
+	if (myOldStyle != myStyle) {
+		return true;
+	}
+    return false;
+}
+
+
+
+bool vrViewerTOC::SetColorBrush(int itemindex) {
+    if (itemindex == wxNOT_FOUND) {
+        wxLogError(_("Error getting selected layer!"));
+        return false;
+    }
+	wxASSERT(GetViewerLayerManager());
+	vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(itemindex)->GetRender();
+	wxASSERT(myRenderVector);
+    
+	// displaying colour dialog
+	wxColourData myActualCol;
+	myActualCol.SetColour(myRenderVector->GetColorBrush());
+	wxColourDialog myColDlg (GetControl(), &myActualCol);
+	if (myColDlg.ShowModal() == wxID_OK) {
+		myRenderVector->SetColorBrush(myColDlg.GetColourData().GetColour());
+        return true;
+	}
+    return false;
+}
+
+
+
+
 vrViewerTOC::vrViewerTOC() {
     m_FreezeStatus = false;
 	m_ViewerManager = NULL;
@@ -191,16 +324,7 @@ void vrViewerTOCList::OnMouseWheel(wxMouseEvent & event) {
 
 void vrViewerTOCList::OnSetColorPen(wxCommandEvent & event) {
     int mySelItem = GetSelection();
-    wxASSERT(mySelItem != wxNOT_FOUND);
-    wxASSERT(GetViewerLayerManager());
-    
-    vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(mySelItem)->GetRender();
-    wxASSERT(myRenderVector);
-    wxColourData myActualCol;
-    myActualCol.SetColour(myRenderVector->GetColorPen());
-    wxColourDialog myColDlg (GetControl(), &myActualCol);
-    if (myColDlg.ShowModal() == wxID_OK) {
-        myRenderVector->SetColorPen(myColDlg.GetColourData().GetColour());
+    if (SetColorPen(mySelItem) == true) {
         ReloadData();
     }
 }
@@ -209,18 +333,7 @@ void vrViewerTOCList::OnSetColorPen(wxCommandEvent & event) {
 
 void vrViewerTOCList::OnSetColorBrush(wxCommandEvent & event) {
     int mySelItem = GetSelection();
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(GetViewerLayerManager());
-    
-	vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRenderVector);
-    
-	// displaying colour dialog
-	wxColourData myActualCol;
-	myActualCol.SetColour(myRenderVector->GetColorBrush());
-	wxColourDialog myColDlg (GetControl(), &myActualCol);
-	if (myColDlg.ShowModal() == wxID_OK) {
-		myRenderVector->SetColorBrush(myColDlg.GetColourData().GetColour());
+	if (SetColorBrush(mySelItem) == true) {
 		ReloadData();
 	}
 }
@@ -252,82 +365,16 @@ void vrViewerTOCList::OnSetTransparency(wxCommandEvent & event) {
 
 void vrViewerTOCList::OnSetWidth(wxCommandEvent & event) {
     int mySelItem = GetSelection();
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(GetViewerLayerManager());
-	vrRender * myRender = GetViewerLayerManager()->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRender);
-	int mySize = 1;
-	if (myRender->GetType() == vrRENDER_VECTOR) {
-		vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
-		mySize = myRenderVector->GetSize();
-	}else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
-		vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
-		mySize = myRenderDips->GetSize();
-	}
-	else {
-		wxFAIL;
-		return;
-	}
-    
-    
-	// get width value
-	wxNumberEntryDialog myNumDlg(GetControl(),
-								 "Adjust the pen's width\nAllowed widths are between 0 and 50 pixels",
-								 "Width:",
-								 "Adjust pen's width",
-								 mySize,
-								 1,
-								 50);
-	if (myNumDlg.ShowModal()!=wxID_OK) {
-		return;
-	}
-    
-	if (myRender->GetType() == vrRENDER_VECTOR) {
-		vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
-		myRenderVector->SetSize(myNumDlg.GetValue());
-	}else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
-		vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
-		myRenderDips->SetSize(myNumDlg.GetValue());
-	}
-	else {
-		wxFAIL;
-		return;
-	}
-	ReloadData();
+	if (SetWidth(mySelItem)==true) {
+        ReloadData();
+    }
 }
 
 
 
 void vrViewerTOCList::OnSetBrushStyle(wxCommandEvent & event){
 	int mySelItem = GetSelection();
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(GetViewerLayerManager());
-    
-	vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRenderVector);
-    
-	// displaying colour dialog
-	wxBrushStyle myOldStyle = myRenderVector->GetBrushStyle();
-	wxBrushStyle myStyle = wxBRUSHSTYLE_SOLID;
-	switch (event.GetId()) {
-		case vrID_POPUP_BRUSH_SOLID:
-			myStyle = wxBRUSHSTYLE_SOLID;
-			break;
-            
-		case vrID_POPUP_BRUSH_TRANSPARENT:
-			myStyle = wxBRUSHSTYLE_TRANSPARENT;
-			break;
-            
-		case vrID_POPUP_BRUSH_BDIAGONAL:
-			myStyle = wxBRUSHSTYLE_BDIAGONAL_HATCH;
-			break;
-            
-		default:
-			wxLogError(_("Brush style not supported: %d"), event.GetId());
-			break;
-	}
-	myRenderVector->SetBrushStyle(myStyle);
-	if (myOldStyle != myStyle) {
+	if (SetBrushStyle(mySelItem, event.GetId()) == true) {
 		ReloadData();
 	}
 }
@@ -837,79 +884,39 @@ void vrViewerTOCTree::OnItemRightDown(wxTreeEvent & event) {
 }
 
 
+
 void vrViewerTOCTree::OnSetColorPen(wxCommandEvent & event) {
-    int myLayerUniqueIndex = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
-    if (myLayerUniqueIndex == wxNOT_FOUND) {
-        wxLogError(_("Error getting selected layer!"));
-        return;
-    }
-    wxASSERT(GetViewerLayerManager());
-    vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(myLayerUniqueIndex)->GetRender();
-    wxASSERT(myRenderVector);
-    wxColourData myActualCol;
-    myActualCol.SetColour(myRenderVector->GetColorPen());
-    wxColourDialog myColDlg (GetControl(), &myActualCol);
-    if (myColDlg.ShowModal() == wxID_OK) {
-        myRenderVector->SetColorPen(myColDlg.GetColourData().GetColour());
+    int mySelItem = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
+    if (SetColorPen(mySelItem) == true) {
         ReloadData();
     }
-
 }
 
 
 
 void vrViewerTOCTree::OnSetColorBrush(wxCommandEvent & event) {
     int mySelItem = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(GetViewerLayerManager());
-    
-	vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRenderVector);
-    
-	// displaying colour dialog
-	wxColourData myActualCol;
-	myActualCol.SetColour(myRenderVector->GetColorBrush());
-	wxColourDialog myColDlg (GetControl(), &myActualCol);
-	if (myColDlg.ShowModal() == wxID_OK) {
-		myRenderVector->SetColorBrush(myColDlg.GetColourData().GetColour());
+	if (SetColorBrush(mySelItem) == true) {
 		ReloadData();
 	}
 }
 
 
+
 void vrViewerTOCTree::OnSetBrushStyle (wxCommandEvent & event){
     int mySelItem = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
-	wxASSERT(mySelItem != wxNOT_FOUND);
-	wxASSERT(GetViewerLayerManager());
-    
-	vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(mySelItem)->GetRender();
-	wxASSERT(myRenderVector);
-    
-	// displaying colour dialog
-	wxBrushStyle myOldStyle = myRenderVector->GetBrushStyle();
-	wxBrushStyle myStyle = wxBRUSHSTYLE_SOLID;
-	switch (event.GetId()) {
-		case vrID_POPUP_BRUSH_SOLID:
-			myStyle = wxBRUSHSTYLE_SOLID;
-			break;
-            
-		case vrID_POPUP_BRUSH_TRANSPARENT:
-			myStyle = wxBRUSHSTYLE_TRANSPARENT;
-			break;
-            
-		case vrID_POPUP_BRUSH_BDIAGONAL:
-			myStyle = wxBRUSHSTYLE_BDIAGONAL_HATCH;
-			break;
-            
-		default:
-			wxLogError(_("Brush style not supported: %d"), event.GetId());
-			break;
-	}
-	myRenderVector->SetBrushStyle(myStyle);
-	if (myOldStyle != myStyle) {
+	if (SetBrushStyle(mySelItem, event.GetId()) == true) {
 		ReloadData();
 	}
-    
+}
+
+
+
+void vrViewerTOCTree::OnSetWidth(wxCommandEvent & event) {
+    int mySelItem = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
+    if (SetWidth(mySelItem)==true) {
+        ReloadData();
+    }
 }
 
 
@@ -958,52 +965,6 @@ void vrViewerTOCTree::OnSetTransparency(wxCommandEvent & event) {
 }
 
 
-
-void vrViewerTOCTree::OnSetWidth(wxCommandEvent & event) {
-    int mySelItem = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
-    wxASSERT(mySelItem != wxNOT_FOUND);
-    wxASSERT(GetViewerLayerManager());
-    vrRender * myRender = GetViewerLayerManager()->GetRenderer(mySelItem)->GetRender();
-    wxASSERT(myRender);
-    int mySize = 1;
-    if (myRender->GetType() == vrRENDER_VECTOR) {
-        vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
-        mySize = myRenderVector->GetSize();
-    }else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
-        vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
-        mySize = myRenderDips->GetSize();
-    }
-    else {
-        wxFAIL;
-        return;
-    }
-    
-    
-    // get width value
-    wxNumberEntryDialog myNumDlg(GetControl(),
-                                 "Adjust the pen's width\nAllowed widths are between 0 and 50 pixels",
-                                 "Width:",
-                                 "Adjust pen's width",
-                                 mySize,
-                                 1,
-                                 50);
-    if (myNumDlg.ShowModal()!=wxID_OK) {
-        return;
-    }
-    
-    if (myRender->GetType() == vrRENDER_VECTOR) {
-        vrRenderVector * myRenderVector = (vrRenderVector*) myRender;
-        myRenderVector->SetSize(myNumDlg.GetValue());
-    }else if (myRender->GetType() == vrRENDER_VECTOR_C2P_DIPS) {
-        vrRenderVectorC2PDips * myRenderDips = (vrRenderVectorC2PDips*) myRender;
-        myRenderDips->SetSize(myNumDlg.GetValue());
-    }
-    else {
-        wxFAIL;
-        return;
-    }
-    ReloadData();
-}
 
 
 
