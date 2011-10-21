@@ -158,6 +158,7 @@ class vrViewerTOCTree : public vrViewerTOC {
 private:
     wxTreeCtrl  * m_Tree;
     wxTreeItemId m_RootNode;
+    bool m_UseGroupMenu;
 
     
     wxTreeItemId _IndexToTree(wxTreeItemId root, const wxString& searchtext, vrVIEWERTOC_TREEDATA_TYPES searchtype);
@@ -203,6 +204,8 @@ public:
     virtual wxControl * GetControl();
     
     bool AddGroup(const wxString & name);
+    void SetUseGroupMenu(bool value){m_UseGroupMenu = value;}
+
 
 };
 

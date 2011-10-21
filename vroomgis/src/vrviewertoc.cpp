@@ -805,8 +805,10 @@ void vrViewerTOCTree::OnItemRightDown(wxTreeEvent & event) {
 	m_Tree->SelectItem(event.GetItem());
 	
 	wxMenu myPopMenu;
-    myPopMenu.Append(vrID_POPUP_GROUP_ADD, _("Add Group"));
-    myPopMenu.AppendSeparator();
+    if (m_UseGroupMenu == true){
+        myPopMenu.Append(vrID_POPUP_GROUP_ADD, _("Add Group"));
+        myPopMenu.AppendSeparator();
+    }
     
 	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, _("Set Transparency..."));
     myPopMenu.AppendSeparator();
@@ -1067,8 +1069,8 @@ vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id,
                                  const wxPoint & pos, const wxSize & size,
                                  long style) {
     m_Tree = new wxTreeCtrl(parent, id, pos, size, style);
-    //m_TreeList.Clear();
     m_RootNode = m_Tree->AddRoot("Project");
+    SetUseGroupMenu(false);
     _InitBitmapList();
     
     // connect event
