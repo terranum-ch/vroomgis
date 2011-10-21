@@ -65,11 +65,11 @@ private:
 	// vroomgis engine
 	vrLayerManager * m_LayerManager;
 
-	vrViewerTOC * m_TocCtrl1;
+	vrViewerTOCList * m_TocCtrl1;
 	vrViewerLayerManager * m_ViewerLayerManager1;
 	vrViewerDisplay * m_DisplayCtrl1;
 	
-	vrViewerTOC * m_TocCtrl2;
+	vrViewerTOCList * m_TocCtrl2;
 	vrViewerLayerManager * m_ViewerLayerManager2;
 	vrViewerDisplay * m_DisplayCtrl2;
 	

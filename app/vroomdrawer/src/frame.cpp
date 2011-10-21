@@ -118,8 +118,8 @@ void  vroomDrawerFrame::_CreateControls(){
 	bSizer51->Fit( m_panel3 );
 	bSizer4->Add( m_panel3, 0, wxEXPAND, 5 );
 	
-	m_TocCtrl = new vrViewerTOC( m_panel1, wxID_ANY);
-	bSizer4->Add( m_TocCtrl, 1, wxEXPAND, 5 );
+	m_TocCtrl = new vrViewerTOCTree( m_panel1, wxID_ANY);
+	bSizer4->Add( m_TocCtrl->GetControl(), 1, wxEXPAND, 5 );
 	
 	m_panel1->SetSizer( bSizer4 );
 	m_panel1->Layout();

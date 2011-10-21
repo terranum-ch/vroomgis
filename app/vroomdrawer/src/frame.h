@@ -53,7 +53,7 @@ private:
 	wxLogWindow * m_LogWnd;
 	
 	// controls (vroomgis)
-	vrViewerTOC * m_TocCtrl;
+	vrViewerTOCTree * m_TocCtrl;
 	vrViewerDisplay * m_DisplayCtrl;
 	vrLayerManager * m_LayerManager;
 	vrViewerLayerManager * m_ViewerLayerManager;
