@@ -110,8 +110,8 @@ void  vroomTwinFrame::_CreateControls()
 #endif
 	bSizer4->Add( m_staticText2, 0, wxALL, 5 );
 	
-	m_TocCtrl1 = new vrViewerTOC( m_panel1, wxID_ANY);
-	bSizer4->Add( m_TocCtrl1, 1, wxEXPAND, 5 );
+	m_TocCtrl1 = new vrViewerTOCList( m_panel1, wxID_ANY);
+	bSizer4->Add( m_TocCtrl1->GetControl(), 1, wxEXPAND, 5 );
 	
 	wxStaticText * m_staticText1 = new wxStaticText( m_panel1, wxID_ANY, "Display 2", wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1->Wrap( -1 );
@@ -120,8 +120,8 @@ void  vroomTwinFrame::_CreateControls()
 #endif
 	bSizer4->Add( m_staticText1, 0, wxALL, 5 );
 	
-	m_TocCtrl2 = new vrViewerTOC( m_panel1, wxID_ANY);
-	bSizer4->Add( m_TocCtrl2, 1, wxEXPAND, 5 );
+	m_TocCtrl2 = new vrViewerTOCList( m_panel1, wxID_ANY);
+	bSizer4->Add( m_TocCtrl2->GetControl(), 1, wxEXPAND, 5 );
 	
 	m_panel1->SetSizer( bSizer4 );
 	m_panel1->Layout();
@@ -201,8 +201,8 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 	
 	
 	// DND
-	m_TocCtrl1->SetDropTarget(new vroomDropFiles(this));
-	m_TocCtrl2->SetDropTarget(new vroomDropFiles(this));
+	m_TocCtrl1->GetControl()->SetDropTarget(new vroomDropFiles(this));
+	m_TocCtrl2->GetControl()->SetDropTarget(new vroomDropFiles(this));
 	
 	
 	// VROOMGIS

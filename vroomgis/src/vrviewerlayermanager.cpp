@@ -169,7 +169,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer * layer, vrRender * render, vrL
 	}
 
 	if (m_Toc) {
-		m_Toc->Add(pos, myRenderer, m_Renderers.GetCount());
+		m_Toc->Add(pos, myRenderer);
 	}
 
 	// if not freezed, refresh imediatelly.
@@ -207,7 +207,7 @@ bool vrViewerLayerManager::Move(long oldpos, long newpos) {
 
 
 	if(m_Toc && m_Toc->Move(oldpos, newpos)==false){
-		wxLogError("Moving layer '%s' from position %d to %d failed",
+		wxLogError("Moving layer '%s' from position %ld to %ld failed",
 				   myRenderer->GetLayer()->GetDisplayName().GetFullName(),
 				   oldpos, newpos);
 		return false;
@@ -240,17 +240,16 @@ bool vrViewerLayerManager::Remove(vrRenderer * renderer) {
 		return false;
 	}
 
+    // remove from TOC
+	if (m_Toc) {
+		m_Toc->Remove(myRemoveIndex);
+	}
 
 	// remove from Renderer array
 	vrRenderer * myRenderer = GetRenderer(myRemoveIndex);
 	wxASSERT(myRenderer);
 	wxDELETE(myRenderer);
 	m_Renderers.RemoveAt(myRemoveIndex);
-
-	// remove from TOC
-	if (m_Toc) {
-		m_Toc->Remove(myRemoveIndex);
-	}
 
 	// if not freezed, refresh imediatelly.
 	if (m_FreezeStatus==false) {

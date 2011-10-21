@@ -113,8 +113,9 @@ void  vroomLoaderFrame::_CreateControls()
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 
-    m_TocCtrl = new vrViewerTOC( m_panel1, wxID_ANY);
-	bSizer4->Add( m_TocCtrl, 2, wxEXPAND, 5 );
+    m_TocCtrl = new vrViewerTOCTree( m_panel1, wxID_ANY);
+	bSizer4->Add( m_TocCtrl->GetControl(), 2, wxEXPAND, 5 );
+    m_TocCtrl->SetUseGroupMenu(true);
 
 	//wxFilePickerCtrl * myPicker = new wxFilePickerCtrl(m_panel1, wxID_ANY,wxEmptyString,
 	//												   wxFileSelectorPromptStr,
@@ -218,11 +219,11 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	m_DisplayCtrl->Connect(wxEVT_KEY_UP, wxKeyEventHandler(vroomLoaderFrame::OnKeyUp),NULL, this);
 
 	// DND
-	m_TocCtrl->SetDropTarget(new vroomDropFiles(this));
+	m_TocCtrl->GetControl()->SetDropTarget(new vroomDropFiles(this));
 
 	// VROOMGIS
 	m_LayerManager = new vrLayerManager();
-	m_ViewerLayerManager = new vrViewerLayerManager(m_LayerManager, this, m_DisplayCtrl , m_TocCtrl);
+	m_ViewerLayerManager = new vrViewerLayerManager(m_LayerManager, this, m_DisplayCtrl ,  m_TocCtrl);
 	m_DisplayCtrl->SetStatusCoordinates(GetStatusBar(), 1, _("Coordinates not available"));
 }
 
