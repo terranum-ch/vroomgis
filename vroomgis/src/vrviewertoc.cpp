@@ -1109,9 +1109,13 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
     vrViewerTOCTreeData * myData = new vrViewerTOCTreeData();
     myData->m_ItemType = vrTREEDATA_TYPE_LAYER;
     myData->m_CheckedImgType = vrVIEWERTOC_IMAGE_CHECKED;
+    int myImgStatus = vrVIEWERTOC_IMAGE_CHECKED;
+    if (renderer->GetVisible() == false) {
+        myImgStatus = vrVIEWERTOC_IMAGE_UNCHECKED;
+    }
     
     if (index >= (signed) m_Tree->GetCount()) {
-		wxTreeItemId myAddedId = m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),myData->m_CheckedImgType, -1, myData);
+		wxTreeItemId myAddedId = m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus, -1, myData);
 		return true;
 	}
     
@@ -1120,7 +1124,7 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
 		index = 0;
 	}
     
-    wxTreeItemId myAddedId = m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),myData->m_CheckedImgType,-1,myData);
+    wxTreeItemId myAddedId = m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus,-1,myData);
     //m_Tree->SetItemState(myAddedId, wxTREE_ITEMSTATE_NONE);
     
     return true;
