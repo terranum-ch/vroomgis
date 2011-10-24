@@ -29,40 +29,86 @@
 #include "vroomgis_bmp.h"
 
 
-void vrViewerTOC::ShowMenuContextual(vrRenderer * renderer) {
-    wxASSERT(renderer);    
-	wxMenu myPopMenu;
-	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, _("Set Transparency..."));
+wxMenu * vrViewerTOC::CreateContextualMenu(vrRenderer * renderer, bool usegroup) {
+    wxMenu * myPopMenu = new wxMenu();
+    if (usegroup == true){
+        myPopMenu->Append(vrID_POPUP_GROUP_ADD, _("Add Group"));
+        myPopMenu->AppendSeparator();
+    }
     
-	switch (renderer->GetRender()->GetType()) {
-		case vrRENDER_VECTOR:
-			myPopMenu.AppendSeparator();
-			myPopMenu.Append(vrID_POPUP_PEN_COLOR, _("Set Pen color..."));
-			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, _("Set Pen width..."));
-			myPopMenu.AppendSeparator();
-		{
-			wxMenu * myBrushMenu = new wxMenu();
-			myBrushMenu->Append(vrID_POPUP_BRUSH_COLOR, _("Set Brush color..."));
-			myBrushMenu->AppendSeparator();
-			myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_SOLID, _("Solid Brush"));
-			myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_TRANSPARENT, _("Transparent Brush"));
-			myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_BDIAGONAL, _("Diagonal Brush"));
-			myPopMenu.AppendSubMenu(myBrushMenu, _T("Brush"));
-		}
-			break;
-            
-		case vrRENDER_VECTOR_C2P_DIPS:
-			myPopMenu.AppendSeparator();
-			myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, _("Set Pen width..."));
-			break;
-            
-            
-		default:
-			break;
-	}
-	GetControl()->PopupMenu(&myPopMenu);
+	myPopMenu->Append(vrID_POPUP_TRANSPARENCY, _("Set Transparency..."));
+    myPopMenu->AppendSeparator();
+    myPopMenu->Append(vrID_POPUP_PEN_COLOR, _("Set Pen color..."));
+    myPopMenu->Append(vrID_POPUP_DRAWING_WIDTH, _("Set Pen width..."));
+    myPopMenu->AppendSeparator();
+    wxMenu * myBrushMenu = new wxMenu();
+    myBrushMenu->Append(vrID_POPUP_BRUSH_COLOR, _("Set Brush color..."));
+    myBrushMenu->AppendSeparator();
+    myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_SOLID, _("Solid Brush"));
+    myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_TRANSPARENT, _("Transparent Brush"));
+    myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_BDIAGONAL, _("Diagonal Brush"));
+    myPopMenu->AppendSubMenu(myBrushMenu, _T("Brush"));
+    
+    // disable all
+    myPopMenu->Enable(vrID_POPUP_PEN_COLOR, false);
+    myPopMenu->Enable(vrID_POPUP_DRAWING_WIDTH, false);
+    myPopMenu->Enable(vrID_POPUP_BRUSH_COLOR, false);
+    myPopMenu->Enable(vrID_POPUP_BRUSH_SOLID, false);
+    myPopMenu->Enable(vrID_POPUP_BRUSH_TRANSPARENT, false);
+    myPopMenu->Enable(vrID_POPUP_BRUSH_BDIAGONAL, false);
+      
+    if (renderer != NULL) {
+        switch (renderer->GetRender()->GetType()) {
+                
+            case vrRENDER_VECTOR:
+                myPopMenu->Enable(vrID_POPUP_PEN_COLOR, true);
+                myPopMenu->Enable(vrID_POPUP_DRAWING_WIDTH, true);
+                myPopMenu->Enable(vrID_POPUP_BRUSH_COLOR, true);
+                myPopMenu->Enable(vrID_POPUP_BRUSH_SOLID, true);
+                myPopMenu->Enable(vrID_POPUP_BRUSH_TRANSPARENT, true);
+                myPopMenu->Enable(vrID_POPUP_BRUSH_BDIAGONAL, true);
+                
+                // check brush choice!
+            {
+                vrRenderVector * myRenderVector = (vrRenderVector*) renderer;
+                wxBrushStyle myBrushStyle = myRenderVector->GetBrushStyle();
+                switch (myBrushStyle) {
+                    case wxBRUSHSTYLE_SOLID:
+                        myPopMenu->Check(vrID_POPUP_BRUSH_SOLID, true);
+                        break;
+                        
+                    case wxBRUSHSTYLE_TRANSPARENT:
+                        myPopMenu->Check(vrID_POPUP_BRUSH_TRANSPARENT, true);
+                        break;
+                        
+                    case wxBRUSHSTYLE_BDIAGONAL_HATCH:
+                        myPopMenu->Check(vrID_POPUP_BRUSH_BDIAGONAL, true);
+                        break;
+                        
+                    default:
+                        wxFAIL;
+                        break;
+                }
+            }
+                break;
+                
+            case vrRENDER_VECTOR_C2P_DIPS:
+                myPopMenu->Enable(vrID_POPUP_DRAWING_WIDTH, true);
+                break;
+                
+            default:
+                break;
+                
+        }
+    }
+    
+    return myPopMenu;
 }
 
+
+void vrViewerTOC::SymbologyModified() {
+    // do nothing but may be derived to implement behavior when operation was done on the control
+}
 
 
 void vrViewerTOC::ReloadData() {
@@ -87,6 +133,7 @@ bool vrViewerTOC::SetColorPen(int itemindex) {
     wxColourDialog myColDlg (GetControl(), &myActualCol);
     if (myColDlg.ShowModal() == wxID_OK) {
         myRenderVector->SetColorPen(myColDlg.GetColourData().GetColour());
+        SymbologyModified();
         return true;
     }
     return false;
@@ -139,6 +186,7 @@ bool vrViewerTOC::SetWidth(int itemindex) {
         wxFAIL;
         return false;
     }
+    SymbologyModified();
     return true;
 }
 
@@ -176,6 +224,7 @@ bool vrViewerTOC::SetBrushStyle(int itemindex, int menuid) {
 	}
 	myRenderVector->SetBrushStyle(myStyle);
 	if (myOldStyle != myStyle) {
+        SymbologyModified();
 		return true;
 	}
     return false;
@@ -198,6 +247,7 @@ bool vrViewerTOC::SetColorBrush(int itemindex) {
 	wxColourDialog myColDlg (GetControl(), &myActualCol);
 	if (myColDlg.ShowModal() == wxID_OK) {
 		myRenderVector->SetColorBrush(myColDlg.GetColourData().GetColour());
+        SymbologyModified();
         return true;
 	}
     return false;
@@ -263,7 +313,10 @@ void vrViewerTOCList::OnMouseRightDown(wxMouseEvent & event) {
 	vrRenderer * myRenderer = GetViewerLayerManager()->GetRenderer(myItemID);
 	wxASSERT(myRenderer);
     
-	ShowMenuContextual(myRenderer);
+	wxMenu * myMenu = CreateContextualMenu(myRenderer, false);
+    wxASSERT(myMenu);
+    GetControl()->PopupMenu(myMenu);
+    
 }
 
 
@@ -357,6 +410,7 @@ void vrViewerTOCList::OnSetTransparency(wxCommandEvent & event) {
 								 100);
 	if (myNumDlg.ShowModal()==wxID_OK) {
 		myRender->SetTransparency(myNumDlg.GetValue());
+        SymbologyModified();
 		ReloadData();
 	}
 }
@@ -386,6 +440,7 @@ void vrViewerTOCList::OnVisibleStatusChanged(wxCommandEvent & event) {
 	vrRenderer * myItemRenderer = GetViewerLayerManager()->GetRenderer(event.GetInt());
 	wxASSERT(myItemRenderer);
 	myItemRenderer->SetVisible(m_CheckList->IsChecked(event.GetInt()));
+    SymbologyModified();
 	ReloadData();
 }
 
@@ -556,6 +611,9 @@ int vrViewerTOCTree::_TreeToIndex(wxTreeItemId treeitem, vrVIEWERTOC_TREEDATA_TY
     
     wxString myItemText =  m_Tree->GetItemText(treeitem);
     vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(treeitem);
+    if(myData == NULL){
+        return wxNOT_FOUND;
+    }
     
     for (int i = 0; i< GetViewerLayerManager()->GetCount(); i++) {
         wxString myTmpText = GetViewerLayerManager()->GetRenderer(i)->GetLayer()->GetDisplayName().GetFullName();
@@ -768,6 +826,7 @@ void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
                 
                 bool visible = _IsVisible(clickedid);
                 _SetVisible(clickedid, !visible);
+                SymbologyModified();
                 ReloadData();
             }   
                 break;
@@ -784,6 +843,7 @@ void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
                 for (unsigned int i = 0; i< myIds.GetCount(); i++) {
                     _SetVisible(myIds.Item(i), !visible);
                 }
+                SymbologyModified();
                 ReloadData();
             }
                 break;
@@ -803,85 +863,18 @@ void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
 
 void vrViewerTOCTree::OnItemRightDown(wxTreeEvent & event) {
 	m_Tree->SelectItem(event.GetItem());
-	
-	wxMenu myPopMenu;
-    if (m_UseGroupMenu == true){
-        myPopMenu.Append(vrID_POPUP_GROUP_ADD, _("Add Group"));
-        myPopMenu.AppendSeparator();
-    }
-    
-	myPopMenu.Append(vrID_POPUP_TRANSPARENCY, _("Set Transparency..."));
-    myPopMenu.AppendSeparator();
-    myPopMenu.Append(vrID_POPUP_PEN_COLOR, _("Set Pen color..."));
-    myPopMenu.Append(vrID_POPUP_DRAWING_WIDTH, _("Set Pen width..."));
-    myPopMenu.AppendSeparator();
-    wxMenu * myBrushMenu = new wxMenu();
-    myBrushMenu->Append(vrID_POPUP_BRUSH_COLOR, _("Set Brush color..."));
-    myBrushMenu->AppendSeparator();
-    myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_SOLID, _("Solid Brush"));
-    myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_TRANSPARENT, _("Transparent Brush"));
-    myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_BDIAGONAL, _("Diagonal Brush"));
-    myPopMenu.AppendSubMenu(myBrushMenu, _T("Brush"));
-    
-    // disable all
-    myPopMenu.Enable(vrID_POPUP_PEN_COLOR, false);
-    myPopMenu.Enable(vrID_POPUP_DRAWING_WIDTH, false);
-    myPopMenu.Enable(vrID_POPUP_BRUSH_COLOR, false);
-    myPopMenu.Enable(vrID_POPUP_BRUSH_SOLID, false);
-    myPopMenu.Enable(vrID_POPUP_BRUSH_TRANSPARENT, false);
-    myPopMenu.Enable(vrID_POPUP_BRUSH_BDIAGONAL, false);
-    
     vrViewerTOCTreeData * myItemData = (vrViewerTOCTreeData*) m_Tree->GetItemData(event.GetItem());
     wxASSERT(myItemData);
+    vrRenderer * myRenderer = NULL;
     if (myItemData->m_ItemType == vrTREEDATA_TYPE_LAYER) {
         int myItemIndex = _TreeToIndex(event.GetItem(), vrTREEDATA_TYPE_LAYER);
-        vrRenderer * myItemRenderer = GetViewerLayerManager()->GetRenderer(myItemIndex);
-        wxASSERT(myItemRenderer);
-        switch (myItemRenderer->GetRender()->GetType()) {
-            
-            case vrRENDER_VECTOR:
-                myPopMenu.Enable(vrID_POPUP_PEN_COLOR, true);
-                myPopMenu.Enable(vrID_POPUP_DRAWING_WIDTH, true);
-                myPopMenu.Enable(vrID_POPUP_BRUSH_COLOR, true);
-                myPopMenu.Enable(vrID_POPUP_BRUSH_SOLID, true);
-                myPopMenu.Enable(vrID_POPUP_BRUSH_TRANSPARENT, true);
-                myPopMenu.Enable(vrID_POPUP_BRUSH_BDIAGONAL, true);
-                
-                // check brush choice!
-            {
-                vrRenderVector * myRenderVector = (vrRenderVector*) GetViewerLayerManager()->GetRenderer(myItemIndex)->GetRender();
-                wxBrushStyle myBrushStyle = myRenderVector->GetBrushStyle();
-                switch (myBrushStyle) {
-                    case wxBRUSHSTYLE_SOLID:
-                        myPopMenu.Check(vrID_POPUP_BRUSH_SOLID, true);
-                        break;
-                        
-                    case wxBRUSHSTYLE_TRANSPARENT:
-                        myPopMenu.Check(vrID_POPUP_BRUSH_TRANSPARENT, true);
-                        break;
-   
-                    case wxBRUSHSTYLE_BDIAGONAL_HATCH:
-                        myPopMenu.Check(vrID_POPUP_BRUSH_BDIAGONAL, true);
-                        break;
-   
-                    default:
-                        wxFAIL;
-                        break;
-                }
-            }
-                break;
-                
-            case vrRENDER_VECTOR_C2P_DIPS:
-                myPopMenu.Enable(vrID_POPUP_DRAWING_WIDTH, true);
-                break;
-                
-            default:
-                break;
-
-        }
-    }    
+        myRenderer = GetViewerLayerManager()->GetRenderer(myItemIndex);
+        wxASSERT(myRenderer);
+    }
     
-	GetControl()->PopupMenu(&myPopMenu);
+    wxMenu * myMenu = CreateContextualMenu(myRenderer, m_UseGroupMenu);
+    wxASSERT(myMenu);
+    GetControl()->PopupMenu(myMenu);
     event.Skip();
 }
 
@@ -963,6 +956,7 @@ void vrViewerTOCTree::OnSetTransparency(wxCommandEvent & event) {
         wxASSERT(myRender);
         myRender->SetTransparency(myNumDlg.GetValue());
     }
+    SymbologyModified();
     ReloadData();
 }
 
