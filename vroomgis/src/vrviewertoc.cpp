@@ -1030,13 +1030,16 @@ void vrViewerTOCTree::OnDragStop(wxTreeEvent & event){
     
     if (myDataStop->m_ItemType == vrTREEDATA_TYPE_LAYER) {
         if (myItemStop == m_Tree->GetNextSibling(myItemStart)) {
+            if (m_AllreadyFreezed == false) {
+                FreezeEnd();
+            }
             return;
         }
         _MoveLayer(myItemStart, myItemStop);
         m_Tree->Delete(myItemStart);
     }
     
-    
+    SymbologyModified();
     if (m_AllreadyFreezed == false) {
         FreezeEnd();
     }
