@@ -48,7 +48,9 @@ private:
     vrViewerLayerManager * m_ViewerManager;
     
 protected:
-    virtual void ShowMenuContextual(vrRenderer * renderer);
+    virtual wxMenu * CreateContextualMenu(vrRenderer * renderer, bool usegroup=false);
+    virtual void SymbologyModified();
+
     void ReloadData();
     
     inline vrViewerLayerManager * GetViewerLayerManager() const;
