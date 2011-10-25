@@ -70,6 +70,7 @@ class vrSerialize
 		virtual vrSerialize &operator >> (wxColour & value);
 		virtual vrSerialize &operator >> (wxFont & value);
 		virtual vrSerialize &operator >> (int & value);
+        virtual vrSerialize &operator >> (wxBrushStyle & value);
 		
 				
 		

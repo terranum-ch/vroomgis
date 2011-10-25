@@ -152,11 +152,13 @@ bool vrRenderVector::Serialize(vrSerialize & serialobj) {
 		serialobj << GetColorPen();
 		serialobj << GetColorBrush();
 		serialobj << GetSize();
+        serialobj << GetBrushStyle();
 	}
 	else {
 		serialobj >> m_ColorPen;
 		serialobj >> m_ColorBrush;
 		serialobj >> m_Size;
+        serialobj >> m_BrushStyle;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();

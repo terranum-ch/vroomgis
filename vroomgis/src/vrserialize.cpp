@@ -240,6 +240,17 @@ vrSerialize & vrSerialize::operator >> (int & value)
 }
 
 
+
+vrSerialize & vrSerialize::operator >> (wxBrushStyle & value){
+   	wxString partstream = wxEmptyString;
+    if(ReadStream(partstream)){
+        value = (wxBrushStyle) ReadInt(partstream);
+    }
+    return * this;
+}
+
+
+
 bool vrSerialize::IsStoring()
 {
 	if (m_outdirection)
