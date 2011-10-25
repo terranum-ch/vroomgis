@@ -24,6 +24,7 @@
 #include "vrevent.h"
 #include "vrviewerlayermanager.h"
 #include "vrlayer.h"
+#include "vrlayervector.h"
 #include "vrrender.h"
 #include "vrrendervectorc2p.h"
 #include "vroomgis_bmp.h"
@@ -63,34 +64,42 @@ wxMenu * vrViewerTOC::CreateContextualMenu(vrRenderer * renderer, bool usegroup)
             case vrRENDER_VECTOR:
                 myPopMenu->Enable(vrID_POPUP_PEN_COLOR, true);
                 myPopMenu->Enable(vrID_POPUP_DRAWING_WIDTH, true);
-                myPopMenu->Enable(vrID_POPUP_BRUSH_COLOR, true);
-                myPopMenu->Enable(vrID_POPUP_BRUSH_SOLID, true);
-                myPopMenu->Enable(vrID_POPUP_BRUSH_TRANSPARENT, true);
-                myPopMenu->Enable(vrID_POPUP_BRUSH_BDIAGONAL, true);
-                
-                // check brush choice!
             {
-                vrRenderVector * myRenderVector = (vrRenderVector*) renderer;
-                wxBrushStyle myBrushStyle = myRenderVector->GetBrushStyle();
-                switch (myBrushStyle) {
-                    case wxBRUSHSTYLE_SOLID:
-                        myPopMenu->Check(vrID_POPUP_BRUSH_SOLID, true);
-                        break;
-                        
-                    case wxBRUSHSTYLE_TRANSPARENT:
-                        myPopMenu->Check(vrID_POPUP_BRUSH_TRANSPARENT, true);
-                        break;
-                        
-                    case wxBRUSHSTYLE_BDIAGONAL_HATCH:
-                        myPopMenu->Check(vrID_POPUP_BRUSH_BDIAGONAL, true);
-                        break;
-                        
-                    default:
-                        wxFAIL;
-                        break;
+                vrLayerVector * myVLayer = (vrLayerVector*) renderer->GetLayer();
+                if (myVLayer->GetGeometryType() == wkbPolygon || 
+                    myVLayer->GetGeometryType() == wkbPolygon25D || 
+                    myVLayer->GetGeometryType() == wkbMultiPolygon || 
+                    myVLayer->GetGeometryType() == wkbMultiPolygon25D) {
+                    
+                    myPopMenu->Enable(vrID_POPUP_BRUSH_COLOR, true);
+                    myPopMenu->Enable(vrID_POPUP_BRUSH_SOLID, true);
+                    myPopMenu->Enable(vrID_POPUP_BRUSH_TRANSPARENT, true);
+                    myPopMenu->Enable(vrID_POPUP_BRUSH_BDIAGONAL, true);
+                    
+                    // check brush choice!
+                    vrRenderVector * myRenderVector = (vrRenderVector*) renderer->GetRender();
+                    wxBrushStyle myBrushStyle = myRenderVector->GetBrushStyle();
+                    switch (myBrushStyle) {
+                        case wxBRUSHSTYLE_SOLID:
+                            myPopMenu->Check(vrID_POPUP_BRUSH_SOLID, true);
+                            break;
+                            
+                        case wxBRUSHSTYLE_TRANSPARENT:
+                            myPopMenu->Check(vrID_POPUP_BRUSH_TRANSPARENT, true);
+                            break;
+                            
+                        case wxBRUSHSTYLE_BDIAGONAL_HATCH:
+                            myPopMenu->Check(vrID_POPUP_BRUSH_BDIAGONAL, true);
+                            break;
+                            
+                        default:
+                            //wxFAIL;
+                            break;
+                    }
                 }
             }
                 break;
+              
                 
             case vrRENDER_VECTOR_C2P_DIPS:
                 myPopMenu->Enable(vrID_POPUP_DRAWING_WIDTH, true);
