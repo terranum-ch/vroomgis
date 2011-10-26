@@ -906,12 +906,17 @@ bool vrLayerRasterGDAL::GetData(wxBitmap * bmp, const vrRealRect & coord, double
 	// user transparency
 	int myUserTransparency = 255 - (render->GetTransparency() * 255 / 100);
 	if (myUserTransparency != 255) {
+        bool bTransparancyAdded = false;
+        if (myImg.HasAlpha() == false) {
+            myImg.SetAlpha();
+            bTransparancyAdded = true;
+        }
 		wxImagePixelData data(myImg);
 		wxImagePixelData::Iterator row (data);
 		for (int y = 0; y < myImgPos.GetHeight();y++){
 			wxImagePixelData::Iterator col = row;
 			for (int x = 0; x < myImgPos.GetWidth(); x++, ++row) {
-				if (row.Alpha() != 0) {
+				if (bTransparancyAdded == true || row.Alpha() != 0) {
 					row.Alpha() = myUserTransparency;
 				}
 			}
