@@ -2,7 +2,7 @@
  vrserialize.cpp
  for serializating object in a simple way
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -43,7 +43,7 @@ bool vrSerialize::CanRead ()
 		wxLogError(_T("Error, stream is in writing mode"));
 		return false;
 	}
-	
+
 	if (m_stream.IsEmpty())
 	{
 		wxLogWarning(_T("Nothing to read, stream empty"));
@@ -61,16 +61,17 @@ void vrSerialize::WriteInt (int value)
 	{
 		m_stream.Append(wxString::Format(_T("%d"),value));
 	}
-	
+
 }
 
 
 int vrSerialize::ReadInt (const wxString & part)
 {
 	long lvalue = 0;
-	if(!part.ToLong(&lvalue))
+	if(!part.ToLong(&lvalue)) {
 		wxLogError(_T("Error trying to convert string to integer"));
-	
+	}
+
 	return lvalue;
 }
 
@@ -81,7 +82,7 @@ bool vrSerialize::ReadStream (wxString & part)
 	if(CanRead())
 	{
 		if (m_divStream.HasMoreTokens())
-		{ 
+		{
 			part = m_divStream.GetNextToken();
 			return true;
 		}
@@ -170,7 +171,7 @@ vrSerialize & vrSerialize::operator <<(int value)
 		AddSeparator();
 	}
 	return * this;
-	
+
 }
 
 

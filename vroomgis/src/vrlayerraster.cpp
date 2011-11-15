@@ -76,13 +76,13 @@ bool vrLayerRaster::GetGeoTransform(wxArrayDouble & geotransform) {
 	if (m_Dataset == NULL) {
 		return false;
 	}
-	
+
 	double myTransform[] = {0,0,0,0,0,0};
 	if (m_Dataset->GetGeoTransform(&myTransform[0]) != CE_None) {
 		wxLogError(_("Error getting geotransform data!"));
 		return false;
 	}
-	
+
 	for (int i = 0; i< 6; i++) {
 		geotransform.Add(myTransform[i]);
 	}
@@ -483,7 +483,6 @@ bool vrLayerRasterGDAL::_GetRasterNoData(unsigned char ** imgdata, const wxSize 
 
 
 double vrLayerRasterGDAL::_ReadGDALValueToDouble(void* & data, const GDALDataType & type, int index) {
-	double val;
 
 	switch ( type )
 	{
@@ -506,7 +505,6 @@ double vrLayerRasterGDAL::_ReadGDALValueToDouble(void* & data, const GDALDataTyp
 			return (double) ((float *)data)[index];
 			break;
 		case GDT_Float64:
-			val = ((double *)data)[index];
 			return (double) ((double *)data)[index];
 			break;
 		default:
