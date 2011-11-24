@@ -241,3 +241,8 @@ bool vrLayerVectorC2P::DeleteFeature(long fid) {
 
 
 
+double vrLayerVectorC2P::GetNoDataValue() {
+    return -9999;
+}
+
+
