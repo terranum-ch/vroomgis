@@ -1029,6 +1029,9 @@ void vrViewerTOCTree::OnDragStop(wxTreeEvent & event){
     }
     
     vrViewerTOCTreeData * myDataStop = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItemStop);
+    if(myDataStop == NULL){
+        return;
+    }
     
     // drag into group
     if (myDataStop->m_ItemType == vrTREEDATA_TYPE_GROUP) {
