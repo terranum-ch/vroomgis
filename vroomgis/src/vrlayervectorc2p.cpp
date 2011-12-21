@@ -36,6 +36,7 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 	// iterating and drawing geometries
 	OGRPoint * myGeom = NULL;
 	long iCount = 0;
+    long iIgnored = 0;
 	double myWidth = 0, myHeight = 0;
 	gdc->GetSize(&myWidth, &myHeight);
 	wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
@@ -47,6 +48,14 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		myGeom = NULL;
 		myGeom = (OGRPoint*) myFeat->GetGeometryRef();
 		wxASSERT(myGeom);
+        
+        // filter nodata values
+        if (wxIsSameDouble(myGeom->getX(), GetNoDataValue()) &&
+            wxIsSameDouble(myGeom->getY(), GetNoDataValue())){
+            OGRFeature::DestroyFeature(myFeat);
+            iIgnored++;
+            continue;
+        }
 
 		// get direction
 		double myDir = myFeat->GetFieldAsDouble(1);
@@ -123,7 +132,7 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 	}
 
 	m_ObjectDrawn = iCount;
-	wxLogMessage("%ld dips drawed in %ldms", iCount, sw.Time());
+	wxLogMessage("%ld dips drawed (%ld ignored) in %ldms", iCount, iIgnored, sw.Time());
 	if (iCount == 0){
 		return false;
 	}
@@ -236,6 +245,55 @@ bool vrLayerVectorC2P::DeleteFeature(long fid) {
 	wxASSERT(m_Dataset);
 	OGRLayer * myLayer = m_Dataset->ExecuteSQL(myDelQuery.mb_str(), NULL, NULL);
 	wxASSERT(myLayer == NULL);
+	return true;
+}
+
+
+
+bool vrLayerVectorC2P::GetExtent(vrRealRect & rect) {
+	if (m_Layer == NULL) {
+		wxLogError("Layer isn't inited");
+		return false;
+	}
+    
+	wxASSERT(m_Layer);
+	m_Layer->SetSpatialFilter(NULL);
+	rect = vrRealRect();
+	if (m_Layer->GetFeatureCount() == 0) {
+		rect.SetLeftBottom(wxPoint2DDouble(0.0, 0.0));
+		rect.SetRightTop(wxPoint2DDouble(1000.0, 1000.0));
+		return true;
+	}
+    
+    OGREnvelope myExtent;
+    wxASSERT(myExtent.IsInit() == false);
+    while (1) {
+        OGRFeature * myFeat = m_Layer->GetNextFeature();
+        if (myFeat == NULL) {
+            break;
+        }
+        
+        OGRPoint *  myPt = (OGRPoint*) myFeat->GetGeometryRef();
+        wxASSERT(myPt);
+        
+        // filter nodata values
+        if (wxIsSameDouble(myPt->getX(), GetNoDataValue()) &&
+            wxIsSameDouble(myPt->getY(), GetNoDataValue())){
+            OGRFeature::DestroyFeature(myFeat);
+            continue;
+        }
+
+        myExtent.Merge(myPt->getX(), myPt->getY());
+        OGRFeature::DestroyFeature(myFeat);
+    }
+    
+    if (myExtent.IsInit() == false) {
+        myExtent.Merge(0.0, 0.0);
+        myExtent.Merge(1000.0,1000.0);
+    }
+    
+	rect.SetLeftBottom(wxPoint2DDouble(myExtent.MinX, myExtent.MinY));
+	rect.SetRightTop(wxPoint2DDouble(myExtent.MaxX, myExtent.MaxY));
 	return true;
 }
 
