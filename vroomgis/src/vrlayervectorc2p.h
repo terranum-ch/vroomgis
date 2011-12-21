@@ -53,6 +53,7 @@ class vrLayerVectorC2P : public vrLayerVectorOGR {
 	virtual long AddFeature(OGRGeometry * geometry, void * data = NULL);
 	virtual bool DeleteFeature(long fid);
     
+    virtual bool GetExtent(vrRealRect & rect);
     double GetNoDataValue();
 
 };
