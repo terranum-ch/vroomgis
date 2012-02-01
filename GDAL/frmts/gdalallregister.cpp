@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gdalallregister.cpp 21249 2010-12-13 23:43:02Z rouault $
+ * $Id: gdalallregister.cpp 23473 2011-12-05 22:17:02Z rouault $
  *
  * Project:  GDAL Core
  * Purpose:  Implementation of GDALAllRegister(), primary format registration.
@@ -30,7 +30,7 @@
 #include "gdal_priv.h"
 #include "gdal_frmts.h"
 
-CPL_CVSID("$Id: gdalallregister.cpp 21249 2010-12-13 23:43:02Z rouault $");
+CPL_CVSID("$Id: gdalallregister.cpp 23473 2011-12-05 22:17:02Z rouault $");
 
 #ifdef notdef
 // we may have a use for this some day
@@ -90,6 +90,7 @@ void CPL_STDCALL GDALAllRegister()
 #ifdef FRMT_nitf
     GDALRegister_NITF();
     GDALRegister_RPFTOC();
+    GDALRegister_ECRGTOC();
 #endif
 
 #ifdef FRMT_hfa
@@ -123,6 +124,7 @@ void CPL_STDCALL GDALAllRegister()
 
 #ifdef FRMT_aaigrid
     GDALRegister_AAIGrid();
+    GDALRegister_GRASSASCIIGrid();
 #endif
 
 #ifdef FRMT_sdts
@@ -139,6 +141,10 @@ void CPL_STDCALL GDALAllRegister()
 
 #ifdef FRMT_png
     GDALRegister_PNG();
+#endif
+
+#ifdef FRMT_gta
+    GDALRegister_GTA();
 #endif
 
 #ifdef FRMT_jpeg
@@ -382,6 +388,8 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_GTX();
     GDALRegister_LOSLAS();
     GDALRegister_NTv2();
+    GDALRegister_ACE2();
+    GDALRegister_SNODAS();
 #endif
 
 /* -------------------------------------------------------------------- */
@@ -481,9 +489,30 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_OZI();
 #endif
 
+#ifdef FRMT_ctg
+    GDALRegister_CTG();
+#endif
+
+#ifdef FRMT_e00grid
+    GDALRegister_E00GRID();
+#endif
+
+#ifdef FRMT_webp
+    GDALRegister_WEBP();
+#endif
+
+#ifdef FRMT_zmap
+    GDALRegister_ZMap();
+#endif
+
+#ifdef FRMT_ngsgeoid
+    GDALRegister_NGSGEOID();
+#endif
+
 #ifdef FRMT_c2d
 	GDALRegister_C2D();
 #endif
+
 /* -------------------------------------------------------------------- */
 /*      Deregister any drivers explicitly marked as supressed by the    */
 /*      GDAL_SKIP environment variable.                                 */
