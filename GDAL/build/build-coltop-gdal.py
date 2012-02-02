@@ -10,6 +10,7 @@ Copyright (c) 2012 . All rights reserved.
 import sys
 import os
 import shutil
+import lsutilities
 
 
 def ConfigureGDAL(gdalpath):
@@ -32,6 +33,51 @@ def ConfigureGDAL(gdalpath):
 
 
 
+def buildUnix(gdalpath):
+	"""docstring for buildUnix"""
+	doSysLib = lsutilities.askUserWithCheck("Use sytem libs (s), framework (f) or user defined path (p) for GEOS and PROJ ? ", ["s", "S", "f", "F", "p", "P"])
+	libprefix = input ("GDAL installation directory : ")
+	geos_path = ""
+	proj_path = ""
+	
+	# BUILD COMMAND
+	command = "./configure --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no"
+	
+	if (doSysLib == 'S'): #SYSTEM
+		geos_path = "/usr/bin"
+		proj_path = "/usr"
+	elif (doSysLib == 'F'): #FRAMEWORK 
+		geos_path = libprefix + os.sep + "GEOS.framework"
+		proj_path = libprefix + os.sep + "PROJ.framework"
+	else: #USER DEFINED
+		geos_path = libprefix + os.sep + "bin"	
+		proj_path = libprefix
+	
+	command = command.format(libprefix, geos_path+os.sep+"geos-config", proj_path)
+	print (command)
+	isSucess = lsutilities.runProcess(command, gdalpath, "Configuring GDAL with C2D support")
+	if (isSucess == True):
+		if (lsutilities.askUserWithCheck("Build GDAL now ?: ") == 'Y'):
+			lsutilities.runProcess("make --jobs={}; make install".format(lsutilities.CountProcessor()), gdalpath, "Building GDAL with C2D support")
+	
+	pass
+
+
 if __name__ == '__main__':
-	ConfigureGDAL("/Users/lucien/Desktop/test")
+	print ("-----------------------------------------")
+	print ("CONFIGURE AND BUILD GDAL WITH C2D SUPPORT")
+	print ("-----------------------------------------")
+	
+	gdalpath = input ("GDAL path : ")
+	if (lsutilities.askUserWithCheck("Add C2D support ? [Y / N] ") == 'Y'):
+		ConfigureGDAL(gdalpath)
+	
+	# PLATEFORM DETECTION
+	if("nt" in os.name): #WINDOWS
+		print ("Windows System")
+	else:
+		print ("Unix system detected!")
+		buildUnix(gdalpath)
+	
+	
 
