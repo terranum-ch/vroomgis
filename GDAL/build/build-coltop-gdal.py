@@ -62,6 +62,17 @@ def buildUnix(gdalpath):
 	
 	pass
 
+	
+def buildWindows(gdalpath):
+	if(lsutilities.askUserWithCheck("Is nmake.opt configured ? [Y / N]: ")=="N"):
+		exit()
+	if(lsutilities.runProcess("nmake -f makefile.vc", gdalpath, "Building GDAL")==True):
+		lsutilities.runProcess("nmake -f makefile.vc install", gdalpath, "Installing GDAL")
+		lsutilities.runProcess("nmake -f makefile.vc devinstall", gdalpath, "Dev-Installing GDAL")
+	pass
+
+	
+
 
 if __name__ == '__main__':
 	print ("-----------------------------------------")
@@ -75,6 +86,7 @@ if __name__ == '__main__':
 	# PLATEFORM DETECTION
 	if("nt" in os.name): #WINDOWS
 		print ("Windows System")
+		buildWindows(gdalpath)
 	else:
 		print ("Unix system detected!")
 		buildUnix(gdalpath)
