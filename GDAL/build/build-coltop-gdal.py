@@ -41,7 +41,7 @@ def buildUnix(gdalpath):
 	proj_path = ""
 	
 	# BUILD COMMAND
-	command = "./configure --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no"
+	command = "./configure --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no --with-jasper=no --with-jpeg=internal"
 	
 	if (doSysLib == 'S'): #SYSTEM
 		geos_path = "/usr/bin"
