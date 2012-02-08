@@ -31,16 +31,34 @@ vrLabel::vrLabel(const wxFont & font, const wxColour & color) {
 	m_Color = color;
 }
 
+
+
 vrLabel::~vrLabel() {
 }
+
+
 
 void vrLabel::SetFont(wxFont value) {
   m_Font = value;
 }
 
+
+
 void vrLabel::SetColor(wxColor value) {
   m_Color = value;
 }
+
+
+void vrLabel::SetActive(bool value) {
+    m_Active = value;
+}
+
+
+
+void vrLabel::SetField(int value) {
+    m_Field = value;
+}
+
 
 
 bool vrLabel::Serialize(vrSerialize & serialobj) {
