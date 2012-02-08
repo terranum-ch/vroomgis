@@ -1,9 +1,9 @@
 /***************************************************************************
-								vrlabel.h
-				Label definition class
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrlabel.h
+ Label definition class
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -23,34 +23,61 @@
 #endif
 #include "vrserialize.h"
 
+class OGRGeometry;
+class vrRender;
+
 
 class vrLabel {
-  private:
+private:
     wxFont m_Font;
     wxColor m_Color;
-
-
-  public:
+    bool m_Active;
+    int m_Field;
+    
+public:
     vrLabel(const wxFont & font = wxNullFont , const wxColour & color = *wxBLACK);
     virtual ~vrLabel();
-
+    
     inline const wxFont GetFont() const;
     inline const wxColor GetColor() const;
-
+    
     void SetFont(wxFont value);
     void SetColor(wxColor value);
-	
-	bool Serialize(vrSerialize & serialobj);
+    
+    inline const bool IsActive() const;
+    void SetActive(bool value);
+    
+    inline const int GetField() const;
+    void SetField(int value);
+    
+	virtual bool Serialize(vrSerialize & serialobj);
+    
+    virtual bool AddFeature(long fid, OGRGeometry * geom, const wxString & text, double rotation = 0.0){return false;}
+    virtual bool Draw(wxGraphicsContext * gdc, const wxRect2DDouble & coord, vrRender * render, double pixsize = 0){return false;}
 };
 
 
 inline const wxFont vrLabel::GetFont() const {
-  return m_Font;
+    return m_Font;
 }
+
 
 
 inline const wxColor vrLabel::GetColor() const {
-  return m_Color;
+    return m_Color;
 }
+
+
+
+inline const bool vrLabel::IsActive() const {
+    return m_Active;
+}
+
+
+
+inline const int vrLabel::GetField() const {
+    return m_Field;
+}
+
 
 #endif
