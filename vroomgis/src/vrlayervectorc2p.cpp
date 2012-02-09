@@ -20,7 +20,7 @@
 #include "vrlabel.h"
 
 bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-								   const vrRender * render, const vrLabel * label, double pxsize) {
+								   const vrRender * render, vrLabel * label, double pxsize) {
 	m_ObjectDrawn = 0;
 	wxASSERT(gdc);
 	wxStopWatch sw;
@@ -107,10 +107,10 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 			myDefaultPen.SetWidth(myRender->GetSize());
 		}
         wxPen myActualPen = myDefaultPen;
-		//gdc->SetPen(myDefaultPen);
+        int bselected = 0;
 		if (IsFeatureSelected(myFeat->GetFID())==true) {
-			//gdc->SetPen(mySelPen);
             myActualPen = mySelPen;
+            bselected = 1;
 		}
 
         // draw outline if asked
@@ -125,6 +125,15 @@ bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		gdc->SetPen(myActualPen);
 		gdc->StrokePath(myHPath);
 		gdc->StrokePath(myVPath);
+        
+        // label feature
+        if (label != NULL && label->IsActive() == true) {
+            OGRPoint myImgPt;
+            myImgPt.setX(myPt.x);
+            myImgPt.setY(myPt.y);
+            label->AddFeature(bselected, &myImgPt, wxString::Format("%1.f", myFeat->GetFieldAsDouble(0)), myDir);
+            label->Draw(gdc, coord, render, pxsize);
+        }
 
 
 		OGRFeature::DestroyFeature(myFeat);

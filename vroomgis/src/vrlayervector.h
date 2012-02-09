@@ -87,7 +87,7 @@ protected:
 	virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							const vrRender * render, const vrLabel * label, double pxsize);
 	virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							 const vrRender * render, const vrLabel * label, double pxsize);
+							 const vrRender * render, vrLabel * label, double pxsize);
     virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							   const vrRender * render, const vrLabel * label, double pxsize);
     virtual bool _DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
@@ -107,9 +107,9 @@ public:
 
 	virtual bool GetExtent(vrRealRect & rect);
 	virtual bool GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
-							   const vrRender * render = NULL, const vrLabel * label = NULL);
+							   const vrRender * render = NULL, vrLabel * label = NULL);
 	virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,
-						 const vrRender * render = NULL, const vrLabel * label = NULL);
+						 const vrRender * render = NULL, vrLabel * label = NULL);
 
 
     bool SetAttributeFilter(const wxString & query);

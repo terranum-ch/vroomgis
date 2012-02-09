@@ -53,7 +53,7 @@ public:
 	virtual bool Serialize(vrSerialize & serialobj);
     
     virtual bool AddFeature(long fid, OGRGeometry * geom, const wxString & text, double rotation = 0.0){return false;}
-    virtual bool Draw(wxGraphicsContext * gdc, const wxRect2DDouble & coord, vrRender * render, double pixsize = 0){return false;}
+    virtual bool Draw(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, double pixsize = 0){return false;}
 };
 
 

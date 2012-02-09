@@ -114,9 +114,9 @@ public:
 	
 	virtual bool GetExtent(vrRealRect & rect);
 	virtual bool GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
-						 const vrRender * render = NULL, const vrLabel * label = NULL);
+						 const vrRender * render = NULL, vrLabel * label = NULL);
 	virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,
-						 const vrRender * render = NULL, const vrLabel * label = NULL);
+						 const vrRender * render = NULL, vrLabel * label = NULL);
 
 	
 	virtual bool GetPixelValue(double coordx, double coordy, wxArrayDouble & values);

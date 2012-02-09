@@ -439,7 +439,7 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 
 
 bool vrLayerVectorOGR::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-								   const vrRender * render, const vrLabel * label, double pxsize) {
+								   const vrRender * render, vrLabel * label, double pxsize) {
 	m_ObjectDrawn = 0;
 	wxASSERT(gdc);
 	wxStopWatch sw;
@@ -794,7 +794,7 @@ bool vrLayerVectorOGR::GetExtent(vrRealRect & rect) {
 
 
 bool vrLayerVectorOGR::GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
-									 const vrRender * render, const vrLabel * label) {
+									 const vrRender * render, vrLabel * label) {
 	wxASSERT(m_Layer);
 	wxASSERT(render);
 
@@ -896,7 +896,7 @@ bool vrLayerVectorOGR::GetDataThread(wxImage * bmp, const vrRealRect & coord,  d
 
 
 bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,
-							   const vrRender * render, const vrLabel * label) {
+							   const vrRender * render, vrLabel * label) {
 	wxASSERT(m_Layer);
 	wxASSERT(render);
 
