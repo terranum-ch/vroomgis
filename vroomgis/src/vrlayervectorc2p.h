@@ -35,7 +35,7 @@ class vrLabel;
 class vrLayerVectorC2P : public vrLayerVectorOGR {
   protected:
     virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							 const vrRender * render, const vrLabel * label, double pxsize);
+							 const vrRender * render, vrLabel * label, double pxsize);
     virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							const vrRender * render, const vrLabel * label, double pxsize);
     virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,

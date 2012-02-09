@@ -29,6 +29,8 @@ vrLabel::vrLabel(const wxFont & font, const wxColour & color) {
 	}
 
 	m_Color = color;
+    SetActive(false);
+    SetField(wxNOT_FOUND);
 }
 
 
@@ -66,10 +68,14 @@ bool vrLabel::Serialize(vrSerialize & serialobj) {
 	if (serialobj.IsStoring()) {
 		serialobj << m_Font;
 		serialobj << m_Color;
+        serialobj << m_Field;
+        serialobj << m_Active;
 	}
 	else {
 		serialobj >> m_Font;
 		serialobj >> m_Color;
+        serialobj >> m_Field;
+        serialobj >> m_Active;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();
