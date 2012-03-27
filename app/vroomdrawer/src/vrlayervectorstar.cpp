@@ -22,7 +22,7 @@
 
 
 bool vrLayerVectorStar::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-								   const vrRender * render, const vrLabel * label, double pxsize) {
+								   const vrRender * render, vrLabel * label, double pxsize) {
 	m_ObjectDrawn = 0;
 	wxASSERT(gdc);
 	wxStopWatch sw;
