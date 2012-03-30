@@ -22,6 +22,10 @@
 #include "vrdisplayvalue.h"	// for displaying values
 #include <lsversion_dlg.h>
 #include "vrrendervectorc2p.h"
+#include "vrlayervector.h"
+#include  "vrshapeeditor.h"
+#include "vrdisplaytool.h"
+
 
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
@@ -78,6 +82,12 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomLoaderFrame::OnToolAction)
+
+    EVT_TOGGLEBUTTON(vlID_EDIT_BTN, vroomLoaderFrame::OnStartEditingButton)
+    EVT_UPDATE_UI(vlID_EDIT_CHOICE, vroomLoaderFrame::OnUpdateUIEditType)
+    EVT_MENU(vlID_DRAW_MENU, vroomLoaderFrame::OnToolDraw)
+
+EVT_UPDATE_UI_RANGE(vlID_DRAW_MENU, vlID_MODIFY_MENU, vroomLoaderFrame::OnUpdateUIDrawMenu)
 END_EVENT_TABLE()
 
 
@@ -92,6 +102,7 @@ bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y,
 	if (filenames.GetCount() == 0) {
 		return false;
 	}
+    
 
 	m_LoaderFrame->OpenLayers(filenames);
 	return true;
@@ -112,6 +123,22 @@ void  vroomLoaderFrame::_CreateControls()
 	m_panel1 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
+    
+    // Edition panel
+    wxBoxSizer* bSizer41;
+	bSizer41 = new wxBoxSizer( wxHORIZONTAL );
+	
+	wxString m_EditTypeCtrlChoices[] = { _("Points"), _("Lines"), _("Polygons") };
+	int m_EditTypeCtrlNChoices = sizeof( m_EditTypeCtrlChoices ) / sizeof( wxString );
+	m_EditTypeCtrl = new wxChoice( m_panel1, vlID_EDIT_CHOICE, wxDefaultPosition, wxDefaultSize, m_EditTypeCtrlNChoices, m_EditTypeCtrlChoices, 0 );
+	m_EditTypeCtrl->SetSelection( 0 );
+	bSizer41->Add( m_EditTypeCtrl, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	
+	m_EditStartCtrl = new wxToggleButton( m_panel1, vlID_EDIT_BTN, _("Start editing"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer41->Add( m_EditStartCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	bSizer4->Add( bSizer41, 0, wxEXPAND, 5 );
+    
+    
 
     m_TocCtrl = new vrViewerTOCTree( m_panel1, wxID_ANY);
 	bSizer4->Add( m_TocCtrl->GetControl(), 2, wxEXPAND, 5 );
@@ -177,6 +204,9 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
 	toolMenu->Append(wxID_MOVE_FRAME, "Pan\tCtrl+P", "Select the pan tool");
 	toolMenu->AppendSeparator();
+    toolMenu->Append(vlID_DRAW_MENU, _("Draw\tCtrl+D"), _("Select the draw tool!"));
+    toolMenu->Append(vlID_MODIFY_MENU, _("Modify\tCtrl+M"), _("Select the modify tool!"));
+    toolMenu->AppendSeparator();
 	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to All layers\tCtrl+0", "Zoom view to the full extent of all layers");
 	toolMenu->Append(wxID_ZOOM_100, "Zoom to visible layers", "Zoom view to the full extent of all visible layers");
 	toolMenu->AppendSeparator();
@@ -595,4 +625,172 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 	wxDELETE(myMsg);
 }
 
+
+
+void vroomLoaderFrame::OnStartEditingButton( wxCommandEvent & event ){
+    if (event.IsChecked() == true) {
+        _StartEdition();
+    }
+    else {
+        _StopEdition();
+    }
+}
+
+
+
+void vroomLoaderFrame::OnUpdateUIEditType ( wxUpdateUIEvent & event){
+    event.Enable(!m_EditStartCtrl->GetValue());
+}
+
+
+
+void vroomLoaderFrame::_StartEdition(){
+    wxLogMessage("Edition Started!");
+
+    // add a layer of selected type into memory
+    wxFileName myMemoryLayerName ("", m_EditTypeCtrl->GetString(m_EditTypeCtrl->GetSelection()), "memory");
+	wxASSERT(myMemoryLayerName.GetExt() == "memory");
+	
+	m_ViewerLayerManager->FreezeBegin();
+	vrLayerVectorOGR * myLayer = new vrLayerVectorOGR();
+    int mySpatialTypes [] = {wkbPoint, wkbLineString, wkbPolygon};
+	if(myLayer->Create(myMemoryLayerName, 
+                       mySpatialTypes[m_EditTypeCtrl->GetSelection()])==false){
+		wxFAIL;
+	}
+	m_LayerManager->Add(myLayer);
+	m_ViewerLayerManager->Add(-1, myLayer);
+	m_ViewerLayerManager->FreezeEnd();
+}
+
+
+
+void vroomLoaderFrame::_StopEdition(){
+    wxLogMessage("Edition Stopped!");
+    
+    m_ViewerLayerManager->FreezeBegin();
+	for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
+		if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_MEMORY) {
+			vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(i);
+			vrLayer * myLayer = myRenderer->GetLayer();
+			wxASSERT(myRenderer);
+			m_ViewerLayerManager->Remove(myRenderer);
+			// close layer (not used anymore);
+			m_LayerManager->Close(myLayer);
+		}
+	}
+    m_ViewerLayerManager->FreezeEnd();
+}
+
+
+
+void vroomLoaderFrame::OnUpdateUIDrawMenu (wxUpdateUIEvent & event){
+    event.Enable(m_EditStartCtrl->GetValue());
+}
+
+
+
+void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
+    m_DisplayCtrl->SetTool(new vrDisplayToolSight(m_DisplayCtrl));
+}
+
+
+
+void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
+    
+}
+
+
+/*
+void ctPlugin::OnToolDip(wxCommandEvent & event) {
+	wxLogMessage(_("Selecting dip tool"));
+	wxASSERT(m_ParentFrame);
+	ctDisplayToolEditDips * myDipTool = new ctDisplayToolEditDips(m_ParentFrame->GetViewerLayerManager()->GetDisplay());
+	m_ParentFrame->GetViewerLayerManager()->GetDisplay()->SetTool(myDipTool);
+}
+
+
+
+void ctPlugin::OnToolDipAction(wxCommandEvent & event) {
+	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
+	wxASSERT(myMsg);
+    
+	if (_IsEditDipsReady() == false) {
+		wxLogError(_("Editing DIPS not allowed, be sure to have a C2D file selected"));
+		wxDELETE(myMsg);
+		return;
+	}
+    
+	// search specified C2D layer
+	wxASSERT(m_ParentFrame);
+	vrViewerLayerManager * myLayerManager = m_ParentFrame->GetViewerLayerManager();
+	wxASSERT(myLayerManager);
+	int iC2DIndex = wxNOT_FOUND;
+	for (int i = 0; i<myLayerManager->GetCount(); i++) {
+		if (myLayerManager->GetRenderer(i)->GetLayer()->GetFileName() == m_InspectorData.m_C2DLayerName) {
+			iC2DIndex = i;
+			break;
+		}
+	}
+	wxASSERT(iC2DIndex != wxNOT_FOUND);
+    
+	vrLayerRasterC2D * myC2D = (vrLayerRasterC2D*) myLayerManager->GetRenderer(iC2DIndex)->GetLayer();
+	wxASSERT(myC2D);
+    
+	// convert coordinates
+	wxPoint2DDouble myRealPt;
+	myLayerManager->GetDisplay()->GetCoordinate()->ConvertFromPixels(myMsg->m_Position, myRealPt);
+    
+    
+	// get pixel value
+	wxArrayDouble myValues;
+	myC2D->GetPixelValue(myRealPt.m_x, myRealPt.m_y, myValues);
+	if (myValues.GetCount() != 3){
+		wxLogError(_("Unable to get Dip information at\ncoordinate : %.2f : %.2f"),
+				   myRealPt.m_x, myRealPt.m_y);
+		wxDELETE(myMsg);
+		return;
+	}
+    
+    
+	// get C2P layer
+	vrRenderer * myC2PRenderer = _GetDipRenderer();
+	wxASSERT(myC2PRenderer);
+    
+	ctShapeEditorPointDips myEditor (myLayerManager->GetDisplay());
+	myEditor.AddVertex(myRealPt);
+	myEditor.SetDipFamily(m_InspectorData.m_FamilyID);
+	myEditor.SetDipDirection(myValues.Item(2));
+	myEditor.DrawShape(myC2PRenderer->GetRender());
+    
+	// TODO: this is temp code for validating convertion to and from real coordinates
+	wxPoint myComputedPt;
+	myLayerManager->GetDisplay()->GetCoordinate()->ConvertToPixels(myRealPt, myComputedPt);
+	if (myMsg->m_Position != myComputedPt){
+		wxLogMessage(_("Computing pixel position error:\noriginal: %d, %d\ncomputed: %d, %d"),
+                     myMsg->m_Position.x, myMsg->m_Position.y, myComputedPt.x, myComputedPt.y);
+	}
+    
+	myValues.Add(m_InspectorData.m_FamilyID);
+	long myNewFID = ((vrLayerVectorC2P *) myC2PRenderer->GetLayer())->AddFeature(myEditor.GetGeometryRef(), &myValues);
+    
+	m_ParentFrame->GetProjectManager()->SetModified(true);
+	wxLogMessage(_("Dips value: (Alt) %.2f,(Dip) %.2f,(Dir) %.2f"), myValues.Item(0), myValues.Item(1), myValues.Item(2));
+	wxDELETE(myMsg);
+    
+	DataFrame * myDFrame = (DataFrame*) wxWindow::FindWindowById (WINDOW_DATA_MANAGER);
+	if (myDFrame != NULL) {
+		if (myNewFID == wxNOT_FOUND) {
+			wxLogWarning(_("Unable to live update Data Manager! Please close the Data Manager Window"));
+			return;
+		}
+		myDFrame->EditPanel(DATAPANEL_TYPE_DIP, DP_ADD , myNewFID, NULL);
+	}
+    
+	ctStereonetFrame * mySFrame = (ctStereonetFrame*) wxWindow::FindWindowById(WINDOW_CT_STEREONET);
+	if (mySFrame != NULL) {
+		mySFrame->ReloadStereonet();
+	}
+}
+*/
 
