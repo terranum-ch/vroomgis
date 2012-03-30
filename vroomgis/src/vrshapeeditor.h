@@ -65,5 +65,24 @@ public:
     virtual void DrawShape(vrRender * render);
 	
 };
+
+
+
+
+/*************************************************************************************//**
+@brief Drawing temporary shape
+@author Lucien Schreiber copyright CREALP
+@date 30 mars 2012
+*****************************************************************************************/
+class vrShapeEditorLine : public vrShapeEditor {
+public:
+    vrShapeEditorLine(vrViewerDisplay * display);
+    virtual ~vrShapeEditorLine();
+    
+    virtual bool AddVertex(const wxPoint2DDouble & point);
+    virtual void DrawShape(vrRender * render);
+};
+
+
 #endif
 

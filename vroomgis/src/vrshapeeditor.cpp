@@ -84,3 +84,70 @@ void vrShapeEditorPoint::DrawShape(vrRender * render) {
 #endif
 }
 
+
+
+
+
+
+vrShapeEditorLine::vrShapeEditorLine(vrViewerDisplay * display) : vrShapeEditor(display) {
+    if (m_Geometry == NULL) {
+		m_Geometry = OGRGeometryFactory::createGeometry(wkbLineString);
+	}
+}
+
+
+
+vrShapeEditorLine::~vrShapeEditorLine() {
+    // geometry destruction in parent
+}
+
+
+
+bool vrShapeEditorLine::AddVertex(const wxPoint2DDouble & point) {
+    OGRPoint myPt;
+    myPt.setX(point.m_x);
+    myPt.setY(point.m_y);
+    
+    wxASSERT(m_Geometry);
+    OGRLineString * myLine = (OGRLineString*) m_Geometry;
+    
+    // Check that the vertex that we are trying to add is not equal to the last vertex
+    OGRPoint myLastPoint;
+    myLine->getPoint(myLine->getNumPoints()-1, &myLastPoint);
+    wxASSERT(myLastPoint.IsValid() == true);
+    if (myLastPoint.Equals(&myPt)==true) {
+        wxLogMessage(_("Point: %.3f, %.3f already exists"),point.m_x, point.m_y);
+        return false;
+    }
+    
+    myLine->addPoint(&myPt);
+    return true;
+}
+
+
+
+void vrShapeEditorLine::DrawShape(vrRender * render) {
+    wxASSERT(m_Display);
+	wxASSERT(m_Geometry);
+	
+    wxASSERT(render->GetType() == vrRENDER_VECTOR);
+	vrRenderVector * myRender = (vrRenderVector*) render;
+	wxPen myPen (myRender->GetColorPen(),
+				 myRender->GetSize());
+
+	wxClientDC myDC ((wxWindow*)m_Display);
+	myDC.SetPen(myPen);
+	
+    OGRLineString * myLine = (OGRLineString*) m_Geometry;
+    wxPoint * myPts = new wxPoint[myLine->getNumPoints()];
+    for (int i = 0; i<myLine->getNumPoints(); i++) {
+        wxPoint2DDouble myRealPt (myLine->getX(i), myLine->getY(i));
+        wxPoint myPxPt = wxDefaultPosition;
+        m_Display->GetCoordinate()->ConvertToPixels(myRealPt, myPxPt);
+        myPts[i] = myPxPt;
+    }
+    myDC.DrawLines(myLine->getNumPoints(), myPts);
+    wxDELETEA(myPts);    
+}
+
+

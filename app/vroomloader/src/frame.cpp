@@ -16,19 +16,14 @@
  ***************************************************************************/
 
 #include "frame.h"
-#include <wx/filepicker.h>
-
-#include "tmlog.h"	// for double logging process
-#include "vrdisplayvalue.h"	// for displaying values
+#include "tmlog.h"              // for double logging process
+#include "vrdisplayvalue.h"     // for displaying raster values
 #include <lsversion_dlg.h>
 #include "vrrendervectorc2p.h"
 #include "vrlayervector.h"
-#include  "vrshapeeditor.h"
+#include "vrshapeeditor.h"
 #include "vrdisplaytool.h"
-
-
-#include "../../../vroomgis/art/vroomgis_bmp.cpp"
-
+#include "vroomgis_bmp.h"
 
 // enable XP style controls
 #if defined(__WXMSW__) && !defined(__WXWINCE__) 
@@ -82,6 +77,9 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomLoaderFrame::OnToolAction)
+    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT, vroomLoaderFrame::OnToolDrawAction)
+    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT_FINISHED, vroomLoaderFrame::OnToolDrawAction)
+
 
     EVT_TOGGLEBUTTON(vlID_EDIT_BTN, vroomLoaderFrame::OnStartEditingButton)
     EVT_UPDATE_UI(vlID_EDIT_CHOICE, vroomLoaderFrame::OnUpdateUIEditType)
@@ -97,13 +95,11 @@ vroomDropFiles::vroomDropFiles(vroomLoaderFrame * parent){
 }
 
 
-bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y,
-								 const wxArrayString & filenames){
+bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y,const wxArrayString & filenames){
 	if (filenames.GetCount() == 0) {
 		return false;
 	}
     
-
 	m_LoaderFrame->OpenLayers(filenames);
 	return true;
 }
@@ -134,12 +130,11 @@ void  vroomLoaderFrame::_CreateControls()
 	m_EditTypeCtrl->SetSelection( 0 );
 	bSizer41->Add( m_EditTypeCtrl, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_EditStartCtrl = new wxToggleButton( m_panel1, vlID_EDIT_BTN, _("Start editing"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_EditStartCtrl = new wxToggleButton( m_panel1, vlID_EDIT_BTN, _("Start editing"));
 	bSizer41->Add( m_EditStartCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	bSizer4->Add( bSizer41, 0, wxEXPAND, 5 );
     
     
-
     m_TocCtrl = new vrViewerTOCTree( m_panel1, wxID_ANY);
 	bSizer4->Add( m_TocCtrl->GetControl(), 2, wxEXPAND, 5 );
     m_TocCtrl->SetUseGroupMenu(true);
@@ -173,7 +168,6 @@ void  vroomLoaderFrame::_CreateControls()
 	bSizer1->Add( m_splitter2, 1, wxEXPAND, 5 );
 
 	this->SetSizer( bSizer1 );
-	//this->Layout();
 }
 
 
@@ -182,7 +176,6 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 {
 	m_PerfLogFile = wxFileName(wxGetHomeDir(), "vroomgis-performance.txt");
 	
-
 	wxIcon myVroomGISIcon;
 	myVroomGISIcon.CopyFromBitmap(*_img_vroomgis_sml);
 	SetIcon(myVroomGISIcon);
@@ -266,7 +259,6 @@ vroomLoaderFrame::~vroomLoaderFrame()
 	m_DisplayCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomLoaderFrame::OnKeyDown),NULL, this);
 	m_DisplayCtrl->Disconnect(wxEVT_KEY_UP, wxKeyEventHandler(vroomLoaderFrame::OnKeyUp),NULL, this);
 
-	
 	// don't delete m_ViewerLayerManager, will be deleted by the manager
 	wxDELETE(m_LayerManager);
 
@@ -277,15 +269,13 @@ vroomLoaderFrame::~vroomLoaderFrame()
 
 
 
-void vroomLoaderFrame::OnQuit(wxCommandEvent& event)
-{
+void vroomLoaderFrame::OnQuit(wxCommandEvent& event){
 	event.Skip();
 }
 
 
 
-void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
-{
+void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event)){
 	lsVersionDlg * myDlg = new lsVersionDlg(this, wxID_ANY, "About");
 	myDlg->SetBitmapLogo(*_img_vroomgis);
 	myDlg->ShowModal();
@@ -325,16 +315,13 @@ bool vroomLoaderFrame::OpenLayers (const wxArrayString & names){
 
 }
 
-void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
-{
+void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event){
 /*
     wxArrayString myTestFile;
     myTestFile.Add("/home/lucien/programmation/ColtopGIS/test_data/mntmo.c2d");
     OpenLayers(myTestFile);
     return;
 */
-
-
 	vrDrivers myDrivers;
 	wxFileDialog myFileDlg (this, "Select GIS Layers",
 							wxEmptyString,
@@ -358,7 +345,6 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent & event)
 
 
 void vroomLoaderFrame::OnCloseLayer(wxCommandEvent & event){
-
 	wxArrayString myLayersName;
 	for (int i = 0; i<m_ViewerLayerManager->GetCount(); i++) {
 		vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(i);
@@ -400,18 +386,14 @@ void vroomLoaderFrame::OnCloseLayer(wxCommandEvent & event){
 	}
 
 	m_ViewerLayerManager->FreezeEnd();
-
-
-
-
 }
 
 
 
-void vroomLoaderFrame::OnShowLog (wxCommandEvent & event)
-{
+void vroomLoaderFrame::OnShowLog (wxCommandEvent & event){
 	m_LogWnd->Show(true);
 }
+
 
 
 void vroomLoaderFrame::OnKeyDown(wxKeyEvent & event){
@@ -436,6 +418,8 @@ void vroomLoaderFrame::OnKeyDown(wxKeyEvent & event){
 	event.Skip();
 }
 
+
+
 void vroomLoaderFrame::OnKeyUp(wxKeyEvent & event){
 	if (m_KeyBoardState.GetModifiers() != wxMOD_CMD) {
 		event.Skip();
@@ -453,6 +437,7 @@ void vroomLoaderFrame::OnKeyUp(wxKeyEvent & event){
 	}
 	event.Skip();
 }
+
 
 
 void vroomLoaderFrame::OnToolSelect (wxCommandEvent & event){
@@ -473,8 +458,7 @@ void vroomLoaderFrame::OnToolPan (wxCommandEvent & event){
 
 
 
-void vroomLoaderFrame::OnToolZoomToFit (wxCommandEvent & event)
-{
+void vroomLoaderFrame::OnToolZoomToFit (wxCommandEvent & event){
 	if (event.GetId() == wxID_ZOOM_100) {
 		m_ViewerLayerManager->ZoomToFit(true);
 	}
@@ -484,6 +468,7 @@ void vroomLoaderFrame::OnToolZoomToFit (wxCommandEvent & event)
 
 	m_ViewerLayerManager->Reload();
 }
+
 
 
 void vroomLoaderFrame::OnMoveLayer (wxCommandEvent & event){
@@ -523,7 +508,6 @@ void vroomLoaderFrame::OnMoveLayer (wxCommandEvent & event){
 
 
 void vroomLoaderFrame::OnToolDisplayValue (wxCommandEvent & event){
-
 	m_DisplayValueDlg = (vrDisplayValueDlg*) wxWindow::FindWindowById(vlID_DISPLAY_VALUE_DLG);
 	if(m_DisplayValueDlg != NULL) {
 		m_DisplayValueDlg->Raise();
@@ -549,10 +533,10 @@ void vroomLoaderFrame::OnLogPerformance (wxCommandEvent & event){
 }
 
 
+
 void vroomLoaderFrame::OnEngineThreaded (wxCommandEvent & event){
 	m_ViewerLayerManager->SetEngineThreaded(!event.IsChecked());
 }
-
 
 
 
@@ -691,13 +675,21 @@ void vroomLoaderFrame::OnUpdateUIDrawMenu (wxUpdateUIEvent & event){
 
 
 void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
-    m_DisplayCtrl->SetTool(new vrDisplayToolSight(m_DisplayCtrl));
+    wxLogMessage("setting edit tool");
+    m_DisplayCtrl->SetTool(new vrDisplayToolEditLine (m_DisplayCtrl));
 }
 
 
 
 void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
-    
+    vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
+	wxASSERT(myMsg);
+    if (myMsg->m_EvtType == vrEVT_TOOL_EDIT) {
+        wxLogMessage("Clicked: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
+    }else if (myMsg->m_EvtType == vrEVT_TOOL_EDIT_FINISHED){
+        wxLogMessage("Finished: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
+    }
+    wxDELETE(myMsg);      
 }
 
 

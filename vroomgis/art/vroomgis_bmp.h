@@ -15,6 +15,7 @@ extern wxBitmap *_img_vroomgis;
 extern wxBitmap *_img_vroomgis_sml; // 32x32 px
 
 // cursors
+extern wxBitmap *_img_cursor_editing;
 extern wxBitmap *_img_cursor_zoomin;
 extern wxBitmap *_img_cursor_zoomout;
 

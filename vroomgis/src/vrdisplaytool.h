@@ -235,4 +235,46 @@ public:
 
 
 
+/*************************************************************************************//**
+@brief Generic editing tool
+@author Lucien Schreiber copyright CREALP
+@date 30 mars 2012
+ *****************************************************************************************/
+class vrDisplayToolEdit : public vrDisplayTool {
+private:
+    wxOverlay m_Overlay;
+    
+public:
+    vrDisplayToolEdit(vrViewerDisplay * display);
+    virtual ~vrDisplayToolEdit();
+    
+    virtual bool MouseUp(const wxMouseEvent & event);
+};
+
+
+
+
+/*************************************************************************************//**
+@brief Line and polygons editing tool
+@author Lucien Schreiber copyright CREALP
+@date 30 mars 2012
+*****************************************************************************************/
+class vrDisplayToolEditLine : public vrDisplayToolEdit {
+private:
+    wxPoint m_PreviousPoint;
+    wxOverlay m_Overlay;
+    
+public:
+    vrDisplayToolEditLine(vrViewerDisplay * display);
+    virtual ~vrDisplayToolEditLine();
+    
+    virtual bool MouseDown(const wxMouseEvent & event);
+    virtual bool MouseUp(const wxMouseEvent & event);
+    virtual bool MouseMove(const wxMouseEvent & event);
+    virtual bool MouseDClickLeft(const wxMouseEvent & event);
+};
+
+
+
+
 #endif
