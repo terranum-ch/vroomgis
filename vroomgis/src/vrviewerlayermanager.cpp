@@ -35,6 +35,8 @@ wxDEFINE_EVENT(vrEVT_TOOL_ZOOMOUT, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_SELECT, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_PAN, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_SIGHT, wxCommandEvent);
+wxDEFINE_EVENT(vrEVT_TOOL_EDIT, wxCommandEvent);
+wxDEFINE_EVENT(vrEVT_TOOL_EDIT_FINISHED, wxCommandEvent);
 
 
 BEGIN_EVENT_TABLE(vrViewerLayerManager, wxEvtHandler)

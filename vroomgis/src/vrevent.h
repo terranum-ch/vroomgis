@@ -33,5 +33,7 @@ wxDECLARE_EVENT(vrEVT_TOOL_ZOOMOUT, wxCommandEvent);
 wxDECLARE_EVENT(vrEVT_TOOL_SELECT, wxCommandEvent);
 wxDECLARE_EVENT(vrEVT_TOOL_PAN, wxCommandEvent);
 wxDECLARE_EVENT(vrEVT_TOOL_SIGHT, wxCommandEvent);
+wxDECLARE_EVENT(vrEVT_TOOL_EDIT, wxCommandEvent);
+wxDECLARE_EVENT(vrEVT_TOOL_EDIT_FINISHED, wxCommandEvent);
 
 #endif

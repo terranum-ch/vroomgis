@@ -572,3 +572,118 @@ bool vrDisplayToolSight::MouseMove(const wxMouseEvent & event) {
 
 
 
+
+
+/*************************************************************************************//**
+@brief Generic editing tool
+@author Lucien Schreiber copyright CREALP
+@date 30 mars 2012
+*****************************************************************************************/
+vrDisplayToolEdit::vrDisplayToolEdit(vrViewerDisplay * display) {
+    wxImage myEditCursorImg = _img_cursor_editing->ConvertToImage();
+    myEditCursorImg.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, 8);
+    myEditCursorImg.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, 8);
+    Create(display, wxID_EDIT, "Editing", wxCursor(myEditCursorImg));
+}
+
+
+
+vrDisplayToolEdit::~vrDisplayToolEdit() {
+}
+
+
+
+
+bool vrDisplayToolEdit::MouseUp(const wxMouseEvent & event) {
+    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT, GetDisplay(),event.GetPosition());
+	wxASSERT(myMessage);
+	SendMessage(myMessage);
+    return true;
+}
+
+
+
+
+/*************************************************************************************//**
+@brief Line and polygons editing tool
+@author Lucien Schreiber copyright CREALP
+@date 30 mars 2012
+*****************************************************************************************/
+vrDisplayToolEditLine::vrDisplayToolEditLine(vrViewerDisplay * display): vrDisplayToolEdit(display) {
+    m_PreviousPoint = wxDefaultPosition;
+}
+
+
+
+vrDisplayToolEditLine::~vrDisplayToolEditLine() {
+}
+
+
+
+bool vrDisplayToolEditLine::MouseDown(const wxMouseEvent & event) {
+    return true;
+}
+
+
+
+bool vrDisplayToolEditLine::MouseUp(const wxMouseEvent & event) {
+    {
+		wxClientDC myDC (GetDisplay());
+		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		overlaydc.Clear();
+	}
+	m_Overlay.Reset();
+
+    
+    m_PreviousPoint = event.GetPosition();
+    
+    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT, GetDisplay(),event.GetPosition());
+	wxASSERT(myMessage);
+	SendMessage(myMessage);
+    return true;
+}
+
+
+
+bool vrDisplayToolEditLine::MouseMove(const wxMouseEvent & event) {
+    if (m_PreviousPoint == wxDefaultPosition) {
+        return false;
+    }
+    
+    {
+		wxClientDC myDC (GetDisplay());
+		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		overlaydc.Clear();
+	}
+	m_Overlay.Reset();
+    
+	wxClientDC myDC (GetDisplay());
+	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	overlaydc.Clear();
+#ifdef __WXMAC__
+	myDC.SetPen( *wxGREY_PEN );
+#else
+	myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxSOLID ));
+#endif
+	
+    myDC.DrawLine(m_PreviousPoint, event.GetPosition());
+    return true;
+}
+
+
+
+bool vrDisplayToolEditLine::MouseDClickLeft(const wxMouseEvent & event) {
+    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT_FINISHED, GetDisplay(),event.GetPosition());
+	wxASSERT(myMessage);
+	SendMessage(myMessage);
+    return true;
+}
+
+
+
+
+
+
+
+
+

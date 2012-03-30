@@ -27,10 +27,12 @@
 #include "wx/wx.h"
 #endif
 
-#include <wx/filename.h>
+#include <wx/filename.h>    // filename support
 #include <wx/splitter.h>	//splitter bar
 #include <wx/dnd.h>         // dnd
 #include <wx/tglbtn.h>      // toggle button
+#include <wx/filepicker.h>  // file picker
+
 
 #include "vroomgis.h"
 class vrDisplayValueDlg;
