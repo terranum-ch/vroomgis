@@ -29,8 +29,8 @@
 
 #include <wx/filename.h>
 #include <wx/splitter.h>	//splitter bar
-#include <wx/dnd.h>			// dnd
-//#include <wx/treectrl.h>	// temp treectrl
+#include <wx/dnd.h>         // dnd
+#include <wx/tglbtn.h>      // toggle button
 
 #include "vroomgis.h"
 class vrDisplayValueDlg;
@@ -41,6 +41,10 @@ const int vlID_DISPLAY_VALUE    = wxID_HIGHEST + 2;
 const int vlID_DISPLAY_VALUE_DLG= wxID_HIGHEST + 3;
 const int vlID_PERFORMANCE		= wxID_HIGHEST + 4;
 const int vlID_THREADED			= wxID_HIGHEST + 5;
+const int vlID_EDIT_BTN         = wxID_HIGHEST + 6;
+const int vlID_EDIT_CHOICE      = wxID_HIGHEST + 7;
+const int vlID_DRAW_MENU        = wxID_HIGHEST + 8;
+const int vlID_MODIFY_MENU      = wxID_HIGHEST + 9;
 
 const int vl_POPUP_OFFSET = 50;
 const int vlID_MENU_POPUP_LAYER = wxID_HIGHEST + 2 + vl_POPUP_OFFSET; 
@@ -77,6 +81,9 @@ private:
 	
 	vrDisplayValueDlg * m_DisplayValueDlg;
 	
+    wxChoice* m_EditTypeCtrl;
+    wxToggleButton* m_EditStartCtrl;
+    
 	// controls (vroomgis)
 	vrViewerTOCTree * m_TocCtrl;
 	
@@ -91,6 +98,8 @@ private:
 
 	
 	void _CreateControls();
+    void _StartEdition();
+    void _StopEdition();
 	
 	virtual void OnRightClick( wxMouseEvent& event ){ wxLogMessage("right clicked"); event.Skip(); }
 	void OnKeyDown(wxKeyEvent & event);
@@ -113,6 +122,13 @@ private:
 	void OnEngineThreaded (wxCommandEvent & event);
 	
 	void OnToolAction (wxCommandEvent & event);
+    
+    void OnStartEditingButton( wxCommandEvent & event );
+    void OnUpdateUIEditType ( wxUpdateUIEvent & event);
+    void OnUpdateUIDrawMenu (wxUpdateUIEvent & event);
+    void OnToolDraw (wxCommandEvent & event);
+    void OnToolDrawAction (wxCommandEvent & event);
+    
     DECLARE_EVENT_TABLE()
 	
 public:
