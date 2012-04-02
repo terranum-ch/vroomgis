@@ -36,6 +36,7 @@
 
 #include "vroomgis.h"
 class vrDisplayValueDlg;
+class vrShapeEditor;
 
 
 const int vlID_MOVE_LAYER		= wxID_HIGHEST + 1;
@@ -97,6 +98,8 @@ private:
 	
 	vrViewerDisplay * m_DisplayCtrl;
 	wxFileName m_PerfLogFile;
+    
+    vrShapeEditor * m_Editor;
 
 	
 	void _CreateControls();

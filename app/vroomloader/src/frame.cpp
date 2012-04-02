@@ -181,6 +181,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	SetIcon(myVroomGISIcon);
 
 	m_DisplayValueDlg = NULL;
+    m_Editor = NULL;
 
 	// MENU
     wxMenu *fileMenu = new wxMenu;
@@ -676,19 +677,61 @@ void vroomLoaderFrame::OnUpdateUIDrawMenu (wxUpdateUIEvent & event){
 
 void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
     wxLogMessage("setting edit tool");
-    m_DisplayCtrl->SetTool(new vrDisplayToolEditLine (m_DisplayCtrl));
+    switch (m_EditTypeCtrl->GetSelection()) {
+        case 1:
+            m_DisplayCtrl->SetTool(new vrDisplayToolEditLine (m_DisplayCtrl));
+            break;
+            
+        default:
+            m_DisplayCtrl->SetTool(new vrDisplayToolEdit (m_DisplayCtrl));
+            break;
+    }
 }
 
 
 
 void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
+    // create editor if not exists
+    if (m_Editor == NULL) {
+        switch (m_EditTypeCtrl->GetSelection()) {
+            case 1:
+                m_Editor = new vrShapeEditorLine(m_DisplayCtrl);
+                break;
+                
+            default:
+                m_Editor = new vrShapeEditorPoint(m_DisplayCtrl);
+                break;
+        }
+    }
+
     vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
 	wxASSERT(myMsg);
+    
+    wxPoint2DDouble myRealPt (0,0);
+    m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_Position, myRealPt);
+    wxASSERT(m_Editor);
+    m_Editor->AddVertex(myRealPt);
+
+    vrRenderer * myMemoryRenderer = NULL;
+    for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
+        if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_MEMORY) {
+            myMemoryRenderer = m_ViewerLayerManager->GetRenderer(i);
+            break;
+        }
+    }
+    wxASSERT(myMemoryRenderer);
+    
     if (myMsg->m_EvtType == vrEVT_TOOL_EDIT) {
         wxLogMessage("Clicked: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
-    }else if (myMsg->m_EvtType == vrEVT_TOOL_EDIT_FINISHED){
-        wxLogMessage("Finished: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
+        m_Editor->DrawShape(myMemoryRenderer->GetRender());
     }
+    else if (myMsg->m_EvtType == vrEVT_TOOL_EDIT_FINISHED){
+        wxLogMessage("Finished: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
+        vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) myMemoryRenderer->GetLayer();
+        myMemoryLayer->AddFeature(m_Editor->GetGeometryRef());
+        wxDELETE(m_Editor);
+    }
+    
     wxDELETE(myMsg);      
 }
 

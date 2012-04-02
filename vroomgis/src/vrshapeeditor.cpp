@@ -112,12 +112,14 @@ bool vrShapeEditorLine::AddVertex(const wxPoint2DDouble & point) {
     OGRLineString * myLine = (OGRLineString*) m_Geometry;
     
     // Check that the vertex that we are trying to add is not equal to the last vertex
-    OGRPoint myLastPoint;
-    myLine->getPoint(myLine->getNumPoints()-1, &myLastPoint);
-    wxASSERT(myLastPoint.IsValid() == true);
-    if (myLastPoint.Equals(&myPt)==true) {
-        wxLogMessage(_("Point: %.3f, %.3f already exists"),point.m_x, point.m_y);
-        return false;
+    if (myLine->getNumPoints() > 0) {
+        OGRPoint myLastPoint;
+        myLine->getPoint(myLine->getNumPoints()-1, &myLastPoint);
+        wxASSERT(myLastPoint.IsValid() == true);
+        if (myLastPoint.Equals(&myPt)==true) {
+            wxLogMessage(_("Point: %.3f, %.3f already exists"),point.m_x, point.m_y);
+            return false;
+        }
     }
     
     myLine->addPoint(&myPt);
@@ -139,6 +141,10 @@ void vrShapeEditorLine::DrawShape(vrRender * render) {
 	myDC.SetPen(myPen);
 	
     OGRLineString * myLine = (OGRLineString*) m_Geometry;
+    if (myLine->getNumPoints() <= 1) {
+        return;
+    }
+    
     wxPoint * myPts = new wxPoint[myLine->getNumPoints()];
     for (int i = 0; i<myLine->getNumPoints(); i++) {
         wxPoint2DDouble myRealPt (myLine->getX(i), myLine->getY(i));
