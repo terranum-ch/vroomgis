@@ -25,6 +25,8 @@
 #include <wx/wx.h>
 #endif
 #include <wx/graphics.h>
+#include <wx/overlay.h>
+
 #include "ogrsf_frmts.h"
 
 class vrViewerDisplay;
@@ -44,8 +46,8 @@ public:
     virtual bool RemoveVertex(int index = wxNOT_FOUND){return false;}
 	
     inline OGRGeometry * GetGeometryRef() const;
-    virtual void DrawShape(vrRender * render){;}
-	
+    virtual void DrawShapeEdit(vrRender * render){;}
+	virtual void DrawShapeFinish(vrRender * render){;}
 };
 
 
@@ -62,7 +64,7 @@ public:
     virtual ~vrShapeEditorPoint();
 	
     virtual bool AddVertex(const wxPoint2DDouble & point);
-    virtual void DrawShape(vrRender * render);
+    virtual void DrawShapeFinish(vrRender * render);
 	
 };
 
@@ -75,12 +77,17 @@ public:
 @date 30 mars 2012
 *****************************************************************************************/
 class vrShapeEditorLine : public vrShapeEditor {
+protected:
+    wxOverlay m_Overlay;
+    
 public:
     vrShapeEditorLine(vrViewerDisplay * display);
     virtual ~vrShapeEditorLine();
     
     virtual bool AddVertex(const wxPoint2DDouble & point);
-    virtual void DrawShape(vrRender * render);
+    virtual void DrawShapeEdit(vrRender * render);
+    virtual void DrawShapeFinish(vrRender * render){;}
+
 };
 
 
