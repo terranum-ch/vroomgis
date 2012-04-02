@@ -263,6 +263,7 @@ class vrDisplayToolEditLine : public vrDisplayToolEdit {
 private:
     wxPoint m_PreviousPoint;
     wxOverlay m_Overlay;
+    bool m_DoubleClicked;
     
 public:
     vrDisplayToolEditLine(vrViewerDisplay * display);
