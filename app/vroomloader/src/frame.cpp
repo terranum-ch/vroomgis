@@ -665,6 +665,9 @@ void vroomLoaderFrame::_StopEdition(){
 		}
 	}
     m_ViewerLayerManager->FreezeEnd();
+    
+    // change tool
+    m_DisplayCtrl->SetToolDefault();
 }
 
 
@@ -679,6 +682,7 @@ void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
     wxLogMessage("setting edit tool");
     switch (m_EditTypeCtrl->GetSelection()) {
         case 1:
+        case 2:
             m_DisplayCtrl->SetTool(new vrDisplayToolEditLine (m_DisplayCtrl));
             break;
             
@@ -696,6 +700,10 @@ void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
         switch (m_EditTypeCtrl->GetSelection()) {
             case 1:
                 m_Editor = new vrShapeEditorLine(m_DisplayCtrl);
+                break;
+            
+            case 2:
+                m_Editor = new vrShapeEditorPolygon(m_DisplayCtrl);
                 break;
                 
             default:

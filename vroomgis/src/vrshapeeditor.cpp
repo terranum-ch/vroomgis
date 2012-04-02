@@ -36,6 +36,10 @@ vrShapeEditor::~vrShapeEditor() {
 
 
 
+OGRGeometry * vrShapeEditor::GetGeometryRef() const {
+	return m_Geometry;
+}
+
 
 
 
@@ -164,5 +168,89 @@ void vrShapeEditorLine::DrawShapeEdit(vrRender * render) {
     myDC.DrawLines(myLine->getNumPoints(), myPts);
     wxDELETEA(myPts);    
 }
+
+
+
+
+/*************************************************************************************//**
+@brief Draw temporarily polygons
+@author Lucien Schreiber copyright CREALP
+@date 02 avril 2012
+*****************************************************************************************/
+vrShapeEditorPolygon::vrShapeEditorPolygon(vrViewerDisplay * display): vrShapeEditorLine(display) {
+}
+
+vrShapeEditorPolygon::~vrShapeEditorPolygon() {
+}
+
+//bool vrShapeEditorPolygon::AddVertex(const wxPoint2DDouble & point) {
+//}
+
+void vrShapeEditorPolygon::DrawShapeFinish(vrRender * render) {
+    wxASSERT(m_Display);
+	wxASSERT(m_Geometry);
+    
+    wxASSERT(render->GetType() == vrRENDER_VECTOR);
+	vrRenderVector * myRender = (vrRenderVector*) render;
+	wxPen myPen (myRender->GetColorPen(),
+				 myRender->GetSize());
+    wxBrush myBrush (myRender->GetColorBrush(),
+                     myRender->GetBrushStyle());
+    
+    {
+		wxClientDC myDC (m_Display);
+		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		overlaydc.Clear();
+	}
+	m_Overlay.Reset();
+    
+	wxClientDC myDC (m_Display);
+	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	overlaydc.Clear();
+    
+	myDC.SetPen(myPen);
+    myDC.SetBrush(myBrush);
+    
+    OGRLineString * myLine = (OGRLineString*) m_Geometry;
+    if (myLine->getNumPoints() < 3) {
+        return;
+    }
+    
+    wxPoint * myPts = new wxPoint[myLine->getNumPoints()+1];
+    for (int i = 0; i<myLine->getNumPoints(); i++) {
+        wxPoint2DDouble myRealPt (myLine->getX(i), myLine->getY(i));
+        wxPoint myPxPt = wxDefaultPosition;
+        m_Display->GetCoordinate()->ConvertToPixels(myRealPt, myPxPt);
+        // add first point to last
+        if (i == 0) {
+            myPts[myLine->getNumPoints()] = myPxPt;
+        }
+        myPts[i] = myPxPt;
+    }
+    
+    myDC.DrawPolygon(myLine->getNumPoints()+1, myPts);    
+    wxDELETEA(myPts);    
+}
+
+
+
+OGRGeometry * vrShapeEditorPolygon::GetGeometryRef() const {
+    OGRLinearRing * myRing = (OGRLinearRing*) m_Geometry;
+    if (myRing->getNumPoints() < 3) {
+        wxLogError(_("Only %d vertex, unable to create polygon"), myRing->getNumPoints());
+        return NULL;
+    }
+    myRing->closeRings();
+    
+    OGRGeometry * myGeom = OGRGeometryFactory::createGeometry(wkbPolygon);
+    OGRPolygon * myPolygonGeom = (OGRPolygon*) myGeom;
+
+    myPolygonGeom->addRingDirectly(myRing);
+	return myGeom;
+}
+
+
+
+
 
 

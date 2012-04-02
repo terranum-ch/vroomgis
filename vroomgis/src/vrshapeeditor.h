@@ -45,16 +45,11 @@ public:
     virtual bool AddVertex(const wxPoint2DDouble & point){return false;}
     virtual bool RemoveVertex(int index = wxNOT_FOUND){return false;}
 	
-    inline OGRGeometry * GetGeometryRef() const;
+    virtual OGRGeometry * GetGeometryRef() const;
     virtual void DrawShapeEdit(vrRender * render){;}
 	virtual void DrawShapeFinish(vrRender * render){;}
 };
 
-
-
-inline OGRGeometry * vrShapeEditor::GetGeometryRef() const {
-	return m_Geometry;
-}
 
 
 
@@ -88,6 +83,23 @@ public:
     virtual void DrawShapeEdit(vrRender * render);
     virtual void DrawShapeFinish(vrRender * render){;}
 
+};
+
+
+
+/*************************************************************************************//**
+@brief Draw temporarily polygons
+@author Lucien Schreiber copyright CREALP
+@date 02 avril 2012
+*****************************************************************************************/
+class vrShapeEditorPolygon : public vrShapeEditorLine {
+public:
+    vrShapeEditorPolygon(vrViewerDisplay * display);
+    virtual ~vrShapeEditorPolygon();
+    
+    virtual OGRGeometry * GetGeometryRef() const;
+    //virtual bool AddVertex(const wxPoint2DDouble & point);
+    virtual void DrawShapeFinish(vrRender * render);
 };
 
 
