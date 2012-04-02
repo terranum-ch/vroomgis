@@ -611,6 +611,7 @@ bool vrDisplayToolEdit::MouseUp(const wxMouseEvent & event) {
 *****************************************************************************************/
 vrDisplayToolEditLine::vrDisplayToolEditLine(vrViewerDisplay * display): vrDisplayToolEdit(display) {
     m_PreviousPoint = wxDefaultPosition;
+    m_DoubleClicked = false;
 }
 
 
@@ -633,9 +634,16 @@ bool vrDisplayToolEditLine::MouseUp(const wxMouseEvent & event) {
 		overlaydc.Clear();
 	}
 	m_Overlay.Reset();
-
-    
     m_PreviousPoint = event.GetPosition();
+    
+    if (m_DoubleClicked == true){
+        m_PreviousPoint = wxDefaultPosition;
+        m_DoubleClicked = false;
+        vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT_FINISHED, GetDisplay(),event.GetPosition());
+        wxASSERT(myMessage);
+        SendMessage(myMessage);
+        return true;
+    }
     
     vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT, GetDisplay(),event.GetPosition());
 	wxASSERT(myMessage);
@@ -673,9 +681,7 @@ bool vrDisplayToolEditLine::MouseMove(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolEditLine::MouseDClickLeft(const wxMouseEvent & event) {
-    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT_FINISHED, GetDisplay(),event.GetPosition());
-	wxASSERT(myMessage);
-	SendMessage(myMessage);
+    m_DoubleClicked = true;
     return true;
 }
 
