@@ -723,11 +723,12 @@ void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
     
     if (myMsg->m_EvtType == vrEVT_TOOL_EDIT) {
         wxLogMessage("Clicked: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
-        m_Editor->DrawShape(myMemoryRenderer->GetRender());
+        m_Editor->DrawShapeEdit(myMemoryRenderer->GetRender());
     }
     else if (myMsg->m_EvtType == vrEVT_TOOL_EDIT_FINISHED){
         wxLogMessage("Finished: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
         vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) myMemoryRenderer->GetLayer();
+        m_Editor->DrawShapeFinish(myMemoryRenderer->GetRender());
         myMemoryLayer->AddFeature(m_Editor->GetGeometryRef());
         wxDELETE(m_Editor);
     }

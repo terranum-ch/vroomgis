@@ -63,7 +63,7 @@ bool vrShapeEditorPoint::AddVertex(const wxPoint2DDouble & point) {
 
 
 
-void vrShapeEditorPoint::DrawShape(vrRender * render) {
+void vrShapeEditorPoint::DrawShapeFinish(vrRender * render) {
 	wxASSERT(m_Display);
 	wxASSERT(m_Geometry);
 	
@@ -128,18 +128,27 @@ bool vrShapeEditorLine::AddVertex(const wxPoint2DDouble & point) {
 
 
 
-void vrShapeEditorLine::DrawShape(vrRender * render) {
+void vrShapeEditorLine::DrawShapeEdit(vrRender * render) {
     wxASSERT(m_Display);
 	wxASSERT(m_Geometry);
-	
+    
     wxASSERT(render->GetType() == vrRENDER_VECTOR);
 	vrRenderVector * myRender = (vrRenderVector*) render;
 	wxPen myPen (myRender->GetColorPen(),
 				 myRender->GetSize());
-
-	wxClientDC myDC ((wxWindow*)m_Display);
+    
+    {
+		wxClientDC myDC (m_Display);
+		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		overlaydc.Clear();
+	}
+	m_Overlay.Reset();
+    
+	wxClientDC myDC (m_Display);
+	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	overlaydc.Clear();
+   
 	myDC.SetPen(myPen);
-	
     OGRLineString * myLine = (OGRLineString*) m_Geometry;
     if (myLine->getNumPoints() <= 1) {
         return;

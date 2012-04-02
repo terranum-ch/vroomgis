@@ -595,7 +595,7 @@ vrDisplayToolEdit::~vrDisplayToolEdit() {
 
 
 bool vrDisplayToolEdit::MouseUp(const wxMouseEvent & event) {
-    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT, GetDisplay(),event.GetPosition());
+    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT_FINISHED, GetDisplay(),event.GetPosition());
 	wxASSERT(myMessage);
 	SendMessage(myMessage);
     return true;

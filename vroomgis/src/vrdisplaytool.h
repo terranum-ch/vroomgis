@@ -248,7 +248,10 @@ public:
     vrDisplayToolEdit(vrViewerDisplay * display);
     virtual ~vrDisplayToolEdit();
     
+    virtual bool MouseDown(const wxMouseEvent & event){return false;}
     virtual bool MouseUp(const wxMouseEvent & event);
+    virtual bool MouseMove(const wxMouseEvent & event){return false;}
+
 };
 
 
