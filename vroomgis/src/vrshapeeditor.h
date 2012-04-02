@@ -53,6 +53,11 @@ public:
 
 
 
+/*************************************************************************************//**
+@brief Draw temporarily points
+@author Lucien Schreiber copyright CREALP
+@date 30 mars 2012
+*****************************************************************************************/
 class vrShapeEditorPoint : public vrShapeEditor {
 public:
     vrShapeEditorPoint(vrViewerDisplay * display);
@@ -67,7 +72,7 @@ public:
 
 
 /*************************************************************************************//**
-@brief Drawing temporary shape
+@brief Draw temporarily lines
 @author Lucien Schreiber copyright CREALP
 @date 30 mars 2012
 *****************************************************************************************/
@@ -98,7 +103,6 @@ public:
     virtual ~vrShapeEditorPolygon();
     
     virtual OGRGeometry * GetGeometryRef() const;
-    //virtual bool AddVertex(const wxPoint2DDouble & point);
     virtual void DrawShapeFinish(vrRender * render);
 };
 

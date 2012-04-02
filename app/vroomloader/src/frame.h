@@ -105,6 +105,7 @@ private:
 	void _CreateControls();
     void _StartEdition();
     void _StopEdition();
+    bool _SaveEdition(vrLayer * memorylayer);
 	
 	virtual void OnRightClick( wxMouseEvent& event ){ wxLogMessage("right clicked"); event.Skip(); }
 	void OnKeyDown(wxKeyEvent & event);
