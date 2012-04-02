@@ -658,6 +658,14 @@ void vroomLoaderFrame::_StopEdition(){
 		if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_MEMORY) {
 			vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(i);
 			vrLayer * myLayer = myRenderer->GetLayer();
+            // asks if the edited data must be saved
+            vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) myLayer;
+            if (myMemoryLayer->GetFeatureCount() > 0) {
+                if (wxMessageBox(_("Save the edited data to a shapefile?"), _("Save"),
+                                 wxYES_NO | wxNO_DEFAULT | wxCENTRE, this) == wxYES) {
+                    _SaveEdition(myLayer);
+                }
+            }
 			wxASSERT(myRenderer);
 			m_ViewerLayerManager->Remove(myRenderer);
 			// close layer (not used anymore);
@@ -668,6 +676,45 @@ void vroomLoaderFrame::_StopEdition(){
     
     // change tool
     m_DisplayCtrl->SetToolDefault();
+}
+
+
+
+bool vroomLoaderFrame::_SaveEdition(vrLayer * memoryLayer){
+    vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) memoryLayer;
+    wxASSERT(myMemoryLayer);
+    
+    wxString mySaveFileName = wxFileSelector(_("Choose a filename for the shapefile"),
+                                         wxEmptyString,
+                                         wxEmptyString,
+                                         _T("shp"),
+                                         _T("ESRI Shapefiles (*.shp)|*.shp"),
+                                         wxFD_SAVE, this);
+    if (mySaveFileName.IsEmpty() == true) {
+        wxLogMessage(_("Saving canceled!"));
+        return false;
+    }
+    
+    wxFileName mySaveFile(mySaveFileName);
+    mySaveFile.SetExt(_T("shp"));
+    
+    vrLayerVectorOGR myShapefile;
+    if(myShapefile.Create(mySaveFile)==false){
+        wxLogError(_("Creating '%s' failed!"), mySaveFile.GetFullPath());
+        return false;
+    }
+    
+    bool restart = false;
+    for (long i = 0; i<myMemoryLayer->GetFeatureCount(); i++) {
+        if(i == 0){
+            restart = true; 
+        }
+        OGRFeature * myFeature = myMemoryLayer->GetNextFeature(restart);
+        wxASSERT(myFeature);
+        myShapefile.AddFeature(myFeature->GetGeometryRef());
+        OGRFeature::DestroyFeature(myFeature);
+    }
+    return true;
 }
 
 
@@ -740,101 +787,6 @@ void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
         myMemoryLayer->AddFeature(m_Editor->GetGeometryRef());
         wxDELETE(m_Editor);
     }
-    
     wxDELETE(myMsg);      
 }
-
-
-/*
-void ctPlugin::OnToolDip(wxCommandEvent & event) {
-	wxLogMessage(_("Selecting dip tool"));
-	wxASSERT(m_ParentFrame);
-	ctDisplayToolEditDips * myDipTool = new ctDisplayToolEditDips(m_ParentFrame->GetViewerLayerManager()->GetDisplay());
-	m_ParentFrame->GetViewerLayerManager()->GetDisplay()->SetTool(myDipTool);
-}
-
-
-
-void ctPlugin::OnToolDipAction(wxCommandEvent & event) {
-	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
-	wxASSERT(myMsg);
-    
-	if (_IsEditDipsReady() == false) {
-		wxLogError(_("Editing DIPS not allowed, be sure to have a C2D file selected"));
-		wxDELETE(myMsg);
-		return;
-	}
-    
-	// search specified C2D layer
-	wxASSERT(m_ParentFrame);
-	vrViewerLayerManager * myLayerManager = m_ParentFrame->GetViewerLayerManager();
-	wxASSERT(myLayerManager);
-	int iC2DIndex = wxNOT_FOUND;
-	for (int i = 0; i<myLayerManager->GetCount(); i++) {
-		if (myLayerManager->GetRenderer(i)->GetLayer()->GetFileName() == m_InspectorData.m_C2DLayerName) {
-			iC2DIndex = i;
-			break;
-		}
-	}
-	wxASSERT(iC2DIndex != wxNOT_FOUND);
-    
-	vrLayerRasterC2D * myC2D = (vrLayerRasterC2D*) myLayerManager->GetRenderer(iC2DIndex)->GetLayer();
-	wxASSERT(myC2D);
-    
-	// convert coordinates
-	wxPoint2DDouble myRealPt;
-	myLayerManager->GetDisplay()->GetCoordinate()->ConvertFromPixels(myMsg->m_Position, myRealPt);
-    
-    
-	// get pixel value
-	wxArrayDouble myValues;
-	myC2D->GetPixelValue(myRealPt.m_x, myRealPt.m_y, myValues);
-	if (myValues.GetCount() != 3){
-		wxLogError(_("Unable to get Dip information at\ncoordinate : %.2f : %.2f"),
-				   myRealPt.m_x, myRealPt.m_y);
-		wxDELETE(myMsg);
-		return;
-	}
-    
-    
-	// get C2P layer
-	vrRenderer * myC2PRenderer = _GetDipRenderer();
-	wxASSERT(myC2PRenderer);
-    
-	ctShapeEditorPointDips myEditor (myLayerManager->GetDisplay());
-	myEditor.AddVertex(myRealPt);
-	myEditor.SetDipFamily(m_InspectorData.m_FamilyID);
-	myEditor.SetDipDirection(myValues.Item(2));
-	myEditor.DrawShape(myC2PRenderer->GetRender());
-    
-	// TODO: this is temp code for validating convertion to and from real coordinates
-	wxPoint myComputedPt;
-	myLayerManager->GetDisplay()->GetCoordinate()->ConvertToPixels(myRealPt, myComputedPt);
-	if (myMsg->m_Position != myComputedPt){
-		wxLogMessage(_("Computing pixel position error:\noriginal: %d, %d\ncomputed: %d, %d"),
-                     myMsg->m_Position.x, myMsg->m_Position.y, myComputedPt.x, myComputedPt.y);
-	}
-    
-	myValues.Add(m_InspectorData.m_FamilyID);
-	long myNewFID = ((vrLayerVectorC2P *) myC2PRenderer->GetLayer())->AddFeature(myEditor.GetGeometryRef(), &myValues);
-    
-	m_ParentFrame->GetProjectManager()->SetModified(true);
-	wxLogMessage(_("Dips value: (Alt) %.2f,(Dip) %.2f,(Dir) %.2f"), myValues.Item(0), myValues.Item(1), myValues.Item(2));
-	wxDELETE(myMsg);
-    
-	DataFrame * myDFrame = (DataFrame*) wxWindow::FindWindowById (WINDOW_DATA_MANAGER);
-	if (myDFrame != NULL) {
-		if (myNewFID == wxNOT_FOUND) {
-			wxLogWarning(_("Unable to live update Data Manager! Please close the Data Manager Window"));
-			return;
-		}
-		myDFrame->EditPanel(DATAPANEL_TYPE_DIP, DP_ADD , myNewFID, NULL);
-	}
-    
-	ctStereonetFrame * mySFrame = (ctStereonetFrame*) wxWindow::FindWindowById(WINDOW_CT_STEREONET);
-	if (mySFrame != NULL) {
-		mySFrame->ReloadStereonet();
-	}
-}
-*/
 

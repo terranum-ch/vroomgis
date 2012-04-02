@@ -183,8 +183,7 @@ vrShapeEditorPolygon::vrShapeEditorPolygon(vrViewerDisplay * display): vrShapeEd
 vrShapeEditorPolygon::~vrShapeEditorPolygon() {
 }
 
-//bool vrShapeEditorPolygon::AddVertex(const wxPoint2DDouble & point) {
-//}
+
 
 void vrShapeEditorPolygon::DrawShapeFinish(vrRender * render) {
     wxASSERT(m_Display);
@@ -221,7 +220,7 @@ void vrShapeEditorPolygon::DrawShapeFinish(vrRender * render) {
         wxPoint2DDouble myRealPt (myLine->getX(i), myLine->getY(i));
         wxPoint myPxPt = wxDefaultPosition;
         m_Display->GetCoordinate()->ConvertToPixels(myRealPt, myPxPt);
-        // add first point to last
+        // first point = last point
         if (i == 0) {
             myPts[myLine->getNumPoints()] = myPxPt;
         }
