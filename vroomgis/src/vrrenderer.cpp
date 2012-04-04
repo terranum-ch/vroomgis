@@ -75,6 +75,12 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 			case vrDRIVER_VECTOR_SHP:
 			case vrDRIVER_VECTOR_MEMORY:
 				m_Render = new vrRenderVector();
+            {
+                OGRwkbGeometryType myGeomType = ((vrLayerVector*) GetLayer())->GetGeometryType();
+                if (myGeomType == wkbPoint || myGeomType == wkbPoint25D) {
+                    ((vrRenderVector*)m_Render)->SetSize(vrRENDERER_VECTOR_POINT_DEFAULT_SIZE);
+                }
+            }
 				break;
 				
 			case vrDRIVER_RASTER_TIFF:
