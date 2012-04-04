@@ -29,6 +29,8 @@ class vrLayer;
 class vrRender;
 class vrLabel;
 
+const int vrRENDERER_VECTOR_POINT_DEFAULT_SIZE = 4;
+
 class vrRenderer {
 private:
     vrLayer * m_Layer;

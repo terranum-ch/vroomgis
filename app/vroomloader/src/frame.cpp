@@ -699,13 +699,16 @@ bool vroomLoaderFrame::_SaveEdition(vrLayer * memoryLayer){
     mySaveFile.SetExt(_T("shp"));
     
     vrLayerVectorOGR myShapefile;
-    if(myShapefile.Create(mySaveFile)==false){
+    if(myShapefile.Create(mySaveFile, myMemoryLayer->GetGeometryType())==false){
         wxLogError(_("Creating '%s' failed!"), mySaveFile.GetFullPath());
         return false;
     }
     
+        
     bool restart = false;
+    myMemoryLayer->ClearSpatialFilter();
     for (long i = 0; i<myMemoryLayer->GetFeatureCount(); i++) {
+        restart = false;
         if(i == 0){
             restart = true; 
         }

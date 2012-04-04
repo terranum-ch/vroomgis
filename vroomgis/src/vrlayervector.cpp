@@ -315,6 +315,7 @@ bool vrLayerVectorOGR::Create(const wxFileName & filename, int spatialtype) {
         wxLogError( "Layer creation failed." );
         return false;
     }
+    m_GeometryType = (OGRwkbGeometryType) spatialtype;
 	return true;
 }
 
