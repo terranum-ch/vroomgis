@@ -117,7 +117,7 @@ vrRealRect vrCoordinate::GetRectFitted(const vrRealRect & originalrect) {
 	double yfactor = fabs(m_WndExtent.m_height / originalrect.m_height);
 	
 	double ratiofactor = xfactor;
-	if (yfactor > xfactor) {
+	if (yfactor < xfactor) {
 		ratiofactor = yfactor;
 	}
 	
