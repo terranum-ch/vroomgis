@@ -1,9 +1,9 @@
 /***************************************************************************
-								frame.cpp
-                    First test program for VroomGIS
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ frame.cpp
+ First test program for VroomGIS
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -24,18 +24,6 @@
 #include "vrshapeeditor.h"
 #include "vrdisplaytool.h"
 #include "vroomgis_bmp.h"
-
-// enable XP style controls
-#if defined(__WXMSW__) && !defined(__WXWINCE__) 
-	#pragma comment(linker,"/manifestdependency:\"type='win32' "\
-	"name='Microsoft.Windows.Common-Controls' "\
-	"version='6.0.0.0' "\
-	"processorArchitecture='x86' "\
-	"publicKeyToken='6595b64144ccf1df' "\
-	"language='*' "\
-	"\"")
-#endif 
-
 
 IMPLEMENT_APP(vroomLoader);
 bool vroomLoader::OnInit()
@@ -84,6 +72,7 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
     EVT_TOGGLEBUTTON(vlID_EDIT_BTN, vroomLoaderFrame::OnStartEditingButton)
     EVT_UPDATE_UI(vlID_EDIT_CHOICE, vroomLoaderFrame::OnUpdateUIEditType)
     EVT_MENU(vlID_DRAW_MENU, vroomLoaderFrame::OnToolDraw)
+    EVT_MENU(vlID_MODIFY_MENU, vroomLoaderFrame::OnToolModify)
 
 EVT_UPDATE_UI_RANGE(vlID_DRAW_MENU, vlID_MODIFY_MENU, vroomLoaderFrame::OnUpdateUIDrawMenu)
 END_EVENT_TABLE()
@@ -215,7 +204,6 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	toolMenu->Check(vlID_THREADED, true);
 	
 	
-	
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
 	menuBar->Append(toolMenu, "&Tools");
@@ -307,7 +295,6 @@ bool vroomLoaderFrame::OpenLayers (const wxArrayString & names){
 			myRender->AddDipColour(*wxRED, 10);
 		}
 
-
 		// add files to the viewer
 		m_ViewerLayerManager->Add(-1, myLayer, myRender);
 	}
@@ -375,7 +362,6 @@ void vroomLoaderFrame::OnCloseLayer(wxCommandEvent & event){
 	// removing layer(s)
 	m_ViewerLayerManager->FreezeBegin();
 	for (int j = (signed) myLayerToRemoveIndex.GetCount() -1; j >= 0 ; j--) {
-
 		// remove from viewer manager (TOC and Display)
 		vrRenderer * myRenderer = m_ViewerLayerManager->GetRenderer(myLayerToRemoveIndex.Item(j));
 		vrLayer * myLayer = myRenderer->GetLayer();
@@ -743,6 +729,45 @@ void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
 }
 
 
+vrRenderer * vroomLoaderFrame::_GetMemoryRenderer(){
+    vrRenderer * myMemoryRenderer = NULL;
+    for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
+        if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_MEMORY) {
+            myMemoryRenderer = m_ViewerLayerManager->GetRenderer(i);
+            break;
+        }
+    }
+    wxASSERT(myMemoryRenderer);
+    return myMemoryRenderer;
+}
+
+
+vrLayerVectorOGR * vroomLoaderFrame::_GetMemoryLayerVector(){
+    vrRenderer * myMemoryRenderer = _GetMemoryRenderer();
+    vrLayerVectorOGR * myLayerVector = (vrLayerVectorOGR*) myMemoryRenderer->GetLayer();
+    return myLayerVector;
+}
+
+
+
+void vroomLoaderFrame::OnToolModify (wxCommandEvent & event){
+    // unique object selected ?
+    vrLayerVectorOGR * myLayerMemory = _GetMemoryLayerVector();
+    wxASSERT(myLayerMemory);
+    wxArrayLong * mySelectedIDs = myLayerMemory->GetSelectedIDs();
+    wxASSERT(mySelectedIDs);
+    if (mySelectedIDs->GetCount() != 1) {
+        wxLogError(_("One feature must be selected!"));
+        return;
+    }
+    
+    // mark selected object as hidden and reload
+    myLayerMemory->SetHiddenObjectID(*mySelectedIDs);
+    m_ViewerLayerManager->Reload();
+    
+}
+
+
 
 void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
     // create editor if not exists
@@ -770,13 +795,7 @@ void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
     wxASSERT(m_Editor);
     m_Editor->AddVertex(myRealPt);
 
-    vrRenderer * myMemoryRenderer = NULL;
-    for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
-        if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_MEMORY) {
-            myMemoryRenderer = m_ViewerLayerManager->GetRenderer(i);
-            break;
-        }
-    }
+    vrRenderer * myMemoryRenderer = _GetMemoryRenderer();
     wxASSERT(myMemoryRenderer);
     
     if (myMsg->m_EvtType == vrEVT_TOOL_EDIT) {
@@ -787,8 +806,10 @@ void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
         wxLogMessage("Finished: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
         vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) myMemoryRenderer->GetLayer();
         m_Editor->DrawShapeFinish(myMemoryRenderer->GetRender());
-        myMemoryLayer->AddFeature(m_Editor->GetGeometryRef());
+        long myAddedId = myMemoryLayer->AddFeature(m_Editor->GetGeometryRef());
+        myMemoryLayer->SetSelectedID(myAddedId);
         wxDELETE(m_Editor);
+        m_ViewerLayerManager->Reload();
     }
     wxDELETE(myMsg);      
 }

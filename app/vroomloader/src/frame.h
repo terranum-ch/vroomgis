@@ -1,9 +1,9 @@
 /***************************************************************************
-								frame.h
-					First test program for VroomGIS 
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ frame.h
+ First test program for VroomGIS 
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber 
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -14,8 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-
 #ifndef _FRAME_H_
 #define _FRAME_H_
 
@@ -33,11 +31,10 @@
 #include <wx/tglbtn.h>      // toggle button
 #include <wx/filepicker.h>  // file picker
 
-
 #include "vroomgis.h"
 class vrDisplayValueDlg;
 class vrShapeEditor;
-
+class vrLayerVectorOGR;
 
 const int vlID_MOVE_LAYER		= wxID_HIGHEST + 1;
 const int vlID_DISPLAY_VALUE    = wxID_HIGHEST + 2;
@@ -75,7 +72,6 @@ public:
 
 
 
-
 class vroomLoaderFrame : public wxFrame
 {
 private:
@@ -101,11 +97,12 @@ private:
     
     vrShapeEditor * m_Editor;
 
-	
 	void _CreateControls();
     void _StartEdition();
     void _StopEdition();
     bool _SaveEdition(vrLayer * memorylayer);
+    vrRenderer * _GetMemoryRenderer();
+    vrLayerVectorOGR * _GetMemoryLayerVector();
 	
 	virtual void OnRightClick( wxMouseEvent& event ){ wxLogMessage("right clicked"); event.Skip(); }
 	void OnKeyDown(wxKeyEvent & event);
@@ -133,6 +130,7 @@ private:
     void OnUpdateUIEditType ( wxUpdateUIEvent & event);
     void OnUpdateUIDrawMenu (wxUpdateUIEvent & event);
     void OnToolDraw (wxCommandEvent & event);
+    void OnToolModify (wxCommandEvent & event);
     void OnToolDrawAction (wxCommandEvent & event);
     
     DECLARE_EVENT_TABLE()

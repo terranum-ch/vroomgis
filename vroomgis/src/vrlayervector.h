@@ -35,6 +35,8 @@ protected:
 	OGRLayer * m_Layer;
 	OGRwkbGeometryType m_GeometryType;
 	wxArrayLong m_SelectedIDs;
+    wxArrayLong m_HiddenObjectID;
+
 
 	long m_ObjectDrawn;
 
@@ -66,8 +68,14 @@ public:
 
 	inline wxArrayLong * GetSelectedIDs();
     void SetSelectedIDs(const wxArrayLong & value);
+    void SetSelectedID (long id);
     virtual bool SearchFeatures(OGRGeometry * geometry, wxArrayLong & results);
 	bool IsFeatureSelected(long id);
+    
+    inline wxArrayLong * GetHiddenObjectID();
+    void SetHiddenObjectID(const wxArrayLong & value);
+    void SetHiddenObjectID(long id);
+    bool IsFeatureHidden(long id);
 
 	inline const long GetObjectDrawn() const;
 };
@@ -76,9 +84,17 @@ inline wxArrayLong * vrLayerVector::GetSelectedIDs() {
 	return &m_SelectedIDs;
 }
 
+
+inline wxArrayLong * vrLayerVector::GetHiddenObjectID() {
+    return &m_HiddenObjectID;
+}
+
+
 inline const long vrLayerVector::GetObjectDrawn() const {
 	return m_ObjectDrawn;
 }
+
+
 
 
 
