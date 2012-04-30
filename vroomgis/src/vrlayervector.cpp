@@ -202,6 +202,12 @@ void vrLayerVector::SetSelectedIDs(const wxArrayLong & value) {
 }
 
 
+void vrLayerVector::SetSelectedID (long id){
+    m_SelectedIDs.Clear();
+    m_SelectedIDs.Add(id);
+}
+
+
 
 bool vrLayerVector::SearchFeatures(OGRGeometry * geometry, wxArrayLong & results) {
 	wxASSERT(geometry);
@@ -234,7 +240,27 @@ bool vrLayerVector::IsFeatureSelected(long id) {
 
 
 
+void vrLayerVector::SetHiddenObjectID(const wxArrayLong & value) {
+    m_HiddenObjectID = value;
+}
 
+
+
+void vrLayerVector::SetHiddenObjectID(long id) {
+    m_HiddenObjectID.Clear();
+    m_HiddenObjectID.Add(id);
+}
+
+
+
+bool vrLayerVector::IsFeatureHidden(long id) {
+	for (unsigned int i = 0; i<m_HiddenObjectID.GetCount(); i++) {
+		if (id == m_HiddenObjectID.Item(i)) {
+			return true;
+		}
+	}
+	return false;
+}
 
 
 
@@ -386,6 +412,12 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 			break;
 		}
 
+        if (IsFeatureHidden(myFeat->GetFID()) == true) {
+            OGRFeature::DestroyFeature(myFeat);
+			myFeat = NULL;
+			continue;
+        }
+        
 		myGeom = NULL;
 		myGeom = (OGRLineString*) myFeat->GetGeometryRef();
 		wxASSERT(myGeom);
@@ -463,6 +495,12 @@ bool vrLayerVectorOGR::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble
 		if (myFeat == NULL) {
 			break;
 		}
+        
+        if (IsFeatureHidden(myFeat->GetFID()) == true) {
+            OGRFeature::DestroyFeature(myFeat);
+			myFeat = NULL;
+			continue;
+        }
 
 		myGeom = NULL;
 		myGeom = (OGRPoint*) myFeat->GetGeometryRef();
@@ -549,6 +587,12 @@ bool vrLayerVectorOGR::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDoub
 			break;
 		}
 		//iCount++;
+        
+        if (IsFeatureHidden(myFeat->GetFID()) == true) {
+            OGRFeature::DestroyFeature(myFeat);
+			myFeat = NULL;
+			continue;
+        }
 
 		myGeom = NULL;
 		myGeom = (OGRPolygon*) myFeat->GetGeometryRef();
@@ -646,7 +690,12 @@ bool vrLayerVectorOGR::_DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2
 		if (myFeat == NULL) {
 			break;
 		}
-		//iCount++;
+        
+        if (IsFeatureHidden(myFeat->GetFID()) == true) {
+            OGRFeature::DestroyFeature(myFeat);
+			myFeat = NULL;
+			continue;
+        }
 
 		myMultiGeom = NULL;
 		myMultiGeom = (OGRMultiPolygon*) myFeat->GetGeometryRef();
