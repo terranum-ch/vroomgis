@@ -688,6 +688,41 @@ bool vrDisplayToolEditLine::MouseDClickLeft(const wxMouseEvent & event) {
 
 
 
+/***************************************************************************//**
+@brief Points, lines, polygons, modification tool
+@author Lucien Schreiber (c) CREALP 2012
+@date 01 mai 2012
+*******************************************************************************/
+vrDisplayToolModify::vrDisplayToolModify(vrViewerDisplay * display) {
+    Create(display, wxID_DEFAULT, "Sight", wxCursor(wxCURSOR_CROSS));
+}
+
+vrDisplayToolModify::~vrDisplayToolModify() {
+}
+
+void vrDisplayToolModify::ClearPoints() {
+    m_PointsX.Clear();
+    m_PointsY.Clear();
+}
+
+void vrDisplayToolModify::AddToPoints(const wxPoint & pts) {
+    m_PointsX.Add(pts.x);
+    m_PointsY.Add(pts.y);
+}
+
+bool vrDisplayToolModify::MouseDown(const wxMouseEvent & event) {
+    return true;
+}
+
+bool vrDisplayToolModify::MouseMove(const wxMouseEvent & event) {
+    return true;
+}
+
+bool vrDisplayToolModify::MouseUp(const wxMouseEvent & event) {
+    return true;
+}
+
+
 
 
 

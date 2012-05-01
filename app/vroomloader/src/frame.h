@@ -102,7 +102,6 @@ private:
     void _StopEdition();
     bool _SaveEdition(vrLayer * memorylayer);
     vrRenderer * _GetMemoryRenderer();
-    vrLayerVectorOGR * _GetMemoryLayerVector();
 	
 	virtual void OnRightClick( wxMouseEvent& event ){ wxLogMessage("right clicked"); event.Skip(); }
 	void OnKeyDown(wxKeyEvent & event);

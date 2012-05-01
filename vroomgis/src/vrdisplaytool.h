@@ -281,4 +281,32 @@ public:
 
 
 
+
+/***************************************************************************//**
+@brief Points, lines, polygons, modification tool
+@author Lucien Schreiber (c) CREALP 2012
+@date 01 mai 2012
+*******************************************************************************/
+class vrDisplayToolModify : public vrDisplayTool {
+protected:
+    wxArrayInt m_PointsX;
+    wxArrayInt m_PointsY;
+    wxOverlay m_Overlay;
+    
+    
+public:
+    vrDisplayToolModify(vrViewerDisplay * display);
+    virtual ~vrDisplayToolModify();
+    
+    void ClearPoints();
+    void AddToPoints(const wxPoint & pts);
+    
+    virtual bool MouseDown(const wxMouseEvent & event);
+    virtual bool MouseMove(const wxMouseEvent & event);
+    virtual bool MouseUp(const wxMouseEvent & event);
+};
+
+
+
+
 #endif
