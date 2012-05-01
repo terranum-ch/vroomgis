@@ -46,8 +46,11 @@ public:
     virtual bool RemoveVertex(int index = wxNOT_FOUND){return false;}
 	
     virtual OGRGeometry * GetGeometryRef() const;
+    bool SetGeometry(OGRGeometry * geometry);
+    
     virtual void DrawShapeEdit(vrRender * render){;}
 	virtual void DrawShapeFinish(vrRender * render){;}
+    virtual void DrawShapeModify(vrRender * render);
 };
 
 
@@ -65,7 +68,7 @@ public:
 	
     virtual bool AddVertex(const wxPoint2DDouble & point);
     virtual void DrawShapeFinish(vrRender * render);
-	
+
 };
 
 
@@ -104,6 +107,7 @@ public:
     
     virtual OGRGeometry * GetGeometryRef() const;
     virtual void DrawShapeFinish(vrRender * render);
+
 };
 
 

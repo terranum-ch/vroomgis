@@ -742,17 +742,11 @@ vrRenderer * vroomLoaderFrame::_GetMemoryRenderer(){
 }
 
 
-vrLayerVectorOGR * vroomLoaderFrame::_GetMemoryLayerVector(){
-    vrRenderer * myMemoryRenderer = _GetMemoryRenderer();
-    vrLayerVectorOGR * myLayerVector = (vrLayerVectorOGR*) myMemoryRenderer->GetLayer();
-    return myLayerVector;
-}
-
-
 
 void vroomLoaderFrame::OnToolModify (wxCommandEvent & event){
     // unique object selected ?
-    vrLayerVectorOGR * myLayerMemory = _GetMemoryLayerVector();
+    vrRenderer * myRendererMemory = _GetMemoryRenderer();
+    vrLayerVectorOGR * myLayerMemory = (vrLayerVectorOGR*) myRendererMemory->GetLayer();
     wxASSERT(myLayerMemory);
     wxArrayLong * mySelectedIDs = myLayerMemory->GetSelectedIDs();
     wxASSERT(mySelectedIDs);
@@ -761,9 +755,39 @@ void vroomLoaderFrame::OnToolModify (wxCommandEvent & event){
         return;
     }
     
+    // change tool
+    m_DisplayCtrl->SetTool(new vrDisplayToolModify (m_DisplayCtrl));
+    
     // mark selected object as hidden and reload
     myLayerMemory->SetHiddenObjectID(*mySelectedIDs);
     m_ViewerLayerManager->Reload();
+    m_DisplayCtrl->Refresh();
+    m_DisplayCtrl->Update();
+    
+    // create editor if not exists
+    if (m_Editor == NULL) {
+        switch (m_EditTypeCtrl->GetSelection()) {
+            case 1:
+                m_Editor = new vrShapeEditorLine(m_DisplayCtrl);
+                break;
+                
+            case 2:
+                m_Editor = new vrShapeEditorPolygon(m_DisplayCtrl);
+                break;
+                
+            default:
+                m_Editor = new vrShapeEditorPoint(m_DisplayCtrl);
+                break;
+        }
+    }
+    
+    // copy geometry from layer to shapeeditor
+    OGRFeature * myFeature = myLayerMemory->GetFeature(mySelectedIDs->Item(0));
+    wxASSERT(myFeature);
+    m_Editor->SetGeometry(myFeature->GetGeometryRef());
+    OGRFeature::DestroyFeature(myFeature);
+    
+    m_Editor->DrawShapeFinish(myRendererMemory->GetRender());
     
 }
 
@@ -805,7 +829,6 @@ void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
     else if (myMsg->m_EvtType == vrEVT_TOOL_EDIT_FINISHED){
         wxLogMessage("Finished: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
         vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) myMemoryRenderer->GetLayer();
-        m_Editor->DrawShapeFinish(myMemoryRenderer->GetRender());
         long myAddedId = myMemoryLayer->AddFeature(m_Editor->GetGeometryRef());
         myMemoryLayer->SetSelectedID(myAddedId);
         wxDELETE(m_Editor);

@@ -35,10 +35,34 @@ vrShapeEditor::~vrShapeEditor() {
 }
 
 
+bool vrShapeEditor::SetGeometry(OGRGeometry * geometry) {
+    if (geometry == NULL) {
+        return false;
+    }
+    if (m_Geometry != NULL) {
+		OGRGeometryFactory::destroyGeometry(m_Geometry);
+		m_Geometry = NULL;
+	}
+    m_Geometry = geometry->clone();
+    return true;
+}
+
+
 
 OGRGeometry * vrShapeEditor::GetGeometryRef() const {
 	return m_Geometry;
 }
+
+
+
+void vrShapeEditor::DrawShapeModify(vrRender * render) {
+    vrRenderVector * myOriginRender = (vrRenderVector*) render;
+    vrRenderVector myRenderVector(*myOriginRender);
+    myRenderVector.SetColorPen(render->GetSelectionColour());
+    DrawShapeFinish(&myRenderVector);
+}
+
+
 
 
 
@@ -189,6 +213,15 @@ void vrShapeEditorPolygon::DrawShapeFinish(vrRender * render) {
     wxASSERT(m_Display);
 	wxASSERT(m_Geometry);
     
+    // convert polygon geometry to line
+    if (wkbFlatten(m_Geometry->getGeometryType()) == wkbPolygon) {
+        OGRGeometry * myPolyExtLine = ((OGRPolygon*) m_Geometry)->getExteriorRing()->clone();
+        OGRGeometryFactory::destroyGeometry(m_Geometry);
+        m_Geometry = NULL;
+        m_Geometry = myPolyExtLine;
+    }
+    
+    
     wxASSERT(render->GetType() == vrRENDER_VECTOR);
 	vrRenderVector * myRender = (vrRenderVector*) render;
 	wxPen myPen (myRender->GetColorPen(),
@@ -227,6 +260,7 @@ void vrShapeEditorPolygon::DrawShapeFinish(vrRender * render) {
         myPts[i] = myPxPt;
     }
     
+    myDC.DrawLine(0, 0, 50, 50);
     myDC.DrawPolygon(myLine->getNumPoints()+1, myPts);    
     wxDELETEA(myPts);    
 }
