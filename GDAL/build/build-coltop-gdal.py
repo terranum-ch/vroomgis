@@ -41,8 +41,6 @@ def buildUnix(gdalpath):
 	proj_path = ""
 	
 	# BUILD COMMAND
-	command = "./configure --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no --with-jasper=no --with-jpeg=internal"
-	
 	if (doSysLib == 'S'): #SYSTEM
 		geos_path = "/usr/bin"
 		proj_path = "/usr"
@@ -53,7 +51,16 @@ def buildUnix(gdalpath):
 		geos_path = libprefix + os.sep + "bin"	
 		proj_path = libprefix
 	
-	command = command.format(libprefix, geos_path+os.sep+"geos-config", proj_path)
+	command = ""
+	if (lsutilities.askUserWithCheck("Support Snow Leopard ? [Y/N] :") == 'Y'):
+		cflags="-02 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk"
+		lflags="-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk"
+		command = "./configure CFLAGS=\"{}\" CXXFLAGS=\"{}\" LDFLAGS=\"{}\" --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal"
+		command = command.format(cflags, cflags, lflags, libprefix, geos_path+os.sep+"geos-config", proj_path)
+	else:
+		command = "./configure --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal"
+		command = command.format(libprefix, geos_path+os.sep+"geos-config", proj_path)
+	
 	print (command)
 	isSucess = lsutilities.runProcess(command, gdalpath, "Configuring GDAL with C2D support")
 	if (isSucess == True):
