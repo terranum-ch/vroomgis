@@ -48,17 +48,20 @@ IF (SEARCH_GEOS)
 		
 		IF(SEARCH_GIS_LIB_PATH)
 			FIND_PATH(GEOS_INCLUDE_DIR geos_c.h
-	  				HINTS ${SEARCH_GIS_LIB_PATH}/include
+	  			HINTS ${SEARCH_GIS_LIB_PATH}/include
+				${SEARCH_GIS_LIB_PATH}/GEOS.framework/unix/include
 				${SEARCH_GIS_LIB_PATH}
-	  				NO_DEFAULT_PATH)
+	  			NO_DEFAULT_PATH)
 
 	  		FIND_LIBRARY(GEOS_LIBRARIES
 		  		geos_c
-		  		HINTS ${SEARCH_GIS_LIB_PATH}/lib	${SEARCH_GIS_LIB_PATH} NO_DEFAULT_PATH)
+		  		HINTS ${SEARCH_GIS_LIB_PATH}/lib	${SEARCH_GIS_LIB_PATH} 
+				${SEARCH_GIS_LIB_PATH}/GEOS.framework/unix/lib
+				NO_DEFAULT_PATH)
 		ELSE(SEARCH_GIS_LIB_PATH)
 			MESSAGE("Searching GEOS into standard paths")
 			FIND_PATH(GEOS_INCLUDE_DIR geos_c.h
-	  				HINTS ${SEARCH_GIS_LIB_PATH}/include
+	  			HINTS ${SEARCH_GIS_LIB_PATH}/include
 				${SEARCH_GIS_LIB_PATH})
 
 	  		FIND_LIBRARY(GEOS_LIBRARIES
@@ -133,13 +136,16 @@ IF (SEARCH_GDAL)
 			FIND_PATH(GDAL_INCLUDE_DIR gdal.h
 	  				PATHS ${SEARCH_GIS_LIB_PATH}/include
 	  				${SEARCH_GIS_LIB_PATH}
+					${SEARCH_GIS_LIB_PATH}/GDAL.framework/unix/include
 	                PATH_SUFFIXES gdal  				
 	  				NO_DEFAULT_PATH)
 
 	  		FIND_LIBRARY(GDAL_LIBRARIES
 		  		gdal NAMES gdal1 gdal1.6.0
 		  		PATHS ${SEARCH_GIS_LIB_PATH}/lib
-	  			${SEARCH_GIS_LIB_PATH} NO_DEFAULT_PATH)
+	  			${SEARCH_GIS_LIB_PATH} 
+				${SEARCH_GIS_LIB_PATH}/GDAL.framework/unix/lib
+				NO_DEFAULT_PATH)
 		ELSE(SEARCH_GIS_LIB_PATH)
 			MESSAGE("Searching GDAL on standard PATHS")
 			FIND_PATH(GDAL_INCLUDE_DIR gdal.h
