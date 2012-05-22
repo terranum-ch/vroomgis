@@ -761,8 +761,8 @@ void vroomLoaderFrame::OnToolModify (wxCommandEvent & event){
     // mark selected object as hidden and reload
     myLayerMemory->SetHiddenObjectID(*mySelectedIDs);
     m_ViewerLayerManager->Reload();
-    m_DisplayCtrl->Refresh();
-    m_DisplayCtrl->Update();
+    //m_DisplayCtrl->Refresh();
+    //m_DisplayCtrl->Update();
     
     // create editor if not exists
     if (m_Editor == NULL) {
