@@ -127,14 +127,6 @@ vrShapeEditorLine::vrShapeEditorLine(vrViewerDisplay * display) : vrShapeEditor(
 
 vrShapeEditorLine::~vrShapeEditorLine() {
     // geometry destruction in parent
-    
-    // overlay cleaning
-    {
-        wxClientDC myDC (m_Display);
-        wxDCOverlay overlaydc (m_Overlay, &myDC);
-        overlaydc.Clear();
-    }
-    m_Overlay.Reset();
 }
 
 
@@ -172,9 +164,9 @@ void vrShapeEditorLine::DrawShapeEdit(vrRender * render) {
 	vrRenderVector * myRender = (vrRenderVector*) render;
 	wxPen myPen (myRender->GetColorPen(),
 				 myRender->GetSize());
-    
+       
 	wxClientDC myDC (m_Display);
-	wxDCOverlay overlaydc (m_Overlay, &myDC);
+    wxDCOverlay overlaydc (m_Overlay, &myDC);
 	overlaydc.Clear();
    
 	myDC.SetPen(myPen);
@@ -192,9 +184,15 @@ void vrShapeEditorLine::DrawShapeEdit(vrRender * render) {
     }
     myDC.DrawLines(myLine->getNumPoints(), myPts);
     wxDELETEA(myPts);    
+    
+    
 }
 
 
+
+void vrShapeEditorLine::ViewChanged(){
+     m_Overlay.Reset();
+}
 
 
 /*************************************************************************************//**
@@ -206,13 +204,6 @@ vrShapeEditorPolygon::vrShapeEditorPolygon(vrViewerDisplay * display): vrShapeEd
 }
 
 vrShapeEditorPolygon::~vrShapeEditorPolygon() {
-    // overlay cleaning
-    {
-		wxClientDC myDC (m_Display);
-		wxDCOverlay overlaydc (m_Overlay, &myDC);
-		overlaydc.Clear();
-	}
-	m_Overlay.Reset();
 }
 
 
@@ -285,7 +276,9 @@ OGRGeometry * vrShapeEditorPolygon::GetGeometryRef(){
 	return myGeom;
 }
 
-
+void vrShapeEditorPolygon::ViewChanged(){
+    vrShapeEditorLine::ViewChanged();
+}
 
 
 
