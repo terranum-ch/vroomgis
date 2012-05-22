@@ -726,6 +726,12 @@ void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
             m_DisplayCtrl->SetTool(new vrDisplayToolEdit (m_DisplayCtrl));
             break;
     }
+    
+    if(m_Editor) {
+        // Editor exists, assume view has changed 
+        m_Editor->ViewChanged();
+    }
+
 }
 
 
