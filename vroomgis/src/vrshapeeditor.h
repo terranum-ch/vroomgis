@@ -32,15 +32,28 @@
 class vrViewerDisplay;
 class vrRender;
 
+
+
+enum vrSHAPEEDITOR_TYPES {
+    vrSHAPEEDITOR_TYPE_POINT = 0,
+    vrSHAPEEDITOR_TYPE_LINE,
+    vrSHAPEEDITOR_TYPE_POLYGON,
+    vrSHAPEEDITOR_TYPE_UNKHNOWN = 100
+};
+
+
 class vrShapeEditor {
 protected:
     OGRGeometry * m_Geometry;
     vrViewerDisplay * m_Display;
-	
+    vrSHAPEEDITOR_TYPES m_Type;
+
 	
 public:
     vrShapeEditor(vrViewerDisplay * display);
     virtual ~vrShapeEditor();
+    inline const vrSHAPEEDITOR_TYPES GetType() const;
+
 	
     virtual bool AddVertex(const wxPoint2DDouble & point){return false;}
     virtual bool RemoveVertex(int index = wxNOT_FOUND){return false;}
@@ -54,6 +67,11 @@ public:
 	virtual void DrawShapeFinish(vrRender * render){;}
     virtual void DrawShapeModify(vrRender * render);
 };
+
+
+inline const vrSHAPEEDITOR_TYPES vrShapeEditor::GetType() const {
+    return m_Type;
+}
 
 
 
