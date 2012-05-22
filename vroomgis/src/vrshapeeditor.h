@@ -48,6 +48,8 @@ public:
     virtual OGRGeometry * GetGeometryRef();
     bool SetGeometry(OGRGeometry * geometry);
     
+    virtual void ViewChanged(){;}
+    
     virtual void DrawShapeEdit(vrRender * render){;}
 	virtual void DrawShapeFinish(vrRender * render){;}
     virtual void DrawShapeModify(vrRender * render);
@@ -87,6 +89,8 @@ public:
     vrShapeEditorLine(vrViewerDisplay * display);
     virtual ~vrShapeEditorLine();
     
+    virtual void ViewChanged();
+    
     virtual bool AddVertex(const wxPoint2DDouble & point);
     virtual void DrawShapeEdit(vrRender * render);
     virtual void DrawShapeFinish(vrRender * render){;}
@@ -104,6 +108,8 @@ class vrShapeEditorPolygon : public vrShapeEditorLine {
 public:
     vrShapeEditorPolygon(vrViewerDisplay * display);
     virtual ~vrShapeEditorPolygon();
+    
+    virtual void ViewChanged();
     
     virtual OGRGeometry * GetGeometryRef();
     virtual void DrawShapeFinish(vrRender * render);
