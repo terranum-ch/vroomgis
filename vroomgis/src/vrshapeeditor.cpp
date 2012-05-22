@@ -49,7 +49,7 @@ bool vrShapeEditor::SetGeometry(OGRGeometry * geometry) {
 
 
 
-OGRGeometry * vrShapeEditor::GetGeometryRef() const {
+OGRGeometry * vrShapeEditor::GetGeometryRef(){
 	return m_Geometry;
 }
 
@@ -245,41 +245,43 @@ void vrShapeEditorPolygon::DrawShapeFinish(vrRender * render) {
     myDC.SetBrush(myBrush);
     
     OGRLineString * myLine = (OGRLineString*) m_Geometry;
-    if (myLine->getNumPoints() < 3) {
+    if (myLine->getNumPoints() < 4) {
         return;
     }
     
-    wxPoint * myPts = new wxPoint[myLine->getNumPoints()+1];
+    wxPoint * myPts = new wxPoint[myLine->getNumPoints()];
     for (int i = 0; i<myLine->getNumPoints(); i++) {
         wxPoint2DDouble myRealPt (myLine->getX(i), myLine->getY(i));
         wxPoint myPxPt = wxDefaultPosition;
         m_Display->GetCoordinate()->ConvertToPixels(myRealPt, myPxPt);
         // first point = last point
-        if (i == 0) {
-            myPts[myLine->getNumPoints()] = myPxPt;
-        }
+        //if (i == 0) {
+          //  myPts[myLine->getNumPoints()] = myPxPt;
+        //}
         myPts[i] = myPxPt;
     }
     
     myDC.DrawLine(0, 0, 50, 50);
-    myDC.DrawPolygon(myLine->getNumPoints()+1, myPts);    
+    myDC.DrawPolygon(myLine->getNumPoints(), myPts);    
     wxDELETEA(myPts);    
 }
 
 
 
-OGRGeometry * vrShapeEditorPolygon::GetGeometryRef() const {
+OGRGeometry * vrShapeEditorPolygon::GetGeometryRef(){
+    wxASSERT(m_Geometry);
     OGRLinearRing * myRing = (OGRLinearRing*) m_Geometry;
     if (myRing->getNumPoints() < 3) {
         wxLogError(_("Only %d vertex, unable to create polygon"), myRing->getNumPoints());
         return NULL;
-    }
-    myRing->closeRings();
+    }    
     
     OGRGeometry * myGeom = OGRGeometryFactory::createGeometry(wkbPolygon);
     OGRPolygon * myPolygonGeom = (OGRPolygon*) myGeom;
-
-    myPolygonGeom->addRingDirectly(myRing);
+    myPolygonGeom->addRing(myRing);
+    myPolygonGeom->closeRings();
+    OGRGeometryFactory::destroyGeometry(m_Geometry);
+    m_Geometry = NULL;
 	return myGeom;
 }
 
