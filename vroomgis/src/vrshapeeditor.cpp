@@ -25,6 +25,7 @@ vrShapeEditor::vrShapeEditor(vrViewerDisplay * display) {
 	m_Display = display;
 	wxASSERT(m_Display);
 	m_Geometry = NULL; 
+    m_Type = vrSHAPEEDITOR_TYPE_UNKHNOWN;
 }
 
 vrShapeEditor::~vrShapeEditor() {
@@ -71,6 +72,7 @@ vrShapeEditorPoint::vrShapeEditorPoint(vrViewerDisplay * display) : vrShapeEdito
 	if (m_Geometry == NULL) {
 		m_Geometry = OGRGeometryFactory::createGeometry(wkbPoint);
 	}
+    m_Type = vrSHAPEEDITOR_TYPE_POINT;
 }
 
 
@@ -116,11 +118,11 @@ void vrShapeEditorPoint::DrawShapeFinish(vrRender * render) {
 
 
 
-
 vrShapeEditorLine::vrShapeEditorLine(vrViewerDisplay * display) : vrShapeEditor(display) {
     if (m_Geometry == NULL) {
 		m_Geometry = OGRGeometryFactory::createGeometry(wkbLineString);
 	}
+    m_Type = vrSHAPEEDITOR_TYPE_LINE;
 }
 
 
@@ -201,6 +203,7 @@ void vrShapeEditorLine::ViewChanged(){
 @date 02 avril 2012
 *****************************************************************************************/
 vrShapeEditorPolygon::vrShapeEditorPolygon(vrViewerDisplay * display): vrShapeEditorLine(display) {
+    m_Type = vrSHAPEEDITOR_TYPE_POLYGON;
 }
 
 vrShapeEditorPolygon::~vrShapeEditorPolygon() {
