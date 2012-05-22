@@ -45,7 +45,7 @@ public:
     virtual bool AddVertex(const wxPoint2DDouble & point){return false;}
     virtual bool RemoveVertex(int index = wxNOT_FOUND){return false;}
 	
-    virtual OGRGeometry * GetGeometryRef() const;
+    virtual OGRGeometry * GetGeometryRef();
     bool SetGeometry(OGRGeometry * geometry);
     
     virtual void DrawShapeEdit(vrRender * render){;}
@@ -105,7 +105,7 @@ public:
     vrShapeEditorPolygon(vrViewerDisplay * display);
     virtual ~vrShapeEditorPolygon();
     
-    virtual OGRGeometry * GetGeometryRef() const;
+    virtual OGRGeometry * GetGeometryRef();
     virtual void DrawShapeFinish(vrRender * render);
 
 };
