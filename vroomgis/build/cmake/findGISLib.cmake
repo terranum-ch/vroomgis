@@ -27,6 +27,7 @@ IF (SEARCH_GEOS)
 		FIND_PATH(GEOS_C_INCLUDE_DIR geos_c.h
   				HINTS			
 				${SEARCH_GEOS_LIB_PATH}/capi
+				${SEARCH_GEOS_LIB_PATH}/include
   				NO_DEFAULT_PATH)
 				
 		
@@ -40,6 +41,7 @@ IF (SEARCH_GEOS)
 	  		geos_c_i
 	  		HINTS ${SEARCH_GEOS_LIB_PATH}/source
 			${SEARCH_GEOS_LIB_PATH}/src
+			${SEARCH_GEOS_LIB_PATH}/lib
 			${SEARCH_GEOS_LIB_PATH}
 			NO_DEFAULT_PATH)
 	
