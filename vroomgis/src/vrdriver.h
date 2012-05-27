@@ -43,7 +43,8 @@ enum vrDRIVERS_TYPE {
 	vrDRIVER_RASTER_ESRIGRID,
 	vrDRIVER_RASTER_C2D,
     vrDRIVER_RASTER_EASC,
-    vrDRIVER_RASTER_SGRD7
+    vrDRIVER_RASTER_SGRD7,
+    vrDRIVER_USER_DEFINED
 };
 
 
@@ -56,7 +57,8 @@ static const wxString vrDRIVERS_EXTENSION []= {
 	"*.adf",
 	"*.c2d",
     "*.asc",
-    "*.grd"
+    "*.grd",
+    "*.*"
 };
 
 
@@ -69,7 +71,8 @@ const wxString vrDRIVERS_GDAL_NAMES [] = {
     "AIG",
     "C2D",
     "AAIGrid",
-    "GS7BG"
+    "GS7BG",
+    ""
 };
 
 const wxString vrDRIVERS_NAMES [] = {
@@ -82,6 +85,7 @@ const wxString vrDRIVERS_NAMES [] = {
 	"ColtopGIS",
     "ESRI ASCII grid",
     "Surfer 7 Binary Grid"
+    "User defined"
 };
 
 
