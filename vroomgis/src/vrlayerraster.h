@@ -75,7 +75,7 @@ class vrLayerRaster : public vrLayer {
 
 
 class vrLayerRasterGDAL : public vrLayerRaster {
-private:
+protected:
 	vrRealRect m_ImgExtent;
     wxSize m_ImgPxSize;
 	

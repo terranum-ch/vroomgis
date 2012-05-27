@@ -33,7 +33,7 @@
 class vrLayerManager 
 {
 	
-private:
+protected:
 	vrArrayViewerLayerManager m_ViewerManagers;
 	vrArrayLayer m_Layers;
 	

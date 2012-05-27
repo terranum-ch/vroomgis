@@ -593,14 +593,15 @@ bool vrLayerRasterGDAL::_ComputeExtent() {
 	wxASSERT(m_Dataset);
 	double        adfGeoTransform[6];
 	if( m_Dataset->GetGeoTransform( adfGeoTransform ) != CE_None ){
-		wxLogError("Error getting geometric informations for layer : %s",
+		wxLogWarning("Error getting geometric informations for layer : %s",
 				   m_FileName.GetFullName());
-		return false;
+		//return false;
 	}
 
 	if (adfGeoTransform[5] > 0) {
-		wxLogError("vertical pixel size is Wrong (should be negative) : %.2f",
+		wxLogMessage("vertical pixel size is Wrong (should be negative) : %.2f",
 				   adfGeoTransform[5]);
+        adfGeoTransform[5] = -1.0 * adfGeoTransform[5];
 	}
 
 
