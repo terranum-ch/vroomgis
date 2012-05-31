@@ -93,7 +93,7 @@ protected:
 		
 	bool _ComputeStat();
     bool _HasStat();
-	bool _ComputeExtent();
+	virtual bool _ComputeExtent();
 	bool _HasExtent();
 	
 protected:
