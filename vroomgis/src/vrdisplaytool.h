@@ -29,6 +29,14 @@ class vrRubberBand;
 class vrViewerLayerManager;
 
 
+enum vrMOUSE_STATUS {
+	vrMOUSE_UNKNOWN = -1,
+    vrMOUSE_UP = 0,
+	vrMOUSE_DOWN,
+	vrMOUSE_MOVE,
+};
+
+
 
 /***************************************************************************//**
 @brief Used for passing message from tool to application
@@ -44,17 +52,19 @@ public:
     wxRect m_Rect;
 	wxPoint m_Position;
     wxEventType m_EvtType;
+    vrMOUSE_STATUS m_MouseStatus;
 	vrViewerLayerManager * m_ParentManager;
 
 
     vrDisplayToolMessage(const wxEventType & eventtype,
-						 vrViewerDisplay * parent, const wxRect & rect);
+						 vrViewerDisplay * parent, const wxRect & rect, 
+                         vrMOUSE_STATUS mousestat = vrMOUSE_UNKNOWN);
     vrDisplayToolMessage(const wxEventType & eventtype,
-						 vrViewerDisplay * parent, const wxPoint & pos);
+						 vrViewerDisplay * parent, const wxPoint & pos, 
+                         vrMOUSE_STATUS mousestat = vrMOUSE_UNKNOWN);
     virtual ~vrDisplayToolMessage();
-
+    
 };
-
 
 
 

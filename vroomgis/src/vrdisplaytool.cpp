@@ -34,22 +34,27 @@ void vrDisplayToolMessage::_InitMembers() {
 	wxASSERT(m_Rect.IsEmpty());
 	m_Position = wxDefaultPosition;
 	m_ParentManager = NULL;
+    m_MouseStatus = vrMOUSE_UNKNOWN;
 }
 
 vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
-										   vrViewerDisplay * parent, const wxRect & rect) {
+										   vrViewerDisplay * parent, const wxRect & rect,
+                                           vrMOUSE_STATUS mousestat) {
 	_InitMembers();
 	m_EvtType = eventtype;
 	m_Rect = rect;
 	m_ParentManager = parent->GetViewerLayerManager();
+    m_MouseStatus = mousestat;
 }
 
 vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
-										   vrViewerDisplay * parent, const wxPoint & pos) {
+										   vrViewerDisplay * parent, const wxPoint & pos,
+                                           vrMOUSE_STATUS mousestat) {
 	_InitMembers();
 	m_EvtType = eventtype;
 	m_Position = pos;
 	m_ParentManager = parent->GetViewerLayerManager();
+    m_MouseStatus = mousestat;
 
 }
 
@@ -521,7 +526,8 @@ bool vrDisplayToolSight::MouseDown(const wxMouseEvent & event) {
 
 	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
 															GetDisplay(),
-															event.GetPosition());
+															event.GetPosition(),
+                                                            vrMOUSE_DOWN);
 	SendMessage(myMsg);
 	return true;
 }
@@ -536,7 +542,8 @@ bool vrDisplayToolSight::MouseUp(const wxMouseEvent & event) {
 
 	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
 															GetDisplay(),
-															wxDefaultPosition);
+															event.GetPosition(),
+                                                            vrMOUSE_UP);
 	SendMessage(myMsg);
 
 	return true;
@@ -565,7 +572,8 @@ bool vrDisplayToolSight::MouseMove(const wxMouseEvent & event) {
 
 	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
 															GetDisplay(),
-															event.GetPosition());
+															event.GetPosition(),
+                                                            vrMOUSE_MOVE);
 	SendMessage(myMsg);
 	return true;
 }
