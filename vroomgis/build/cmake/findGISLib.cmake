@@ -143,7 +143,7 @@ IF (SEARCH_GDAL)
 	  				NO_DEFAULT_PATH)
 
 	  		FIND_LIBRARY(GDAL_LIBRARIES
-		  		gdal NAMES gdal1 gdal1.6.0
+		  		gdal NAMES gdal1 gdal1.6.0 gdal1.7.0
 		  		PATHS ${SEARCH_GIS_LIB_PATH}/lib
 	  			${SEARCH_GIS_LIB_PATH} 
 				${SEARCH_GIS_LIB_PATH}/GDAL.framework/unix/lib
