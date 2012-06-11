@@ -95,6 +95,8 @@ class vrViewerLayerManager : public wxEvtHandler {
 
 
 	vrRenderer * GetRenderer(const unsigned int & index);
+    vrRenderer * GetRenderer(const wxString & layername);
+
 	inline vrViewerDisplay * GetDisplay() const;
 	int GetCount();
 

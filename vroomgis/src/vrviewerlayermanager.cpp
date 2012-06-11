@@ -410,6 +410,17 @@ vrRenderer * vrViewerLayerManager::GetRenderer(const unsigned int & index) {
 }
 
 
+
+vrRenderer * vrViewerLayerManager::GetRenderer(const wxString & layername) {
+    for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
+        if (m_Renderers.Item(i)->GetLayer()->GetFileName().GetFullPath() == layername){
+            return m_Renderers.Item(i);
+        }
+    }
+    return NULL;
+}
+
+
 // number of renderers
 int vrViewerLayerManager::GetCount() {
 	return m_Renderers.GetCount();
