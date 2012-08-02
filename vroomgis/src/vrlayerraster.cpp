@@ -541,7 +541,7 @@ bool vrLayerRasterGDAL::_ComputeStat() {
 
     // try computing statistics (take more time...)
     if (myRasterBand->ComputeStatistics(true, &m_OneBandMin, &m_OneBandMax, NULL, NULL, NULL, NULL) != CE_None) {
-        wxLogWarning("Computing statistics for raster %s failed!", m_FileName.GetFullName());
+        wxLogWarning(_("Getting information for raster ‘%s’ failed!\nThis image is either empty or corrupted."), m_FileName.GetFullName());
         return false;
     }
 	return true;
