@@ -1023,16 +1023,20 @@ void vrViewerTOCTree::OnDragStop(wxTreeEvent & event){
         return;
     }
     
-    bool m_AllreadyFreezed = IsFreezed();
+	if (myItemStop == NULL || myItemStop.IsOk() == false){
+		return;
+	}
+
+	vrViewerTOCTreeData * myDataStop = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItemStop);
+	if(myDataStop == NULL){
+		return;
+	}
+
+	bool m_AllreadyFreezed = IsFreezed();
     if (m_AllreadyFreezed == false) {
         FreezeBegin();
     }
-    
-    vrViewerTOCTreeData * myDataStop = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItemStop);
-    if(myDataStop == NULL){
-        return;
-    }
-    
+
     // drag into group
     if (myDataStop->m_ItemType == vrTREEDATA_TYPE_GROUP) {
         _CopyTreeItems(myItemStart, myItemStop);
