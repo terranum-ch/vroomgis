@@ -32,7 +32,7 @@ echo $VARLINE
 #updating svn
 echo "1) Getting last SVN version..."
 cd $VARTRUNKDIR
-svn update -r 72223
+svn update
 VARSVNNUMBER=`svnversion -n`
 echo '1) Getting last SVN version... DONE (\c'
 echo  $VARSVNNUMBER ')'	
