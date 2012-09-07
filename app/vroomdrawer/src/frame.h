@@ -39,7 +39,9 @@ const int ID_MENU_ADDMEMORYLAYER = wxID_HIGHEST + 3;
 class vroomDrawer : public wxApp
 {
 public:
-     virtual bool OnInit();
+    vroomDrawer();
+    virtual bool OnInit();
+    virtual void OnFatalException();
 };
 DECLARE_APP(vroomDrawer);
 
