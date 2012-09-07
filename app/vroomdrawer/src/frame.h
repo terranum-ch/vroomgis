@@ -28,6 +28,7 @@
 
 #include <wx/filename.h>
 #include <wx/splitter.h>	//splitter bar
+#include <wx/stdpaths.h>
 #include "vroomgis.h"
 
 

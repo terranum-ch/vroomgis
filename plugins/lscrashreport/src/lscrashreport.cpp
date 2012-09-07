@@ -343,12 +343,27 @@ bool lsCrashReport::PrepareReport(wxDebugReport::Context ctx, bool silent) {
 
 
 bool lsCrashReport::SendReportWeb(const wxString & serverurl, const wxString & proxy) {
+    CURL * easyhandle = curl_easy_init();
+    if (easyhandle == NULL) {
+        return false;
+    }
+    
+    curl_easy_setopt(easyhandle, CURLOPT_URL, (const char*) serverurl.mb_str(wxConvUTF8));
+    
+    //char *data="name=daniel&project=curl";
+    //curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, data);
+    curl_easy_perform(easyhandle); /* post away! */
+    
+    
+    curl_easy_cleanup(easyhandle);
     return false;
 }
 
 
 bool lsCrashReport::SaveReportFile(const wxString & directory) {
-    wxLogMessage(_T("Compressed file: %s"), m_ReportZipName);
-    return false;
+    wxFileName myExistingFile (m_ReportZipName);
+    wxFileName myCopiedFile (myExistingFile);
+    myCopiedFile.SetPath(directory);
+    return wxCopyFile(myExistingFile.GetFullPath(), myCopiedFile.GetFullPath());
 }
 

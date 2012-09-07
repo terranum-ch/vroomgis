@@ -518,9 +518,17 @@ void vroomDrawerFrame::OnToolPan (wxCommandEvent & event){
 void vroomDrawerFrame::OnZoomToFit (wxCommandEvent & event)
 {
     lsCrashReport myCrashReport (_T("vroomLoader"));
-    myCrashReport.PrepareReport(wxDebugReport::Context_Exception);
-    myCrashReport.SaveReportFile(wxEmptyString);
-    
+    if(myCrashReport.PrepareReport(wxDebugReport::Context_Exception)==false){
+        return;
+    }
+    if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php"))==false) {
+        wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
+        if(myCrashReport.SaveReportFile(myDocPath)==false){
+            wxLogError(_("Unable to save the crashreport!"));
+            return;
+        }
+        wxLogWarning(_("Connection problem! crashreport wasn't sent. crashreport was saved into '%s', please send it manually to lucien.schreiber@crealp.vs.ch"), myDocPath);
+    }
     return;
     
     int * i = NULL;

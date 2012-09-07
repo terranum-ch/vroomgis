@@ -26,6 +26,8 @@
 #include <wx/hyperlink.h>
 #include <wx/debugrpt.h>
 #include <wx/mstream.h>
+#include <wx/filename.h>
+#include <curl/curl.h>
 
 
 class lsCrashReport_DLG : public wxDialog {
