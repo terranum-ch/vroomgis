@@ -25,6 +25,9 @@ IF(USE_CRASHREPORT)
 		 MESSAGE(FATAL_ERROR "Unable to find lscrashreport.h")
 	 ENDIF(NOT LSCRASHREPORT_PATH)
 	
+	# CURL for sending crashreport
+	INCLUDE("${LSCRASHREPORT_PATH}/../build/FindCURL.cmake")
+
  	#
  	# CREATE LIBRARY 
  	#
@@ -41,10 +44,6 @@ IF(USE_CRASHREPORT)
 	
 	#MESSAGE(" src:::::: ${LSCRASH_SRC_FILES}")
 ENDIF(USE_CRASHREPORT)
-
-IF(USE_VERSION)
-	MESSAGE("USING VERSION component !!!!")
-ENDIF(USE_VERSION)
 
 CONFIGURE_FILE("${LSCRASHREPORT_PATH}/lscrashreport_param.h.in" "${PROJECT_BINARY_DIR}/lscrashreport_param.h")
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
