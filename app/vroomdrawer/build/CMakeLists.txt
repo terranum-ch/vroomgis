@@ -22,6 +22,9 @@ INCLUDE("../../../vroomgis/build/cmake/Use_vroomGISlib.cmake")
 #USE LSVERSION PLUGIN
 INCLUDE("../../../plugins/lsversion/build/use_lsversion.cmake")
 
+#USE LSCRASHREPORT PLUGIN
+INCLUDE("../../../plugins/lscrashreport/build/use_lscrashreport.cmake")
+
 IF( APPLE )
 	SET (APP_ICON "vroomgis.icns")
 	SET(MACOSX_BUNDLE_INFO_STRING "VroomGIS test Program")
@@ -54,6 +57,9 @@ TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
 IF(USE_VERSION)
 	TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${LSVERSION_NAME})
 ENDIF(USE_VERSION)
+IF (USE_CRASHREPORT)
+	TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${LSCRASHREPORT_NAME})
+ENDIF(USE_CRASHREPORT)
 
 # copy libs to bundle if we are under mac...
 INCLUDE ("../../../vroomgis/build/cmake/installMacGISLIB.cmake")

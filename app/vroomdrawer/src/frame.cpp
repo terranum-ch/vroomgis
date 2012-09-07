@@ -23,8 +23,8 @@
 #include "vrrendervectorc2p.h"
 #include "vrlayervector.h"
 #include "vrlayervectorstar.h"
-
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
+#include <lscrashreport.h>
 
 
 // enable XP style controls
@@ -40,10 +40,16 @@
 
 
 IMPLEMENT_APP(vroomDrawer);
+vroomDrawer::vroomDrawer(){
+    wxHandleFatalExceptions();
+}
+
+
 bool vroomDrawer::OnInit()
 {
-    if ( !wxApp::OnInit() )
+    if ( !wxApp::OnInit() ){
         return false;
+    }
 
 	wxInitAllImageHandlers();
 	vroomgis_initialize_images();
@@ -52,6 +58,12 @@ bool vroomDrawer::OnInit()
 	frame->SetSize(50, 50, 800, 500);
 	frame->Show(true);
     return true;
+}
+
+
+void vroomDrawer::OnFatalException(){
+    lsCrashReport myCrashReport (_T("vroomLoader"));
+    myCrashReport.PrepareReport(wxDebugReport::Context_Exception);
 }
 
 
@@ -505,7 +517,16 @@ void vroomDrawerFrame::OnToolPan (wxCommandEvent & event){
 
 void vroomDrawerFrame::OnZoomToFit (wxCommandEvent & event)
 {
-	m_ViewerLayerManager->ZoomToFit(true);
+    lsCrashReport myCrashReport (_T("vroomLoader"));
+    myCrashReport.PrepareReport(wxDebugReport::Context_Exception);
+    myCrashReport.SaveReportFile(wxEmptyString);
+    
+    return;
+    
+    int * i = NULL;
+    *i = 12;
+    
+    m_ViewerLayerManager->ZoomToFit(true);
 	m_ViewerLayerManager->Reload();
 }
 
