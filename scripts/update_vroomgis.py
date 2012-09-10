@@ -283,6 +283,7 @@ if (doBuildVroomDrawer == 'Y'):
 	mycmakeCommandLine.append("-DSEARCH_GDAL:BOOL=1")
 	mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
 	mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
+	mycmakeCommandLine.append("-DSEARCH_CURL_LIB_PATH:PATH=" + gDirCurl)
 	mycmakeCommandLine.append("-DUSE_VERSION:BOOL=1")
 	if(gwxWidgetsVersion != ""):
 		mycmakeCommandLine.append("-DwxWIDGETS_USING_SVN:BOOL=1")
