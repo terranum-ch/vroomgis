@@ -9,6 +9,7 @@ gDirGis = "D:\\LIB\\LIB_GDAL"
 gDirTestData = "D:\\PRJ\\COLTOPGIS\\test-data"
 gDirCxx = "D:\\LIB\\cxxtest"
 gDirSQLite = "D:\\LIB\\LIB_SQLITE"
+gDirCurl = "D:\\LIB\\LIB_CURL"
 
 
 # CMAKE SPECIFIC

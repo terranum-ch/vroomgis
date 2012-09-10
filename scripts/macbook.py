@@ -9,6 +9,7 @@ gDirGis = "/Users/lucien/DATA/PROGRAMATION/_LIB/64/_LIBGIS"
 gDirTestData = "/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data"
 gDirCxx = "/Users/lucien/DATA/PROGRAMATION/_LIB/cxxtest"
 gDirSQLite = ""
+gDirCurl = ""
 
 
 # CMAKE SPECIFIC

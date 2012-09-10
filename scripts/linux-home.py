@@ -9,6 +9,7 @@ gDirGis = "/home/lucien/programmation/LIB/_LIBGIS"
 gDirTestData = "/home/lucien/programmation/ColtopGIS/test_data"
 gDirCxx = "/home/lucien/programmation/LIB/cxxtest"
 gDirSQLite = ""
+gDirCurl = ""
 
 # CMAKE SPECIFIC
 gCmakeEnv = "CodeBlocks - Unix Makefiles" #result of cmake --help
