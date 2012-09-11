@@ -521,7 +521,7 @@ void vroomDrawerFrame::OnZoomToFit (wxCommandEvent & event)
     if(myCrashReport.PrepareReport(wxDebugReport::Context_Exception)==false){
         return;
     }
-    if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php"))==false) {
+    if (myCrashReport.SendReportWeb(_T("http://localhost/upload_crash/upload_file.php"))==false){    //_T("http://www.crealp.ch/crashreport/upload_file.php"))==false) {
         wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
         if(myCrashReport.SaveReportFile(myDocPath)==false){
             wxLogError(_("Unable to save the crashreport!"));
