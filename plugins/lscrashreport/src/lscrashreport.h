@@ -27,6 +27,7 @@
 #include <wx/debugrpt.h>
 #include <wx/mstream.h>
 #include <wx/filename.h>
+#include <wx/sstream.h>
 #include <curl/curl.h>
 
 
@@ -70,6 +71,9 @@ private:
     wxString _CreateStyleSheet();
     wxString _CreateGeneralInfo();
     wxString _CreateAddInfo (const wxString & email, const wxString & description);
+    // CALLBACK FOR CURL
+    size_t _CurlWriteStr(void* ptr, size_t size, size_t nmemb, void* stream);
+
     
 public:
     lsCrashReport(const wxString & softname);

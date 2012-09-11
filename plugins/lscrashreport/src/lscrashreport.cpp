@@ -343,20 +343,65 @@ bool lsCrashReport::PrepareReport(wxDebugReport::Context ctx, bool silent) {
 
 
 bool lsCrashReport::SendReportWeb(const wxString & serverurl, const wxString & proxy) {
+    CURLcode myCurlError = curl_global_init(CURL_GLOBAL_ALL);
     CURL * easyhandle = curl_easy_init();
     if (easyhandle == NULL) {
         return false;
     }
     
+    wxFileName myTempZipFileName (m_Report->GetCompressedFileName());
     curl_easy_setopt(easyhandle, CURLOPT_URL, (const char*) serverurl.mb_str(wxConvUTF8));
-    
+    wxString myFields (wxString::Format(_T("filename=%s&filecontents=%s"), myTempZipFileName.GetFullName(), myTempZipFileName.GetFullPath()));
     //char *data="name=daniel&project=curl";
-    //curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, data);
-    curl_easy_perform(easyhandle); /* post away! */
+    curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, (const char*) myFields.mb_str(wxConvUTF8));
     
+    // read response
+    wxStringOutputStream  myBuffer;
+    myCurlError = curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, _CurlWriteStr);
+    myCurlError = curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA,(void*)& myBuffer);
     
+    myCurlError = curl_easy_perform(easyhandle); /* post away! */
     curl_easy_cleanup(easyhandle);
-    return false;
+    
+    /*
+    m_Parent = parent;
+    CURLcode myCurlError = curl_global_init(CURL_GLOBAL_ALL);
+    wxASSERT(myCurlError == CURLE_OK);
+	m_CurlHandle = curl_easy_init();
+    
+    m_msgNewVersion = true;
+    m_msgNoNewVersion = true;
+    m_msgNoInternet = true;
+    m_ActualVersion = wxNOT_FOUND;
+    
+    
+    // Prepare connection
+    
+    wxString myServerInfo = WEBUPDATE_SERVER_UPDATE + "?t=" + wxDateTime::Now().FormatISOCombined('-');
+	myCurlError = curl_easy_setopt(m_CurlHandle,
+                                   CURLOPT_URL,
+                                   (const char *)myServerInfo.mb_str(wxConvUTF8));
+	wxASSERT(myCurlError == CURLE_OK);
+    
+	myCurlError = curl_easy_setopt(m_CurlHandle, CURLOPT_TIMEOUT_MS, WEBUPDATE_CONNECTION_TIMEOUT);
+	wxASSERT(myCurlError == CURLE_OK);
+    
+    // prepare proxy if needed
+    if (proxy.IsEmpty() == false) {
+        myCurlError = curl_easy_setopt(m_CurlHandle, CURLOPT_PROXY,
+                                       (const char*)proxy.mb_str(wxConvUTF8));
+        wxASSERT(myCurlError == CURLE_OK);
+    }
+    
+    // prepare reception of data
+    myCurlError = curl_easy_setopt(m_CurlHandle, CURLOPT_WRITEFUNCTION, wxcurl_str_write);
+    wxASSERT(myCurlError == CURLE_OK);
+    
+    myCurlError = curl_easy_setopt(m_CurlHandle, CURLOPT_WRITEDATA,(void*)& m_Buffer);
+    wxASSERT(myCurlError == CURLE_OK);
+*/
+    
+    return true;
 }
 
 
@@ -365,5 +410,18 @@ bool lsCrashReport::SaveReportFile(const wxString & directory) {
     wxFileName myCopiedFile (myExistingFile);
     myCopiedFile.SetPath(directory);
     return wxCopyFile(myExistingFile.GetFullPath(), myCopiedFile.GetFullPath());
+}
+
+
+
+size_t lsCrashReport::_CurlWriteStr(void* ptr, size_t size, size_t nmemb, void* stream){
+	size_t iRealSize = size * nmemb;
+	wxOutputStream* pBuf = (wxOutputStream*)stream;
+    
+	if(pBuf){
+		pBuf->Write(ptr, iRealSize);
+		return pBuf->LastWrite();
+	}
+	return 0;
 }
 
