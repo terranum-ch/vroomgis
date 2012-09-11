@@ -27,18 +27,6 @@
 #include <lscrashreport.h>
 
 
-// enable XP style controls
-#if defined(__WXMSW__) && !defined(__WXWINCE__) 
-	#pragma comment(linker,"/manifestdependency:\"type='win32' "\
-	"name='Microsoft.Windows.Common-Controls' "\
-	"version='6.0.0.0' "\
-	"processorArchitecture='x86' "\
-	"publicKeyToken='6595b64144ccf1df' "\
-	"language='*' "\
-	"\"")
-#endif 
-
-
 IMPLEMENT_APP(vroomDrawer);
 vroomDrawer::vroomDrawer(){
     wxHandleFatalExceptions();
@@ -47,6 +35,13 @@ vroomDrawer::vroomDrawer(){
 
 bool vroomDrawer::OnInit()
 {
+#ifdef __WXDEBUG__
+    // debugging string for OSX
+    // this is needed for viewing string content with Xcode !!
+    wxString myTest = _T("Test debugging");
+    myTest.ToUTF8().data();
+#endif
+    
     if ( !wxApp::OnInit() ){
         return false;
     }
@@ -62,7 +57,7 @@ bool vroomDrawer::OnInit()
 
 
 void vroomDrawer::OnFatalException(){
-    lsCrashReport myCrashReport (_T("vroomLoader"));
+    lsCrashReport myCrashReport (_T("vroomDrawer"));
     myCrashReport.PrepareReport(wxDebugReport::Context_Exception);
 }
 
@@ -517,7 +512,7 @@ void vroomDrawerFrame::OnToolPan (wxCommandEvent & event){
 
 void vroomDrawerFrame::OnZoomToFit (wxCommandEvent & event)
 {
-    lsCrashReport myCrashReport (_T("vroomLoader"));
+    lsCrashReport myCrashReport (_T("vroomDrawer"));
     if(myCrashReport.PrepareReport(wxDebugReport::Context_Exception)==false){
         return;
     }

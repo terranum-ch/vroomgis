@@ -1134,7 +1134,7 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
     }
     
     if (index >= (signed) m_Tree->GetCount()) {
-		wxTreeItemId myAddedId = m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus, -1, myData);
+		m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus, -1, myData);
 		return true;
 	}
     
@@ -1143,7 +1143,7 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
 		index = 0;
 	}
     
-    wxTreeItemId myAddedId = m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus,-1,myData);
+    m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus,-1,myData);
     //m_Tree->SetItemState(myAddedId, wxTREE_ITEMSTATE_NONE);
     
     return true;
