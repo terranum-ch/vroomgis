@@ -71,9 +71,6 @@ private:
     wxString _CreateStyleSheet();
     wxString _CreateGeneralInfo();
     wxString _CreateAddInfo (const wxString & email, const wxString & description);
-    // CALLBACK FOR CURL
-    size_t _CurlWriteStr(void* ptr, size_t size, size_t nmemb, void* stream);
-
     
 public:
     lsCrashReport(const wxString & softname);
@@ -85,4 +82,8 @@ public:
     bool SendReportWeb(const wxString & serverurl, const wxString & proxy = wxEmptyString);
     bool SaveReportFile(const wxString & directory);
 };
+
+// CALLBACK FOR CURL
+size_t wxcurl_str_write(void* ptr, size_t size, size_t nmemb, void* stream);
+
 #endif

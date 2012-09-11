@@ -351,19 +351,73 @@ bool lsCrashReport::SendReportWeb(const wxString & serverurl, const wxString & p
     
     wxFileName myTempZipFileName (m_Report->GetCompressedFileName());
     curl_easy_setopt(easyhandle, CURLOPT_URL, (const char*) serverurl.mb_str(wxConvUTF8));
-    wxString myFields (wxString::Format(_T("filename=%s&filecontents=%s"), myTempZipFileName.GetFullName(), myTempZipFileName.GetFullPath()));
+    //wxString myFields (wxString::Format(_T("filename=%s&filecontents=%s"), myTempZipFileName.GetFullName().c_str(), myTempZipFileName.GetFullPath().c_str()));
     //char *data="name=daniel&project=curl";
-    curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, (const char*) myFields.mb_str(wxConvUTF8));
+    //myCurlError = curl_easy_setopt(easyhandle, CURLOPT_POSTFIELDS, (const char*) myFields.mb_str(wxConvUTF8));
+    
+    struct curl_httppost *formpost=NULL;
+    struct curl_httppost *lastptr=NULL;
+    struct curl_slist *headerlist=NULL;
+    static const char buf[] = "Expect:";
+    
+    curl_formadd(&formpost,
+                 &lastptr,
+                 CURLFORM_COPYNAME, "filename",
+                 CURLFORM_COPYCONTENTS, (const char *) myTempZipFileName.GetFullName().mb_str(wxConvUTF8), // "postit2.c",
+                 CURLFORM_END);
+    
+    curl_formadd(&formpost,
+                 &lastptr,
+                 CURLFORM_COPYNAME, "filecontents",
+                 CURLFORM_FILE, (const char *) myTempZipFileName.GetFullPath().mb_str(wxConvUTF8), // "postit2.c",
+                 CURLFORM_END);
+    
+    curl_formadd(&formpost, &lastptr,
+                 CURLFORM_COPYNAME, "softname",
+                 CURLFORM_COPYCONTENTS, (const char *) m_SoftName.mb_str(wxConvUTF8),
+                 CURLFORM_END);
+    
+    
+    // Fill in the submit field too, even if this is rarely needed
+    /*curl_formadd(&formpost,
+                 &lastptr,
+                 CURLFORM_COPYNAME, "submit",
+                 CURLFORM_COPYCONTENTS, "send",
+                 CURLFORM_END);*/
+    
+    //headerlist = curl_slist_append(headerlist, buf);
+    curl_easy_setopt(easyhandle, CURLOPT_HTTPPOST, formpost);
     
     // read response
     wxStringOutputStream  myBuffer;
-    myCurlError = curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, _CurlWriteStr);
+    myCurlError = curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, wxcurl_str_write);
     myCurlError = curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA,(void*)& myBuffer);
     
     myCurlError = curl_easy_perform(easyhandle); /* post away! */
+    if (myCurlError != CURLE_OK) {
+        wxString myErr(curl_easy_strerror(myCurlError));
+        wxLogError(myErr);
+        
+        curl_easy_cleanup(easyhandle);
+        curl_formfree(formpost);
+        curl_slist_free_all (headerlist);
+        return false;
+    }
+    wxString myPageInfo = myBuffer.GetString();
+    wxLogWarning( myPageInfo );
     curl_easy_cleanup(easyhandle);
+    curl_formfree(formpost);
+    curl_slist_free_all (headerlist);
+    
+    
+    
     
     /*
+    
+    
+    
+    
+    
     m_Parent = parent;
     CURLcode myCurlError = curl_global_init(CURL_GLOBAL_ALL);
     wxASSERT(myCurlError == CURLE_OK);
@@ -414,10 +468,9 @@ bool lsCrashReport::SaveReportFile(const wxString & directory) {
 
 
 
-size_t lsCrashReport::_CurlWriteStr(void* ptr, size_t size, size_t nmemb, void* stream){
+size_t wxcurl_str_write(void* ptr, size_t size, size_t nmemb, void* stream){
 	size_t iRealSize = size * nmemb;
 	wxOutputStream* pBuf = (wxOutputStream*)stream;
-    
 	if(pBuf){
 		pBuf->Write(ptr, iRealSize);
 		return pBuf->LastWrite();
