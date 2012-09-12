@@ -58,7 +58,17 @@ bool vroomDrawer::OnInit()
 
 void vroomDrawer::OnFatalException(){
     lsCrashReport myCrashReport (_T("vroomDrawer"));
-    myCrashReport.PrepareReport(wxDebugReport::Context_Exception);
+    if(myCrashReport.PrepareReport(wxDebugReport::Context_Exception)==false){
+        return;
+    }
+    if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php"))==false){
+        wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
+        if(myCrashReport.SaveReportFile(myDocPath)==false){
+            wxLogError(_("Unable to save the crashreport!"));
+            return;
+        }
+        wxLogWarning(_("Connection problem! crashreport wasn't sent. crashreport was saved into '%s'\nplease send it manually to lucien.schreiber@crealp.vs.ch"), myDocPath);
+    }
 }
 
 
@@ -73,6 +83,7 @@ BEGIN_EVENT_TABLE(vroomDrawerFrame, wxFrame)
 	EVT_MENU( ID_MENU_PAN, vroomDrawerFrame::OnToolPan )
 	EVT_MENU( wxID_ZOOM_FIT, vroomDrawerFrame::OnZoomToFit )
 	EVT_MENU (wxID_INFO, vroomDrawerFrame::OnShowLog)
+    EVT_MENU(wxID_DELETE, vroomDrawerFrame::OnTestCrashSoftware)
 	EVT_BUTTON(ID_MENU_ADDMEMORYLAYER, vroomDrawerFrame::OnStarLayerAdd)
 
 	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomDrawerFrame::OnToolActionZoom)
@@ -160,6 +171,8 @@ void  vroomDrawerFrame::_CreateControls(){
 	myFileMenu->Append( m_menuItem2 );
 	myFileMenu->AppendSeparator();
 	myFileMenu->Append(wxID_INFO, _("Show Log...\tCtrl+L"));
+    myFileMenu->AppendSeparator();
+    myFileMenu->Append(wxID_DELETE, _("Generate crash..."));
 	myFileMenu->Append(wxID_ABOUT, _("About"));
 	myFileMenu->Append(wxID_EXIT, _("Quit"));
 	
@@ -512,27 +525,27 @@ void vroomDrawerFrame::OnToolPan (wxCommandEvent & event){
 
 void vroomDrawerFrame::OnZoomToFit (wxCommandEvent & event)
 {
-    lsCrashReport myCrashReport (_T("vroomDrawer"));
-    if(myCrashReport.PrepareReport(wxDebugReport::Context_Exception)==false){
-        return;
-    }
-    if (myCrashReport.SendReportWeb(_T("http://localhost/upload_crash/upload_file.php"))==false){    //_T("http://www.crealp.ch/crashreport/upload_file.php"))==false) {
-        wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
-        if(myCrashReport.SaveReportFile(myDocPath)==false){
-            wxLogError(_("Unable to save the crashreport!"));
-            return;
-        }
-        wxLogWarning(_("Connection problem! crashreport wasn't sent. crashreport was saved into '%s', please send it manually to lucien.schreiber@crealp.vs.ch"), myDocPath);
-    }
-    return;
-    
-    int * i = NULL;
-    *i = 12;
-    
     m_ViewerLayerManager->ZoomToFit(true);
 	m_ViewerLayerManager->Reload();
 }
 
+
+// crash function for better stack trace
+static void bar(const char *p){
+    char *pc = 0;
+    *pc = *p;
+    printf("bar: %s\n", p);
+}
+
+
+void foo(int n){
+    bar("even");
+}
+
+
+void vroomDrawerFrame::OnTestCrashSoftware (wxCommandEvent & event){
+    foo(31);
+}
 
 
 void vroomDrawerFrame::OnToolActionZoom (wxCommandEvent & event){

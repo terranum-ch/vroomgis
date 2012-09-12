@@ -82,7 +82,8 @@ private:
 	void OnToolZoom( wxCommandEvent& event );
 	void OnToolSelect( wxCommandEvent& event );
 	void OnToolPan( wxCommandEvent& event ) ;
-	void OnZoomToFit( wxCommandEvent& event ) ;
+	void OnZoomToFit( wxCommandEvent& event );
+    void OnTestCrashSoftware (wxCommandEvent & event);
 	
 	void OnShowLog (wxCommandEvent & event);
 	
