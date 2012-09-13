@@ -84,6 +84,6 @@ public:
 };
 
 // CALLBACK FOR CURL
-size_t wxcurl_str_write(void* ptr, size_t size, size_t nmemb, void* stream);
+size_t wxcurl_string_write(void* ptr, size_t size, size_t nmemb, void* stream);
 
 #endif
