@@ -380,6 +380,10 @@ bool lsCrashReport::SendReportWeb(const wxString & serverurl, const wxString & p
     
     curl_easy_setopt(easyhandle, CURLOPT_HTTPPOST, formpost);
     
+    if (proxy.IsEmpty() == false) {
+        curl_easy_setopt(easyhandle, CURLOPT_PROXY, (const char*)proxy.mb_str(wxConvUTF8));
+    }
+    
     // read response
     wxStringOutputStream  myBuffer;
     myCurlError = curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, wxcurl_string_write);
