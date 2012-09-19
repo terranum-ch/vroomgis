@@ -1,9 +1,9 @@
 /***************************************************************************
-								vroomTwin.h
-					Two Windows test program for VroomGIS 
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vroomTwin.h
+ Two Windows test program for VroomGIS
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -28,30 +28,39 @@
 #endif
 
 
-#include <wx/splitter.h>	//splitter bar
-#include <wx/dnd.h>			// dnd
+#include <wx/splitter.h>	
+#include <wx/dnd.h>
 #include "vroomgis.h"
+
+const int vtID_SET_SYNCRO_MODE	= wxID_HIGHEST + 1;
+const int vtID_SIGHT_TOOL		= wxID_HIGHEST + 2;
+const int vtID_OVERLAY_TEXT     = wxID_HIGHEST + 3;
+
+class vroomTwinFrame;
+
+
 
 class vroomTwin : public wxApp
 {
 public:
-     virtual bool OnInit();
+    virtual bool OnInit();
 };
 
 
-const int vtID_SET_SYNCRO_MODE	= wxID_HIGHEST + 1;
-const int vtID_SIGHT_TOOL		= wxID_HIGHEST + 2;
 
-class vroomTwinFrame;
+
+
 class vroomDropFiles : public wxFileDropTarget {
 private:
 	vroomTwinFrame * m_LoaderFrame;
 	
 public:
 	vroomDropFiles(vroomTwinFrame * parent);
-	virtual bool OnDropFiles(wxCoord x, wxCoord y, 
-							 const wxArrayString & filenames);
+	virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString & filenames);
 };
+
+
+
 
 
 
@@ -75,36 +84,27 @@ private:
 	
 	
 	void _CreateControls();
-	
+    DECLARE_EVENT_TABLE();
 public:
     vroomTwinFrame(const wxString& title);
 	~vroomTwinFrame();
 	
 	bool OpenLayers (const wxArrayString & names);
-	
+    
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 	void OnOpenLayer(wxCommandEvent & event);
 	void OnCloseLayer(wxCommandEvent & event);
 	void OnShowLog (wxCommandEvent & event);
-	
+	void OnOverlayText (wxCommandEvent & event);
 	void OnSyncroToolSwitch(wxCommandEvent & event);
-	
 	//void OnToolSelect (wxCommandEvent & event);
 	void OnToolZoom (wxCommandEvent & event);
 	void OnToolPan (wxCommandEvent & event);
 	void OnToolSight (wxCommandEvent & event);
 	void OnToolZoomToFit (wxCommandEvent & event);
-	
 	void OnToolAction (wxCommandEvent & event);
-	
-private:
-    DECLARE_EVENT_TABLE()
 };
-
-
-
-
 #endif
 
 

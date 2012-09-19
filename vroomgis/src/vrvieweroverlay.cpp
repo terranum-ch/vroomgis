@@ -31,6 +31,8 @@ vrViewerOverlay::~vrViewerOverlay() {
 void vrViewerOverlay::SetVisible(bool value) {
   m_Visible = value;
 }
+#include <wx/arrimpl.cpp>
+WX_DEFINE_OBJARRAY (vrViewerOverlayArray);
 
 
 
@@ -47,6 +49,7 @@ vrViewerOverlayText::vrViewerOverlayText(wxString name, wxString text) :
      SetPosition(wxPoint(10,10));
      m_Font = *wxNORMAL_FONT;
      m_Font.SetPointSize(m_Font.GetPointSize() + 5);
+     SetTextColour(*wxBLACK);
 }
 
 
@@ -57,6 +60,7 @@ vrViewerOverlayText::~vrViewerOverlayText() {
 
 
 bool vrViewerOverlayText::DrawOverlay(wxPaintDC * dc) {
+    dc->SetTextForeground(GetTextColour());
     dc->SetFont(GetFont());
     dc->DrawText(GetText(), GetPosition());
     return true;
@@ -78,3 +82,7 @@ void vrViewerOverlayText::SetPosition(wxPoint value) {
   m_Pos = value;
 }
 
+
+void vrViewerOverlayText::SetTextColour(wxColour value) {
+    m_TextColour = value;
+}

@@ -1,9 +1,9 @@
 /***************************************************************************
-								frame.cpp
-                    First test program for VroomGIS
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ frame.cpp
+ First test program for VroomGIS
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,40 +20,24 @@
 
 #include "tmlog.h"	// for double logging process
 #include "lsversion_dlg.h"
-
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
-// enable XP style controls
-#if defined(__WXMSW__) && !defined(__WXWINCE__) 
-	#pragma comment(linker,"/manifestdependency:\"type='win32' "\
-	"name='Microsoft.Windows.Common-Controls' "\
-	"version='6.0.0.0' "\
-	"processorArchitecture='x86' "\
-	"publicKeyToken='6595b64144ccf1df' "\
-	"language='*' "\
-	"\"")
-#endif 
-
-
 BEGIN_EVENT_TABLE(vroomTwinFrame, wxFrame)
-    EVT_MENU(wxID_EXIT,  vroomTwinFrame::OnQuit)
-    EVT_MENU(wxID_ABOUT, vroomTwinFrame::OnAbout)
-	EVT_MENU(wxID_OPEN, vroomTwinFrame::OnOpenLayer)
-	EVT_MENU(wxID_REMOVE, vroomTwinFrame::OnCloseLayer)
-	EVT_MENU (wxID_INFO, vroomTwinFrame::OnShowLog)
-	//EVT_MENU (wxID_DEFAULT, vroomTwinFrame::OnToolSelect)
-	EVT_MENU (wxID_ZOOM_IN, vroomTwinFrame::OnToolZoom)
-	EVT_MENU (wxID_ZOOM_FIT, vroomTwinFrame::OnToolZoomToFit)
-	EVT_MENU (wxID_MOVE_FRAME, vroomTwinFrame::OnToolPan)
-	EVT_MENU (vtID_SIGHT_TOOL, vroomTwinFrame::OnToolSight)
-	EVT_MENU (vtID_SET_SYNCRO_MODE, vroomTwinFrame::OnSyncroToolSwitch)
-	//EVT_MENU (wxID_ZOOM_100, vroomTwinFrame::OnToolZoomToFit)
-	
-	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomTwinFrame::OnToolAction)
-	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomTwinFrame::OnToolAction)
-	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomTwinFrame::OnToolAction)
-	EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SIGHT, vroomTwinFrame::OnToolAction)
-
+EVT_MENU(wxID_EXIT,  vroomTwinFrame::OnQuit)
+EVT_MENU(wxID_ABOUT, vroomTwinFrame::OnAbout)
+EVT_MENU(wxID_OPEN, vroomTwinFrame::OnOpenLayer)
+EVT_MENU(wxID_REMOVE, vroomTwinFrame::OnCloseLayer)
+EVT_MENU (wxID_INFO, vroomTwinFrame::OnShowLog)
+EVT_MENU (wxID_ZOOM_IN, vroomTwinFrame::OnToolZoom)
+EVT_MENU (wxID_ZOOM_FIT, vroomTwinFrame::OnToolZoomToFit)
+EVT_MENU (wxID_MOVE_FRAME, vroomTwinFrame::OnToolPan)
+EVT_MENU (vtID_SIGHT_TOOL, vroomTwinFrame::OnToolSight)
+EVT_MENU (vtID_SET_SYNCRO_MODE, vroomTwinFrame::OnSyncroToolSwitch)
+EVT_MENU(vtID_OVERLAY_TEXT, vroomTwinFrame::OnOverlayText)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomTwinFrame::OnToolAction)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomTwinFrame::OnToolAction)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomTwinFrame::OnToolAction)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SIGHT, vroomTwinFrame::OnToolAction)
 END_EVENT_TABLE()
 IMPLEMENT_APP(vroomTwin)
 
@@ -73,7 +57,6 @@ bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y,
 	m_LoaderFrame->OpenLayers(filenames);
 	return true;
 }
-
 
 
 bool vroomTwin::OnInit()
@@ -151,9 +134,7 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
        : wxFrame(NULL, wxID_ANY, title)
 {
 	m_SyncroTool = true;
-    //SetIcon(wxICON(vroomgis));
-	
-	// add icon (windows / linux)
+ 	// add icon (windows / linux)
 	wxIcon myVroomGISIcon;
 	myVroomGISIcon.CopyFromBitmap(*_img_vroomgis_sml);
 	SetIcon(myVroomGISIcon);
@@ -172,25 +153,27 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 	//toolMenu->Append(wxID_DEFAULT, "Select\tCtrl+S", "Select the selection tool");
 	toolMenu->Append(wxID_ZOOM_IN, "Zoom\tCtrl+Z", "Select the zoom tool");
 	toolMenu->Append(wxID_MOVE_FRAME, "Pan\tCtrl+P", "Select the pan tool");
-	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to fit", "Zoom view to the full extent of all layers");
+	toolMenu->Append(wxID_ZOOM_FIT, "Zoom to fit\tCtrl+0", "Zoom view to the full extent of all layers");
 	toolMenu->Append(vtID_SIGHT_TOOL, "Viewfinder\tCtrl+F", "Select the viewfinder tool");
 	toolMenu->AppendSeparator();
 	toolMenu->AppendCheckItem(vtID_SET_SYNCRO_MODE, "Syncronize tools", 
 							  "When set to true, tools action are working on all display");
 	toolMenu->Check(vtID_SET_SYNCRO_MODE, m_SyncroTool);
 	
+    wxMenu * overlayMenu = new wxMenu();
+    overlayMenu->AppendCheckItem(vtID_OVERLAY_TEXT, _("Overlay Text"));
+
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
 	menuBar->Append(toolMenu, "&Tools");
+    menuBar->Append(overlayMenu, _("&Overlay"));
 	menuBar->Append(helpMenu, "&Help");
-	
+    	
     SetMenuBar(menuBar);
- 
 	
 	// STATUS BAR
 	CreateStatusBar(2);
     SetStatusText("Welcome to vroomTwin");
-	
 	
 	// CONTROLS
 	_CreateControls();
@@ -199,18 +182,14 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 	delete wxLog::SetActiveTarget(myDlgLog);
 	m_LogWnd = new wxLogWindow(this, "vroomTwin Log", true, true);
 	
-	
 	// DND
 	m_TocCtrl1->GetControl()->SetDropTarget(new vroomDropFiles(this));
 	m_TocCtrl2->GetControl()->SetDropTarget(new vroomDropFiles(this));
 	
-	
 	// VROOMGIS
 	m_LayerManager = new vrLayerManager();
 	m_ViewerLayerManager1 = new vrViewerLayerManager(m_LayerManager, this, m_DisplayCtrl1 , m_TocCtrl1);
-	m_ViewerLayerManager2 = new vrViewerLayerManager(m_LayerManager, this, m_DisplayCtrl2 , m_TocCtrl2);
-
-	
+	m_ViewerLayerManager2 = new vrViewerLayerManager(m_LayerManager, this, m_DisplayCtrl2 , m_TocCtrl2);	
 }
 
 
@@ -268,7 +247,6 @@ bool vroomTwinFrame::OpenLayers (const wxArrayString & names){
 
 void vroomTwinFrame::OnOpenLayer(wxCommandEvent & event)
 {
-	
 	/*
 	// TODO: This is temp code for autoloading file
 	wxFileName myTestFile("/Users/lucien/DATA/PRJ/COLTOP-GIS/test_data/gwn_combioula.shp");
@@ -278,8 +256,6 @@ void vroomTwinFrame::OnOpenLayer(wxCommandEvent & event)
 	m_ViewerLayerManager->Add(-1, myTestLayer);
 	return;
 	 */
-	
-	
 	
 	vrDrivers myDrivers;
 	wxFileDialog myFileDlg (this, "Select GIS Layers",
@@ -351,19 +327,48 @@ void vroomTwinFrame::OnCloseLayer(wxCommandEvent & event){
 		m_LayerManager->Close(myLayer);
 	}
 	m_ViewerLayerManager2->FreezeEnd();
-	m_ViewerLayerManager1->FreezeEnd();
-									 
-									 
-	
-	
+	m_ViewerLayerManager1->FreezeEnd();             
 }
 
 
 
-void vroomTwinFrame::OnShowLog (wxCommandEvent & event)
-{
+void vroomTwinFrame::OnShowLog (wxCommandEvent & event){
 	m_LogWnd->Show(true);	
 }
+
+
+
+void vroomTwinFrame::OnOverlayText (wxCommandEvent & event){
+    // left panel
+    vrViewerOverlayText * myLeftOverlay = (vrViewerOverlayText*) m_DisplayCtrl1->GetOverlayByName(_T("LEFT"));
+    if (myLeftOverlay == NULL) {
+        vrViewerOverlayText * myNewOverlay = new vrViewerOverlayText(_T("LEFT"), _("Left panel"));
+        myNewOverlay->SetVisible(false);
+        m_DisplayCtrl1->GetOverlayArrayRef()->Add(myNewOverlay);
+        wxCommandEvent evt;
+        return OnOverlayText(evt);
+    }
+    
+    // right panel
+    vrViewerOverlayText * myRightOverlay = (vrViewerOverlayText*) m_DisplayCtrl2->GetOverlayByName(_T("RIGHT"));
+    if (myRightOverlay == NULL) {
+        vrViewerOverlayText * myNewOverlay = new vrViewerOverlayText(_T("RIGHT"), _("Right panel"));
+        myNewOverlay->SetVisible(false);
+        m_DisplayCtrl2->GetOverlayArrayRef()->Add(myNewOverlay);
+        wxCommandEvent evt;
+        return OnOverlayText(evt);
+    }
+    
+    myLeftOverlay->SetTextColour(*wxRED);
+    myLeftOverlay->SetVisible(!myLeftOverlay->IsVisible());
+    myRightOverlay->SetTextColour(*wxGREEN);
+    myRightOverlay->SetVisible(!myRightOverlay->IsVisible());
+    m_DisplayCtrl1->Refresh();
+    m_DisplayCtrl1->Update();
+    m_DisplayCtrl2->Refresh();
+    m_DisplayCtrl2->Update();
+}
+
 
 
 
@@ -495,8 +500,6 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 		
 	}
 
-	
-	
 	/* else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
 		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
 		wxASSERT(myCoord);
@@ -517,8 +520,6 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 	else {
 		wxLogError("Operation not supported now");
 	}
-
-	
 	wxDELETE(myMsg);
 }
 

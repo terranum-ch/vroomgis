@@ -55,6 +55,7 @@ inline const wxString vrViewerOverlay::GetName() const {
 inline const bool vrViewerOverlay::IsVisible() const {
     return m_Visible;
 }
+WX_DECLARE_OBJARRAY(vrViewerOverlay*, vrViewerOverlayArray);
 
 
 
@@ -70,7 +71,8 @@ private:
     wxFont m_Font;
     wxString m_Text;
     wxPoint m_Pos;
-    
+    wxColour m_TextColour;
+
 public:
     vrViewerOverlayText(wxString name, wxString text);
     virtual ~vrViewerOverlayText();
@@ -83,7 +85,8 @@ public:
     void SetText(wxString value);
     inline const wxPoint GetPosition() const;
     void SetPosition(wxPoint value);
-    
+    inline const wxColour GetTextColour() const;
+    void SetTextColour(wxColour value);
 };
 
 
@@ -97,6 +100,10 @@ inline const wxString vrViewerOverlayText::GetText() const {
 
 inline const wxPoint vrViewerOverlayText::GetPosition() const {
     return m_Pos;
+}
+
+inline const wxColour vrViewerOverlayText::GetTextColour() const {
+    return m_TextColour;
 }
 
 #endif
