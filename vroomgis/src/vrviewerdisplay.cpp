@@ -79,6 +79,15 @@ void vrViewerDisplay::OnPaint(wxPaintEvent & event) {
 	}
 
 	dc.DrawBitmap(*m_bmp, 0,0, true);
+    
+    // draw overlay
+    for (unsigned int i = 0; i< m_OverlayArray.GetCount(); i++) {
+        vrViewerOverlay * myOverlay = m_OverlayArray[i];
+        if (myOverlay == NULL || myOverlay->IsVisible() == false) {
+            continue;
+        }
+        myOverlay->DrawOverlay(&dc);
+    }
 }
 
 
@@ -230,6 +239,8 @@ vrViewerDisplay::~vrViewerDisplay() {
 	wxDELETE(m_Tool);
     wxDELETE(m_ToolSecondary);
 	wxDELETE(m_bmp);
+    
+    ClearOverlayArray();
 }
 
 
@@ -332,5 +343,30 @@ void vrViewerDisplay::SetToolSecondary(vrDisplayTool * tool) {
 }
 
 
+vrViewerOverlay  * vrViewerDisplay::GetOverlayByName(const wxString & name) {
+    for (unsigned int i = 0; i< m_OverlayArray.GetCount(); i++) {
+        vrViewerOverlay * myOverlay = m_OverlayArray[i];
+        if (myOverlay == NULL) {
+            continue;
+        }
+        if (myOverlay->GetName() == name) {
+            return myOverlay;
+        }
+    }
+    return NULL;
+}
+
+
+
+
+void vrViewerDisplay::ClearOverlayArray() {
+    unsigned int oCount = m_OverlayArray.GetCount();
+	for (unsigned int i = 0; i<oCount; i++) {
+		vrViewerOverlay * myOverlay = m_OverlayArray[0];
+		wxDELETE(myOverlay);
+		m_OverlayArray.RemoveAt(0);
+	}
+	wxASSERT(m_OverlayArray.GetCount() == 0);
+}
 
 

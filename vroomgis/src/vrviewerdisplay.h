@@ -22,6 +22,7 @@
 #include <wx/wx.h>
 #endif
 #include <wx/dcbuffer.h>
+#include "vrvieweroverlay.h"
 
 class vrCoordinate;
 class vrDisplayTool;
@@ -37,6 +38,7 @@ private:
 	wxStatusBar * m_Status;
 	int m_StatusField;
 	wxString m_StatusErrText;
+    vrViewerOverlayArray m_OverlayArray;
 
 
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
@@ -53,7 +55,6 @@ private:
     void OnMouseDClickLeft(wxMouseEvent & event);
 	void OnMouseCaptureLost(wxMouseEvent & event);
 
-
 public:
 	vrViewerDisplay();
     vrViewerDisplay(wxWindow * parent, wxWindowID id = wxID_ANY, const wxColour & colour = *wxWHITE);
@@ -61,11 +62,9 @@ public:
 	void SetViewerLayerManager(vrViewerLayerManager * value);
 	vrViewerLayerManager * GetViewerLayerManager();
 
-
 	void SetBitmap(wxBitmap * bmp);
 	vrCoordinate * GetCoordinate() {return m_Coordinate;}
 	void SetStatusCoordinates(wxStatusBar * status, int field = 0, const wxString & errmsg = wxEmptyString);
-
 
 	void SetToolDefault();
     void SetToolZoom();
@@ -76,11 +75,21 @@ public:
     void SetToolSecondary(vrDisplayTool * tool);
     inline const vrDisplayTool * GetTool() const;
 
-
+    inline vrViewerOverlayArray * GetOverlayArrayRef();
+    vrViewerOverlay  * GetOverlayByName(const wxString & name);
+    void ClearOverlayArray();
 };
+
+
 
 inline const vrDisplayTool * vrViewerDisplay::GetTool() const {
 	return m_Tool;
+}
+
+
+
+inline vrViewerOverlayArray * vrViewerDisplay::GetOverlayArrayRef(){
+    return &m_OverlayArray;
 }
 
 
