@@ -23,7 +23,9 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
-
+#include "vrrender.h"
+#include <ogrsf_frmts.h>
+class vrViewerDisplay;
 
 /***************************************************************************//**
 @brief Overlay abstract base class
@@ -105,5 +107,29 @@ inline const wxPoint vrViewerOverlayText::GetPosition() const {
 inline const wxColour vrViewerOverlayText::GetTextColour() const {
     return m_TextColour;
 }
+
+
+/*************************************************************************************//**
+@brief Support Geometric polygon overlay
+@author Lucien Schreiber copyright CREALP
+@date 20 september 2012
+*****************************************************************************************/
+class vrViewerOverlayGeomPolygon : public vrViewerOverlay {
+private:
+    OGRPolygon * m_Polygon;
+    vrRenderVector m_RenderPolygon;
+    vrViewerDisplay * m_Display;
+    
+public:
+    vrViewerOverlayGeomPolygon(const wxString & name, vrViewerDisplay * viewer);
+    virtual ~vrViewerOverlayGeomPolygon();
+    
+    void SetPolygon(OGRPolygon * value);
+    void SetRender(vrRenderVector value);
+    virtual bool DrawOverlay(wxPaintDC * dc);
+};
+
+
+
 
 #endif

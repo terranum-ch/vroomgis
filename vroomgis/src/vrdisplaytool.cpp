@@ -411,20 +411,11 @@ bool vrDisplayToolPan::MouseDown(const wxMouseEvent & event) {
 	m_Point = event.GetPosition();
 
 	wxASSERT(m_PanBitmap == NULL);
-
-	wxClientDC myDc (GetDisplay());
-	m_PanBitmap = new wxBitmap (myDc.GetSize());
-	wxASSERT(m_PanBitmap);
-
-	wxMemoryDC memdc;
-	memdc.SelectObject(*m_PanBitmap);
-	memdc.Blit(0,0,
-			   m_PanBitmap->GetSize().GetWidth(),
-			   m_PanBitmap->GetSize().GetHeight(),
-			   &myDc,
-			   0,0);
-	memdc.SelectObject(wxNullBitmap);
-	return true;
+    wxBitmap * myDisplayBmpRef = GetDisplay()->GetBitmapRef();
+    wxASSERT(myDisplayBmpRef);
+    
+    m_PanBitmap = new wxBitmap(myDisplayBmpRef->GetSubBitmap(wxRect(0,0,myDisplayBmpRef->GetWidth(), myDisplayBmpRef->GetHeight())));
+    return true;
 }
 
 
