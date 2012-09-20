@@ -86,3 +86,38 @@ void vrViewerOverlayText::SetPosition(wxPoint value) {
 void vrViewerOverlayText::SetTextColour(wxColour value) {
     m_TextColour = value;
 }
+
+
+
+/*************************************************************************************//**
+Support Geometric polygon overlay
+*****************************************************************************************/
+vrViewerOverlayGeomPolygon::vrViewerOverlayGeomPolygon(const wxString & name, vrViewerDisplay * viewer) : vrViewerOverlay(name) {
+    m_Display = viewer;
+    m_Polygon = NULL;
+}
+
+
+
+vrViewerOverlayGeomPolygon::~vrViewerOverlayGeomPolygon() {
+}
+
+
+
+void vrViewerOverlayGeomPolygon::SetPolygon(OGRPolygon * value) {
+    m_Polygon = value;
+}
+
+
+
+void vrViewerOverlayGeomPolygon::SetRender(vrRenderVector value) {
+    m_RenderPolygon = value;
+}
+
+
+
+bool vrViewerOverlayGeomPolygon::DrawOverlay(wxPaintDC * dc) {
+    return false;
+}
+
+

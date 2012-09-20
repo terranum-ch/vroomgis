@@ -63,6 +63,7 @@ public:
 	vrViewerLayerManager * GetViewerLayerManager();
 
 	void SetBitmap(wxBitmap * bmp);
+    wxBitmap * GetBitmapRef(){return m_bmp;}
 	vrCoordinate * GetCoordinate() {return m_Coordinate;}
 	void SetStatusCoordinates(wxStatusBar * status, int field = 0, const wxString & errmsg = wxEmptyString);
 
