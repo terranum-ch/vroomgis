@@ -128,8 +128,9 @@ private:
     void OnStartEditingButton( wxCommandEvent & event );
     void OnUpdateUIEditType ( wxUpdateUIEvent & event);
     void OnUpdateUIDrawMenu (wxUpdateUIEvent & event);
-    void OnToolDraw (wxCommandEvent & event);
     void OnToolModify (wxCommandEvent & event);
+    //void OnToolModifyAction (wxCommandEvent & event);
+    void OnToolDraw (wxCommandEvent & event);
     void OnToolDrawAction (wxCommandEvent & event);
     
     DECLARE_EVENT_TABLE()

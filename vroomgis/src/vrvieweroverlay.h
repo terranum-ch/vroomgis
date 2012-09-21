@@ -125,7 +125,7 @@ public:
     virtual ~vrViewerOverlayGeomPolygon();
     
     void SetPolygon(OGRPolygon * value);
-    void SetRender(vrRenderVector value);
+    void SetRender(vrRenderVector * value);
     virtual bool DrawOverlay(wxPaintDC * dc);
 };
 

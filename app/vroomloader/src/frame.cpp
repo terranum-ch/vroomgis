@@ -714,26 +714,6 @@ void vroomLoaderFrame::OnUpdateUIDrawMenu (wxUpdateUIEvent & event){
 
 
 
-void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
-    wxLogMessage("setting edit tool");
-    switch (m_EditTypeCtrl->GetSelection()) {
-        case 1:
-        case 2:
-            m_DisplayCtrl->SetTool(new vrDisplayToolEditLine (m_DisplayCtrl));
-            break;
-            
-        default:
-            m_DisplayCtrl->SetTool(new vrDisplayToolEdit (m_DisplayCtrl));
-            break;
-    }
-    
-    if(m_Editor) {
-        // Editor exists, assume view has changed 
-        m_Editor->ViewChanged();
-    }
-
-}
-
 
 vrRenderer * vroomLoaderFrame::_GetMemoryRenderer(){
     vrRenderer * myMemoryRenderer = NULL;
@@ -767,9 +747,7 @@ void vroomLoaderFrame::OnToolModify (wxCommandEvent & event){
     // mark selected object as hidden and reload
     myLayerMemory->SetHiddenObjectID(*mySelectedIDs);
     m_ViewerLayerManager->Reload();
-    //m_DisplayCtrl->Refresh();
-    //m_DisplayCtrl->Update();
-    
+
     // create editor if not exists
     if (m_Editor == NULL) {
         switch (m_EditTypeCtrl->GetSelection()) {
@@ -794,10 +772,36 @@ void vroomLoaderFrame::OnToolModify (wxCommandEvent & event){
     OGRFeature::DestroyFeature(myFeature);
     
     m_Editor->DrawShapeFinish(myRendererMemory->GetRender());
-    
 }
 
 
+/*
+void vroomLoaderFrame::OnToolModifyAction (wxCommandEvent & event){
+    
+}
+*/
+
+
+
+void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
+    wxLogMessage("setting edit tool");
+    switch (m_EditTypeCtrl->GetSelection()) {
+        case 1:
+        case 2:
+            m_DisplayCtrl->SetTool(new vrDisplayToolEditLine (m_DisplayCtrl));
+            break;
+            
+        default:
+            m_DisplayCtrl->SetTool(new vrDisplayToolEdit (m_DisplayCtrl));
+            break;
+    }
+    
+    if(m_Editor) {
+        // Editor exists, assume view has changed
+        m_Editor->ViewChanged();
+    }
+    
+}
 
 void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
     // create editor if not exists
