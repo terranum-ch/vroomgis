@@ -20,6 +20,7 @@
 #include "vrviewerdisplay.h"
 #include "vrcoordinate.h"
 #include "vrrender.h"
+#include "vrvieweroverlay.h"
 
 vrShapeEditor::vrShapeEditor(vrViewerDisplay * display) {
 	m_Display = display;
@@ -214,50 +215,17 @@ vrShapeEditorPolygon::~vrShapeEditorPolygon() {
 void vrShapeEditorPolygon::DrawShapeFinish(vrRender * render) {
     wxASSERT(m_Display);
 	wxASSERT(m_Geometry);
-    
-    // convert polygon geometry to line
-    if (wkbFlatten(m_Geometry->getGeometryType()) == wkbPolygon) {
-        OGRGeometry * myPolyExtLine = ((OGRPolygon*) m_Geometry)->getExteriorRing()->clone();
-        OGRGeometryFactory::destroyGeometry(m_Geometry);
-        m_Geometry = NULL;
-        m_Geometry = myPolyExtLine;
-    }
-    
-    
     wxASSERT(render->GetType() == vrRENDER_VECTOR);
-	vrRenderVector * myRender = (vrRenderVector*) render;
-	wxPen myPen (myRender->GetColorPen(),
-				 myRender->GetSize());
-    wxBrush myBrush (myRender->GetColorBrush(),
-                     myRender->GetBrushStyle());
+   
     
-	wxClientDC myDC (m_Display);
-	wxDCOverlay overlaydc (m_Overlay, &myDC);
-	overlaydc.Clear();
-    
-	myDC.SetPen(myPen);
-    myDC.SetBrush(myBrush);
-    
-    OGRLineString * myLine = (OGRLineString*) m_Geometry;
-    if (myLine->getNumPoints() < 4) {
-        return;
+    vrViewerOverlayGeomPolygon * myPolyOverlay = (vrViewerOverlayGeomPolygon*) m_Display->GetOverlayByName(_T("POLYGON"));
+    if (myPolyOverlay == NULL) {
+        myPolyOverlay = new vrViewerOverlayGeomPolygon(_T("POLYGON"), m_Display);
+        m_Display->GetOverlayArrayRef()->Add(myPolyOverlay);
     }
     
-    wxPoint * myPts = new wxPoint[myLine->getNumPoints()];
-    for (int i = 0; i<myLine->getNumPoints(); i++) {
-        wxPoint2DDouble myRealPt (myLine->getX(i), myLine->getY(i));
-        wxPoint myPxPt = wxDefaultPosition;
-        m_Display->GetCoordinate()->ConvertToPixels(myRealPt, myPxPt);
-        // first point = last point
-        //if (i == 0) {
-          //  myPts[myLine->getNumPoints()] = myPxPt;
-        //}
-        myPts[i] = myPxPt;
-    }
-    
-    myDC.DrawLine(0, 0, 50, 50);
-    myDC.DrawPolygon(myLine->getNumPoints(), myPts);    
-    wxDELETEA(myPts);    
+    myPolyOverlay->SetPolygon((OGRPolygon*) m_Geometry);
+    myPolyOverlay->SetRender((vrRenderVector*) render);
 }
 
 
@@ -278,6 +246,8 @@ OGRGeometry * vrShapeEditorPolygon::GetGeometryRef(){
     m_Geometry = NULL;
 	return myGeom;
 }
+
+
 
 void vrShapeEditorPolygon::ViewChanged(){
     vrShapeEditorLine::ViewChanged();

@@ -15,6 +15,8 @@
  ***************************************************************************/
 
 #include "vrvieweroverlay.h"
+#include "vrviewerdisplay.h"
+#include "vrcoordinate.h"
 
 
 /*****************************************************************************
@@ -100,24 +102,61 @@ vrViewerOverlayGeomPolygon::vrViewerOverlayGeomPolygon(const wxString & name, vr
 
 
 vrViewerOverlayGeomPolygon::~vrViewerOverlayGeomPolygon() {
+    OGRGeometryFactory::destroyGeometry(m_Polygon);
 }
 
 
 
 void vrViewerOverlayGeomPolygon::SetPolygon(OGRPolygon * value) {
-    m_Polygon = value;
+    m_Polygon = (OGRPolygon*) value->clone();
 }
 
 
 
-void vrViewerOverlayGeomPolygon::SetRender(vrRenderVector value) {
-    m_RenderPolygon = value;
+void vrViewerOverlayGeomPolygon::SetRender(vrRenderVector * value) {
+    m_RenderPolygon = *value;
 }
 
 
 
 bool vrViewerOverlayGeomPolygon::DrawOverlay(wxPaintDC * dc) {
-    return false;
+    if (m_Polygon == NULL) {
+        return false;
+    }
+    
+	wxPen myPen (m_RenderPolygon.GetSelectionColour(),m_RenderPolygon.GetSize());
+    wxBrush myBrush (m_RenderPolygon.GetColorBrush(),m_RenderPolygon.GetBrushStyle());
+    
+	dc->SetPen(myPen);
+    dc->SetBrush(myBrush);
+    
+    OGRLineString * myLine = (OGRLineString*) m_Polygon->getExteriorRing();
+    if (myLine->getNumPoints() < 4) {
+        return false;
+    }
+    
+    wxPoint * myPts = new wxPoint[myLine->getNumPoints()];
+    for (int i = 0; i<myLine->getNumPoints(); i++) {
+        wxPoint2DDouble myRealPt (myLine->getX(i), myLine->getY(i));
+        wxPoint myPxPt = wxDefaultPosition;
+        m_Display->GetCoordinate()->ConvertToPixels(myRealPt, myPxPt);
+        myPts[i] = myPxPt;
+    }
+    
+    dc->DrawPolygon(myLine->getNumPoints(), myPts);
+    
+    myPen.SetWidth(myPen.GetWidth()+4);
+    dc->SetPen(myPen);
+    for (int i  = 0; i< myLine->getNumPoints(); i++) {
+        wxPoint myPt = myPts[i];
+#ifdef __WXMSW__
+        dc->DrawLine(myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+#else
+        dc->DrawLine(myPt.x, myPt.y, myPt.x, myPt.y);
+#endif
+    }
+    wxDELETEA(myPts);
+    return true;
 }
 
 
