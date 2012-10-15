@@ -60,6 +60,10 @@ def buildUnix(gdalpath):
 	else:
 		command = "./configure --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal"
 		command = command.format(libprefix, geos_path+os.sep+"geos-config", proj_path)
+	curlpath = input ("CURL path (leave empty to use system lib)  : ")
+	if(curlpath != ""):
+		command = command + " --with-curl=" + curlpath + os.sep + "bin" + os.sep + "curl-config"
+	
 	
 	print (command)
 	isSucess = lsutilities.runProcess(command, gdalpath, "Configuring GDAL with C2D support")
