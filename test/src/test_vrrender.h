@@ -26,6 +26,7 @@
 
 //#include "test_param.h"	//for test parameters
 #include "vrrender.h"
+#include "vrrendercoltop.h"
 
 
 
