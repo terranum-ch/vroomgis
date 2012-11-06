@@ -177,7 +177,7 @@ public:
 		
 		// smaller 1/2
 		vrRealRect mySelRect3 (0,200,10,-100);
-		vrRealRect myResult3 (0,155,10,-10);
+		vrRealRect myResult3 (-45,200,100,-100);
 		TS_ASSERT(myCoord.GetRectFitted(mySelRect3) == myResult3);
 	}
 	
