@@ -228,6 +228,17 @@ bool vrLayerVector::SearchFeatures(OGRGeometry * geometry, wxArrayLong & results
 }
 
 
+bool vrLayerVector::SetFeature(OGRFeature * feature) {
+    if (feature == NULL) {
+        return false;
+    }
+    
+    if( m_Layer->SetFeature(feature) != OGRERR_NONE){
+        return false;
+    }
+    return true;
+}
+
 
 bool vrLayerVector::IsFeatureSelected(long id) {
 	for (unsigned int i = 0; i<m_SelectedIDs.GetCount(); i++) {
@@ -236,6 +247,22 @@ bool vrLayerVector::IsFeatureSelected(long id) {
 		}
 	}
 	return false;
+}
+
+
+long vrLayerVector::Select (const vrRealRect & rect){
+	OGRPolygon myGeom;
+	OGRLinearRing myLine;
+	myLine.addPoint(rect.GetLeft(), rect.GetTop());
+	myLine.addPoint(rect.GetRight(), rect.GetTop());
+	myLine.addPoint(rect.GetRight(), rect.GetBottom());
+	myLine.addPoint(rect.GetLeft(), rect.GetBottom());
+	myLine.addPoint(rect.GetLeft(), rect.GetTop());
+	myGeom.addRing(&myLine);
+	wxArrayLong mySelectedIDs;
+	SearchFeatures(&myGeom, mySelectedIDs);
+	SetSelectedIDs(mySelectedIDs);
+	return mySelectedIDs.GetCount();
 }
 
 

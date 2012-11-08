@@ -68,6 +68,8 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
     EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT, vroomLoaderFrame::OnToolDrawAction)
     EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT_FINISHED, vroomLoaderFrame::OnToolDrawAction)
 
+    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_MODIFY_SEARCH_GEOMETRY, vroomLoaderFrame::OnToolModifyAction)
+    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_MODIFY_FINISHED, vroomLoaderFrame::OnToolModifyUpdate)
 
     EVT_TOGGLEBUTTON(vlID_EDIT_BTN, vroomLoaderFrame::OnStartEditingButton)
     EVT_UPDATE_UI(vlID_EDIT_CHOICE, vroomLoaderFrame::OnUpdateUIEditType)
@@ -730,56 +732,90 @@ vrRenderer * vroomLoaderFrame::_GetMemoryRenderer(){
 
 
 void vroomLoaderFrame::OnToolModify (wxCommandEvent & event){
-    // unique object selected ?
-    vrRenderer * myRendererMemory = _GetMemoryRenderer();
-    vrLayerVectorOGR * myLayerMemory = (vrLayerVectorOGR*) myRendererMemory->GetLayer();
-    wxASSERT(myLayerMemory);
-    wxArrayLong * mySelectedIDs = myLayerMemory->GetSelectedIDs();
-    wxASSERT(mySelectedIDs);
-    if (mySelectedIDs->GetCount() != 1) {
-        wxLogError(_("One feature must be selected!"));
-        return;
-    }
-    
-    // change tool
     m_DisplayCtrl->SetTool(new vrDisplayToolModify (m_DisplayCtrl));
-    
-    // mark selected object as hidden and reload
-    myLayerMemory->SetHiddenObjectID(*mySelectedIDs);
-    m_ViewerLayerManager->Reload();
-
-    // create editor if not exists
-    if (m_Editor == NULL) {
-        switch (m_EditTypeCtrl->GetSelection()) {
-            case 1:
-                m_Editor = new vrShapeEditorLine(m_DisplayCtrl);
-                break;
-                
-            case 2:
-                m_Editor = new vrShapeEditorPolygon(m_DisplayCtrl);
-                break;
-                
-            default:
-                m_Editor = new vrShapeEditorPoint(m_DisplayCtrl);
-                break;
-        }
-    }
-    
-    // copy geometry from layer to shapeeditor
-    OGRFeature * myFeature = myLayerMemory->GetFeature(mySelectedIDs->Item(0));
-    wxASSERT(myFeature);
-    m_Editor->SetGeometry(myFeature->GetGeometryRef());
-    OGRFeature::DestroyFeature(myFeature);
-    
-    m_Editor->DrawShapeFinish(myRendererMemory->GetRender());
 }
 
 
-/*
+
 void vroomLoaderFrame::OnToolModifyAction (wxCommandEvent & event){
+    vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
+	wxASSERT(myMsg);
     
+    vrRenderer * myMemoryRenderer = _GetMemoryRenderer();
+    wxASSERT(myMemoryRenderer);
+    vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) myMemoryRenderer->GetLayer();
+    wxASSERT(myMemoryLayer);
+    
+    vrRealRect myRealRect;
+    m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_Rect, myRealRect);
+    wxDELETE(myMsg);
+    myMemoryLayer->Select(myRealRect);
+    wxArrayLong * mySelectedIDs = myMemoryLayer->GetSelectedIDs();
+    wxASSERT(mySelectedIDs);
+    if (mySelectedIDs->GetCount() != 0) {
+        wxLogMessage(_T("Selected Geometries ID: %ld (number: %ld)"), mySelectedIDs->Item(0), mySelectedIDs->GetCount());
+        // copy geometry vertex to tool
+        OGRFeature * myFeature = myMemoryLayer->GetFeature(mySelectedIDs->Item(0));
+        vrDisplayToolModify * myModifyTool = (vrDisplayToolModify*)m_DisplayCtrl->GetTool();
+        wxASSERT(myModifyTool);
+        myModifyTool->SetActiveGeometry(myFeature->GetGeometryRef(), myMemoryLayer->GetGeometryType(), m_DisplayCtrl->GetCoordinate());
+        OGRFeature::DestroyFeature(myFeature);
+        m_ViewerLayerManager->Reload();
+    }
+    else{
+        wxLogMessage(_T("No selected geometries!"));
+    }
 }
-*/
+
+
+
+void vroomLoaderFrame::OnToolModifyUpdate (wxCommandEvent & event){
+    vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
+	wxASSERT(myMsg);
+    
+    vrRenderer * myMemoryRenderer = _GetMemoryRenderer();
+    wxASSERT(myMemoryRenderer);
+    vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) myMemoryRenderer->GetLayer();
+    wxASSERT(myMemoryLayer);
+    
+    wxPoint2DDouble myRealPt;
+    m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_Position, myRealPt);
+    int myVertexIndex = myMsg->m_LongData;
+    wxDELETE(myMsg);
+    
+    wxArrayLong * mySelectedIDs = myMemoryLayer->GetSelectedIDs();
+    wxASSERT(mySelectedIDs);
+    wxASSERT(mySelectedIDs->GetCount() > 0);
+    
+    // update geometry and send new geometry to the modify tool
+    OGRFeature * myFeature = myMemoryLayer->GetFeature(mySelectedIDs->Item(0));
+    switch (myMemoryLayer->GetGeometryType()) {
+        case wkbLineString: // line
+        {
+            OGRLineString * myLine = (OGRLineString*) myFeature->GetGeometryRef();
+            myLine->setPoint(myVertexIndex, myRealPt.m_x, myRealPt.m_y);
+        }
+            break;
+            
+            
+        case wkbPolygon:
+        {
+            OGRPolygon * myPolygon = (OGRPolygon*) myFeature->GetGeometryRef();
+            OGRLineString * myLine = (OGRLineString*) myPolygon->getExteriorRing();
+            myLine->setPoint(myVertexIndex, myRealPt.m_x, myRealPt.m_y);
+        }
+            break;
+            
+        default:
+            wxLogError(_T("Modification of geometry type: %d isn't supported!"), myMemoryLayer->GetGeometryType());
+            break;
+    }
+    myMemoryLayer->SetFeature(myFeature);
+    vrDisplayToolModify * myModifyTool = (vrDisplayToolModify*)m_DisplayCtrl->GetTool();
+    myModifyTool->SetActiveGeometry(myFeature->GetGeometryRef(), myMemoryLayer->GetGeometryType(), m_DisplayCtrl->GetCoordinate());
+    OGRFeature::DestroyFeature(myFeature);
+    m_ViewerLayerManager->Reload();
+}
 
 
 

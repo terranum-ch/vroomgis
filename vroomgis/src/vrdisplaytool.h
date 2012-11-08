@@ -23,6 +23,8 @@
 #endif
 
 #include <wx/overlay.h>
+#include "ogrsf_frmts.h"
+class vrCoordinate;
 
 class vrViewerDisplay;
 class vrRubberBand;
@@ -54,6 +56,7 @@ public:
     wxEventType m_EvtType;
     vrMOUSE_STATUS m_MouseStatus;
 	vrViewerLayerManager * m_ParentManager;
+    long m_LongData;
 
 
     vrDisplayToolMessage(const wxEventType & eventtype,
@@ -302,7 +305,8 @@ protected:
     wxArrayInt m_PointsX;
     wxArrayInt m_PointsY;
     wxOverlay m_Overlay;
-    
+    int m_ActiveVertex;
+    OGRwkbGeometryType m_GeometryType;
     
 public:
     vrDisplayToolModify(vrViewerDisplay * display);
@@ -310,6 +314,7 @@ public:
     
     void ClearPoints();
     void AddToPoints(const wxPoint & pts);
+    bool SetActiveGeometry(OGRGeometry * geometry, OGRwkbGeometryType geometrytype, vrCoordinate * coordinate);
     
     virtual bool MouseDown(const wxMouseEvent & event);
     virtual bool MouseMove(const wxMouseEvent & event);

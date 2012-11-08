@@ -37,7 +37,8 @@ wxDEFINE_EVENT(vrEVT_TOOL_PAN, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_SIGHT, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_EDIT, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_EDIT_FINISHED, wxCommandEvent);
-
+wxDEFINE_EVENT(vrEVT_TOOL_MODIFY_SEARCH_GEOMETRY, wxCommandEvent);
+wxDEFINE_EVENT(vrEVT_TOOL_MODIFY_FINISHED, wxCommandEvent);
 
 BEGIN_EVENT_TABLE(vrViewerLayerManager, wxEvtHandler)
 	EVT_COMMAND(wxID_ANY, vrEVT_VLM_RELOAD, vrViewerLayerManager::OnReload)
@@ -348,7 +349,8 @@ long vrViewerLayerManager::Select(const wxRect & extent) {
 
 	vrLayerVector * myLayer = (vrLayerVector*) m_Renderers.Item(myIndex)->GetLayer();
 	wxASSERT(myLayer);
-	OGRPolygon myGeom;
+	return myLayer->Select(myRealCoord);
+    /*OGRPolygon myGeom;
 	OGRLinearRing myLine;
 	myLine.addPoint(myRealCoord.GetLeft(), myRealCoord.GetTop());
 	myLine.addPoint(myRealCoord.GetRight(), myRealCoord.GetTop());
@@ -359,7 +361,7 @@ long vrViewerLayerManager::Select(const wxRect & extent) {
 	wxArrayLong mySelectedIDs;
 	myLayer->SearchFeatures(&myGeom, mySelectedIDs);
 	myLayer->SetSelectedIDs(mySelectedIDs);
-	return mySelectedIDs.GetCount();
+	return mySelectedIDs.GetCount();*/
 }
 
 
