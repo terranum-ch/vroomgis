@@ -21,6 +21,8 @@
 #include "vrrubberband.h"
 #include "vrevent.h"
 #include "../art/vroomgis_bmp.h"
+#include "vrcoordinate.h"
+
 
 
 /***************************************************************************//**
@@ -35,6 +37,7 @@ void vrDisplayToolMessage::_InitMembers() {
 	m_Position = wxDefaultPosition;
 	m_ParentManager = NULL;
     m_MouseStatus = vrMOUSE_UNKNOWN;
+    m_LongData = wxNOT_FOUND;
 }
 
 vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
@@ -693,31 +696,156 @@ bool vrDisplayToolEditLine::MouseDClickLeft(const wxMouseEvent & event) {
 @date 01 mai 2012
 *******************************************************************************/
 vrDisplayToolModify::vrDisplayToolModify(vrViewerDisplay * display) {
-    Create(display, wxID_DEFAULT, "Sight", wxCursor(wxCURSOR_CROSS));
+    Create(display, wxID_DEFAULT, "Modify", wxCursor(wxCURSOR_CROSS));
+    m_ActiveVertex = wxNOT_FOUND;
+    m_GeometryType = wkbUnknown;
 }
+
+
 
 vrDisplayToolModify::~vrDisplayToolModify() {
 }
 
+
+
 void vrDisplayToolModify::ClearPoints() {
     m_PointsX.Clear();
     m_PointsY.Clear();
+    
+   // clear overlay
+    {
+		wxClientDC myDC (GetDisplay());
+		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		overlaydc.Clear();
+	}
+	m_Overlay.Reset();
 }
+
+
 
 void vrDisplayToolModify::AddToPoints(const wxPoint & pts) {
     m_PointsX.Add(pts.x);
     m_PointsY.Add(pts.y);
 }
 
+
+
+bool vrDisplayToolModify::SetActiveGeometry(OGRGeometry * geometry, OGRwkbGeometryType geometrytype, vrCoordinate * coordinate){
+    bool bReturn = true;
+    m_GeometryType = geometrytype;
+    ClearPoints();
+    switch (geometrytype) {
+        case wkbLineString:
+        {
+            OGRLineString * myLine = (OGRLineString*) geometry;
+            for (int i = 0; i< myLine->getNumPoints(); i++) {
+                wxPoint myPixelPt;
+                coordinate->ConvertToPixels(wxPoint2DDouble(myLine->getX(i), myLine->getY(i)), myPixelPt);
+                AddToPoints(myPixelPt);
+            }
+        }
+            break;
+            
+            
+        case wkbPolygon:
+        {
+            OGRPolygon * myPoly = (OGRPolygon*) geometry;
+            OGRLineString * myLine = (OGRLineString*) myPoly->getExteriorRing();
+            for (int i = 0; i< myLine->getNumPoints(); i++) {
+                wxPoint myPixelPt;
+                coordinate->ConvertToPixels(wxPoint2DDouble(myLine->getX(i), myLine->getY(i)), myPixelPt);
+                AddToPoints(myPixelPt);
+            }
+        }
+            break;
+            
+        default:
+            wxLogError(_("Unsupported geometry type for modification! (%d)"), geometrytype);
+            bReturn = false;
+            break;
+    }
+    return bReturn;
+}
+
+
+
+
 bool vrDisplayToolModify::MouseDown(const wxMouseEvent & event) {
+    m_ActiveVertex = wxNOT_FOUND;
+    if (m_PointsX.GetCount() == 0) {
+        return true;
+    }
+    
+    // search closest vertex
+    wxPoint myClickedPt = event.GetPosition();
+    wxRect myClickedRect (myClickedPt.x -2, myClickedPt.y -2, 5,5);
+    for (unsigned int i = 0; i< m_PointsX.GetCount(); i++) {
+        wxPoint myPt (m_PointsX[i], m_PointsY[i]);
+        if (myClickedRect.Contains(myPt)==true) {
+            m_ActiveVertex = i;
+            break;
+        }
+    }    wxLogMessage(_T("Active vertex is : %d"), m_ActiveVertex);
     return true;
 }
+
+
 
 bool vrDisplayToolModify::MouseMove(const wxMouseEvent & event) {
+    if (m_ActiveVertex == wxNOT_FOUND) {
+        return true;
+    }
+    
+    // drawing modification lines
+    {
+		wxClientDC myDC (GetDisplay());
+		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		overlaydc.Clear();
+	}
+	m_Overlay.Reset();
+    
+	wxClientDC myDC (GetDisplay());
+	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	overlaydc.Clear();
+#ifdef __WXMAC__
+	myDC.SetPen( *wxGREY_PEN );
+#else
+	myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxSOLID ));
+#endif
+    
+    if (m_ActiveVertex != 0) {
+        myDC.DrawLine(wxPoint(m_PointsX[m_ActiveVertex-1], m_PointsY[m_ActiveVertex-1]),event.GetPosition());
+    }else if (m_GeometryType == wkbPolygon) {
+        // use last vertex as previous (polygon are closed)
+        myDC.DrawLine(wxPoint(m_PointsX[m_PointsX.GetCount()-1], m_PointsY[m_PointsY.GetCount()-1]), event.GetPosition());
+    }
+    
+    if (m_ActiveVertex < (m_PointsX.GetCount()-1)){
+        myDC.DrawLine(wxPoint(m_PointsX[m_ActiveVertex+1], m_PointsY[m_ActiveVertex+1]),event.GetPosition());
+    } else if (m_GeometryType == wkbPolygon){
+        // use first vertex as next one (polygon are closed)
+        myDC.DrawLine(wxPoint(m_PointsX[0], m_PointsY[0]), event.GetPosition());
+    }
     return true;
 }
 
+
+
 bool vrDisplayToolModify::MouseUp(const wxMouseEvent & event) {
+    if (m_ActiveVertex != wxNOT_FOUND) {
+        vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_MODIFY_FINISHED, GetDisplay(), event.GetPosition());
+        myMessage->m_LongData = m_ActiveVertex;
+        SendMessage(myMessage);
+        m_ActiveVertex = wxNOT_FOUND;
+        return true;
+    }
+    
+    // search line
+    ClearPoints();
+    wxPoint myClickedPt = event.GetPosition();
+    wxRect myClickedRect (myClickedPt.x -2, myClickedPt.y -2, 5,5);
+    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_MODIFY_SEARCH_GEOMETRY, GetDisplay(),myClickedRect);
+    SendMessage(myMessage);
     return true;
 }
 

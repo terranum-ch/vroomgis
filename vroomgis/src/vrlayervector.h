@@ -65,12 +65,14 @@ public:
 	virtual long AddFeature(OGRGeometry * geometry, void * data = NULL){return wxNOT_FOUND;}
 	virtual bool DeleteFeature(long fid);
 	bool IsOK();
+    bool SetFeature(OGRFeature * feature);
 
 	inline wxArrayLong * GetSelectedIDs();
     void SetSelectedIDs(const wxArrayLong & value);
     void SetSelectedID (long id);
     virtual bool SearchFeatures(OGRGeometry * geometry, wxArrayLong & results);
 	bool IsFeatureSelected(long id);
+    long Select (const vrRealRect & rect);
     
     inline wxArrayLong * GetHiddenObjectID();
     void SetHiddenObjectID(const wxArrayLong & value);
