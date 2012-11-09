@@ -186,15 +186,14 @@ void vrShapeEditorLine::DrawShapeEdit(vrRender * render) {
         myPts[i] = myPxPt;
     }
     myDC.DrawLines(myLine->getNumPoints(), myPts);
-    wxDELETEA(myPts);    
-    
-    
+    wxDELETEA(myPts);
 }
 
 
 
 void vrShapeEditorLine::ViewChanged(){
-     m_Overlay.Reset();
+    m_Overlay.Reset();
+    
 }
 
 
@@ -209,25 +208,6 @@ vrShapeEditorPolygon::vrShapeEditorPolygon(vrViewerDisplay * display): vrShapeEd
 
 vrShapeEditorPolygon::~vrShapeEditorPolygon() {
 }
-
-
-
-void vrShapeEditorPolygon::DrawShapeFinish(vrRender * render) {
-    wxASSERT(m_Display);
-	wxASSERT(m_Geometry);
-    wxASSERT(render->GetType() == vrRENDER_VECTOR);
-   
-    
-    vrViewerOverlayGeomPolygon * myPolyOverlay = (vrViewerOverlayGeomPolygon*) m_Display->GetOverlayByName(_T("POLYGON"));
-    if (myPolyOverlay == NULL) {
-        myPolyOverlay = new vrViewerOverlayGeomPolygon(_T("POLYGON"), m_Display);
-        m_Display->GetOverlayArrayRef()->Add(myPolyOverlay);
-    }
-    
-    myPolyOverlay->SetPolygon((OGRPolygon*) m_Geometry);
-    myPolyOverlay->SetRender((vrRenderVector*) render);
-}
-
 
 
 OGRGeometry * vrShapeEditorPolygon::GetGeometryRef(){
@@ -252,7 +232,6 @@ OGRGeometry * vrShapeEditorPolygon::GetGeometryRef(){
 void vrShapeEditorPolygon::ViewChanged(){
     vrShapeEditorLine::ViewChanged();
 }
-
 
 
 

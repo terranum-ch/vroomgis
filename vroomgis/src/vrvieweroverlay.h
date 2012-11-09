@@ -114,6 +114,8 @@ inline const wxColour vrViewerOverlayText::GetTextColour() const {
 @author Lucien Schreiber copyright CREALP
 @date 20 september 2012
 *****************************************************************************************/
+#if (0)
+// not used anymore...
 class vrViewerOverlayGeomPolygon : public vrViewerOverlay {
 private:
     OGRPolygon * m_Polygon;
@@ -128,7 +130,7 @@ public:
     void SetRender(vrRenderVector * value);
     virtual bool DrawOverlay(wxPaintDC * dc);
 };
-
+#endif
 
 
 

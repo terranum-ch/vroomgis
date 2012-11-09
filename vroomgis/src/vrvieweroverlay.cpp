@@ -94,6 +94,8 @@ void vrViewerOverlayText::SetTextColour(wxColour value) {
 /*************************************************************************************//**
 Support Geometric polygon overlay
 *****************************************************************************************/
+#if(0)
+// not used anymore
 vrViewerOverlayGeomPolygon::vrViewerOverlayGeomPolygon(const wxString & name, vrViewerDisplay * viewer) : vrViewerOverlay(name) {
     m_Display = viewer;
     m_Polygon = NULL;
@@ -158,5 +160,5 @@ bool vrViewerOverlayGeomPolygon::DrawOverlay(wxPaintDC * dc) {
     wxDELETEA(myPts);
     return true;
 }
-
+#endif
 

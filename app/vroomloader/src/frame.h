@@ -129,7 +129,7 @@ private:
     void OnUpdateUIEditType ( wxUpdateUIEvent & event);
     void OnUpdateUIDrawMenu (wxUpdateUIEvent & event);
     void OnToolModify (wxCommandEvent & event);
-    void OnToolModifyAction (wxCommandEvent & event);
+    void OnToolModifySearch (wxCommandEvent & event);
     void OnToolModifyUpdate (wxCommandEvent & event);
 
     void OnToolDraw (wxCommandEvent & event);
