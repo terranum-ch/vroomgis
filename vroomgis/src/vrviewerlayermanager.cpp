@@ -37,7 +37,7 @@ wxDEFINE_EVENT(vrEVT_TOOL_PAN, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_SIGHT, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_EDIT, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_EDIT_FINISHED, wxCommandEvent);
-wxDEFINE_EVENT(vrEVT_TOOL_MODIFY_SEARCH_GEOMETRY, wxCommandEvent);
+wxDEFINE_EVENT(vrEVT_TOOL_MODIFY, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_MODIFY_FINISHED, wxCommandEvent);
 
 BEGIN_EVENT_TABLE(vrViewerLayerManager, wxEvtHandler)

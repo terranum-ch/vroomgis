@@ -759,6 +759,18 @@ bool vrDisplayToolModify::SetActiveGeometry(OGRGeometry * geometry, OGRwkbGeomet
         }
             break;
             
+            
+        case wkbPoint:
+        {
+            OGRPoint * myPoint = (OGRPoint*) geometry;
+            wxPoint myPixelPt;
+            coordinate->ConvertToPixels(wxPoint2DDouble(myPoint->getX(), myPoint->getY()), myPixelPt);
+            // add two points to display line when moving point.
+            AddToPoints(myPixelPt);
+            AddToPoints(myPixelPt);
+        }
+            break;
+            
         default:
             wxLogError(_("Unsupported geometry type for modification! (%d)"), geometrytype);
             bReturn = false;
@@ -844,7 +856,7 @@ bool vrDisplayToolModify::MouseUp(const wxMouseEvent & event) {
     ClearPoints();
     wxPoint myClickedPt = event.GetPosition();
     wxRect myClickedRect (myClickedPt.x -2, myClickedPt.y -2, 5,5);
-    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_MODIFY_SEARCH_GEOMETRY, GetDisplay(),myClickedRect);
+    vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_MODIFY, GetDisplay(),myClickedRect);
     SendMessage(myMessage);
     return true;
 }

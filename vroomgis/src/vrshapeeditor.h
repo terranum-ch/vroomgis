@@ -111,8 +111,6 @@ public:
     
     virtual bool AddVertex(const wxPoint2DDouble & point);
     virtual void DrawShapeEdit(vrRender * render);
-    virtual void DrawShapeFinish(vrRender * render){;}
-
 };
 
 
@@ -130,10 +128,7 @@ public:
     virtual void ViewChanged();
     
     virtual OGRGeometry * GetGeometryRef();
-    virtual void DrawShapeFinish(vrRender * render);
-
 };
-
 
 #endif
 

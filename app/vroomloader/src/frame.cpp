@@ -68,7 +68,7 @@ BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
     EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT, vroomLoaderFrame::OnToolDrawAction)
     EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT_FINISHED, vroomLoaderFrame::OnToolDrawAction)
 
-    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_MODIFY_SEARCH_GEOMETRY, vroomLoaderFrame::OnToolModifyAction)
+    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_MODIFY, vroomLoaderFrame::OnToolModifySearch)
     EVT_COMMAND(wxID_ANY, vrEVT_TOOL_MODIFY_FINISHED, vroomLoaderFrame::OnToolModifyUpdate)
 
     EVT_TOGGLEBUTTON(vlID_EDIT_BTN, vroomLoaderFrame::OnStartEditingButton)
@@ -737,7 +737,7 @@ void vroomLoaderFrame::OnToolModify (wxCommandEvent & event){
 
 
 
-void vroomLoaderFrame::OnToolModifyAction (wxCommandEvent & event){
+void vroomLoaderFrame::OnToolModifySearch (wxCommandEvent & event){
     vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
 	wxASSERT(myMsg);
     
@@ -806,6 +806,15 @@ void vroomLoaderFrame::OnToolModifyUpdate (wxCommandEvent & event){
         }
             break;
             
+            
+        case wkbPoint:
+        {
+            OGRPoint * myPt = (OGRPoint*) myFeature->GetGeometryRef();
+            myPt->setX(myRealPt.m_x);
+            myPt->setY(myRealPt.m_y);
+        }
+            break;
+            
         default:
             wxLogError(_T("Modification of geometry type: %d isn't supported!"), myMemoryLayer->GetGeometryType());
             break;
@@ -835,9 +844,11 @@ void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
     if(m_Editor) {
         // Editor exists, assume view has changed
         m_Editor->ViewChanged();
+        m_Editor->DrawShapeEdit(_GetMemoryRenderer()->GetRender());
     }
-    
 }
+
+
 
 void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
     // create editor if not exists
