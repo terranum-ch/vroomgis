@@ -24,6 +24,7 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/regex.h>
 
 
 #include "vrlayervector.h"
