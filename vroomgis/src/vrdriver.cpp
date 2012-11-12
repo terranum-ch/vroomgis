@@ -65,22 +65,27 @@ wxString vrDrivers::GetSpecificWildcards(const wxArrayInt & types){
 
 
 vrDRIVERS_TYPE vrDrivers::GetType(const wxString & extension) {
-	
-	if (extension.IsEmpty()){
+	wxString myExtension = extension;
+    if (myExtension.IsEmpty()){
 		wxLogError("Empty extension not supported");
 		return vrDRIVER_UNKNOWN;
 	}
 	
-	if (extension.Len() < 3){
-		wxLogError("Only %d character in the extension (need 3 character)", (int)extension.Len());
+	if (myExtension.Len() < 3){
+		wxLogError("Only %d character in the extension (need 3 character)", (int)myExtension.Len());
 		return vrDRIVER_UNKNOWN;
 	}
 	
+    // truncate extension with space inside (used to pass layer number to open
+    int mySpaceFound = myExtension.Find(_T(" "));
+    if (mySpaceFound != wxNOT_FOUND) {
+        myExtension = myExtension.Left(mySpaceFound);
+    }
 	
 	for (unsigned int i = 0; i<sizeof(vrDRIVERS_EXTENSION) / sizeof(wxString); i++){
 		
 		if (vrDRIVERS_EXTENSION[i].IsEmpty()==false){
-			if (vrDRIVERS_EXTENSION[i].Find(extension.Lower())!=wxNOT_FOUND){
+			if (vrDRIVERS_EXTENSION[i].Find(myExtension.Lower())!=wxNOT_FOUND){
 				return (vrDRIVERS_TYPE)i;
 			}
 		}

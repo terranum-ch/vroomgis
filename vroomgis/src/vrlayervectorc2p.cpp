@@ -183,12 +183,22 @@ vrLayerVectorC2P::~vrLayerVectorC2P() {
 
 
 bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
-	// Need to reimplement Open to allow opening c2p files as if it was sqlite.
+	wxFileName myFileName = filename;
+    // Support layer number to open in extension (.c2p 1) open layer 1
+    int myLayerToOpen = 0;
+    wxRegEx reLayer(_T("(c2p) ([0-9]+)"),wxRE_ADVANCED);
+    if (reLayer.Matches(myFileName.GetExt())==true) {
+        wxASSERT(reLayer.GetMatchCount()==2+1);
+        wxString myLayerNumTxt = reLayer.GetMatch(myFileName.GetExt(),2);
+        myLayerToOpen = wxAtoi(myLayerNumTxt);
+        myFileName.SetExt(_T("c2p"));
+    }
+    
+    // Need to reimplement Open to allow opening c2p files as if it was sqlite.
 	_Close();
 	wxASSERT(m_Dataset == NULL);
 
 	m_FileName = filename;
-
 	OGRSFDriverRegistrar * myRegistar = OGRSFDriverRegistrar::GetRegistrar();
 	OGRSFDriver * myDriver = myRegistar->GetDriverByName("SQLite");
 	if (myDriver == NULL) {
@@ -196,9 +206,9 @@ bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 		return false;
 	}
 
-	m_Dataset = myDriver->Open(filename.GetFullPath(), readwrite);
+	m_Dataset = myDriver->Open(myFileName.GetFullPath(), readwrite);
 	if( m_Dataset == NULL ){
-		wxLogError("Unable to open %s", filename.GetFullName());
+		wxLogError("Unable to open %s", myFileName.GetFullName());
 		return false;
 	}
 	m_Dataset->SetDriver(myDriver);
@@ -206,17 +216,26 @@ bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 	// get layer
 	wxASSERT(m_Layer == NULL);
 	wxLogMessage("Found %d layer", m_Dataset->GetLayerCount());
-	m_Layer = m_Dataset->GetLayer(0);
+	m_Layer = m_Dataset->GetLayer(myLayerToOpen);
 	if (m_Layer == NULL) {
-		wxLogError("Unable to get layer 0, number of layer found : %d",
-				   m_Dataset->GetLayerCount());
+		wxLogError("Unable to get layer %d, number of layer found : %d", myLayerToOpen, m_Dataset->GetLayerCount());
 		return false;
 	}
 	return true;
 }
 
+
+
 wxFileName vrLayerVectorC2P::GetDisplayName() {
-	wxFileName myDisplayName (wxEmptyString, wxEmptyString, "DIPS", wxEmptyString);
+    wxASSERT(m_Layer);
+    wxString myLayerName (m_Layer->GetName());
+    wxFileName myDisplayName (wxEmptyString, wxEmptyString, _T("UNKNOWN"), wxEmptyString);
+    if (myLayerName == _T("CT_DIP")) {
+        myDisplayName.Assign(wxEmptyString, wxEmptyString, _T("DIPS"),wxEmptyString);
+    }
+    if (myLayerName == _T("CT_POLYGON")) {
+        myDisplayName.Assign (wxEmptyString, wxEmptyString, "POLYGONS", wxEmptyString);
+    }
 	return myDisplayName;
 }
 
