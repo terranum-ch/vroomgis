@@ -157,12 +157,13 @@ bool vrLayerVectorC2P::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 }
 
 
-
+/*
 bool vrLayerVectorC2P::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 									 const vrRender * render, const vrLabel * label, double pxsize) {
 	m_ObjectDrawn = 0;
 	return false;
 }
+*/
 
 bool vrLayerVectorC2P::_DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 									 const vrRender * render, const vrLabel * label, double pxsize) {
@@ -174,6 +175,7 @@ vrLayerVectorC2P::vrLayerVectorC2P() {
 	wxASSERT(m_Dataset==NULL);
 	wxASSERT(m_Layer==NULL);
 	m_DriverType = vrDRIVER_VECTOR_C2P;
+    m_ActiveLayerIndex = CT_DIP;
 }
 
 
@@ -185,12 +187,12 @@ vrLayerVectorC2P::~vrLayerVectorC2P() {
 bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 	wxFileName myFileName = filename;
     // Support layer number to open in extension (.c2p 1) open layer 1
-    int myLayerToOpen = 0;
+    m_ActiveLayerIndex = 0;
     wxRegEx reLayer(_T("(c2p) ([0-9]+)"),wxRE_ADVANCED);
     if (reLayer.Matches(myFileName.GetExt())==true) {
         wxASSERT(reLayer.GetMatchCount()==2+1);
         wxString myLayerNumTxt = reLayer.GetMatch(myFileName.GetExt(),2);
-        myLayerToOpen = wxAtoi(myLayerNumTxt);
+        m_ActiveLayerIndex = wxAtoi(myLayerNumTxt);
         myFileName.SetExt(_T("c2p"));
     }
     
@@ -216,14 +218,18 @@ bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 	// get layer
 	wxASSERT(m_Layer == NULL);
 	wxLogMessage("Found %d layer", m_Dataset->GetLayerCount());
-	m_Layer = m_Dataset->GetLayer(myLayerToOpen);
+	m_Layer = m_Dataset->GetLayer(m_ActiveLayerIndex);
 	if (m_Layer == NULL) {
-		wxLogError("Unable to get layer %d, number of layer found : %d", myLayerToOpen, m_Dataset->GetLayerCount());
+		wxLogError("Unable to get layer %d, number of layer found : %d", m_ActiveLayerIndex, m_Dataset->GetLayerCount());
 		return false;
 	}
 	return true;
 }
 
+
+CT_LAYER_TYPE vrLayerVectorC2P::GetActiveLayerType(){
+    return (CT_LAYER_TYPE) m_ActiveLayerIndex;
+}
 
 
 wxFileName vrLayerVectorC2P::GetDisplayName() {

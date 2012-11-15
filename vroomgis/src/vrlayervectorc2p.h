@@ -32,15 +32,23 @@
 class vrRender;
 class vrLabel;
 
+
+enum CT_LAYER_TYPE {
+    CT_DIP = 0,
+    CT_POLYGON = 1
+};
+
 //For dealing with GIS data stored into C2P projects.
 class vrLayerVectorC2P : public vrLayerVectorOGR {
+    int m_ActiveLayerIndex;
+    
   protected:
     virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							 const vrRender * render, vrLabel * label, double pxsize);
     virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							const vrRender * render, const vrLabel * label, double pxsize);
-    virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							   const vrRender * render, const vrLabel * label, double pxsize);
+//    virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
+//							   const vrRender * render, const vrLabel * label, double pxsize);
     virtual bool _DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 							   const vrRender * render, const vrLabel * label, double pxsize);
 
@@ -55,6 +63,8 @@ class vrLayerVectorC2P : public vrLayerVectorOGR {
 	virtual bool DeleteFeature(long fid);
     
     virtual bool GetExtent(vrRealRect & rect);
+    CT_LAYER_TYPE GetActiveLayerType();
+    
     double GetNoDataValue();
 
 };

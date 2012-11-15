@@ -22,6 +22,7 @@
 #include "vrrendercoltop.h"
 #include "vrlabel.h"
 #include "vrlayervector.h"
+#include "vrlayervectorc2p.h"
 
 
 bool vrRenderer::_IsCorrectRender() {
@@ -96,9 +97,20 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 				break;
 				
 			case vrDRIVER_VECTOR_C2P:
-				m_Render = new vrRenderVectorC2PDips();
-				break;
-				
+            {
+                CT_LAYER_TYPE myLayerType =((vrLayerVectorC2P*) GetLayer())->GetActiveLayerType();
+                if (myLayerType == CT_DIP){
+                    m_Render = new vrRenderVectorC2PDips();
+                } else if (myLayerType == CT_POLYGON){
+                    m_Render = new vrRenderVector();
+                }
+                else{
+                    wxLogError(_("Unsupported geometry type: %d"), myLayerType);
+                }
+            }
+               break;
+                
+                
 			default:
 				m_Render = new vrRender();
 				break;
