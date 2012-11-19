@@ -37,6 +37,7 @@ bool vrRenderer::_IsCorrectRender() {
 		case vrRENDER_VECTOR:
 			if (m_Layer->GetType() == vrDRIVER_VECTOR_SHP) { bReturn = true; break;}
 			if (m_Layer->GetType() == vrDRIVER_VECTOR_MEMORY) { bReturn = true; break;}
+            if (m_Layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
 			break;
 			
 		case vrRENDER_RASTER:
