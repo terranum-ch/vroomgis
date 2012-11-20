@@ -246,19 +246,28 @@ wxFileName vrLayerVectorC2P::GetDisplayName() {
 }
 
 
+
 long vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
 	wxASSERT(m_Layer);
 	OGRFeature * myFeature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
 	wxASSERT(m_Layer);
 	myFeature->SetGeometry(geometry);
 
-	if (data != NULL) {
-		wxArrayDouble * myArray = (wxArrayDouble*) data;
-		wxASSERT(myArray->GetCount() == 4);
-		myFeature->SetField(0, myArray->Item(1));
-		myFeature->SetField(1, myArray->Item(2));
-		myFeature->SetField(2, myArray->Item(0));
-		myFeature->SetField(3, myArray->Item(3));
+    if (data != NULL) {
+        if (m_ActiveLayerIndex == CT_DIP) {
+            wxArrayDouble * myArray = (wxArrayDouble*) data;
+            wxASSERT(myArray->GetCount() == 4);
+            myFeature->SetField(0, myArray->Item(1));
+            myFeature->SetField(1, myArray->Item(2));
+            myFeature->SetField(2, myArray->Item(0));
+            myFeature->SetField(3, myArray->Item(3));
+        }
+        else if (m_ActiveLayerIndex == CT_POLYGON){
+            wxArrayString * myArray = (wxArrayString*) data;
+            wxASSERT(myArray->GetCount() == 2);
+            myFeature->SetField(0, (const char*) myArray->Item(0).mb_str(wxConvUTF8));
+            myFeature->SetField(1, wxAtoi(myArray->Item(1)));
+        }
 	}
 
 	if(m_Layer->CreateFeature(myFeature) != OGRERR_NONE){
@@ -271,6 +280,7 @@ long vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
 	OGRFeature::DestroyFeature(myFeature);
 	return myFeatureID;
 }
+
 
 
 bool vrLayerVectorC2P::DeleteFeature(long fid) {
