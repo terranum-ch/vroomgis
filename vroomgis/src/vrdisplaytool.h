@@ -258,7 +258,7 @@ private:
     wxOverlay m_Overlay;
     
 public:
-    vrDisplayToolEdit(vrViewerDisplay * display);
+    vrDisplayToolEdit(vrViewerDisplay * display, int toolid = wxID_EDIT);
     virtual ~vrDisplayToolEdit();
     
     virtual bool MouseDown(const wxMouseEvent & event){return false;}
@@ -282,7 +282,7 @@ private:
     bool m_DoubleClicked;
     
 public:
-    vrDisplayToolEditLine(vrViewerDisplay * display);
+    vrDisplayToolEditLine(vrViewerDisplay * display, int toolid = wxID_EDIT);
     virtual ~vrDisplayToolEditLine();
     
     virtual bool MouseDown(const wxMouseEvent & event);

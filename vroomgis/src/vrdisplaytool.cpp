@@ -581,11 +581,11 @@ bool vrDisplayToolSight::MouseMove(const wxMouseEvent & event) {
 @author Lucien Schreiber copyright CREALP
 @date 30 mars 2012
 *****************************************************************************************/
-vrDisplayToolEdit::vrDisplayToolEdit(vrViewerDisplay * display) {
+vrDisplayToolEdit::vrDisplayToolEdit(vrViewerDisplay * display, int toolid) {
     wxImage myEditCursorImg = _img_cursor_editing->ConvertToImage();
     myEditCursorImg.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, 8);
     myEditCursorImg.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, 8);
-    Create(display, wxID_EDIT, "Editing", wxCursor(myEditCursorImg));
+    Create(display, toolid, "Editing", wxCursor(myEditCursorImg));
 }
 
 
@@ -611,7 +611,7 @@ bool vrDisplayToolEdit::MouseUp(const wxMouseEvent & event) {
 @author Lucien Schreiber copyright CREALP
 @date 30 mars 2012
 *****************************************************************************************/
-vrDisplayToolEditLine::vrDisplayToolEditLine(vrViewerDisplay * display): vrDisplayToolEdit(display) {
+vrDisplayToolEditLine::vrDisplayToolEditLine(vrViewerDisplay * display, int toolid): vrDisplayToolEdit(display,  toolid) {
     m_PreviousPoint = wxDefaultPosition;
     m_DoubleClicked = false;
 }
