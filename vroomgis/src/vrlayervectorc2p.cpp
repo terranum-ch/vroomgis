@@ -310,6 +310,9 @@ bool vrLayerVectorC2P::GetExtent(vrRealRect & rect) {
 	}
     
     OGREnvelope myExtent;
+    m_Layer->GetExtent(&myExtent);
+    
+    /*
     wxASSERT(myExtent.IsInit() == false);
     while (1) {
         OGRFeature * myFeat = m_Layer->GetNextFeature();
@@ -334,7 +337,7 @@ bool vrLayerVectorC2P::GetExtent(vrRealRect & rect) {
     if (myExtent.IsInit() == false) {
         myExtent.Merge(0.0, 0.0);
         myExtent.Merge(1000.0,1000.0);
-    }
+    }*/
     
 	rect.SetLeftBottom(wxPoint2DDouble(myExtent.MinX, myExtent.MinY));
 	rect.SetRightTop(wxPoint2DDouble(myExtent.MaxX, myExtent.MaxY));
