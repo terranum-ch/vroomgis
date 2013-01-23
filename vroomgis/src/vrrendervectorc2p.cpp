@@ -194,3 +194,125 @@ bool vrRenderVectorC2PDips::Serialize(vrSerialize & serialobj) {
 	return serialobj.IsOk();
 }
 
+
+
+
+
+
+/*************************************************************************************//**
+@brief c2p Polygon Renderer
+@author Lucien Schreiber copyright CREALP
+@date 23 janvier 2013
+*****************************************************************************************/
+vrRenderVectorC2PPoly::vrRenderVectorC2PPoly(const wxColour & defaultcolour) {
+    m_Type = vrRENDER_VECTOR_C2P_POLY;
+    m_UseDefaultBrush = true;
+    SetColorBrush(defaultcolour);
+    ClearPolyColours();
+    m_MemoryFamilyID = wxNOT_FOUND;
+	m_MemoryColour = wxColour();
+	wxASSERT(m_MemoryColour.IsOk() == false);
+}
+
+
+
+vrRenderVectorC2PPoly::~vrRenderVectorC2PPoly() {
+    ClearPolyColours();
+}
+
+
+
+void vrRenderVectorC2PPoly::ClearPolyColours() {
+    m_PolyColours.Clear();
+}
+
+
+
+bool vrRenderVectorC2PPoly::AddPolyColour(const wxColour & colour, long familyid) {
+    // ensure this family ID didn't exists
+	for (unsigned int i = 0; i<m_PolyColours.GetCount(); i++) {
+		if (m_PolyColours.Item(i).m_FamilyID == familyid) {
+			wxLogError(_("Adding '%s' colour with '%d' id isn't allowed. ID allready used."),colour.GetAsString(), familyid);
+			return false;
+		}
+	}
+	
+	vrDipColour myDipColour (colour, familyid);
+	m_PolyColours.Add(myDipColour);
+	return true;
+}
+
+
+
+bool vrRenderVectorC2PPoly::SetPolyColour(const wxColour & colour, long familyid) {
+    for (unsigned int i = 0; i<m_PolyColours.GetCount(); i++) {
+		if (m_PolyColours.Item(i).m_FamilyID == familyid) {
+			m_PolyColours.Item(i).m_Colour = colour;
+			return true;
+		}
+	}
+	wxLogError(_("Setting '%s' colour with '%d' id isn't allowed. ID didn't exist."),colour.GetAsString(), familyid);
+	return false;
+}
+
+
+
+wxColour vrRenderVectorC2PPoly::GetPolyColour(long familyid) {
+    wxASSERT(familyid >= 0);
+	wxASSERT(m_PolyColours.GetCount() >= 1);
+	
+	// speed up search, by keeping last colour on memory
+	if (familyid == m_MemoryFamilyID && m_MemoryColour.IsOk()) {
+		return m_MemoryColour;
+	}
+	
+	// not the same family, then search into array
+	m_MemoryColour = wxColour();
+	m_MemoryFamilyID = wxNOT_FOUND;
+	for (unsigned int i = 0; i<m_PolyColours.GetCount(); i++) {
+		if (m_PolyColours.Item(i).m_FamilyID == familyid) {
+			m_MemoryFamilyID = familyid;
+			m_MemoryColour = m_PolyColours.Item(i).m_Colour;
+			return m_MemoryColour;
+		}
+	}
+	
+	// if family not found, return the default colour
+	return m_PolyColours.Item(0).m_Colour;
+}
+
+
+void vrRenderVectorC2PPoly::SetUseDefaultBrush(bool value) {
+    m_UseDefaultBrush = value;
+}
+
+
+bool vrRenderVectorC2PPoly::Serialize(vrSerialize & serialobj) {
+    vrRender::Serialize(serialobj);
+	serialobj.EnterObject();
+	if (serialobj.IsStoring()) {
+		serialobj << GetBrushStyle();
+		serialobj << GetColorBrush();
+        serialobj << GetColorPen();
+		serialobj << IsUsingDefaultBrush();
+	}
+	else {
+        wxBrushStyle myBrushStyle;
+        wxColour myPenColour;
+        wxColour myBrushColour;
+        
+		serialobj >> myBrushStyle;
+		serialobj >> myBrushColour;
+        serialobj >> myPenColour;
+		serialobj >> m_UseDefaultBrush;
+        
+        SetBrushStyle(myBrushStyle);
+        SetColorBrush(myBrushColour);
+        SetColorPen(myPenColour);
+	}
+	serialobj.LeaveObject();
+	return serialobj.IsOk();
+}
+
+
+
