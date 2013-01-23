@@ -55,6 +55,10 @@ bool vrRenderer::_IsCorrectRender() {
 		case vrRENDER_VECTOR_C2P_DIPS:
 			if (m_Layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
 			break;
+            
+        case vrRENDER_VECTOR_C2P_POLY:
+            if (m_Layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
+            break;
 			
 		default:
 			break;
