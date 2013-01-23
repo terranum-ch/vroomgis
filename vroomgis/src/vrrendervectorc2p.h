@@ -2,7 +2,7 @@
  vrrendervectorc2p.h
  
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -49,7 +49,7 @@ private:
     int m_Size;
 	bool m_UseDefaultColour;
     bool m_UseOutline;
-
+    
 	
 	long m_MemoryFamilyID;
 	wxColour m_MemoryColour;
@@ -69,7 +69,7 @@ public:
     inline const bool GetOutline() const;
     void SetOutline(bool value);
     wxColour GetOutlineColour(const wxColour & dipcolour);
-
+    
 	
     void ClearDipColours();
     bool AddDipColour(const wxColour & colour, long familyid);
@@ -96,6 +96,45 @@ inline const bool vrRenderVectorC2PDips::IsUsingDefaultColour() const {
 inline const bool vrRenderVectorC2PDips::GetOutline() const {
     return m_UseOutline;
 }
+
+
+
+
+
+
+/*************************************************************************************//**
+@brief c2p Polygon Renderer
+@author Lucien Schreiber copyright CREALP
+@date 23 janvier 2013
+*****************************************************************************************/
+class vrRenderVectorC2PPoly : public vrRenderVector {
+private:
+    bool m_UseDefaultBrush;
+    vrArrayDipColours m_PolyColours;
+    long m_MemoryFamilyID;
+	wxColour m_MemoryColour;
+
+    
+public:
+    vrRenderVectorC2PPoly(const wxColour & defaultcolour = *wxBLACK);
+    virtual ~vrRenderVectorC2PPoly();
+    
+    void ClearPolyColours();
+    bool AddPolyColour(const wxColour & colour, long familyid);
+    bool SetPolyColour(const wxColour & colour, long familyid);
+    wxColour GetPolyColour(long familyid);
+    
+    inline const bool IsUsingDefaultBrush() const;
+    void SetUseDefaultBrush(bool value);
+    virtual bool Serialize(vrSerialize & serialobj);
+
+};
+
+
+inline const bool vrRenderVectorC2PPoly::IsUsingDefaultBrush() const {
+    return m_UseDefaultBrush;
+}
+
 
 
 #endif

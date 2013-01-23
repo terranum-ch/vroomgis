@@ -103,7 +103,7 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
                 if (myLayerType == CT_DIP){
                     m_Render = new vrRenderVectorC2PDips();
                 } else if (myLayerType == CT_POLYGON){
-                    m_Render = new vrRenderVector();
+                    m_Render = new vrRenderVectorC2PPoly();
                 }
                 else{
                     wxLogError(_("Unsupported geometry type: %d"), myLayerType);
