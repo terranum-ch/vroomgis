@@ -61,7 +61,7 @@ public:
 	
     const int GetDipWidth() const;
     void SetDipWidth(int value);
-	virtual void SetTransparency(int value);
+	//virtual void SetTransparency(int value);
 	
     inline const int GetSize() const;
     void SetSize(int value);

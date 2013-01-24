@@ -62,7 +62,7 @@ void vrRenderVectorC2PDips::SetDipWidth(int value) {
 }
 
 
-
+/*
 void vrRenderVectorC2PDips::SetTransparency(int value) {
 	vrRender::SetTransparency(value);
 	// change all colours
@@ -74,7 +74,7 @@ void vrRenderVectorC2PDips::SetTransparency(int value) {
 		m_DipColours.Item(i).m_Colour = myColour;
 	}
 }
-
+*/
 
 
 void vrRenderVectorC2PDips::SetSize(int value) {
@@ -154,6 +154,11 @@ wxColour vrRenderVectorC2PDips::GetDipColour(long familyID) {
 		if (m_DipColours.Item(i).m_FamilyID == familyID) {
 			m_MemoryFamilyID = familyID;
 			m_MemoryColour = m_DipColours.Item(i).m_Colour;
+            
+            char myred = m_MemoryColour.Red();
+            char mygreen = m_MemoryColour.Green();
+            char myblue = m_MemoryColour.Blue();
+            m_MemoryColour.Set(myred, mygreen, myblue, GetTransparencyChar());
 			return m_MemoryColour;
 		}
 	}
@@ -273,6 +278,11 @@ wxColour vrRenderVectorC2PPoly::GetPolyColour(long familyid) {
 		if (m_PolyColours.Item(i).m_FamilyID == familyid) {
 			m_MemoryFamilyID = familyid;
 			m_MemoryColour = m_PolyColours.Item(i).m_Colour;
+            
+            char myred = m_MemoryColour.Red();
+            char mygreen = m_MemoryColour.Green();
+            char myblue = m_MemoryColour.Blue();
+            m_MemoryColour.Set(myred, mygreen, myblue, GetTransparencyChar());
 			return m_MemoryColour;
 		}
 	}
@@ -295,6 +305,7 @@ bool vrRenderVectorC2PPoly::Serialize(vrSerialize & serialobj) {
 		serialobj << GetColorBrush();
         serialobj << GetColorPen();
 		serialobj << IsUsingDefaultBrush();
+        serialobj << GetTransparency();
 	}
 	else {
         wxBrushStyle myBrushStyle;
@@ -305,6 +316,7 @@ bool vrRenderVectorC2PPoly::Serialize(vrSerialize & serialobj) {
 		serialobj >> myBrushColour;
         serialobj >> myPenColour;
 		serialobj >> m_UseDefaultBrush;
+        serialobj >> m_Transparency;
         
         SetBrushStyle(myBrushStyle);
         SetColorBrush(myBrushColour);
