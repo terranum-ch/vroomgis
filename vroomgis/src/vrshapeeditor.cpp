@@ -163,7 +163,7 @@ void vrShapeEditorLine::DrawShapeEdit(vrRender * render) {
     wxASSERT(m_Display);
 	wxASSERT(m_Geometry);
     
-    wxASSERT(render->GetType() == vrRENDER_VECTOR);
+    //wxASSERT(render->GetType() == vrRENDER_VECTOR);
 	vrRenderVector * myRender = (vrRenderVector*) render;
 	wxPen myPen (myRender->GetColorPen(),
 				 myRender->GetSize());
