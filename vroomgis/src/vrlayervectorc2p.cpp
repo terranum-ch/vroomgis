@@ -157,19 +157,124 @@ bool vrLayerVectorC2P::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
 }
 
 
-/*
-bool vrLayerVectorC2P::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-									 const vrRender * render, const vrLabel * label, double pxsize) {
-	m_ObjectDrawn = 0;
-	return false;
-}
-*/
 
+bool vrLayerVectorC2P::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize) {
+    m_ObjectDrawn = 0;
+	wxASSERT(gdc);
+	wxStopWatch sw;
+    
+	wxASSERT(render->GetType() == vrRENDER_VECTOR_C2P_POLY);
+	vrRenderVectorC2PPoly * myRender = (vrRenderVectorC2PPoly*) render;
+    
+	// creating brush and pen
+	wxPen myPen (myRender->GetColorPen(),myRender->GetSize());
+	wxPen mySelPen (myRender->GetSelectionColour(),
+					myRender->GetSize());
+    
+    wxBrush myBrush (myRender->GetColorBrush(), myRender->GetBrushStyle());
+	gdc->SetBrush(myBrush);
+    
+    
+	// iterating and drawing geometries
+	OGRPolygon * myGeom = NULL;
+	long iCount = 0;
+	while (1) {
+		OGRFeature * myFeat = GetNextFeature(false);
+		if (myFeat == NULL) {
+			break;
+		}
+        
+        if (IsFeatureHidden(myFeat->GetFID()) == true) {
+            OGRFeature::DestroyFeature(myFeat);
+			myFeat = NULL;
+			continue;
+        }
+        
+		myGeom = NULL;
+		myGeom = (OGRPolygon*) myFeat->GetGeometryRef();
+		wxASSERT(myGeom);
+        
+		int iNumRing = myGeom->getNumInteriorRings() + 1;
+		wxASSERT(iNumRing >= 1); // Polygon should have at least one ring
+        
+		// create path for polygon
+		wxGraphicsPath myPath = gdc->CreatePath();
+		for (int i = 0; i < iNumRing; i++) {
+			wxGraphicsPath myPolyPath = gdc->CreatePath();
+			OGRLineString * myRing  = NULL;
+			if (i == 0) {
+				myRing = myGeom->getExteriorRing();
+			}
+			else {
+				myRing = myGeom->getInteriorRing(i -1);
+			}
+			wxASSERT(myRing);
+			int iNumVertex = myRing->getNumPoints();
+			wxASSERT(iNumVertex > 1);
+			myPolyPath.MoveToPoint(_GetPointFromReal(wxPoint2DDouble(myRing->getX(0),
+																	 myRing->getY(0)),
+													 coord.GetLeftTop(),
+													 pxsize));
+			for (int v = 0; v < iNumVertex; v++) {
+				myPolyPath.AddLineToPoint(_GetPointFromReal(wxPoint2DDouble(myRing->getX(v),
+                                                                            myRing->getY(v)),
+                                                            coord.GetLeftTop(),
+                                                            pxsize));
+			}
+			myPolyPath.CloseSubpath();
+			myPath.AddPath(myPolyPath);
+		}
+        
+		// check intersection and minimum size
+		double myWidth = 0, myHeight = 0;
+		gdc->GetSize(&myWidth, &myHeight);
+		wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
+		wxRect2DDouble myPathRect = myPath.GetBox();
+		if(_Intersects(myPathRect, myWndRect)==false){
+			OGRFeature::DestroyFeature(myFeat);
+			myFeat = NULL;
+			continue;
+		}
+        
+		if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
+			OGRFeature::DestroyFeature(myFeat);
+			myFeat = NULL;
+			continue;
+		}
+        
+		gdc->SetPen(myPen);
+		if (IsFeatureSelected(myFeat->GetFID())==true) {
+			gdc->SetPen(mySelPen);
+		}
+        
+        // family based brush
+        if (myRender->IsUsingDefaultBrush() == false) {
+            int myFamily = myFeat->GetFieldAsInteger(1);
+            myBrush.SetStyle(wxBRUSHSTYLE_SOLID);
+            myBrush.SetColour(myRender->GetPolyColour(myFamily));
+            gdc->SetBrush(myBrush);
+        }
+        
+		// draw path
+		iCount++;
+		gdc->DrawPath(myPath);
+		OGRFeature::DestroyFeature(myFeat);
+		myFeat = NULL;
+	}
+    
+	m_ObjectDrawn = iCount;
+	return true;
+}
+
+
+
+// TODO: Check that no multi polygon could be imported !!!
 bool vrLayerVectorC2P::_DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
 									 const vrRender * render, const vrLabel * label, double pxsize) {
 	m_ObjectDrawn = 0;
 	return false;
 }
+
 
 vrLayerVectorC2P::vrLayerVectorC2P() {
 	wxASSERT(m_Dataset==NULL);
