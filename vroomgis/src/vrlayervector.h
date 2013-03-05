@@ -80,10 +80,17 @@ public:
     bool IsFeatureHidden(long id);
 
 	inline const long GetObjectDrawn() const;
+    inline OGRLayer * GetLayerRef();
 };
 
 inline wxArrayLong * vrLayerVector::GetSelectedIDs() {
 	return &m_SelectedIDs;
+}
+
+
+inline OGRLayer * vrLayerVector::GetLayerRef(){
+    wxASSERT(m_Layer);
+    return m_Layer;
 }
 
 
@@ -118,6 +125,7 @@ public:
 
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
     virtual bool Create(const wxFileName & filename, int spatialtype = wkbPoint);
+    virtual bool CopyLayer (vrLayerVectorOGR * layer, const wxString & newlayername = wxEmptyString);
 
     bool AddField(const OGRFieldDefn & fielddef);
     virtual long AddFeature(OGRGeometry * geometry, void * data = NULL);
