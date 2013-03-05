@@ -350,18 +350,6 @@ long vrViewerLayerManager::Select(const wxRect & extent) {
 	vrLayerVector * myLayer = (vrLayerVector*) m_Renderers.Item(myIndex)->GetLayer();
 	wxASSERT(myLayer);
 	return myLayer->Select(myRealCoord);
-    /*OGRPolygon myGeom;
-	OGRLinearRing myLine;
-	myLine.addPoint(myRealCoord.GetLeft(), myRealCoord.GetTop());
-	myLine.addPoint(myRealCoord.GetRight(), myRealCoord.GetTop());
-	myLine.addPoint(myRealCoord.GetRight(), myRealCoord.GetBottom());
-	myLine.addPoint(myRealCoord.GetLeft(), myRealCoord.GetBottom());
-	myLine.addPoint(myRealCoord.GetLeft(), myRealCoord.GetTop());
-	myGeom.addRing(&myLine);
-	wxArrayLong mySelectedIDs;
-	myLayer->SearchFeatures(&myGeom, mySelectedIDs);
-	myLayer->SetSelectedIDs(mySelectedIDs);
-	return mySelectedIDs.GetCount();*/
 }
 
 
@@ -389,7 +377,7 @@ int vrViewerLayerManager::GetSelectionCount(int * sellayers) {
 			if (mySelCount > 0) {
 				iTotal += mySelCount;
 				if (sellayers != NULL) {
-					*sellayers++;
+					*sellayers = *sellayers + 1;
 				}
 			}
 		}
