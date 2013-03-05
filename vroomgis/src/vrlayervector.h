@@ -109,14 +109,11 @@ inline const long vrLayerVector::GetObjectDrawn() const {
 
 class vrLayerVectorOGR : public vrLayerVector {
 protected:
-	virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							const vrRender * render, const vrLabel * label, double pxsize);
-	virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							 const vrRender * render, vrLabel * label, double pxsize);
-    virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							   const vrRender * render, const vrLabel * label, double pxsize);
-    virtual bool _DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							   const vrRender * render, const vrLabel * label, double pxsize);
+
+    virtual void _DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
+    virtual void _DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
+    virtual void _DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
+
     virtual bool _Close();
 
 public:
@@ -130,16 +127,9 @@ public:
     bool AddField(const OGRFieldDefn & fielddef);
     virtual long AddFeature(OGRGeometry * geometry, void * data = NULL);
 
-
 	virtual bool GetExtent(vrRealRect & rect);
-	virtual bool GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
-							   const vrRender * render = NULL, vrLabel * label = NULL);
-	virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,
-						 const vrRender * render = NULL, vrLabel * label = NULL);
-
-
+	virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,const vrRender * render = NULL, vrLabel * label = NULL);
+    
     bool SetAttributeFilter(const wxString & query);
-
-
 };
 #endif
