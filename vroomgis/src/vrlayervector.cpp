@@ -374,6 +374,40 @@ bool vrLayerVectorOGR::Create(const wxFileName & filename, int spatialtype) {
 
 
 
+bool vrLayerVectorOGR::CopyLayer (vrLayerVectorOGR * layer, const wxString & newlayername){
+    if (layer == NULL) {
+        wxLogError(_("Origin layer is empty! copying failed!"));
+        return false;
+    }
+    
+    wxString myLayerName = newlayername;
+    if (myLayerName == wxEmptyString) {
+        myLayerName = GetDisplayName().GetName();
+    }
+    
+    for (unsigned int i = 0; i< m_Dataset->GetLayerCount(); i++) {
+        OGRLayer * myExistingLayer = m_Dataset->GetLayer(i);
+        if (myExistingLayer == m_Layer) {
+            m_Dataset->DeleteLayer(i);
+            m_Layer = NULL;
+        }
+    }
+    
+    wxASSERT(m_Layer == NULL);
+    wxASSERT(m_Dataset);
+    m_Layer = m_Dataset->CopyLayer(layer->GetLayerRef(), (const char *) myLayerName.mb_str(wxConvUTF8));
+    
+    if (m_Layer == NULL){
+        wxLogError(_("Error copying layer: %s"), myLayerName);
+        return false;
+    }
+    
+    m_Layer = m_Dataset->GetLayerByName((const char *) myLayerName.mb_str(wxConvUTF8));
+    wxASSERT(m_Layer);
+    return true;
+}
+
+
 bool vrLayerVectorOGR::AddField(const OGRFieldDefn & fielddef) {
     wxASSERT(m_Layer);
     OGRFieldDefn * myField = new OGRFieldDefn(fielddef);
@@ -447,7 +481,13 @@ bool vrLayerVectorOGR::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble 
         
 		myGeom = NULL;
 		myGeom = (OGRLineString*) myFeat->GetGeometryRef();
-		wxASSERT(myGeom);
+        if (myGeom == NULL) {
+            // line without a geometry!! corrupted line
+            wxLogError(_("Object with FID: %ld has no Geometry!"), myFeat->GetFID());
+            OGRFeature::DestroyFeature(myFeat);
+            myFeat = NULL;
+            continue;
+        }
 
 
 		int iNumVertex = myGeom->getNumPoints();
