@@ -110,9 +110,9 @@ inline const long vrLayerVector::GetObjectDrawn() const {
 class vrLayerVectorOGR : public vrLayerVector {
 protected:
 
-    virtual void _DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
-    virtual void _DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
-    virtual void _DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize);
+    virtual void _DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    virtual void _DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    virtual void _DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
 
     virtual bool _Close();
 
