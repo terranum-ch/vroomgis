@@ -19,261 +19,156 @@
 #include "vrrendervectorc2p.h"
 #include "vrlabel.h"
 
-bool vrLayerVectorC2P::_DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-								   const vrRender * render, vrLabel * label, double pxsize) {
-	m_ObjectDrawn = 0;
-	wxASSERT(gdc);
-	wxStopWatch sw;
-	// creating pen
 
-	wxASSERT(render->GetType() == vrRENDER_VECTOR_C2P_DIPS);
+void vrLayerVectorC2P::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, vrLabel * label, double pxsize){
+    wxASSERT(render->GetType() == vrRENDER_VECTOR_C2P_DIPS);
 	vrRenderVectorC2PDips * myRender = (vrRenderVectorC2PDips*) render;
 	const int myDipWidth = myRender->GetDipWidth();
-	const bool myUseDefaultColour = myRender->IsUsingDefaultColour();
-	wxPen myDefaultPen (myRender->GetDipColour(0), myRender->GetSize());
+    wxPen myDefaultPen (myRender->GetDipColour(0), myRender->GetSize());
 	wxPen mySelPen (myRender->GetSelectionColour(), myRender->GetSize());
-
-	// iterating and drawing geometries
-	OGRPoint * myGeom = NULL;
-	long iCount = 0;
-    long iIgnored = 0;
 	double myWidth = 0, myHeight = 0;
 	gdc->GetSize(&myWidth, &myHeight);
 	wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
-	while (1) {
-		OGRFeature * myFeat = GetNextFeature(false);
-		if (myFeat == NULL) {
-			break;
-		}
-		myGeom = NULL;
-		myGeom = (OGRPoint*) myFeat->GetGeometryRef();
-		wxASSERT(myGeom);
-        
-        // filter nodata values
-        if (wxIsSameDouble(myGeom->getX(), GetNoDataValue()) &&
-            wxIsSameDouble(myGeom->getY(), GetNoDataValue())){
-            OGRFeature::DestroyFeature(myFeat);
-            iIgnored++;
+
+    // get direction
+    double myDir = feature->GetFieldAsDouble(1);
+	OGRPoint * myGeom = (OGRPoint*) geometry;
+    wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(),myGeom->getY()),coord.GetLeftTop(),pxsize);
+    
+    // Create | line
+    wxGraphicsPath myVPath = gdc->CreatePath();
+    myVPath.MoveToPoint(0.0, 0.0);
+    myVPath.AddLineToPoint(0.0, -1.0 * myDipWidth);
+    // Create -- line
+    wxGraphicsPath myHPath = gdc->CreatePath();
+    myHPath.MoveToPoint(-1.5 * myDipWidth, 0.0);
+    myHPath.AddLineToPoint(1.5 * myDipWidth, 0.0);
+    
+    // Rotate
+    wxGraphicsMatrix myRotateMatrix = gdc->CreateMatrix();
+    myRotateMatrix.Rotate((myDir * M_PI) / 180);
+    myVPath.Transform(myRotateMatrix);
+    myHPath.Transform(myRotateMatrix);
+    
+    // Translate to position
+    wxGraphicsMatrix myTranslateMatrix = gdc->CreateMatrix();
+    myTranslateMatrix.Translate(myPt.x, myPt.y);
+    myVPath.Transform(myTranslateMatrix);
+    myHPath.Transform(myTranslateMatrix);
+    
+    // ensure intersecting display
+    wxRect2DDouble myPathRect = myVPath.GetBox();
+    myPathRect.Union(myHPath.GetBox());
+    if (myPathRect.Intersects(myWndRect) ==false) {
+        return;
+    }
+    
+    if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
+        return;
+    }
+    
+    // create family pen if needed
+    if (myRender->IsUsingDefaultColour() == false) {
+        int myFamily = feature->GetFieldAsInteger(3);
+        myDefaultPen.SetColour(myRender->GetDipColour(myFamily));
+        myDefaultPen.SetWidth(myRender->GetSize());
+    }
+    wxPen myActualPen = myDefaultPen;
+    int bselected = 0;
+    if (IsFeatureSelected(feature->GetFID())==true) {
+        myActualPen = mySelPen;
+        bselected = 1;
+    }
+    
+    // draw outline if asked
+    if (myRender->GetOutline() == true) {
+        wxPen myOutlinePen (*wxBLACK, myRender->GetSize() + 2);
+        myOutlinePen.SetColour(myRender->GetOutlineColour(myActualPen.GetColour()));
+        gdc->SetPen(myOutlinePen);
+        gdc->StrokePath(myHPath);
+        gdc->StrokePath(myVPath);
+    }
+    
+    gdc->SetPen(myActualPen);
+    gdc->StrokePath(myHPath);
+    gdc->StrokePath(myVPath);
+    
+    // label feature
+    if (label != NULL && label->IsActive() == true) {
+        OGRPoint myImgPt;
+        myImgPt.setX(myPt.x);
+        myImgPt.setY(myPt.y);
+        label->AddFeature(bselected, &myImgPt, wxString::Format("%1.f", feature->GetFieldAsDouble(0)), myDir);
+        label->Draw(gdc, coord, render, pxsize);
+    }
+}
+
+
+
+void vrLayerVectorC2P::_DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, vrLabel * label, double pxsize){
+    OGRPolygon * myPolygon = (OGRPolygon*) geometry;
+    int iNumRing = myPolygon->getNumInteriorRings() + 1;
+    wxGraphicsPath myPath = gdc->CreatePath();
+    for (int i = 0; i < iNumRing; i++) {
+        wxGraphicsPath myPolyPath = gdc->CreatePath();
+        OGRLineString * myRing  = NULL;
+        if (i == 0) {
+            myRing = myPolygon->getExteriorRing();
+        }
+        else {
+            myRing = myPolygon->getInteriorRing(i -1);
+        }
+        wxASSERT(myRing);
+        int iNumVertex = myRing->getNumPoints();
+        if (iNumVertex <= 1) {
+            wxLogWarning(_("Polygon with FID: %ld has an incorrect ring (less than a vertex!). Total number of ring for that polygon is: %d"), feature->GetFID(),iNumRing);
             continue;
         }
-
-		// get direction
-		double myDir = myFeat->GetFieldAsDouble(1);
-		wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(),myGeom->getY()),
-										 coord.GetLeftTop(),
-										 pxsize);
-
-
-		// Create | line
-		wxGraphicsPath myVPath = gdc->CreatePath();
-		myVPath.MoveToPoint(0.0, 0.0);
-		myVPath.AddLineToPoint(0.0, -1.0 * myDipWidth);
-		// Create -- line
-		wxGraphicsPath myHPath = gdc->CreatePath();
-		myHPath.MoveToPoint(-1.5 * myDipWidth, 0.0);
-		myHPath.AddLineToPoint(1.5 * myDipWidth, 0.0);
-
-		// Rotate
-		wxGraphicsMatrix myRotateMatrix = gdc->CreateMatrix();
-		myRotateMatrix.Rotate((myDir * M_PI) / 180);
-		myVPath.Transform(myRotateMatrix);
-		myHPath.Transform(myRotateMatrix);
-
-		// Translate to position
-		wxGraphicsMatrix myTranslateMatrix = gdc->CreateMatrix();
-		myTranslateMatrix.Translate(myPt.x, myPt.y);
-		myVPath.Transform(myTranslateMatrix);
-		myHPath.Transform(myTranslateMatrix);
-
-		// ensure intersecting display
-		wxRect2DDouble myPathRect = myVPath.GetBox();
-		myPathRect.Union(myHPath.GetBox());
-		if (myPathRect.Intersects(myWndRect) ==false) {
-			OGRFeature::DestroyFeature(myFeat);
-			myFeat = NULL;
-			continue;
-		}
-		if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
-			OGRFeature::DestroyFeature(myFeat);
-			myFeat = NULL;
-			continue;
-		}
-		iCount++;
-
-		// create family pen if needed
-		if (myUseDefaultColour == false) {
-			int myFamily = myFeat->GetFieldAsInteger(3);
-			myDefaultPen.SetColour(myRender->GetDipColour(myFamily));
-			myDefaultPen.SetWidth(myRender->GetSize());
-		}
-        wxPen myActualPen = myDefaultPen;
-        int bselected = 0;
-		if (IsFeatureSelected(myFeat->GetFID())==true) {
-            myActualPen = mySelPen;
-            bselected = 1;
-		}
-
-        // draw outline if asked
-        if (myRender->GetOutline() == true) {
-            wxPen myOutlinePen (*wxBLACK, myRender->GetSize() + 2);
-            myOutlinePen.SetColour(myRender->GetOutlineColour(myActualPen.GetColour()));
-            gdc->SetPen(myOutlinePen);
-            gdc->StrokePath(myHPath);
-            gdc->StrokePath(myVPath);
+        myPolyPath.MoveToPoint(_GetPointFromReal(wxPoint2DDouble(myRing->getX(0),myRing->getY(0)),coord.GetLeftTop(),pxsize));
+        for (int v = 0; v < iNumVertex; v++) {
+            myPolyPath.AddLineToPoint(_GetPointFromReal(wxPoint2DDouble(myRing->getX(v), myRing->getY(v)),coord.GetLeftTop(),pxsize));
         }
-
-		gdc->SetPen(myActualPen);
-		gdc->StrokePath(myHPath);
-		gdc->StrokePath(myVPath);
-        
-        // label feature
-        if (label != NULL && label->IsActive() == true) {
-            OGRPoint myImgPt;
-            myImgPt.setX(myPt.x);
-            myImgPt.setY(myPt.y);
-            label->AddFeature(bselected, &myImgPt, wxString::Format("%1.f", myFeat->GetFieldAsDouble(0)), myDir);
-            label->Draw(gdc, coord, render, pxsize);
-        }
-
-
-		OGRFeature::DestroyFeature(myFeat);
-		myFeat = NULL;
-	}
-
-	m_ObjectDrawn = iCount;
-	wxLogMessage("%ld dips drawed (%ld ignored) in %ldms", iCount, iIgnored, sw.Time());
-	if (iCount == 0){
-		return false;
-	}
-	return true;
-}
-
-
-
-bool vrLayerVectorC2P::_DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-								  const vrRender * render, const vrLabel * label, double pxsize) {
-	m_ObjectDrawn = 0;
-	return false;
-}
-
-
-
-bool vrLayerVectorC2P::_DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize) {
-    m_ObjectDrawn = 0;
-	wxASSERT(gdc);
-	wxStopWatch sw;
+        myPolyPath.CloseSubpath();
+        myPath.AddPath(myPolyPath);
+    }
     
-	wxASSERT(render->GetType() == vrRENDER_VECTOR_C2P_POLY);
+    // check intersection and minimum size
+    double myWidth = 0, myHeight = 0;
+    gdc->GetSize(&myWidth, &myHeight);
+    wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
+    wxRect2DDouble myPathRect = myPath.GetBox();
+    if(_Intersects(myPathRect, myWndRect)==false){
+        return;
+    }
+    
+    if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
+        return;
+    }
+    
+    // Brush and Pen
+    wxASSERT(render->GetType() == vrRENDER_VECTOR_C2P_POLY);
 	vrRenderVectorC2PPoly * myRender = (vrRenderVectorC2PPoly*) render;
-    
-	// creating brush and pen
 	wxPen myPen (myRender->GetColorPen(),myRender->GetSize());
 	wxPen mySelPen (myRender->GetSelectionColour(),
 					myRender->GetSize());
-    
     wxBrush myBrush (myRender->GetColorBrush(), myRender->GetBrushStyle());
-	gdc->SetBrush(myBrush);
-    
-    
-	// iterating and drawing geometries
-	OGRPolygon * myGeom = NULL;
-	long iCount = 0;
-	while (1) {
-		OGRFeature * myFeat = GetNextFeature(false);
-		if (myFeat == NULL) {
-			break;
-		}
-        
-        if (IsFeatureHidden(myFeat->GetFID()) == true) {
-            OGRFeature::DestroyFeature(myFeat);
-			myFeat = NULL;
-			continue;
-        }
-        
-		myGeom = NULL;
-		myGeom = (OGRPolygon*) myFeat->GetGeometryRef();
-		wxASSERT(myGeom);
-        
-		int iNumRing = myGeom->getNumInteriorRings() + 1;
-		wxASSERT(iNumRing >= 1); // Polygon should have at least one ring
-        
-		// create path for polygon
-		wxGraphicsPath myPath = gdc->CreatePath();
-		for (int i = 0; i < iNumRing; i++) {
-			wxGraphicsPath myPolyPath = gdc->CreatePath();
-			OGRLineString * myRing  = NULL;
-			if (i == 0) {
-				myRing = myGeom->getExteriorRing();
-			}
-			else {
-				myRing = myGeom->getInteriorRing(i -1);
-			}
-			wxASSERT(myRing);
-			int iNumVertex = myRing->getNumPoints();
-			wxASSERT(iNumVertex > 1);
-			myPolyPath.MoveToPoint(_GetPointFromReal(wxPoint2DDouble(myRing->getX(0),
-																	 myRing->getY(0)),
-													 coord.GetLeftTop(),
-													 pxsize));
-			for (int v = 0; v < iNumVertex; v++) {
-				myPolyPath.AddLineToPoint(_GetPointFromReal(wxPoint2DDouble(myRing->getX(v),
-                                                                            myRing->getY(v)),
-                                                            coord.GetLeftTop(),
-                                                            pxsize));
-			}
-			myPolyPath.CloseSubpath();
-			myPath.AddPath(myPolyPath);
-		}
-        
-		// check intersection and minimum size
-		double myWidth = 0, myHeight = 0;
-		gdc->GetSize(&myWidth, &myHeight);
-		wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
-		wxRect2DDouble myPathRect = myPath.GetBox();
-		if(_Intersects(myPathRect, myWndRect)==false){
-			OGRFeature::DestroyFeature(myFeat);
-			myFeat = NULL;
-			continue;
-		}
-        
-		if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
-			OGRFeature::DestroyFeature(myFeat);
-			myFeat = NULL;
-			continue;
-		}
-        
-		gdc->SetPen(myPen);
-		if (IsFeatureSelected(myFeat->GetFID())==true) {
-			gdc->SetPen(mySelPen);
-		}
-        
-        // family based brush
-        if (myRender->IsUsingDefaultBrush() == false) {
-            int myFamily = myFeat->GetFieldAsInteger(1);
-            myBrush.SetStyle(wxBRUSHSTYLE_SOLID);
-            myBrush.SetColour(myRender->GetPolyColour(myFamily));
-            gdc->SetBrush(myBrush);
-        }
-        
-		// draw path
-		iCount++;
-		gdc->DrawPath(myPath);
-		OGRFeature::DestroyFeature(myFeat);
-		myFeat = NULL;
-	}
-    
-	m_ObjectDrawn = iCount;
-	return true;
+
+    // family based brush
+    gdc->SetBrush(myBrush);
+    if (myRender->IsUsingDefaultBrush() == false) {
+        int myFamily = feature->GetFieldAsInteger(1);
+        myBrush.SetStyle(wxBRUSHSTYLE_SOLID);
+        myBrush.SetColour(myRender->GetPolyColour(myFamily));
+        gdc->SetBrush(myBrush);
+    }
+
+    gdc->SetPen(myPen);
+    if (IsFeatureSelected(feature->GetFID())==true) {
+        gdc->SetPen(mySelPen);
+    }
+    gdc->DrawPath(myPath);
 }
 
-
-
-// TODO: Check that no multi polygon could be imported !!!
-bool vrLayerVectorC2P::_DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-									 const vrRender * render, const vrLabel * label, double pxsize) {
-	m_ObjectDrawn = 0;
-	return false;
-}
 
 
 vrLayerVectorC2P::vrLayerVectorC2P() {

@@ -1,9 +1,9 @@
 /***************************************************************************
-				vrlayervectorsc2p.h
-
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrlayervectorsc2p.h
+ 
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,7 +22,7 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 #include <wx/regex.h>
 
@@ -40,25 +40,20 @@ enum CT_LAYER_TYPE {
 
 //For dealing with GIS data stored into C2P projects.
 class vrLayerVectorC2P : public vrLayerVectorOGR {
+private:
     int m_ActiveLayerIndex;
     
-  protected:
-    virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							 const vrRender * render, vrLabel * label, double pxsize);
-    virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							const vrRender * render, const vrLabel * label, double pxsize);
-    virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							   const vrRender * render, const vrLabel * label, double pxsize);
-    virtual bool _DrawMultiPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							   const vrRender * render, const vrLabel * label, double pxsize);
-
-  public:
+protected:
+    virtual void _DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    virtual void _DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    
+public:
     vrLayerVectorC2P();
     virtual ~vrLayerVectorC2P();
-
+    
     virtual bool Open(const wxFileName & filename, bool readwrite = false);
 	virtual wxFileName GetDisplayName();
-
+    
 	virtual long AddFeature(OGRGeometry * geometry, void * data = NULL);
 	virtual bool DeleteFeature(long fid);
     
@@ -66,7 +61,6 @@ class vrLayerVectorC2P : public vrLayerVectorOGR {
     CT_LAYER_TYPE GetActiveLayerType();
     
     double GetNoDataValue();
-
 };
 #endif
 

@@ -462,7 +462,7 @@ bool vrLayerVectorOGR::_Close() {
 }
 
 
-void vrLayerVectorOGR::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize){
+void vrLayerVectorOGR::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
 	OGRPoint * myGeom = (OGRPoint*) geometry;
     wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(),myGeom->getY()),coord.GetLeftTop(),pxsize);
     double myWidth = 0, myHeight = 0;
@@ -490,7 +490,7 @@ void vrLayerVectorOGR::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature,
 
 
 
-void vrLayerVectorOGR::_DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize){
+void vrLayerVectorOGR::_DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
 	OGRLineString * myLine = (OGRLineString*) geometry;
     if (myLine == NULL) {
         // line without a geometry!! corrupted line
@@ -534,7 +534,7 @@ void vrLayerVectorOGR::_DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, 
 
 
 
-void vrLayerVectorOGR::_DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, const vrLabel * label, double pxsize){
+void vrLayerVectorOGR::_DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
     OGRPolygon * myPolygon = (OGRPolygon*) geometry;
     int iNumRing = myPolygon->getNumInteriorRings() + 1;
     wxGraphicsPath myPath = gdc->CreatePath();
