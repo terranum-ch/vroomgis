@@ -58,6 +58,7 @@ void tmPercent::SetValue (long actualvalue)
 	m_ActualValue = actualvalue;
 }
 
+
 bool tmPercent::IsNewStep()
 {
 	int iActualPercent = (int) GetPercent();
