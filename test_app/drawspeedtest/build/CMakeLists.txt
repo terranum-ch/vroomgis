@@ -19,6 +19,6 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} ${HEAD_FILES} ${SRC_FILES})
 # SHOULD WE USE THE MT VERSION FOR DEFAULT 
 # COMPATIBILITY WITH < WINXP
 IF (WIN32)
-  INCLUDE ("cmake/Use_visualstudioMT.cmake")
+  INCLUDE ("../../../vroomgis/build/cmake/Use_visualstudioMT.cmake")
 ENDIF (WIN32)
 
