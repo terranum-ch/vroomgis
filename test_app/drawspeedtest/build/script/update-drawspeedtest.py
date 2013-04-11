@@ -61,9 +61,9 @@ def BuildMacBook():
 
 def BuildWindows7():
   print ("Configuring Windows")
-  builddir = "D:\\PROGRAMMATION\\ToolBasView\\bin"
+  builddir = "D:\\PRJ\\COLTOPGIS\\bin\\vroomgis\\drawspeedtest"
   try:
-    p = Popen("cmake -G\"Visual Studio 10\" " + GetCmakeDirName() + " -DwxWIDGETS_USING_SVN:BOOL=1  -DwxWIDGETS_PATH_SVN:PATH=D:\\LIB\\wxWIDGETS-SVN -DSEARCH_GDAL:BOOL=1 -DwxWIDGETS_USING_SVN:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH=D:\\LIB\\LIB_GDAL  -DSEARCH_GEOS_LIB_PATH:PATH=D:\\LIB\\geos-3.3.7 -DUSE_MT_LIBRARY:BOOL=1 -DMYSQL_IS_LOGGING:BOOL=1 -DMYSQL_MAIN_DIR:PATH=D:\\LIB\\LIB_MYSQL", shell=True, cwd=builddir)
+    p = Popen("cmake -G\"Visual Studio 10\" " + GetCmakeDirName() + " -DwxWIDGETS_USING_SVN:BOOL=1  -DwxWIDGETS_PATH_SVN:PATH=D:\\LIB\\wxWIDGETS-SVN -DwxWIDGETS_USING_SVN:BOOL=1 -DUSE_MT_LIBRARY:BOOL=1", shell=True, cwd=builddir)
     p.wait()
   except:
     print("Error creating makefile")
