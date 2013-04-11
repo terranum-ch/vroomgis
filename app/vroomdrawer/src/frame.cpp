@@ -242,20 +242,20 @@ vrLayer * vroomDrawerFrame::_GetMemoryLayerLine (const wxFileName & name, int nu
 	}
 	
 	// adding features to the layer
-	OGRLineString * myLine = new OGRLineString();
+	OGRLineString * myLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
 	for (int i = 0; i<number; i++) {
 		myLine->addPoint(_GetRandomNumber(extent.GetLeft(), extent.GetRight()),
 						_GetRandomNumber(extent.GetBottom(), extent.GetTop()));
 		if (myLine->getNumPoints() >= 10) {
 			myLayer->AddFeature(myLine, NULL);
-			wxDELETE(myLine);
-			myLine = new OGRLineString();
+			OGRGeometryFactory::destroyGeometry(myLine);
+			myLine = (OGRLineString*) OGRGeometryFactory::createGeometry(wkbLineString);
 		}
 	}
 	if (myLine->getNumPoints() > 2) {
 		myLayer->AddFeature(myLine, NULL);
 	}
-	wxDELETE(myLine);
+	OGRGeometryFactory::destroyGeometry(myLine);
 	return myLayer;
 }
 
