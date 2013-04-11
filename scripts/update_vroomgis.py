@@ -14,6 +14,10 @@
 # gDirSQLite = Path to the sqlite library, may be empty if using standard library.
 
 
+import os.path
+import shutil
+import subprocess
+
 # script info
 print ("\n----------------------------------------------------------")
 print ("BUILD SCRIPT FOR CREATING VROOMGIS BINARY ON EVERY PLATEFORM")
@@ -110,8 +114,6 @@ NumberOfProc = CountProcessor()
 #
 # load variables possible variable files
 #
-import os.path
-import subprocess
 myScriptPathName = os.path.split(__file__)
 myVarsFile = os.listdir(myScriptPathName[0])
 
@@ -140,6 +142,7 @@ except:
 	print ("Using variables from ", mySelectedVar, "isn't possible!")
 	print (myScriptPathName[0] + os.sep + mySelectedVar)
 	exit(); 
+
 #
 # generic questions
 #
@@ -187,7 +190,7 @@ createEmptyDirs(gDirBin)
 #
 # Clean directory
 #
-import shutil
+
 if (doClean == 'Y' and gDirBin != ''):
 	print ("Cleaning directory")
 	try:
@@ -377,6 +380,10 @@ if (doBuildVroomDrawer == 'Y'):
 	if(myRetcode != 0):
 		print ("Building VroomDrawer failed, Error code is: ", myRetcode)
 		exit()
+	try:
+		DoPostBuildCommand(gDirBin + os.sep + "vroomdrawer")
+	except:
+		print("No Post build command availlable")
 	print ("Building VroomDrawer DONE")
 	print ("----------------------------------------------------------\n")
 
