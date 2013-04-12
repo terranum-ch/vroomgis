@@ -58,6 +58,16 @@ def BuildMacBook():
   except:
     print("Error creating makefile")
 
+def BuildLinux():
+  print("Configuring Linux")
+  builddir="/home/lucien/programmation/ColtopGIS/bin/vroomgis/drawspeedtest"
+  try:
+    p = Popen("cmake -G'CodeBlocks - Unix Makefiles' " + GetCmakeDirName() + " -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=/home/lucien/programmation/LIB/_LIBWX/bin/wx-config", shell=True, cwd=builddir)
+    p.wait()
+  except:
+    print("Error creating makefile")
+
+
 
 def BuildWindows7():
   print ("Configuring Windows")
@@ -123,6 +133,9 @@ if __name__ == '__main__':
   button2 = Button(myContainer1, text="Configure MacBook", command=BuildMacBook)
   button2.pack()
 
+  button5 = Button(myContainer1, text="Configure Linux", command=BuildLinux)
+  button5.pack()
+  
   button1 = Button(myContainer1, text="Configure Mac Pro (UNIL)", command=BuildMacPro)
   button1.pack()
 
