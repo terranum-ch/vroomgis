@@ -122,7 +122,7 @@ int main(int argc, char **argv)
     long myTotalLines = 10000;
     wxSize myBmpSize (1000,1000);
     long myMaxVertex = 0;
-    long myMaxIncrement = 100;
+    long myMaxIncrement = 2;
     
     parser.Found("vmax", &myMaxVertex);
     parser.Found("vincrement", &myMaxIncrement);
@@ -136,7 +136,8 @@ int main(int argc, char **argv)
     long iLoop = 0;
     while (1) {
         long myTime = DrawRandomLines(myTotalLines, myActualIncrement, myBmpSize, _T("/Users/lucien/DATA/PRJ/COLTOP-GIS/test/speed/bmp"));
-        myActualIncrement += myMaxIncrement;
+        //myActualIncrement += myMaxIncrement;
+        myActualIncrement = myActualIncrement * 2;
         if (myActualIncrement > myTotalLines) {
             break;
         }
