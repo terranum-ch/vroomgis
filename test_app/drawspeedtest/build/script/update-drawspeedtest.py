@@ -41,9 +41,9 @@ def updateSVN():
 
 def BuildMacPro():
   print ("Configuring Mac Pro (UNIL)")
-  builddir = "/Users/lucien/Documents/PRJ/TOOLBASVIEW/bin"
+  builddir = "/Users/lucien/Documents/PRJ/COLTOPGIS/bin/vroomgis/drawspeedtest"
   try:
-    p = Popen("cmake -GXcode " + GetCmakeDirName() + "  -DCMAKE_OSX_ARCHITECTURES:TEXT=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET:TEXT=10.6 -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=/Users/lucien/Documents/PROGRAMMATION/64/_LIBWXSVN/bin/wx-config -DwxWIDGETS_USING_SVN:BOOL=1 -DMYSQL_MAIN_DIR:PATH=/Users/lucien/Documents/PROGRAMMATION/64/_LIBMYSQL -DSEARCH_GDAL:BOOL=1 -DSEARCH_GEOS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH=/Users/lucien/Documents/PROGRAMMATION/64/_LIBGIS", shell=True, cwd=builddir)
+    p = Popen("cmake -GXcode " + GetCmakeDirName() + "  -DCMAKE_OSX_ARCHITECTURES:TEXT=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET:TEXT=10.6 -DCMAKE_OSX_SYSROOT:PATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=/Users/lucien/Documents/PROGRAMMATION/64/_LIBWXSVN/bin/wx-config", shell=True, cwd=builddir)
     p.wait()
   except:
     print("Error creating makefile")
@@ -79,7 +79,7 @@ def BuildWindows7():
     print("Error creating makefile")
 
 def RunBuildMac():
-  builddir =  myPath = os.path.normpath(os.path.join(GetCmakeDirName(), "..", "..",  "bin"))
+  builddir =  myPath = os.path.normpath(os.path.join(GetCmakeDirName(),"..", "..", "..", "..",  "bin", "vroomgis", "drawspeedtest" ))
   print (builddir)
   
   try:
@@ -90,7 +90,7 @@ def RunBuildMac():
     return
 
   try:
-    p = Popen("xcodebuild -configuration Debug", shell=True, cwd=builddir)
+    p = Popen("xcodebuild -configuration Release", shell=True, cwd=builddir)
     p.wait()
   except:
     print ("Error building in", builddir)
