@@ -17,9 +17,10 @@
 
 #include "vrrendervectorc2p.h"
 
-vrDipColour::vrDipColour(const wxColour & colour, long familyid) {
+vrDipColour::vrDipColour(const wxColour & colour, long familyid, bool visible) {
 	m_Colour = colour;
 	m_FamilyID = familyid;
+    m_Visible = visible;
 }
 
 vrDipColour::~vrDipColour() {
@@ -38,7 +39,7 @@ vrRenderVectorC2PDips::vrRenderVectorC2PDips(const wxColour & defaultcolour, int
 	m_UseDefaultColour = true;
     m_UseOutline = true;
 	ClearDipColours();
-	AddDipColour(defaultcolour, 0);
+	AddDipColour(defaultcolour, 0, true);
 	m_MemoryFamilyID = wxNOT_FOUND;
 	m_MemoryColour = wxColour();
 	wxASSERT(m_MemoryColour.IsOk() == false);
@@ -109,7 +110,7 @@ void vrRenderVectorC2PDips::ClearDipColours() {
 
 
 
-bool vrRenderVectorC2PDips::AddDipColour(const wxColour & colour, long familyid) {
+bool vrRenderVectorC2PDips::AddDipColour(const wxColour & colour, long familyid, bool visible) {
 	// ensure this family ID didn't exists
 	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
 		if (m_DipColours.Item(i).m_FamilyID == familyid) {
@@ -119,16 +120,17 @@ bool vrRenderVectorC2PDips::AddDipColour(const wxColour & colour, long familyid)
 		}
 	}
 	
-	vrDipColour myDipColour (colour, familyid);
+	vrDipColour myDipColour (colour, familyid, visible);
 	m_DipColours.Add(myDipColour);
 	return true;
 }
 
 
-bool vrRenderVectorC2PDips::SetDipColour(const wxColour & colour, long familyid) {
+bool vrRenderVectorC2PDips::SetDipColour(const wxColour & colour, long familyid, bool visible) {
 	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
 		if (m_DipColours.Item(i).m_FamilyID == familyid) {
 			m_DipColours.Item(i).m_Colour = colour;
+            m_DipColours.Item(i).m_Visible = visible;
 			return true;
 		}
 	}
@@ -167,6 +169,21 @@ wxColour vrRenderVectorC2PDips::GetDipColour(long familyID) {
 	return m_DipColours.Item(0).m_Colour;
 }
 
+
+
+bool vrRenderVectorC2PDips::IsFamilyVisible(long familyID){
+    wxASSERT(familyID >= 0);
+	wxASSERT(m_DipColours.GetCount() >= 1);
+	
+	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
+		if (m_DipColours.Item(i).m_FamilyID == familyID) {
+			return m_DipColours.Item(i).m_Visible;
+		}
+	}
+	
+	// if family not found, return true as the default visibility
+	return true;
+}
 
 
 int vrRenderVectorC2PDips::GetCountColor(){
@@ -243,7 +260,7 @@ bool vrRenderVectorC2PPoly::AddPolyColour(const wxColour & colour, long familyid
 		}
 	}
 	
-	vrDipColour myDipColour (colour, familyid);
+	vrDipColour myDipColour (colour, familyid, true);
 	m_PolyColours.Add(myDipColour);
 	return true;
 }

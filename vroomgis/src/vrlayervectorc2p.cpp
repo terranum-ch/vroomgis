@@ -70,6 +70,10 @@ void vrLayerVectorC2P::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature,
     // create family pen if needed
     if (myRender->IsUsingDefaultColour() == false) {
         int myFamily = feature->GetFieldAsInteger(3);
+        if (myRender->IsFamilyVisible(myFamily) == false) {
+            return;
+        }
+        
         myDefaultPen.SetColour(myRender->GetDipColour(myFamily));
         myDefaultPen.SetWidth(myRender->GetSize());
     }
