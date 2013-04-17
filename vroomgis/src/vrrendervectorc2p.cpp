@@ -214,6 +214,7 @@ vrRenderVectorC2PPoly::vrRenderVectorC2PPoly(const wxColour & defaultcolour) {
     m_UseDefaultBrush = true;
     SetColorBrush(defaultcolour);
     ClearPolyColours();
+	AddPolyColour(defaultcolour, 0);
     m_MemoryFamilyID = wxNOT_FOUND;
 	m_MemoryColour = wxColour();
 	wxASSERT(m_MemoryColour.IsOk() == false);
@@ -256,7 +257,7 @@ bool vrRenderVectorC2PPoly::SetPolyColour(const wxColour & colour, long familyid
 			return true;
 		}
 	}
-	wxLogError(_("Setting '%s' colour with '%d' id isn't allowed. ID didn't exist."),colour.GetAsString(), familyid);
+	wxLogError(_("Setting '%s' colour with '%ld' id isn't allowed. ID didn't exist."),colour.GetAsString(), familyid);
 	return false;
 }
 
