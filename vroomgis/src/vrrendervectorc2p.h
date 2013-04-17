@@ -30,11 +30,12 @@
 
 class vrDipColour {
 public:
-    vrDipColour(const wxColour & colour, long familyid);
+    vrDipColour(const wxColour & colour, long familyid, bool visible);
     ~vrDipColour();
 	
     wxColour m_Colour;
     long m_FamilyID;
+    bool m_Visible;
 	
 };
 WX_DECLARE_OBJARRAY(vrDipColour, vrArrayDipColours);
@@ -72,9 +73,10 @@ public:
     
 	
     void ClearDipColours();
-    bool AddDipColour(const wxColour & colour, long familyid);
-	bool SetDipColour(const wxColour & colour, long familyid);
+    bool AddDipColour(const wxColour & colour, long familyid, bool visible);
+	bool SetDipColour(const wxColour & colour, long familyid, bool visible);
     wxColour GetDipColour(long familyID);
+    bool IsFamilyVisible(long familyID);
 	int GetCountColor();
 	
 	inline const bool IsUsingDefaultColour() const;
