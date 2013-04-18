@@ -134,7 +134,7 @@ bool vrRenderVectorC2PDips::SetDipColour(const wxColour & colour, long familyid,
 			return true;
 		}
 	}
-	wxLogError(_("Setting '%s' colour with '%d' id isn't allowed. ID didn't exist."),
+	wxLogError(_("Setting '%s' colour with '%d' id isn't allowed. ID didn't exist (dips)."),
 			   colour.GetAsString(), familyid);
 	return false;
 }
@@ -274,7 +274,7 @@ bool vrRenderVectorC2PPoly::SetPolyColour(const wxColour & colour, long familyid
 			return true;
 		}
 	}
-	wxLogError(_("Setting '%s' colour with '%ld' id isn't allowed. ID didn't exist."),colour.GetAsString(), familyid);
+	//wxLogError(_("Setting '%s' colour with '%ld' id isn't allowed. ID didn't exist (polygons)."),colour.GetAsString(), familyid);
 	return false;
 }
 
