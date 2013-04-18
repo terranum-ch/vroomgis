@@ -364,7 +364,7 @@ bool vroomDrawerFrame::OpenLayers (const wxArrayString & names){
 			myRender = new vrRenderVectorC2PDips(*wxBLUE);
 			myRender->SetUsingDefaultColour(false);
 			//adding support for familly 2
-			myRender->AddDipColour(*wxRED, 10);
+			myRender->AddDipColour(*wxRED, 10, true);
 		}
 
 
