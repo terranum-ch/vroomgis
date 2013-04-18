@@ -10,7 +10,7 @@ gDirTestData = "D:\\PRJ\\COLTOPGIS\\test-data"
 gDirCxx = "D:\\LIB\\cxxtest"
 gDirSQLite = "D:\\LIB\\LIB_SQLITE"
 gDirCurl = "D:\\LIB\\LIB_CURL"
-gDirGeos = "D:\\LIB\\geos-3.3.7"
+gDirGeos = "D:\\LIB\\geos-3.3.8"
 
 # CMAKE SPECIFIC
 gCmakeEnv = "Visual Studio 10"
