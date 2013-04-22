@@ -49,6 +49,8 @@ vrLayerVector::vrLayerVector() {
 	m_Dataset = NULL;
 	m_Layer = NULL;
 	m_ObjectDrawn = 0;
+    m_SkippedVertex = 0;
+    m_DrawnVertex = 0;
 }
 
 vrLayerVector::~vrLayerVector() {
@@ -506,7 +508,15 @@ void vrLayerVectorOGR::_DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, 
     wxGraphicsPath myPath = gdc->CreatePath();
     myPath.MoveToPoint(_GetPointFromReal(wxPoint2DDouble(myLine->getX(0),myLine->getY(0)),coord.GetLeftTop(),pxsize));
     for (int i = 1; i< iNumVertex; i++) {
-        myPath.AddLineToPoint(_GetPointFromReal(wxPoint2DDouble(myLine->getX(i),myLine->getY(i)),coord.GetLeftTop(),pxsize));
+        wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myLine->getX(i),myLine->getY(i)),coord.GetLeftTop(),pxsize);
+        if (myPt != m_PreviousPoint) {
+            myPath.AddLineToPoint(myPt);
+            m_DrawnVertex++;
+        }
+        else {
+            m_SkippedVertex++;
+        }
+        m_PreviousPoint = myPt;
     }
     
     // check intersection and minimum size
@@ -639,6 +649,9 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
 
 	bool bReturn = true;
 	m_ObjectDrawn = 0;
+    m_PreviousPoint = wxDefaultPosition;
+    m_SkippedVertex = 0;
+    m_DrawnVertex = 0;
     while (1) {
 		OGRFeature * myFeat = GetNextFeature(false);
 		if (myFeat == NULL) {
@@ -701,7 +714,7 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
         }
         OGRFeature::DestroyFeature(myFeat);
      }
-
+    
     wxDELETE(pgdc);
     if (bReturn == false) {
         return false;

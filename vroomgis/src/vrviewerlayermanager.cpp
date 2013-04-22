@@ -448,16 +448,18 @@ void vrViewerLayerManager::Reload() {
 	vrPerformance * myPerf = NULL;
 	if (m_PerfMonitorFile.IsOk() == true) {
 		myPerf = new vrPerformance(m_PerfMonitorFile.GetFullPath(),
-								   "Number of layers\tTotal Vector Objects\tWindow Resolution(x)\tWindow Resolution(y)\t");
+								   "Number of layers\tTotal Vector Objects\tDrawn Vertex\tSkipped Vertex\tWindow Resolution(x)\tWindow Resolution(y)\t");
 	}
 
 	int myCountLayer = 0;
 	long myVectorCount = 0;
+    long myVertexDrawn = 0;
+    long myVertexSkipped = 0;
 	if (m_ReloadThread == true) {
 		myCountLayer = _ReloadThread(myVectorCount);
 	}
 	else {
-		myCountLayer = _Reload(myVectorCount);
+		myCountLayer = _Reload(myVectorCount, myVertexDrawn, myVertexSkipped);
 	}
 
 	if (myVectorCount > 0) {
@@ -470,9 +472,11 @@ void vrViewerLayerManager::Reload() {
 	}
 
 	if (myPerf != NULL) {
-		myPerf->StopWork(wxString::Format("%d\t%ld\t%d\t%d;",
+		myPerf->StopWork(wxString::Format("%d\t%ld\t%ld\t%ld\t%d\t%d;",
 										  myCountLayer,
 										  myVectorCount,
+                                          myVertexDrawn,
+                                          myVertexSkipped,
 										  m_Display->GetSize().GetWidth(),
 										  m_Display->GetSize().GetHeight())) ;
 	}
@@ -694,7 +698,7 @@ int vrViewerLayerManager::_ReloadThread(long & vectorcount) {
 
 
 
-int vrViewerLayerManager::_Reload(long & vectorcount) {
+int vrViewerLayerManager::_Reload(long & vectorcount, long & drawnvertex, long & skippedvertex) {
 	// gettting display coordinates
 	wxASSERT(m_Display);
 	vrCoordinate * myCoordinate = m_Display->GetCoordinate();
@@ -714,10 +718,12 @@ int vrViewerLayerManager::_Reload(long & vectorcount) {
 	for (int i = iTotLayers-1; i>= 0; i--) {
 		if (m_Renderers.Item(i)->GetVisible() == true) {
 			long myVectorCount = 0;
+            long myVertexDrawn = 0;
+            long myVertexSkipped = 0;
 			if (m_Renderers.Item(i)->GetBitmapData(myBmp,
 												   myCoordinate->GetExtent(),
 												   myCoordinate->GetPixelSize(),
-												   myVectorCount)==false) {
+												   myVectorCount, myVertexDrawn, myVertexSkipped)==false) {
 				wxLogMessage("No data to display for '%s' !",
 							 m_Renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
 			}
@@ -725,6 +731,8 @@ int vrViewerLayerManager::_Reload(long & vectorcount) {
 				iShownLayer++;
 			}
 			vectorcount = vectorcount + myVectorCount;
+            drawnvertex = drawnvertex + myVertexDrawn;
+            skippedvertex = skippedvertex + myVertexSkipped;
 			bIsAtLeastOneVisible = true;
 		}
 	}

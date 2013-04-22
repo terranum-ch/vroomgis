@@ -67,7 +67,7 @@ class vrViewerLayerManager : public wxEvtHandler {
 	bool _GetLayersExtent(bool onlyvisible);
     wxBitmap * _MergeBitmapData();
 	int _ReloadThread(long & vectorcount);
-    int _Reload(long & vectorcount);
+    int _Reload(long & vectorcount, long & drawnvertex, long & skippedvertex);
 
 
 	// event function

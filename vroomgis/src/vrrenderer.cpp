@@ -164,7 +164,7 @@ bool vrRenderer::GetBitmapDataThread(wxImage * bmp, const vrRealRect & coord,  d
 }
 
 
-bool vrRenderer::GetBitmapData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, long & vectorcount) {
+bool vrRenderer::GetBitmapData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, long & vectorcount, long & drawnvertex, long & skippedvertex) {
 	wxASSERT(bmp);
 	wxASSERT(GetVisible());
 
@@ -172,6 +172,8 @@ bool vrRenderer::GetBitmapData(wxBitmap * bmp, const vrRealRect & coord, double 
 	vectorcount = 0;
 	if (GetLayer()->GetType() != vrDRIVER_UNKNOWN && GetLayer()->GetType() < vrDRIVER_RASTER_TIFF){
 		vectorcount =  ((vrLayerVector*)GetLayer())->GetObjectDrawn();
+        drawnvertex =  ((vrLayerVector*)GetLayer())->GetVertexDrawn();
+        skippedvertex = ((vrLayerVector*)GetLayer())->GetVertexSkipped();
 	}
 	return bValue;
 }

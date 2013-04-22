@@ -39,6 +39,8 @@ protected:
 
 
 	long m_ObjectDrawn;
+    long m_SkippedVertex;
+    long m_DrawnVertex;
 
     bool _Intersects(const wxRect2DDouble & myPathRect, const wxRect2DDouble & myWndRect);
 
@@ -81,6 +83,8 @@ public:
 
 	inline const long GetObjectDrawn() const;
     inline OGRLayer * GetLayerRef();
+    inline const long GetVertexSkipped() const;
+    inline const long GetVertexDrawn() const;
 };
 
 inline wxArrayLong * vrLayerVector::GetSelectedIDs() {
@@ -104,6 +108,14 @@ inline const long vrLayerVector::GetObjectDrawn() const {
 }
 
 
+inline const long vrLayerVector::GetVertexDrawn() const {
+	return m_DrawnVertex;
+}
+
+
+inline const long vrLayerVector::GetVertexSkipped() const {
+	return m_SkippedVertex;
+}
 
 
 
@@ -131,5 +143,9 @@ public:
 	virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,const vrRender * render = NULL, vrLabel * label = NULL);
     
     bool SetAttributeFilter(const wxString & query);
+    
+private:
+    wxPoint m_PreviousPoint;
+    
 };
 #endif
