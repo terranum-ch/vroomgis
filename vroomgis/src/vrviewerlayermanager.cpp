@@ -448,7 +448,7 @@ void vrViewerLayerManager::Reload() {
 	vrPerformance * myPerf = NULL;
 	if (m_PerfMonitorFile.IsOk() == true) {
 		myPerf = new vrPerformance(m_PerfMonitorFile.GetFullPath(),
-								   "Number of layers;Total Vector Objects;Window Resolution(x);Window Resolution(y);");
+								   "Number of layers\tTotal Vector Objects\tWindow Resolution(x)\tWindow Resolution(y)\t");
 	}
 
 	int myCountLayer = 0;
@@ -461,7 +461,7 @@ void vrViewerLayerManager::Reload() {
 	}
 
 	if (myVectorCount > 0) {
-		//wxLogMessage(_("Total Vector drawn: %ld"), myVectorCount);
+		wxLogDebug(_("Total Vector drawn: %ld"), myVectorCount);
 	}
 
 	if (myCountLayer == 0) {
@@ -470,7 +470,7 @@ void vrViewerLayerManager::Reload() {
 	}
 
 	if (myPerf != NULL) {
-		myPerf->StopWork(wxString::Format("%d;%ld;%d;%d;",
+		myPerf->StopWork(wxString::Format("%d\t%ld\t%d\t%d;",
 										  myCountLayer,
 										  myVectorCount,
 										  m_Display->GetSize().GetWidth(),

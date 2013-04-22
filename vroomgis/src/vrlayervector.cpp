@@ -486,6 +486,7 @@ void vrLayerVectorOGR::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature,
 #else
     gdc->StrokeLine (myPt.x, myPt.y, myPt.x, myPt.y);
 #endif
+	m_ObjectDrawn++;
 }
 
 
@@ -530,6 +531,7 @@ void vrLayerVectorOGR::_DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, 
         gdc->SetPen(mySelPen);
     }
     gdc->StrokePath(myPath);
+	m_ObjectDrawn++;
 }
 
 
@@ -587,6 +589,7 @@ void vrLayerVectorOGR::_DrawPolygon(wxGraphicsContext * gdc, OGRFeature * featur
         gdc->SetPen(mySelPen);
     }
     gdc->DrawPath(myPath);
+	m_ObjectDrawn++;
     return;
 }
 
@@ -635,6 +638,7 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
 	wxGraphicsContext * pgdc = wxGraphicsContext::Create(dc);
 
 	bool bReturn = true;
+	m_ObjectDrawn = 0;
     while (1) {
 		OGRFeature * myFeat = GetNextFeature(false);
 		if (myFeat == NULL) {

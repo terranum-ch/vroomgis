@@ -56,7 +56,7 @@ vrPerformance::vrPerformance(wxString file, wxString header) {
 	m_StopWatch.Start(0);
 	m_File.Open(m_FilePath.GetFullPath(), wxFile::write_append);
 	if (m_File.Length() < 10) {
-		m_File.Write(_("Date;Plateform;Debug;Elapsed time;Used Memory;") + header + _T("\n"));
+		m_File.Write(_("Date\tPlateform\tDebug\tElapsed time\tUsed Memory\t") + header + _T("\n"));
 	}
 }
 
@@ -76,7 +76,7 @@ void vrPerformance::StopWork(wxString text) {
 	myDebug = _("No");
 #endif
 
-	m_File.Write(wxString::Format(_T("%s;%s;%s;%ld;%ld;"),
+	m_File.Write(wxString::Format(_T("%s\t%s\t%s\t%ld\t%ld\t"),
 								  wxDateTime::Now().FormatISOCombined(),
 								  wxGetOsDescription(),
 								  myDebug,
