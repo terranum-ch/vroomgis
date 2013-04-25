@@ -40,6 +40,17 @@ def askUserWithCheck (msg, allowedval=['Y', 'y', 'N', 'n'], errormsg = "Unsuppor
 
 
 
+def buildCommand (name, version):
+	print ("Building {} -- {} ".format(name, version))
+	myProcess = subprocess.Popen(gBuildCommand(version, os.path.join(gDirBin, name)), cwd=os.path.join(gDirBin, name), shell=False)
+	myRetcode = myProcess.wait()
+	if(myRetcode != 0):
+		print ("Building {} -- {} failed, Error code is: ".format(name, version), myRetcode)
+		exit()
+	print ("Building {} -- {} DONE".format(name, version))
+	print ("----------------------------------------------------------\n")
+
+
 def createEmptyDirs(bindir):
 	"""Creating vroomtwin, vroomloader, vroomgistests if not existing"""
 	try:
@@ -152,6 +163,7 @@ doBuildVroomTwin = askUserWithCheck("Build VroomTwin ? (Y / N): ").upper()
 doBuildVroomDrawer = askUserWithCheck("Build VroomDrawer ? (Y / N): ").upper()
 doBuildVroomgistests = askUserWithCheck("Build Vroomgistests ? (Y / N): ").upper()
 doRunTests = askUserWithCheck("Run tests after build ? (Y/N): ").upper()
+doBuildRelease = askUserWithCheck("Build release ? (Y/N): ").upper()
 print ("----------------------------------------------------------\n")
 
 #
@@ -352,41 +364,24 @@ if (doGo == 'N'):
 # BUILDING VROOMLOADER, VROOMTWIN, VROOMGISTESTS
 #
 if (doBuildVroomloader == 'Y'):
-	print ("Building VroomLoader DEBUG ")
-	myProcess = subprocess.Popen(gBuildCommand("Debug",gDirBin + os.sep + "vroomloader"), 0, None, None, None,  None, None, False, False, gDirBin + os.sep + "vroomloader")
-	myRetcode = myProcess.wait()
-	if(myRetcode != 0):
-		print ("Building VroomLoader failed, Error code is: ", myRetcode)
-		exit()
-	print ("Building VroomLoader DONE")
-	print ("----------------------------------------------------------\n")
+	buildCommand("vroomloader", "Debug")
+	if (doBuildRelease == 'Y'):
+		buildCommand("vroomloader", "RelWithDebInfo")
+	DoPostBuildCommand(os.path.join(gDirBin, "vroomloader"))
 
 
 if (doBuildVroomTwin == 'Y'):
-	print ("Building VroomTwin DEBUG ")
-	myProcess = subprocess.Popen(gBuildCommand("Debug",gDirBin + os.sep + "vroomtwin"), 0, None, None, None,  None, None, False, False, gDirBin + os.sep + "vroomtwin")
-	myRetcode = myProcess.wait()
-	if(myRetcode != 0):
-		print ("Building VroomTwin failed, Error code is: ", myRetcode)
-		exit()
-	print ("Building VroomTwin DONE")
-	print ("----------------------------------------------------------\n")
+	buildCommand("vroomtwin", "Debug")
+	if (doBuildRelease == 'Y'):
+		buildCommand("vroomtwin", "RelWithDebInfo")
+	DoPostBuildCommand(os.path.join(gDirBin, "vroomtwin"))
 
 
 if (doBuildVroomDrawer == 'Y'):
-	print ("Building VroomDrawer DEBUG ")
-	myProcess = subprocess.Popen(gBuildCommand("Debug",gDirBin + os.sep + "vroomdrawer"), 0, None, None, None,  None, None, False, False, gDirBin + os.sep + "vroomdrawer")
-	myRetcode = myProcess.wait()
-	if(myRetcode != 0):
-		print ("Building VroomDrawer failed, Error code is: ", myRetcode)
-		exit()
-	try:
-		DoPostBuildCommand(gDirBin + os.sep + "vroomdrawer")
-	except:
-		print("No Post build command availlable")
-	print ("Building VroomDrawer DONE")
-	print ("----------------------------------------------------------\n")
-
+	buildCommand("vroomdrawer", "Debug")
+	if (doBuildRelease == 'Y'):
+		buildCommand("vroomdrawer", "RelWithDebInfo")
+	DoPostBuildCommand(os.path.join(gDirBin, "vroomdrawer"))
 
 
 if (doBuildVroomgistests == 'Y'):
