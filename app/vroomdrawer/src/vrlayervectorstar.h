@@ -33,16 +33,10 @@ class vrLabel;
 
 class vrLayerVectorStar : public vrLayerVectorOGR {
   protected:
-    virtual bool _DrawPoints(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							 const vrRender * render, vrLabel * label, double pxsize);
-    virtual bool _DrawLines(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							const vrRender * render, const vrLabel * label, double pxsize);
-    virtual bool _DrawPolygons(wxGraphicsContext * gdc, const wxRect2DDouble & coord,
-							   const vrRender * render, const vrLabel * label, double pxsize);
-	
-	void _CreateStarPath(wxGraphicsPath & starpath,const wxPoint & center, int radius);
-	inline double _DegToRad(double deg){return (deg * M_PI) / 180.0;}
+    virtual void _DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
 
+	void _CreateStarPath(wxPointList & starpoints,const wxPoint & center, int radius);
+	inline double _DegToRad(double deg){return (deg * M_PI) / 180.0;}
 
   public:
     vrLayerVectorStar();
