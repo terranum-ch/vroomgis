@@ -21,15 +21,15 @@ gCmakeSpecific.append("-DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=" + gwxWidgets
 # PLATEFORM SPECIFIC FUNCTION
 #CONFIG SPECIFIC
 def gBeforeConfig():
-	print ("No special configurations")
+  print ("No special configurations")
 
 
 # BUILD SPECIFIC
 def gBuildCommand(buildtype="Debug", directory = ""):
-	if (buildtype == "Release"):
-		return ['xcodebuild', '-configuration', 'Release']
-	return ['xcodebuild', '-configuration', 'Debug']
-	
+  if (buildtype == "Release"):
+    return ['xcodebuild', '-configuration', 'Release']
+  return ['xcodebuild', '-configuration', 'Debug']
+  
 
 
-	
+  
