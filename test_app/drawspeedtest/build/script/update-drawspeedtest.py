@@ -100,9 +100,15 @@ def BuildWindows7():
   print ("Configuring Windows")
   builddir = "D:\\PRJ\\COLTOPGIS\\bin\\vroomgis\\drawspeedtest"
   createAndClearDirectory(builddir)
-
+  os.environ['WXWIN']="D:\\LIB\\wxWIDGETS-SVN"
   try:
-    p = Popen("cmake -G\"Visual Studio 10\" " + GetCmakeDirName() + " -DwxWIDGETS_USING_SVN:BOOL=1  -DwxWIDGETS_PATH_SVN:PATH=D:\\LIB\\wxWIDGETS-SVN -DwxWIDGETS_USING_SVN:BOOL=1 -DUSE_MT_LIBRARY:BOOL=1", shell=True, cwd=builddir)
+    p = Popen("cmake -G\"Visual Studio 10\" " + GetCmakeDirName() + " -DUSE_MT_LIBRARY:BOOL=1", shell=True, cwd=builddir)
+    p.wait()
+  except:
+    print("Error creating makefile")
+  print ("Second run")
+  try:
+    p = Popen("cmake -G\"Visual Studio 10\" " + GetCmakeDirName() + " -DUSE_MT_LIBRARY:BOOL=1", shell=True, cwd=builddir)
     p.wait()
   except:
     print("Error creating makefile")
@@ -128,7 +134,7 @@ def RunBuildMac():
     return
 
 def RunBuildWindows(solutionname):
-  builddir =  myPath = os.path.normpath(os.path.join(GetCmakeDirName(), "..", "..",  "bin"))
+  builddir =  myPath = os.path.normpath(os.path.join(GetCmakeDirName(),"..", "..", "..", "..",  "bin", "vroomgis", "drawspeedtest" ))
   print (builddir)
   mycommand = "msbuild {}.sln /p:Configuration={}" 
   
