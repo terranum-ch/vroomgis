@@ -485,10 +485,9 @@ void vrLayerVectorOGR::_DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry *
     }
     
 #ifdef __WXMSW__
-    dc->DrawLine(myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
-    //dc->StrokeLine (myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+    dc->DrawLine(myPt.x, myPt.y, myPt.x + 1, myPt.y + 1);
 #else
-    dc->DrawLine(myPt.x, myPt.y, myPt.x, myPt.y);
+    dc->DrawPoint(myPt);
 #endif
 	m_ObjectDrawn++;
 }
