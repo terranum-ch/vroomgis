@@ -464,11 +464,12 @@ bool vrLayerVectorOGR::_Close() {
 }
 
 
-void vrLayerVectorOGR::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
+void vrLayerVectorOGR::_DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
 	OGRPoint * myGeom = (OGRPoint*) geometry;
     wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(),myGeom->getY()),coord.GetLeftTop(),pxsize);
-    double myWidth = 0, myHeight = 0;
-    gdc->GetSize(&myWidth, &myHeight);
+    int myWidth = 0;
+    int myHeight = 0;
+    dc->GetSize(&myWidth, &myHeight);
     wxRect myWndRect(0,0,myWidth, myHeight);
     if (myWndRect.Contains(myPt)==false) {
         return;
@@ -478,22 +479,23 @@ void vrLayerVectorOGR::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature,
     vrRenderVector * myRender = (vrRenderVector*) render;
     wxPen myPen (myRender->GetColorPen(), myRender->GetSize());
     wxPen mySelPen (myRender->GetSelectionColour(), myRender->GetSize());
-    gdc->SetPen(myPen);
+    dc->SetPen(myPen);
     if (IsFeatureSelected(feature->GetFID())==true) {
-        gdc->SetPen(mySelPen);
+        dc->SetPen(mySelPen);
     }
     
 #ifdef __WXMSW__
-    gdc->StrokeLine (myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+    dc->DrawLine(myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
+    //dc->StrokeLine (myPt.x, myPt.y, myPt.x + 0.1, myPt.y + 0.1);
 #else
-    gdc->StrokeLine (myPt.x, myPt.y, myPt.x, myPt.y);
+    dc->DrawLine(myPt.x, myPt.y, myPt.x, myPt.y);
 #endif
 	m_ObjectDrawn++;
 }
 
 
 
-void vrLayerVectorOGR::_DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
+void vrLayerVectorOGR::_DrawLine(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
 	OGRLineString * myLine = (OGRLineString*) geometry;
     if (myLine == NULL) {
         // line without a geometry!! corrupted line
@@ -504,24 +506,26 @@ void vrLayerVectorOGR::_DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, 
     int iNumVertex = myLine->getNumPoints();
     wxASSERT(iNumVertex >= 2); // line cannot exists with only one vertex
     
-    // draw geometry
-    wxGraphicsPath myPath = gdc->CreatePath();
-    myPath.MoveToPoint(_GetPointFromReal(wxPoint2DDouble(myLine->getX(0),myLine->getY(0)),coord.GetLeftTop(),pxsize));
-    for (int i = 1; i< iNumVertex; i++) {
+    wxPointList myPtx;
+    for (int i = 0; i< iNumVertex; i++) {
         wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myLine->getX(i),myLine->getY(i)),coord.GetLeftTop(),pxsize);
         if (myPt != m_PreviousPoint) {
-            myPath.AddLineToPoint(myPt);
-            m_DrawnVertex++;
+            myPtx.push_back(new wxPoint(myPt));
+            ++m_DrawnVertex;
         }
         else {
-            m_SkippedVertex++;
+            ++ m_SkippedVertex;
         }
         m_PreviousPoint = myPt;
     }
+    if (myPtx.GetCount() < 2) {
+        return;
+    }
     
     // check intersection and minimum size
-    double myWidth = 0, myHeight = 0;
-    gdc->GetSize(&myWidth, &myHeight);
+    /*int myWidth = 0;
+    int  myHeight = 0;
+    dc->GetSize(&myWidth, &myHeight);
     wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
     wxRect2DDouble myPathRect = myPath.GetBox();
     if(_Intersects(myPathRect, myWndRect)==false){
@@ -529,29 +533,33 @@ void vrLayerVectorOGR::_DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, 
     }
     if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
         return;
-    }
+    }*/
  	
     // Brush
     wxASSERT(render->GetType() == vrRENDER_VECTOR);
 	vrRenderVector * myRender = (vrRenderVector*) render;
 	wxPen myPen (myRender->GetColorPen(),myRender->GetSize());
 	wxPen mySelPen (myRender->GetSelectionColour(),myRender->GetSize());
-    gdc->SetPen(myPen);
+    dc->SetPen(myPen);
     if (IsFeatureSelected(feature->GetFID())==true) {
-        gdc->SetPen(mySelPen);
+        dc->SetPen(mySelPen);
     }
-    gdc->StrokePath(myPath);
+    dc->DrawLines(&myPtx);
+    myPtx.DeleteContents(true);
 	m_ObjectDrawn++;
 }
 
 
 
-void vrLayerVectorOGR::_DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
+void vrLayerVectorOGR::_DrawPolygon(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
     OGRPolygon * myPolygon = (OGRPolygon*) geometry;
     int iNumRing = myPolygon->getNumInteriorRings() + 1;
-    wxGraphicsPath myPath = gdc->CreatePath();
+    
+    wxGCDC * mygdc = static_cast<wxGCDC*>(dc);
+    
+    wxGraphicsPath myPath = mygdc->GetGraphicsContext()->CreatePath();
     for (int i = 0; i < iNumRing; i++) {
-        wxGraphicsPath myPolyPath = gdc->CreatePath();
+        wxGraphicsPath myPolyPath = mygdc->GetGraphicsContext()->CreatePath();
         OGRLineString * myRing  = NULL;
         if (i == 0) {
             myRing = myPolygon->getExteriorRing();
@@ -574,8 +582,9 @@ void vrLayerVectorOGR::_DrawPolygon(wxGraphicsContext * gdc, OGRFeature * featur
     }
     
     // check intersection and minimum size
-    double myWidth = 0, myHeight = 0;
-    gdc->GetSize(&myWidth, &myHeight);
+    int myWidth = 0;
+    int myHeight = 0;
+    dc->GetSize(&myWidth, &myHeight);
     wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
     wxRect2DDouble myPathRect = myPath.GetBox();
     if(_Intersects(myPathRect, myWndRect)==false){
@@ -593,12 +602,12 @@ void vrLayerVectorOGR::_DrawPolygon(wxGraphicsContext * gdc, OGRFeature * featur
 	wxBrush myBrush (myRender->GetColorBrush(), myRender->GetBrushStyle());
 	wxPen mySelPen (myRender->GetSelectionColour(),
 					myRender->GetSize());
-    gdc->SetBrush(myBrush);
-    gdc->SetPen(myPen);
+    dc->SetBrush(myBrush);
+    dc->SetPen(myPen);
     if (IsFeatureSelected(feature->GetFID())==true) {
-        gdc->SetPen(mySelPen);
+        dc->SetPen(mySelPen);
     }
-    gdc->DrawPath(myPath);
+    mygdc->GetGraphicsContext()->DrawPath(myPath);
 	m_ObjectDrawn++;
     return;
 }
@@ -643,10 +652,16 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
 	m_Layer->SetSpatialFilterRect(coord.GetLeft(), coord.GetBottom(), coord.GetRight(), coord.GetTop());
 	m_Layer->ResetReading();
 
-	// draw
-	wxMemoryDC dc (*bmp);
-	wxGraphicsContext * pgdc = wxGraphicsContext::Create(dc);
-
+    wxMemoryDC dc (*bmp);
+    wxGCDC myGCDC (dc);
+    
+    // wxDC is way faster under Windows but didn't support
+    // transparancy.
+    wxDC * pDC = &dc;
+    if (render->GetTransparency() != 0){
+        pDC = &myGCDC;
+    }
+    
 	bool bReturn = true;
 	m_ObjectDrawn = 0;
     m_PreviousPoint = wxDefaultPosition;
@@ -671,15 +686,17 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
             for (unsigned int i = 0 ; i < myCollection->getNumGeometries() ; i++) {
                 switch (myGeomType) {
                     case wkbMultiPoint:
-                        _DrawPoint(pgdc, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
+                        _DrawPoint(pDC, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
                         break;
                         
                     case wkbMultiLineString:
-                        _DrawLine(pgdc, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
+                        _DrawLine(pDC, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
                         break;
                         
                     case wkbMultiPolygon:
-                        _DrawPolygon(pgdc, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
+                        // Allways use GCDC for polygons
+                        pDC = &myGCDC;
+                        _DrawPolygon(pDC, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
                         break;
                         
                     default:
@@ -694,15 +711,17 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
         else{
             switch (myGeomType) {
                 case wkbPoint:
-                    _DrawPoint(pgdc, myFeat, myFeat->GetGeometryRef(), coord, render, label, pxsize);
+                    _DrawPoint(pDC, myFeat, myFeat->GetGeometryRef(), coord, render, label, pxsize);
                     break;
                     
                 case wkbLineString:
-                    _DrawLine(pgdc, myFeat, myFeat->GetGeometryRef(), coord, render, label, pxsize);
+                    _DrawLine(pDC, myFeat, myFeat->GetGeometryRef(), coord, render, label, pxsize);
                     break;
                     
                 case wkbPolygon:
-                    _DrawPolygon(pgdc, myFeat, myFeat->GetGeometryRef(), coord, render, label, pxsize);
+                    // Allways use GCDC for polygons
+                    pDC = &myGCDC;
+                    _DrawPolygon(pDC, myFeat, myFeat->GetGeometryRef(), coord, render, label, pxsize);
                     break;
                     
                 default:
@@ -715,7 +734,6 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
         OGRFeature::DestroyFeature(myFeat);
      }
     
-    wxDELETE(pgdc);
     if (bReturn == false) {
         return false;
     }

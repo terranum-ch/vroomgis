@@ -18,16 +18,14 @@
 #ifndef _VRLAYERVECTOR_H
 #define _VRLAYERVECTOR_H
 
-// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
-// Include wxWidgets' headers
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
-
+#include <wx/dcgraph.h>
+#include <wx/graphics.h>
 
 #include "vrlayer.h"
-#include <wx/graphics.h>
 
 class vrLayerVector : public vrLayer {
 protected:
@@ -122,9 +120,9 @@ inline const long vrLayerVector::GetVertexSkipped() const {
 class vrLayerVectorOGR : public vrLayerVector {
 protected:
 
-    virtual void _DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
-    virtual void _DrawLine(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
-    virtual void _DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    virtual void _DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    virtual void _DrawLine(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    virtual void _DrawPolygon(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
 
     virtual bool _Close();
 
