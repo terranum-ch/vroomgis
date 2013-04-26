@@ -87,6 +87,7 @@ def BuildMacBook():
 def BuildLinux():
   print("Configuring Linux")
   builddir="/home/lucien/programmation/ColtopGIS/bin/vroomgis/drawspeedtest"
+  createAndClearDirectory(builddir)
   try:
     p = Popen("cmake -G'CodeBlocks - Unix Makefiles' " + GetCmakeDirName() + " -DCMAKE_WXWINDOWS_WXCONFIG_EXECUTABLE:FILE=/home/lucien/programmation/LIB/_LIBWX/bin/wx-config", shell=True, cwd=builddir)
     p.wait()
