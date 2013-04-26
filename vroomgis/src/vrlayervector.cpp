@@ -234,7 +234,7 @@ bool vrLayerVector::SetFeature(OGRFeature * feature) {
     if (feature == NULL) {
         return false;
     }
-    
+
     if( m_Layer->SetFeature(feature) != OGRERR_NONE){
         return false;
     }
@@ -381,12 +381,12 @@ bool vrLayerVectorOGR::CopyLayer (vrLayerVectorOGR * layer, const wxString & new
         wxLogError(_("Origin layer is empty! copying failed!"));
         return false;
     }
-    
+
     wxString myLayerName = newlayername;
     if (myLayerName == wxEmptyString) {
         myLayerName = GetDisplayName().GetName();
     }
-    
+
     for (unsigned int i = 0; i< m_Dataset->GetLayerCount(); i++) {
         OGRLayer * myExistingLayer = m_Dataset->GetLayer(i);
         if (myExistingLayer == m_Layer) {
@@ -394,16 +394,16 @@ bool vrLayerVectorOGR::CopyLayer (vrLayerVectorOGR * layer, const wxString & new
             m_Layer = NULL;
         }
     }
-    
+
     wxASSERT(m_Layer == NULL);
     wxASSERT(m_Dataset);
     m_Layer = m_Dataset->CopyLayer(layer->GetLayerRef(), (const char *) myLayerName.mb_str(wxConvUTF8));
-    
+
     if (m_Layer == NULL){
         wxLogError(_("Error copying layer: %s"), myLayerName);
         return false;
     }
-    
+
     m_Layer = m_Dataset->GetLayerByName((const char *) myLayerName.mb_str(wxConvUTF8));
     wxASSERT(m_Layer);
     return true;
@@ -474,7 +474,7 @@ void vrLayerVectorOGR::_DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry *
     if (myWndRect.Contains(myPt)==false) {
         return;
     }
-    
+
     wxASSERT(render->GetType() == vrRENDER_VECTOR);
     vrRenderVector * myRender = (vrRenderVector*) render;
     wxPen myPen (myRender->GetColorPen(), myRender->GetSize());
@@ -483,11 +483,13 @@ void vrLayerVectorOGR::_DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry *
     if (IsFeatureSelected(feature->GetFID())==true) {
         dc->SetPen(mySelPen);
     }
-    
+
 #ifdef __WXMSW__
     dc->DrawLine(myPt.x, myPt.y, myPt.x + 1, myPt.y + 1);
 #else
-    dc->DrawPoint(myPt);
+    // do not use Draw Point because width isn't supported under
+    // linux
+    dc->DrawLine(myPt.x, myPt.y, myPt.x, myPt.y);
 #endif
 	m_ObjectDrawn++;
 }
@@ -501,10 +503,10 @@ void vrLayerVectorOGR::_DrawLine(wxDC * dc, OGRFeature * feature, OGRGeometry * 
         wxLogError(_("Object with FID: %ld has no Geometry!"), feature->GetFID());
         return;
     }
-    
+
     int iNumVertex = myLine->getNumPoints();
     wxASSERT(iNumVertex >= 2); // line cannot exists with only one vertex
-    
+
     wxPointList myPtx;
     for (int i = 0; i< iNumVertex; i++) {
         wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myLine->getX(i),myLine->getY(i)),coord.GetLeftTop(),pxsize);
@@ -520,7 +522,7 @@ void vrLayerVectorOGR::_DrawLine(wxDC * dc, OGRFeature * feature, OGRGeometry * 
     if (myPtx.GetCount() < 2) {
         return;
     }
-    
+
     // check intersection and minimum size
     /*int myWidth = 0;
     int  myHeight = 0;
@@ -533,7 +535,7 @@ void vrLayerVectorOGR::_DrawLine(wxDC * dc, OGRFeature * feature, OGRGeometry * 
     if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
         return;
     }*/
- 	
+
     // Brush
     wxASSERT(render->GetType() == vrRENDER_VECTOR);
 	vrRenderVector * myRender = (vrRenderVector*) render;
@@ -553,9 +555,9 @@ void vrLayerVectorOGR::_DrawLine(wxDC * dc, OGRFeature * feature, OGRGeometry * 
 void vrLayerVectorOGR::_DrawPolygon(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize){
     OGRPolygon * myPolygon = (OGRPolygon*) geometry;
     int iNumRing = myPolygon->getNumInteriorRings() + 1;
-    
+
     wxGCDC * mygdc = static_cast<wxGCDC*>(dc);
-    
+
     wxGraphicsPath myPath = mygdc->GetGraphicsContext()->CreatePath();
     for (int i = 0; i < iNumRing; i++) {
         wxGraphicsPath myPolyPath = mygdc->GetGraphicsContext()->CreatePath();
@@ -579,7 +581,7 @@ void vrLayerVectorOGR::_DrawPolygon(wxDC * dc, OGRFeature * feature, OGRGeometry
         myPolyPath.CloseSubpath();
         myPath.AddPath(myPolyPath);
     }
-    
+
     // check intersection and minimum size
     int myWidth = 0;
     int myHeight = 0;
@@ -589,11 +591,11 @@ void vrLayerVectorOGR::_DrawPolygon(wxDC * dc, OGRFeature * feature, OGRGeometry
     if(_Intersects(myPathRect, myWndRect)==false){
         return;
     }
-    
+
     if (myPathRect.GetSize().x < 1 && myPathRect.GetSize().y < 1){
         return;
     }
-    
+
     // Brush and Pen
     wxASSERT(render->GetType() == vrRENDER_VECTOR);
 	vrRenderVector * myRender = (vrRenderVector*) render;
@@ -653,14 +655,14 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
 
     wxMemoryDC dc (*bmp);
     wxGCDC myGCDC (dc);
-    
+
     // wxDC is way faster under Windows but didn't support
     // transparancy.
     wxDC * pDC = &dc;
     if (render->GetTransparency() != 0){
         pDC = &myGCDC;
     }
-    
+
 	bool bReturn = true;
 	m_ObjectDrawn = 0;
     m_PreviousPoint = wxDefaultPosition;
@@ -671,13 +673,13 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
 		if (myFeat == NULL) {
 			break;
 		}
-        
+
         if (IsFeatureHidden(myFeat->GetFID()) == true) {
             OGRFeature::DestroyFeature(myFeat);
 			myFeat = NULL;
 			continue;
         }
-        
+
         OGRwkbGeometryType myGeomType = wkbFlatten(myFeat->GetGeometryRef()->getGeometryType());
         // multigeometries support
         if (myGeomType == wkbMultiPolygon || myGeomType == wkbMultiLineString || myGeomType == wkbMultiPoint) {
@@ -687,52 +689,52 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
                     case wkbMultiPoint:
                         _DrawPoint(pDC, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
                         break;
-                        
+
                     case wkbMultiLineString:
                         _DrawLine(pDC, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
                         break;
-                        
+
                     case wkbMultiPolygon:
                         // Allways use GCDC for polygons
                         pDC = &myGCDC;
                         _DrawPolygon(pDC, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
                         break;
-                        
+
                     default:
                         wxLogError("Geometry type of %s, feature: %ld isn't supported or defined (%d)", m_FileName.GetFullName(), myFeat->GetFID(), myGeomType);
                         OGRFeature::DestroyFeature(myFeat);
                         return false;
                 }
             }
-            
-            
+
+
         }
         else{
             switch (myGeomType) {
                 case wkbPoint:
                     _DrawPoint(pDC, myFeat, myFeat->GetGeometryRef(), coord, render, label, pxsize);
                     break;
-                    
+
                 case wkbLineString:
                     _DrawLine(pDC, myFeat, myFeat->GetGeometryRef(), coord, render, label, pxsize);
                     break;
-                    
+
                 case wkbPolygon:
                     // Allways use GCDC for polygons
                     pDC = &myGCDC;
                     _DrawPolygon(pDC, myFeat, myFeat->GetGeometryRef(), coord, render, label, pxsize);
                     break;
-                    
+
                 default:
                     wxLogError("Geometry type of %s, feature: %ld isn't supported or defined (%d)", m_FileName.GetFullName(), myFeat->GetFID(), myGeomType);
                     OGRFeature::DestroyFeature(myFeat);
                     return false;
             }
-            
+
         }
         OGRFeature::DestroyFeature(myFeat);
      }
-    
+
     if (bReturn == false) {
         return false;
     }
