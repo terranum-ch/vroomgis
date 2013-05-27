@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gdal_frmts.h 23473 2011-12-05 22:17:02Z rouault $
+ * $Id: gdal_frmts.h 25798 2013-03-25 14:42:33Z aboudreault $
  *
  * Project:  GDAL
  * Purpose:  Prototypes for all format specific driver initializations.
@@ -56,6 +56,7 @@ void CPL_DLL GDALRegister_DTED(void);
 void CPL_DLL GDALRegister_MFF(void);
 void CPL_DLL GDALRegister_HKV(void);
 void CPL_DLL GDALRegister_PNG(void);
+void CPL_DLL GDALRegister_DDS(void);
 void CPL_DLL GDALRegister_GTA(void);
 void CPL_DLL GDALRegister_JPEG(void);
 void CPL_DLL GDALRegister_JPEG2000(void);
@@ -157,11 +158,13 @@ void CPL_DLL GDALRegister_GTX(void);
 void CPL_DLL GDALRegister_LOSLAS(void);
 void CPL_DLL GDALRegister_Istar(void);
 void CPL_DLL GDALRegister_NTv2(void);
+void CPL_DLL GDALRegister_CTable2(void);
 void CPL_DLL GDALRegister_JP2OpenJPEG(void);
 void CPL_DLL GDALRegister_XYZ(void);
 void CPL_DLL GDALRegister_HF2(void);
 void CPL_DLL GDALRegister_PDF(void);
 void CPL_DLL GDALRegister_JPEGLS(void);
+void CPL_DLL GDALRegister_MAP(void);
 void CPL_DLL GDALRegister_OZI(void);
 void CPL_DLL GDALRegister_ACE2(void);
 void CPL_DLL GDALRegister_CTG(void);
@@ -170,6 +173,9 @@ void CPL_DLL GDALRegister_SNODAS(void);
 void CPL_DLL GDALRegister_WEBP(void);
 void CPL_DLL GDALRegister_ZMap(void);
 void CPL_DLL GDALRegister_NGSGEOID(void);
+void CPL_DLL GDALRegister_MBTiles(void);
+void CPL_DLL GDALRegister_ARG(void);
+void CPL_DLL GDALRegister_IRIS(void);
 void CPL_DLL GDALRegister_C2D(void);
 CPL_C_END
 
