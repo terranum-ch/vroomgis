@@ -18,7 +18,7 @@
 #include "frame.h"
 #include "tmlog.h"              // for double logging process
 #include "vrdisplayvalue.h"     // for displaying raster values
-#include <lsversion_dlg.h>
+#include <wxhgversion_dlg.h>
 #include "vrrendervectorc2p.h"
 #include "vrlayervector.h"
 #include "vrshapeeditor.h"
@@ -259,7 +259,6 @@ vroomLoaderFrame::~vroomLoaderFrame()
 
 
 
-
 void vroomLoaderFrame::OnQuit(wxCommandEvent& event){
 	event.Skip();
 }
@@ -267,10 +266,9 @@ void vroomLoaderFrame::OnQuit(wxCommandEvent& event){
 
 
 void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event)){
-	lsVersionDlg * myDlg = new lsVersionDlg(this, wxID_ANY, "About");
-	myDlg->SetBitmapLogo(*_img_vroomgis);
-	myDlg->ShowModal();
-	wxDELETE(myDlg);
+	wxHgVersionDlg myDlg (this, wxID_ANY, "About");
+	myDlg.SetBitmapLogo(*_img_vroomgis);
+	myDlg.ShowModal();
 }
 
 

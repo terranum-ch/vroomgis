@@ -21,7 +21,7 @@ SOURCE_GROUP (header FILES ${HEAD_FILES})
 INCLUDE("../../../vroomgis/build/cmake/Use_vroomGISlib.cmake")	
 
 #USE LSVERSION PLUGIN
-INCLUDE("../../../plugins/lsversion/build/use_lsversion.cmake")
+INCLUDE("../../../plugins/wxhgversion/build/use_wxhgversion.cmake")
 
 # mac specific stuff
 IF( APPLE )
@@ -52,10 +52,10 @@ ENDIF (WIN32)
 # LINK VROOMGIS LIBRARY
 TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
 
-# LINK LSVERSION PLUGIN
-IF(USE_VERSION)
-	TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${LSVERSION_NAME})
-ENDIF(USE_VERSION)
+# LINK WXHGVERSION PLUGIN
+IF(USE_WXHGVERSION)
+  TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${WXHGVERSION_NAME})
+ENDIF(USE_WXHGVERSION)
 
 # copy libs to bundle if we are under mac...
 # check is done internally.
