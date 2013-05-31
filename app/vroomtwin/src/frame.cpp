@@ -19,7 +19,7 @@
 #include <wx/filepicker.h>
 
 #include "tmlog.h"	// for double logging process
-#include "lsversion_dlg.h"
+#include <wxhgversion_dlg.h>
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
 BEGIN_EVENT_TABLE(vroomTwinFrame, wxFrame)
@@ -215,7 +215,7 @@ void vroomTwinFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void vroomTwinFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-	lsVersionDlg myDlg (this, wxID_ANY, "About vroomTwin");
+	wxHgVersionDlg myDlg (this, wxID_ANY, "About vroomTwin");
 	myDlg.SetBitmapLogo(*_img_vroomgis);
 	myDlg.ShowModal();
 }

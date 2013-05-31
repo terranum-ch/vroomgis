@@ -230,7 +230,6 @@ if (doBuildVroomloader == 'Y'):
   mycmakeCommandLine.append("-DSEARCH_GDAL:BOOL=1")
   mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
   mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
-  mycmakeCommandLine.append("-DUSE_VERSION:BOOL=1")
   if(gwxWidgetsVersion != ""):
     mycmakeCommandLine.append("-DwxWIDGETS_USING_SVN:BOOL=1")
     mycmakeCommandLine.append("-DwxWIDGETS_PATH_SVN:PATH=" + gwxWidgetsVersion)
@@ -264,7 +263,6 @@ if (doBuildVroomTwin == 'Y'):
   mycmakeCommandLine.append("-DSEARCH_GDAL:BOOL=1")
   mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
   mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
-  mycmakeCommandLine.append("-DUSE_VERSION:BOOL=1")
   if(gwxWidgetsVersion != ""):
     mycmakeCommandLine.append("-DwxWIDGETS_USING_SVN:BOOL=1")
     mycmakeCommandLine.append("-DwxWIDGETS_PATH_SVN:PATH=" + gwxWidgetsVersion)
@@ -299,7 +297,6 @@ if (doBuildVroomDrawer == 'Y'):
   mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
   mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
   mycmakeCommandLine.append("-DSEARCH_CURL_LIB_PATH:PATH=" + gDirCurl)
-  mycmakeCommandLine.append("-DUSE_VERSION:BOOL=1")
   if(gwxWidgetsVersion != ""):
     mycmakeCommandLine.append("-DwxWIDGETS_USING_SVN:BOOL=1")
     mycmakeCommandLine.append("-DwxWIDGETS_PATH_SVN:PATH=" + gwxWidgetsVersion)

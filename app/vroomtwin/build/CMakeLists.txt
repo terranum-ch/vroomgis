@@ -1,5 +1,5 @@
 # CMAKE BUILD FILE FOR vroomLoader
-# (c) LUCIEN SCHREIBER CREALP 2009
+# (c) LUCIEN SCHREIBER 2013
 cmake_minimum_required(VERSION 2.6)
 
 
@@ -25,8 +25,8 @@ MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
 #CREATE VROOMGIS LIBRARY AND WXWIDGETS - GDAL LIB
 INCLUDE("../../../vroomgis/build/cmake/Use_vroomGISlib.cmake")	
 
-#USE LSVERSION PLUGIN
-INCLUDE("../../../plugins/lsversion/build/use_lsversion.cmake")
+#USE WXHGVERSION PLUGIN
+INCLUDE("../../../plugins/wxhgversion/build/use_wxhgversion.cmake")
 
 IF( APPLE )
 	SET (APP_ICON "vroomgis.icns")
@@ -38,7 +38,7 @@ IF( APPLE )
 	SET(MACOSX_BUNDLE_BUNDLE_NAME "${CMAKE_PROJECT_NAME}")
 	SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "Alpha")
 	SET(MACOSX_BUNDLE_BUNDLE_VERSION "1.0.0")
-	SET(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) CREALP 2010")
+	SET(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) 2013")
 	
 	# Need to copy the icon file
 	EXEC_PROGRAM( "mkdir -p       ${PROJECT_BINARY_DIR}/Debug/${CMAKE_PROJECT_NAME}.app/Contents/Resources")
@@ -63,10 +63,10 @@ ENDIF (WIN32)
 # LINK VROOMGIS LIBRARY
 TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
 
-#LINK LS VERSION LIBRARY
-IF(USE_VERSION)
-  TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${LSVERSION_NAME})
-ENDIF(USE_VERSION)
+# LINK WXHGVERSION PLUGIN
+IF(USE_WXHGVERSION)
+  TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${WXHGVERSION_NAME})
+ENDIF(USE_WXHGVERSION)
 
 # copy libs to bundle if we are under mac...
 # check is done internally.
