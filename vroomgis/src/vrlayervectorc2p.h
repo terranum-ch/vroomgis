@@ -44,8 +44,8 @@ private:
     int m_ActiveLayerIndex;
     
 protected:
-    virtual void _DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
-    virtual void _DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    virtual void _DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    virtual void _DrawPolygon(wxDC * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
     
 public:
     vrLayerVectorC2P();
