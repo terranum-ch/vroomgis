@@ -20,13 +20,17 @@
 #include "vrlabel.h"
 
 
-void vrLayerVectorC2P::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, vrLabel * label, double pxsize){
+void vrLayerVectorC2P::_DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, vrLabel * label, double pxsize){
     wxASSERT(render->GetType() == vrRENDER_VECTOR_C2P_DIPS);
 	vrRenderVectorC2PDips * myRender = (vrRenderVectorC2PDips*) render;
 	const int myDipWidth = myRender->GetDipWidth();
     wxPen myDefaultPen (myRender->GetDipColour(0), myRender->GetSize());
 	wxPen mySelPen (myRender->GetSelectionColour(), myRender->GetSize());
-	double myWidth = 0, myHeight = 0;
+	
+    wxGraphicsContext * gdc = dc->GetGraphicsContext();
+    wxASSERT(gdc);
+    
+    double myWidth = 0, myHeight = 0;
 	gdc->GetSize(&myWidth, &myHeight);
 	wxRect2DDouble myWndRect (0,0,myWidth, myHeight);
 
@@ -109,9 +113,13 @@ void vrLayerVectorC2P::_DrawPoint(wxGraphicsContext * gdc, OGRFeature * feature,
 
 
 
-void vrLayerVectorC2P::_DrawPolygon(wxGraphicsContext * gdc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, vrLabel * label, double pxsize){
+void vrLayerVectorC2P::_DrawPolygon(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render, vrLabel * label, double pxsize){
     OGRPolygon * myPolygon = (OGRPolygon*) geometry;
     int iNumRing = myPolygon->getNumInteriorRings() + 1;
+    
+    wxGraphicsContext * gdc = dc->GetGraphicsContext();
+    wxASSERT(gdc);
+    
     wxGraphicsPath myPath = gdc->CreatePath();
     for (int i = 0; i < iNumRing; i++) {
         wxGraphicsPath myPolyPath = gdc->CreatePath();

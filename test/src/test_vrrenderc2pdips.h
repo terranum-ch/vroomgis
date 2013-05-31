@@ -42,7 +42,7 @@ public:
 	void testRenderDefaultColour(){
 		vrRenderVectorC2PDips myRenderDips(*wxRED, 2);
 		TS_ASSERT(myRenderDips.GetDipColour(10) == *wxRED);
-		TS_ASSERT(myRenderDips.AddDipColour(*wxBLUE, 10));
+		TS_ASSERT(myRenderDips.AddDipColour(*wxBLUE, 10, true));
 		TS_ASSERT(myRenderDips.GetDipColour(10) == *wxBLUE);
 		TS_ASSERT(myRenderDips.GetDipColour(10) == *wxBLUE);
 	}
