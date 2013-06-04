@@ -186,14 +186,20 @@ doGo = askUserWithCheck ("Do the build ? (Y / N): ")
 #
 # get latest version
 #
-print ("Updating with latest version from Subversion")
+print ("Updating with latest version from Mercurial")
 try:
-  myProcess = subprocess.Popen(['svn', 'update'], 0, None, None, None,  None, None, False, False, gDirTrunk)
+  myProcess = subprocess.Popen("hg pull", shell=True, cwd=gDirTrunk) 
   myProcess.wait()
 except:
-  print ("Error updating SVN!", )
+  print ("Error pulling from Mercurial!", )
   exit()
-print ("Updating SVN DONE!")
+try:
+  myProcess = subprocess.Popen("hg update", shell=True, cwd=gDirTrunk)
+  myProcess.wait()
+except:
+  print("Error updating from Mercurial!")
+  exit()
+print ("Updating DONE!")
 print ("----------------------------------------------------------\n")
 
 
