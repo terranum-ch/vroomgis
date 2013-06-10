@@ -3,7 +3,7 @@
 # (c) LUCIEN SCHREIBER CREALP 2007
 # partial work from mysql cmakefile 
 
-SET (USE_MT_LIBRARY CACHE BOOL "Should we use the MT option for building, use it if lib were build with the MT option")
+SET (USE_MT_LIBRARY ON CACHE BOOL "Should we use the MT option for building, use it if lib were build with the MT option")
 
 IF (USE_MT_LIBRARY)
   	# replace /MDd with /MTd
