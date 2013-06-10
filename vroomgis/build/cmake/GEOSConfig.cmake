@@ -2,19 +2,21 @@
 # using C API of GEOS:
 IF (WIN32)
   SET (SEARCH_GEOS_LIB_PATH CACHE PATH "Path to the GEOS libs if not with GDAL")
-
+  SET (CMAKE_LIBRARY_PATH ${CMAKE_PREFIX_PATH}/src)
+  SET (CMAKE_INCLUDE_PATH ${CMAKE_PREFIX_PATH}/capi ${CMAKE_PREFIX_PATH}/include)
+  
   FIND_PATH(GEOS_C_INCLUDE_DIR geos_c.h
     HINTS			
     ${SEARCH_GEOS_LIB_PATH}/capi
     ${SEARCH_GEOS_LIB_PATH}/include
-    NO_DEFAULT_PATH)
+    )
 
 
   FIND_PATH(GEOS_INCLUDE_DIR geos.h
     HINTS			
     ${SEARCH_GEOS_LIB_PATH}/source/headers
     ${SEARCH_GEOS_LIB_PATH}/include 
-    NO_DEFAULT_PATH)
+    )
 
   FIND_LIBRARY(GEOS_LIBRARIES
     geos_c_i
@@ -22,7 +24,11 @@ IF (WIN32)
     ${SEARCH_GEOS_LIB_PATH}/src
     ${SEARCH_GEOS_LIB_PATH}/lib
     ${SEARCH_GEOS_LIB_PATH}
-    NO_DEFAULT_PATH)
+    /src
+    /source
+    src
+    source
+    )
 
   # if unix / mac and search geos
 ELSE (WIN32)

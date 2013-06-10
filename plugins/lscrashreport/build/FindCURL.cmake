@@ -14,10 +14,10 @@ IF (WIN32)
   FIND_PATH(CURL_INCLUDE_DIRS curl/curl.h
     ${SEARCH_CURL_LIB_PATH}/include 
     ${SEARCH_CURL_LIB_PATH}
-    NO_DEFAULT_PATH)
+    )
 
   SET(CURL_LIBRARIES ${CURL_LIBRARIES}
-    debug "${SEARCH_CURL_LIB_PATH}/lib/DLL-Debug/libcurld_imp.lib"   optimized "${SEARCH_CURL_LIB_PATH}/lib/DLL-Release/libcurl_imp.lib")
+    debug "${CURL_INCLUDE_DIRS}/../lib/DLL-Debug/libcurld_imp.lib"   optimized "${CURL_INCLUDE_DIRS}/../lib/DLL-Release/libcurl_imp.lib")
 
 
   # if unix / mac and search geos
