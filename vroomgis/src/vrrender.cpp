@@ -94,6 +94,7 @@ vrRenderVector::vrRenderVector() {
 	m_ColorPen = *wxBLACK;
 	m_ColorBrush = *wxBLACK;
 	m_BrushStyle = wxBRUSHSTYLE_SOLID;
+    m_UseFastAndUglyDC = false;
 }
 
 
@@ -114,6 +115,12 @@ void vrRenderVector::SetColorBrush(const wxColour & color) {
 void vrRenderVector::SetSize(int value) {
 	m_Size = value;
 }
+
+
+void vrRenderVector::SetUseFastAndUglyDC(bool value){
+    m_UseFastAndUglyDC = value;
+}
+
 
 wxColour vrRenderVector::GetColorPen() {
 	char myRed = m_ColorPen.Red();

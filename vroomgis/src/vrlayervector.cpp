@@ -656,11 +656,11 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
     wxMemoryDC dc (*bmp);
     wxGCDC myGCDC (dc);
 
-    // wxDC is way faster under Windows but didn't support
-    // transparancy. We need wxGCDC for c2p layers.
-    wxDC * pDC = &dc;
-    if (render->GetTransparency() != 0 || render->GetType() == vrRENDER_VECTOR_C2P_DIPS){
-        pDC = &myGCDC;
+    // wxDC is way faster under Windows but didn't support transparancy nor antialiasing
+    // default is to use wxGCDC. To use faster, uglier wxDC set parameter in Render.
+    wxDC * pDC = &myGCDC;
+    if (render->GetTransparency() == 0 && static_cast<const vrRenderVector*>(render)->IsUsingFastAndUglyDC() == true){
+        pDC = &dc;
     }
 
 	bool bReturn = true;
@@ -706,7 +706,6 @@ bool vrLayerVectorOGR::GetData(wxBitmap * bmp, const vrRealRect & coord, double 
                         return false;
                 }
             }
-
 
         }
         else{
