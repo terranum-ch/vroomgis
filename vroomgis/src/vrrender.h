@@ -76,7 +76,7 @@ private:
     wxColour m_ColorBrush;
 	wxBrushStyle m_BrushStyle;
 	int m_Size;
-
+    bool m_UseFastAndUglyDC;
 
   public:
     vrRenderVector();
@@ -93,14 +93,26 @@ private:
 		
     inline const int GetSize() const;
     void SetSize(int value);
+    
+    inline const bool IsUsingFastAndUglyDC() const;
+    void SetUseFastAndUglyDC(bool value);
+
 	
 	virtual bool Serialize(vrSerialize & serialobj);
 };
 
 
+
 inline const int vrRenderVector::GetSize() const {
 	return m_Size;
 }
+
+
+
+inline const bool vrRenderVector::IsUsingFastAndUglyDC() const {
+    return m_UseFastAndUglyDC;
+}
+
 
 
 class vrRenderRaster : public vrRender {
