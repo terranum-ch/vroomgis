@@ -70,6 +70,9 @@ public:
     virtual bool Remove(int index) = 0;
     virtual int GetSelection() = 0;
     
+    virtual bool SetEditStyle(int index) {return false;}
+    virtual bool SetNormalStyle(int index) {return false;}
+    
     virtual void FreezeBegin();
     virtual void FreezeEnd();
     
@@ -204,6 +207,9 @@ public:
     virtual bool Remove(int index);
     virtual int GetSelection();
     virtual wxControl * GetControl();
+    
+    virtual bool SetEditStyle(int index);
+    virtual bool SetNormalStyle(int index);
     
     bool AddGroup(const wxString & name);
     void SetUseGroupMenu(bool value){m_UseGroupMenu = value;}

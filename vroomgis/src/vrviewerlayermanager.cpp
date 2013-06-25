@@ -484,6 +484,53 @@ void vrViewerLayerManager::Reload() {
 
 
 
+bool vrViewerLayerManager::StartEdition(vrRenderer * renderer) {
+    bool bEditionStarted = false;
+    for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
+        vrRenderer * myRenderer = m_Renderers.Item(i);
+        wxASSERT(myRenderer);
+        
+        if (myRenderer == renderer){
+            myRenderer->SetInEdition(true);
+            bEditionStarted = true;
+            
+            if (m_Toc) {
+                m_Toc->SetEditStyle(i);
+            }
+        }
+    }
+    return bEditionStarted;
+}
+
+
+
+void vrViewerLayerManager::StopEdition() {
+    for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
+        vrRenderer * myRenderer = m_Renderers.Item(i);
+        wxASSERT(myRenderer);
+        myRenderer->SetInEdition(false);
+        
+        if (m_Toc) {
+            m_Toc->SetNormalStyle(i);
+        }
+    }
+}
+
+
+
+vrRenderer * vrViewerLayerManager::GetEditionRenderer() {
+    for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
+        vrRenderer * myRenderer = m_Renderers.Item(i);
+        wxASSERT(myRenderer);
+        if (myRenderer->IsInEdition() == true) {
+            return myRenderer;
+        }
+    }
+    return NULL;
+}
+
+
+
 void vrViewerLayerManager::StartPerfMonitor(const wxFileName & filename) {
 	m_PerfMonitorFile = filename;
 }

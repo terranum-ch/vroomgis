@@ -193,6 +193,10 @@ void vrRenderer::SetVisible(bool value) {
 }
 
 
+void vrRenderer::SetInEdition(bool value) {
+    m_InEdition = value;
+}
+
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(vrArrayRenderer);
 
