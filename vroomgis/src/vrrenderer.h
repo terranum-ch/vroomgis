@@ -37,7 +37,7 @@ private:
     vrRender * m_Render;
     vrLabel * m_Label;
 	bool m_Visible;
-
+    bool m_InEdition;
 	
 	bool _IsCorrectRender();
 	
@@ -56,7 +56,9 @@ public:
     void SetRender(vrRender * value);
     void SetLabel(vrLabel * value);
 	void SetVisible(bool value);
-
+    
+    inline const bool IsInEdition() const;
+    void SetInEdition(bool value);
 };
 
 
@@ -74,6 +76,10 @@ inline  vrLabel * vrRenderer::GetLabel()  {
 
 inline const bool vrRenderer::GetVisible() const {
 	return m_Visible;
+}
+
+inline const bool vrRenderer::IsInEdition() const {
+    return m_InEdition;
 }
 
 WX_DECLARE_OBJARRAY(vrRenderer*, vrArrayRenderer);

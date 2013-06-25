@@ -103,6 +103,10 @@ class vrViewerLayerManager : public wxEvtHandler {
     void FreezeBegin();
     void FreezeEnd();
 	void Reload();
+    
+    bool StartEdition(vrRenderer * renderer);
+    void StopEdition();
+    vrRenderer * GetEditionRenderer();
 
 	void StartPerfMonitor(const wxFileName & filename);
     void StopPerfMonitor();

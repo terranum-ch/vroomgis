@@ -1203,3 +1203,35 @@ bool vrViewerTOCTree::AddGroup(const wxString & name) {
 }
 
 
+
+bool vrViewerTOCTree::SetEditStyle(int index) {
+    // search for item text
+    wxString myItemText = GetViewerLayerManager()->GetRenderer(index)->GetLayer()->GetDisplayName().GetFullName();
+    wxTreeItemId myFound = _IndexToTree (m_RootNode, myItemText, vrTREEDATA_TYPE_LAYER);
+    if (myFound.IsOk() == false) {
+        wxLogError(_("Error, item %d not found!!!"), index);
+        return false;
+    }
+   
+    wxFont myUnderlineFont = m_Tree->GetFont();
+    m_Tree->SetItemFont(myFound, myUnderlineFont.Underlined());
+    return true;
+}
+
+
+
+bool vrViewerTOCTree::SetNormalStyle(int index) {
+    // search for item text
+    wxString myItemText = GetViewerLayerManager()->GetRenderer(index)->GetLayer()->GetDisplayName().GetFullName();
+    wxTreeItemId myFound = _IndexToTree (m_RootNode, myItemText, vrTREEDATA_TYPE_LAYER);
+    if (myFound.IsOk() == false) {
+        wxLogError(_("Error, item %d not found!!!"), index);
+        return false;
+    }
+    
+    wxFont myUnderlineFont = m_Tree->GetFont();
+    m_Tree->SetItemFont(myFound, myUnderlineFont);
+    return true;
+}
+
+
