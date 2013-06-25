@@ -323,14 +323,20 @@ void vrViewerLayerManager::ZoomToFit(bool onlyvisible) {
 
 
 
-long vrViewerLayerManager::Select(const wxRect & extent) {
-	int myIndex = m_Toc->GetSelection();
-	if (myIndex == wxNOT_FOUND) {
-		return wxNOT_FOUND;
-	}
-
-	if (m_Renderers.Item(myIndex)->GetLayer()->GetType() != vrDRIVER_VECTOR_C2P &&
-		m_Renderers.Item(myIndex)->GetLayer()->GetType() != vrDRIVER_VECTOR_SHP) {
+long vrViewerLayerManager::Select(const wxRect & extent, vrRenderer * selectlayer) {
+    // make selection on this layer if not null, otherwise use selection from TOC
+    vrRenderer * mySelectLayer = selectlayer;
+    if (selectlayer == NULL) {
+        int myIndex = m_Toc->GetSelection();
+        if (myIndex == wxNOT_FOUND) {
+            return wxNOT_FOUND;
+        }
+        mySelectLayer = m_Renderers.Item(myIndex);
+    }
+    wxASSERT(mySelectLayer);
+  
+	if (mySelectLayer->GetLayer()->GetType() < vrDRIVER_VECTOR_SHP ||
+		mySelectLayer->GetLayer()->GetType() > vrDRIVER_VECTOR_MEMORY) {
 		wxLogMessage(_("Selection on raster isn't valid"));
 		return wxNOT_FOUND;
 	}
@@ -346,8 +352,7 @@ long vrViewerLayerManager::Select(const wxRect & extent) {
 	}
 	m_Display->GetCoordinate()->ConvertFromPixels(myPxExtent, myRealCoord);
 
-
-	vrLayerVector * myLayer = (vrLayerVector*) m_Renderers.Item(myIndex)->GetLayer();
+	vrLayerVector * myLayer = static_cast<vrLayerVector *>(mySelectLayer->GetLayer());
 	wxASSERT(myLayer);
 	return myLayer->Select(myRealCoord);
 }
@@ -356,8 +361,8 @@ long vrViewerLayerManager::Select(const wxRect & extent) {
 
 void vrViewerLayerManager::ClearSelection() {
 	for (int i = 0; i< GetCount(); i++) {
-		if(m_Renderers.Item(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_SHP ||
-		   m_Renderers.Item(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_C2P){
+		if(m_Renderers.Item(i)->GetLayer()->GetType() >= vrDRIVER_VECTOR_SHP &&
+		   m_Renderers.Item(i)->GetLayer()->GetType() <= vrDRIVER_VECTOR_MEMORY){
 			vrLayerVector * myLayer = (vrLayerVector*) m_Renderers.Item(i)->GetLayer();
 			wxASSERT(myLayer);
 			myLayer->GetSelectedIDs()->Clear();
@@ -369,8 +374,8 @@ void vrViewerLayerManager::ClearSelection() {
 int vrViewerLayerManager::GetSelectionCount(int * sellayers) {
 	int iTotal = 0;
 	for (int i = 0; i< GetCount(); i++) {
-		if(m_Renderers.Item(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_SHP ||
-		   m_Renderers.Item(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_C2P){
+		if(m_Renderers.Item(i)->GetLayer()->GetType() >= vrDRIVER_VECTOR_SHP &&
+		   m_Renderers.Item(i)->GetLayer()->GetType() <= vrDRIVER_VECTOR_MEMORY){
 			vrLayerVector * myLayer = (vrLayerVector*) m_Renderers.Item(i)->GetLayer();
 			wxASSERT(myLayer);
 			int mySelCount = myLayer->GetSelectedIDs()->GetCount();

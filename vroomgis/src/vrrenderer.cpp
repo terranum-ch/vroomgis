@@ -74,6 +74,7 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 	
 	// setting visible status on true
 	SetVisible(true);
+    SetInEdition(false);
 	
 	// create default render and label if null
 	if (render == NULL){
