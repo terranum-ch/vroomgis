@@ -95,6 +95,26 @@ vrDRIVERS_TYPE vrDrivers::GetType(const wxString & extension) {
 
 
 
+wxString vrDrivers::GetWildcardsRaster (){
+    wxArrayInt myType;
+    myType.Add(vrDRIVER_RASTER_TIFF);
+    myType.Add(vrDRIVER_RASTER_JPEG);
+    myType.Add(vrDRIVER_RASTER_ESRIGRID);
+    myType.Add(vrDRIVER_RASTER_EASC);
+    myType.Add(vrDRIVER_RASTER_SGRD7);
+    return GetSpecificWildcards(myType);
+}
+
+
+
+wxString vrDrivers::GetWildcardsVector (){
+    wxArrayInt myType;
+    myType.Add(vrDRIVER_VECTOR_SHP);
+    return GetSpecificWildcards(myType);
+}
+
+
+
 bool vrDrivers::IsSupported(const wxString & extension) {
 	if (GetType(extension)==vrDRIVER_UNKNOWN) {
 		return false;

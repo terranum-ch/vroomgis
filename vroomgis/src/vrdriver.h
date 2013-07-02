@@ -93,6 +93,8 @@ class vrDrivers {
   public:
     wxString GetWildcards(const vrDRIVERS_FLAG & flags = vrDRIVERS_FLAG_GENERIC);
 	wxString GetSpecificWildcards(const wxArrayInt & types);
+    wxString GetWildcardsRaster ();
+    wxString GetWildcardsVector ();
 	vrDRIVERS_TYPE GetType(const wxString & extension);
     bool IsSupported(const wxString & extension);
 
