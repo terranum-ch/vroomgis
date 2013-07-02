@@ -130,16 +130,6 @@ void  vroomLoaderFrame::_CreateControls()
 	bSizer4->Add( m_TocCtrl->GetControl(), 2, wxEXPAND, 5 );
     m_TocCtrl->SetUseGroupMenu(true);
 
-	//wxFilePickerCtrl * myPicker = new wxFilePickerCtrl(m_panel1, wxID_ANY,wxEmptyString,
-	//												   wxFileSelectorPromptStr,
-	//												   wxFileSelectorDefaultWildcardStr,
-	//												   wxDefaultPosition,
-	//												   wxDefaultSize,
-	//												   wxFLP_SAVE | wxFLP_USE_TEXTCTRL);
-
-	//bSizer4->Add(myPicker, 0, wxEXPAND | wxALL, 5);
-
-
 	m_panel1->SetSizer( bSizer4 );
 	m_panel1->Layout();
 	bSizer4->Fit( m_panel1 );
