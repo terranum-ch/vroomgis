@@ -707,7 +707,7 @@ bool vrLayerRasterGDAL::Open(const wxFileName & filename, bool readwrite) {
 	if (readwrite)
 		myAcces = GA_Update;
 
-	m_Dataset = (GDALDataset *) GDALOpen( filename.GetFullPath(), GA_ReadOnly );
+	m_Dataset = (GDALDataset *) GDALOpen( filename.GetFullPath(), myAcces );
 	if(m_Dataset == NULL){
 		wxLogError("Unable to open %s, maybe driver not registered -  GDALAllRegister()\nGDAL Error: '%s'",
 				   filename.GetFullName(),
