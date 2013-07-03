@@ -178,6 +178,60 @@ bool vrLayerManager::Close(vrLayer * layer) {
 }
 
 
+// return false if still in use
+bool vrLayerManager::Erase(const wxFileName & filename) {
+    if (GetLayer(filename) != NULL) {
+        wxLogError(_("Unable to Delete: '%s'. This file is still used!"), filename.GetFullName());
+        return false;
+    }
+    
+    vrDrivers myDriver;
+    vrDRIVERS_TYPE myDriverType = myDriver.GetType(filename.GetExt());
+    wxString myDriverName = vrDRIVERS_GDAL_NAMES[myDriverType];
+
+	switch (myDriverType){
+		case vrDRIVER_VECTOR_SHP:
+        {
+            OGRSFDriver * poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName((const char *) myDriverName.mb_str(wxConvUTF8));
+            wxASSERT(poDriver);
+            if(poDriver->DeleteDataSource(filename.GetFullPath().mb_str(wxConvUTF8)) != OGRERR_NONE){
+                wxLogError(_("Deleting '%s' Failed!"), filename.GetFullName());
+                return false;
+            }
+        }
+			break;
+            
+		case vrDRIVER_RASTER_ESRIGRID:
+		case vrDRIVER_RASTER_JPEG:
+		case vrDRIVER_RASTER_TIFF:
+		case vrDRIVER_RASTER_C2D:
+        case vrDRIVER_RASTER_EASC:
+        case vrDRIVER_RASTER_SGRD7:
+        {
+            GDALDriver *myGDALDriver = GetGDALDriverManager()->GetDriverByName( myDriverName.mb_str(wxConvUTF8));
+            wxASSERT(myGDALDriver);
+            if(myGDALDriver->Delete(filename.GetFullPath().mb_str(wxConvUTF8)) != CE_None){
+                wxLogError(_("Deleting '%s' Failed!"), filename.GetFullName());
+                return false;
+            }
+        }
+            break;
+            
+		case vrDRIVER_VECTOR_C2P:
+            wxLogError(_("Unable to delete C2P file!"));
+            return false;
+			break;
+              
+		default:
+			wxLogError("Extension \"%s\" not supported",filename.GetExt());
+			return false;
+			break;
+	}
+    return true;
+}
+
+
+
 int vrLayerManager::GetCount() {
 	return m_Layers.GetCount();
 }

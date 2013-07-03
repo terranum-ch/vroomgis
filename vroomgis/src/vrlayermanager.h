@@ -44,6 +44,8 @@ public:
     bool Open(const wxFileName & filename, bool readwrite = false);
 	bool Add(vrLayer * layer);
 	bool Close(vrLayer * layer);
+    bool Erase(const wxFileName & filename);
+
 	int GetCount();
 	vrLayer * GetLayer(const wxFileName & filename);
 	
