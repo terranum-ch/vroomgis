@@ -45,7 +45,7 @@ static const wxString g_TestFileTIF = "MNT.tif";
 static const wxString g_TestFileJPEG = "Boltigen.jpg";
 static const wxString g_TestFileMNT = "mntmo.tif";
 static const wxString g_TestFileC2D = "mntmo_c2d.c2d";
-
+static const wxString g_TestProfile = "profile.shp";
 
 
 
