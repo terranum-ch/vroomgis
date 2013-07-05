@@ -340,6 +340,7 @@ if (doBuildVroomgistests == 'Y'):
   mycmakeCommandLine = mycmakeCommandLine + gCmakeSpecific
   mycmakeCommandLine.append("-DSEARCH_GDAL:BOOL=1")
   mycmakeCommandLine.append("-DSEARCH_GEOS:BOOL=1")
+  mycmakeCommandLine.append("-DSEARCH_VROOMGIS_LIBS:BOOL=1")  
   mycmakeCommandLine.append("-DSEARCH_GIS_LIB_PATH:PATH=" + gDirGis)
   mycmakeCommandLine.append("-DCXXTEST_DIRECTORY:PATH=" + gDirCxx)
   mycmakeCommandLine.append("-DUNIT_TESTING_PATH:PATH=" + gDirTestData)
