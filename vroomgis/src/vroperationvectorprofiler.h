@@ -28,15 +28,29 @@ class vrOperationVectorProfiler {
 public:
     vrOperationVectorProfiler(OGRGeometry * geometry, vrLayerRasterGDAL * raster);
     virtual ~vrOperationVectorProfiler();
-    bool DoProfile(int bandindex = 0);
-    wxArrayDouble * GetResultRef() {return &m_ZResults; };
     bool IsOk();
+    
+    bool DoProfile(int bandindex = 0);
+    
+    wxArrayDouble * GetResultRef() {return &m_ZResults; };
+    bool GetResultPoint(int index, OGRPoint * point);
+    bool GetResultLine(OGRGeometry * line);
+    
+    int GetNoDataValue() {return m_NoDataValue;}
+    void SetNoDataValue(int value) {m_NoDataValue = value;}
+    
+    double GetIncrementX() {return m_Increment_X;}
+    double GetIncrementY() {return m_Increment_Y;}
+    double GetIncrementDistance();
     
 protected:
     OGRLineString * m_LineString;
     vrLayerRasterGDAL * m_RasterLayer;
     double m_PixelWidth;
     double m_PixelHeight;
+    int m_NoDataValue;
+    double m_Increment_X;
+    double m_Increment_Y;
     
 private:
     wxArrayDouble m_ZResults;
