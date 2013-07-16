@@ -50,7 +50,7 @@ public:
 	vrLayer * GetLayer(const wxFileName & filename);
 	
 	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	
+	bool RemoveViewerLayerManager (vrViewerLayerManager * manager);
 };
 
 
