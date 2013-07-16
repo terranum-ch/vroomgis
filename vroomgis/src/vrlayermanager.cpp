@@ -264,9 +264,25 @@ bool vrLayerManager::AddViewerLayerManager(vrViewerLayerManager * manager){
 		}
 	}
 
-
 	m_ViewerManagers.Add(manager);
 	return true;
+}
+
+
+bool vrLayerManager::RemoveViewerLayerManager (vrViewerLayerManager * manager){
+    if (manager == NULL) {
+        return false;
+    }
+    
+    for (unsigned int i = 0; i< m_ViewerManagers.GetCount(); i++) {
+        vrViewerLayerManager * myManager = m_ViewerManagers.Item(i);
+		if (myManager == manager) {
+            wxDELETE(myManager);
+            m_ViewerManagers.RemoveAt(i);
+            return true;
+        }
+    }
+    return false;
 }
 
 

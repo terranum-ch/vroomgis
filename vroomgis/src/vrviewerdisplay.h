@@ -39,6 +39,7 @@ private:
 	int m_StatusField;
 	wxString m_StatusErrText;
     vrViewerOverlayArray m_OverlayArray;
+    wxString m_NoDataText;
 
 
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
@@ -61,6 +62,7 @@ public:
     virtual ~vrViewerDisplay();
 	void SetViewerLayerManager(vrViewerLayerManager * value);
 	vrViewerLayerManager * GetViewerLayerManager();
+    void SetNoDataText (const wxString & text){m_NoDataText = text;}
 
 	void SetBitmap(wxBitmap * bmp);
     wxBitmap * GetBitmapRef(){return m_bmp;}

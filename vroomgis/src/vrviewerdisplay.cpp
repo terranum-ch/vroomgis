@@ -74,7 +74,7 @@ void vrViewerDisplay::OnPaint(wxPaintEvent & event) {
 	wxPaintDC dc(this);
 
 	if (m_bmp == NULL) {
-		_DrawRoundedMessage("No GIS Data");
+		_DrawRoundedMessage(m_NoDataText);
 		return;
 	}
 
@@ -187,6 +187,7 @@ vrViewerDisplay::vrViewerDisplay(){
 	m_Status = NULL;
 	m_StatusField = 0;
 	m_StatusErrText = wxEmptyString;
+    m_NoDataText = wxEmptyString;
 	wxLogError("Don't use this vrViewerDisplay ctor, only here for tests");
 }
 
@@ -203,7 +204,7 @@ wxPanel(parent, id){
 	m_Status = NULL;
 	m_StatusField = 0;
 	m_StatusErrText = wxEmptyString;
-
+    m_NoDataText = _("No GIS Data");
 	SetBackgroundColour(colour);
 
 	// connect event
