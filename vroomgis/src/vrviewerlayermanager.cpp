@@ -74,7 +74,7 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * w
 
 
 	if (m_Toc == NULL){
-		wxLogError("No toc defined");
+		//wxLogError("No toc defined");
 	}
 	else {
 		m_Toc->SetViewerLayerManager(this);
