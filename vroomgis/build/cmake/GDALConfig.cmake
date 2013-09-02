@@ -11,6 +11,7 @@ IF (WIN32)
     HINTS ${SEARCH_GIS_LIB_PATH}/lib
     ${SEARCH_GIS_LIB_PATH}
     NO_DEFAULT_PATH)
+    
 
   # if unix / mac and search geos
 ELSE (WIN32)
@@ -19,7 +20,7 @@ ELSE (WIN32)
       PATHS ${SEARCH_GIS_LIB_PATH}/include
       ${SEARCH_GIS_LIB_PATH}
       ${SEARCH_GIS_LIB_PATH}/GDAL.framework/unix/include
-      PATH_SUFFIXES gdal  				
+      PATH_SUFFIXES gdal                  
       NO_DEFAULT_PATH)
 
     FIND_LIBRARY(GDAL_LIBRARIES
