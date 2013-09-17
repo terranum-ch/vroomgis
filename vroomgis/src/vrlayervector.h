@@ -65,6 +65,8 @@ public:
 	virtual long AddFeature(OGRGeometry * geometry, void * data = NULL){return wxNOT_FOUND;}
 	virtual bool DeleteFeature(long fid);
 	bool IsOK();
+    virtual bool HasData ();
+
     bool SetFeature(OGRFeature * feature);
 
 	inline wxArrayLong * GetSelectedIDs();

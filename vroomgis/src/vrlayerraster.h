@@ -67,6 +67,8 @@ class vrLayerRaster : public vrLayer {
 	bool GetGeoTransform(wxArrayDouble & geotransform);
 
 	virtual bool IsOK();
+    virtual bool HasData ();
+
     
     GDALDataset * GetDatasetRef() {return m_Dataset;}
 

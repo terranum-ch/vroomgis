@@ -72,6 +72,16 @@ bool vrLayerVector::IsOK() {
 }
 
 
+bool vrLayerVector::HasData () {
+    if (GetFeatureCount(false) > 0) {
+        return  true;
+    }
+    return false;
+}
+
+
+
+
 wxFileName vrLayerVector::GetDisplayName(){
 	if (m_DriverType == vrDRIVER_VECTOR_MEMORY) {
 		wxFileName myName (m_FileName);

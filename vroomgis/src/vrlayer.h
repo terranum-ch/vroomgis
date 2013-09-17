@@ -58,6 +58,7 @@ public:
     virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, 
 						 const vrRender * render = NULL, vrLabel * label = NULL){return false;}
 	virtual bool IsOK(){return false;}
+    virtual bool HasData () {return false;}
 	
 };
 WX_DECLARE_OBJARRAY(vrLayer*, vrArrayLayer);
