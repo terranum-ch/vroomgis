@@ -212,7 +212,7 @@ void vrLayerVector::SetSelectedID (long id){
 
 
 bool vrLayerVector::SearchFeatures(OGRGeometry * geometry, wxArrayLong & results) {
-	wxASSERT(geometry);
+	//wxASSERT(geometry); NULL geometry indicates to search all features!
 	wxASSERT(m_Layer);
 	results.Clear();
 
