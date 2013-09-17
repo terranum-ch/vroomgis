@@ -31,9 +31,9 @@ IF(GEOS_LIBRARIES AND SEARCH_GIS_LIB_PATH)
     COMMAND cp ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.dylib ${BUNDLELIBPATH}/libgeos_c.dylib
     COMMAND install_name_tool -id  @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgeos.dylib
     COMMAND install_name_tool -id  @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLELIBPATH}/libgeos_c.dylib
-    COMMAND install_name_tool -change libgeos.${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgeos_c.dylib       
+    COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgeos_c.dylib       
 
-    COMMAND install_name_tool  -change libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
+    COMMAND install_name_tool  -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLEPATH}/Contents/MacOS/${CMAKE_PROJECT_NAME}
     COMMENT "Copying and updating program GEOS libs"
     )
 ENDIF()
@@ -45,8 +45,8 @@ IF(GDAL_LIBRARIES AND SEARCH_GIS_LIB_PATH)
     COMMAND cp ${SEARCH_GIS_LIB_PATH}/lib/libgdal.dylib ${BUNDLELIBPATH}
     COMMAND cp ${SEARCH_GIS_LIB_PATH}/lib/libproj.dylib ${BUNDLELIBPATH}
     COMMAND install_name_tool -id  @executable_path/../${LIBNAME}/libgdal.dylib ${BUNDLELIBPATH}/libgdal.dylib
-    COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos.${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgdal.dylib
-    COMMAND install_name_tool -change libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLELIBPATH}/libgdal.dylib
+    COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos-${GEOS_VERSION}.dylib @executable_path/../${LIBNAME}/libgeos.dylib ${BUNDLELIBPATH}/libgdal.dylib
+    COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libgeos_c.1.dylib @executable_path/../${LIBNAME}/libgeos_c.dylib ${BUNDLELIBPATH}/libgdal.dylib
     COMMAND install_name_tool -id  @executable_path/../${LIBNAME}/libproj.dylib ${BUNDLELIBPATH}/libproj.dylib
     COMMAND install_name_tool -change ${SEARCH_GIS_LIB_PATH}/lib/libproj.0.dylib @executable_path/../${LIBNAME}/libproj.dylib ${BUNDLELIBPATH}/libgdal.dylib
 
