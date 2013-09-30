@@ -240,11 +240,16 @@ double vrCoordinate::GetPixelSize() {
 }
 
 
-bool vrCoordinate::ConvertFromPixels(const wxRect & in, vrRealRect & out) {
+bool vrCoordinate::ConvertFromPixels(wxRect in, vrRealRect & out) {
 	out = vrRealRect(0,0,0,0);
-	if (in.IsEmpty() == true) {
-		wxLogError("Unable to convert empty rectangle");
-		return false;
+	if (in == wxRect(0,0,0,0)) {
+        wxLogDebug(_("Rectangle not inited!"));
+        return false;
+    }
+    
+    if (in.IsEmpty() == true) {
+        in.width = 1;
+        in.height = 1;
 	}
 	
 	wxPoint2DDouble myTopLeft, myRightBottom;
