@@ -60,7 +60,7 @@ class vrCoordinate {
 	
 	double GetPixelSize();
 	
-	bool ConvertFromPixels(const wxRect & in, vrRealRect & out);
+	bool ConvertFromPixels(wxRect in, vrRealRect & out);
     bool ConvertFromPixels(const wxPoint & in, wxPoint2DDouble & out);
 	bool ConvertToPixels (const wxPoint2DDouble & in, wxPoint & out);
 	
