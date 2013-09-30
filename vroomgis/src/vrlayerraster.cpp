@@ -40,6 +40,7 @@ bool vrLayerRaster::IsOK() {
 
 
 // this function is mostly for vector layers.
+// raster have almost allways data
 bool vrLayerRaster::HasData () {
     return IsOK();
 }

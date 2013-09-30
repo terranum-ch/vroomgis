@@ -662,17 +662,45 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible) {
 	// clear actual layer extent
 	myCoordinate->ClearLayersExtent();
 	myCoordinate->ClearPixelSize();
-
+    
+    // if there is a raster layer or a vector layer containing features visible
+    // then we totally ignore coordinates from empty vector layers.
+    bool bHasRealCoordinates = false;
+    for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
+        vrRenderer * myRenderer = m_Renderers.Item(i);
+        if (myRenderer == NULL) {
+            continue;
+        }
+        if (myRenderer->GetVisible() == false) {
+            continue;
+        }
+        
+        if (myRenderer->GetLayer()->HasData() == true){
+            bHasRealCoordinates = true;
+            break;
+        }
+    }
+    
+    // really compute extent
 	vrRealRect myLayerExtent;
 	for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
-		if (m_Renderers.Item(i)->GetLayer()->GetExtent(myLayerExtent)==true) {
-
-			if (onlyvisible == true && m_Renderers.Item(i)->GetVisible() == false){
-			}
-			else {
-				myCoordinate->AddLayersExtent(myLayerExtent);
-			}
-		}
+        vrRenderer * myRenderer = m_Renderers.Item(i);
+        if (myRenderer == NULL) {
+            continue;
+        }
+        
+		if (myRenderer->GetLayer()->GetExtent(myLayerExtent)==false) {
+            continue;
+        }
+        
+        if (myRenderer->GetVisible() == false && onlyvisible == true) {
+            continue;
+        }
+        
+        if (bHasRealCoordinates == true && myRenderer->GetLayer()->HasData() == false) {
+            continue;
+        }
+        myCoordinate->AddLayersExtent(myLayerExtent);
 	}
 
 	if ( myCoordinate->ComputeFullExtent()==false){
