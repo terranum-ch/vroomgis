@@ -244,7 +244,13 @@ wxString lsCrashReport::_CreateGeneralInfo() {
     mySoftVersion << myVersion.GetSoftSVN();
     mySoftComponent << myVersion.GetAllModules();
     mySoftComponent.Replace(_T("\n"), _T("<br>"));
+#endif
     
+#ifdef USE_WXHGVERSION
+    wxHgVersion myVersion;
+    mySoftVersion << myVersion.GetSoftNumber();
+    mySoftComponent << myVersion.GetAllModuleInfo();
+    mySoftComponent.Replace(_T("\n"), _T("<br>"));
 #endif
 
     
