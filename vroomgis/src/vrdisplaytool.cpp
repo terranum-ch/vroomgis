@@ -827,16 +827,18 @@ bool vrDisplayToolModify::MouseMove(const wxMouseEvent & event) {
     
     if (m_ActiveVertex != 0) {
         myDC.DrawLine(wxPoint(m_PointsX[m_ActiveVertex-1], m_PointsY[m_ActiveVertex-1]),event.GetPosition());
-    }else if (m_GeometryType == wkbPolygon) {
+    }
+    else if (m_GeometryType == wkbPolygon) {
         // use last vertex as previous (polygon are closed)
-        myDC.DrawLine(wxPoint(m_PointsX[m_PointsX.GetCount()-1], m_PointsY[m_PointsY.GetCount()-1]), event.GetPosition());
+        myDC.DrawLine(wxPoint(m_PointsX[m_PointsX.GetCount()-2], m_PointsY[m_PointsY.GetCount()-2]), event.GetPosition());
     }
     
     if (m_ActiveVertex < (m_PointsX.GetCount()-1)){
         myDC.DrawLine(wxPoint(m_PointsX[m_ActiveVertex+1], m_PointsY[m_ActiveVertex+1]),event.GetPosition());
-    } else if (m_GeometryType == wkbPolygon){
+    }
+    else if (m_GeometryType == wkbPolygon){
         // use first vertex as next one (polygon are closed)
-        myDC.DrawLine(wxPoint(m_PointsX[0], m_PointsY[0]), event.GetPosition());
+        myDC.DrawLine(wxPoint(m_PointsX[1], m_PointsY[1]), event.GetPosition());
     }
     return true;
 }
