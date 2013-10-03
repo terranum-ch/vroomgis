@@ -16,21 +16,19 @@ email                : lucien.schreiber at crealp dot vs dot ch
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
-
 #ifndef _LSCRASHREPORT_PARAM_H_
 #define _LSCRASHREPORT_PARAM_H_
-
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
-// USING LSVERSION plugin ?
-#cmakedefine USE_VERSION
-#ifdef USE_VERSION
-  #include "lsversion_core.h"		
+// USING WXHGVERSION plugin ? 
+// This is defined in use_wxhgversion.cmake
+#cmakedefine USE_WXHGVERSION
+#ifdef USE_WXHGVERSION
+  #include "wxhgversion_core.h"		
 #endif
 
 
