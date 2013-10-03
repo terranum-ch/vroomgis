@@ -222,7 +222,7 @@ wxString lsCrashReport::_CreateGeneralInfo() {
                                  <h2>OS Description</h2> \
                                  <p>%s</p> \
                                  <h2>Availlable Free Memory</h2> \
-                                 <p>%ld</p> \
+                                 <p>%s</p> \
                                  <h2>Host Name</h2> \
                                  <p>%s</p> \
                                  <h2>User ID</h2> \
@@ -238,13 +238,6 @@ wxString lsCrashReport::_CreateGeneralInfo() {
     
     wxString mySoftVersion = wxEmptyString;
     wxString mySoftComponent = wxEmptyString;
-
-#ifdef USE_VERSION
-    lsVersion myVersion;
-    mySoftVersion << myVersion.GetSoftSVN();
-    mySoftComponent << myVersion.GetAllModules();
-    mySoftComponent.Replace(_T("\n"), _T("<br>"));
-#endif
     
 #ifdef USE_WXHGVERSION
     wxHgVersion myVersion;
@@ -253,12 +246,11 @@ wxString lsCrashReport::_CreateGeneralInfo() {
     mySoftComponent.Replace(_T("\n"), _T("<br>"));
 #endif
 
-    
-    return wxString::Format(myGeneralInfo,
+	return wxString::Format(myGeneralInfo,
                             wxDateTime::Now().FormatISOCombined('-'),
                             m_SoftName,
                             wxGetOsDescription(),
-                            wxGetFreeMemory(),
+							wxGetFreeMemory().ToString(),
                             wxGetHostName(),
                             wxGetUserId(),
                             wxGetUserName(),
