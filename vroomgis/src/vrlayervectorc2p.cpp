@@ -100,6 +100,8 @@ void vrLayerVectorC2P::_DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry *
     gdc->SetPen(myActualPen);
     gdc->StrokePath(myHPath);
     gdc->StrokePath(myVPath);
+    ++m_ObjectDrawn;
+    ++m_DrawnVertex;
     
     // label feature
     if (label != NULL && label->IsActive() == true) {

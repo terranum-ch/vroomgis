@@ -42,7 +42,7 @@ WX_DECLARE_OBJARRAY(vrDipColour, vrArrayDipColours);
 
 
 
-class vrRenderVectorC2PDips : public vrRender {
+class vrRenderVectorC2PDips : public vrRenderVector {
 private:
     vrArrayDipColours m_DipColours;
 	
