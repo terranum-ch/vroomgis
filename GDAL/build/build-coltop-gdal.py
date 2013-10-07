@@ -53,12 +53,12 @@ def buildUnix(gdalpath):
 	
 	command = ""
 	if (lsutilities.askUserWithCheck("Support Snow Leopard ? [Y/N] :") == 'Y'):
-		cflags="-02 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk"
-		lflags="-isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.6.sdk"
-		command = "./configure CFLAGS=\"{}\" CXXFLAGS=\"{}\" LDFLAGS=\"{}\" --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal"
+		cflags="-02 -isysroot /Users/lucien/DATA/PROGRAMATION/_LIB/SDKs/MacOSX10.6.sdk"
+		lflags="-isysroot /Users/lucien/DATA/PROGRAMATION/_LIB/SDKs/MacOSX10.6.sdk"
+		command = "./configure CFLAGS=\"{}\" CXXFLAGS=\"{}\" LDFLAGS=\"{}\" --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal --with-png=internal"
 		command = command.format(cflags, cflags, lflags, libprefix, geos_path+os.sep+"geos-config", proj_path)
 	else:
-		command = "./configure --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal"
+		command = "./configure --prefix={} --with-geos={} --with-python=no --with-sqlite3=yes --with-static-proj4={} --with-pg=no --with-grass=no --with-jasper=no --with-jpeg=internal --with-png=internal"
 		command = command.format(libprefix, geos_path+os.sep+"geos-config", proj_path)
 	curlpath = input ("CURL path (leave empty to use system lib)  : ")
 	if(curlpath != ""):
