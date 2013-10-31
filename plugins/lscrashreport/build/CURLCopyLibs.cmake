@@ -5,7 +5,7 @@ IF(WIN32)
     HINTS "${CURL_INCLUDE_DIR}/../lib/DLL-Debug"
     NO_DEFAULT_PATH)
   IF (NOT CURL_DLL_NAME_DEBUG)
-    MESSAGE (SEND_ERROR "libcurld.dll (debug) not found in ${CURL_INCLUDE_DIR}")
+    MESSAGE (WARNING "libcurld.dll (debug) not found in ${CURL_INCLUDE_DIR}")
   ENDIF()
 
   add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
@@ -17,9 +17,11 @@ IF(WIN32)
   FIND_FILE (CURL_DLL_NAME
     libcurl.dll
     HINTS "${CURL_INCLUDE_DIR}/../lib/DLL-Release"
+    "${CURL_INCLUDE_DIR}/../"
+    "${CURL_INCLUDE_DIR}/../bin"
     NO_DEFAULT_PATH)
   IF (NOT CURL_DLL_NAME)
-    MESSAGE (SEND_ERROR "libcurld.dll (debug) not found in ${CURL_INCLUDE_DIR}")
+    MESSAGE (SEND_ERROR "libcurld.dll (release) not found in ${CURL_INCLUDE_DIR}")
   ENDIF()
 
   add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD

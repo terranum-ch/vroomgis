@@ -1,6 +1,6 @@
 IF (WIN32)
 	FIND_FILE (GDAL_DLL_NAME
-		gdal18.dll NAMES gdal19.dll gdal110.dll 
+		gdal110.dll NAMES gdal19.dll gdal18.dll 
 		HINTS ${SEARCH_GIS_LIB_PATH}/bin
 		${SEARCH_GIS_LIB_PATH}
 		NO_DEFAULT_PATH)
@@ -14,7 +14,7 @@ IF (WIN32)
 		${SEARCH_GIS_LIB_PATH}
 		NO_DEFAULT_PATH)
   IF (NOT GEOS_DLL_NAME)
-    MESSAGE (SEND_ERROR "geos.dll not found in ${SEARCH_GIS_LIB_PATH}")
+    MESSAGE (WARNING "geos.dll not found in ${SEARCH_GIS_LIB_PATH}")
   ENDIF()
 
   FIND_FILE (GEOS_C_DLL_NAME

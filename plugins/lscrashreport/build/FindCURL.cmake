@@ -10,10 +10,17 @@ SET (SEARCH_CURL_LIB_PATH CACHE PATH "Path to the CURL libs (empty for unix syst
 # if windows
 IF (WIN32)
   FIND_PATH(CURL_INCLUDE_DIR curl/curl.h ${SEARCH_CURL_LIB_PATH}/include ${SEARCH_CURL_LIB_PATH})
-
-  SET(CURL_LIBRARIES ${CURL_LIBRARIES}
-    debug "${CURL_INCLUDE_DIR}/../lib/DLL-Debug/libcurld_imp.lib"   
-    optimized "${CURL_INCLUDE_DIR}/../lib/DLL-Release/libcurl_imp.lib")
+  FIND_LIBRARY (CURL_LIBRARIES libcurl_imp
+    HINTS
+    "${SEARCH_CURL_LIB_PATH}"
+    "${SEARCH_CURL_LIB_PATH}/lib"
+    )
+  # if not found in standard path, try home made
+  IF (NOT CURL_LIBRARIES)
+    SET(CURL_LIBRARIES ${CURL_LIBRARIES}
+      debug "${CURL_INCLUDE_DIR}/../lib/DLL-Debug/libcurld_imp.lib"   
+      optimized "${CURL_INCLUDE_DIR}/../lib/DLL-Release/libcurl_imp.lib")
+  ENDIF (NOT CURL_LIBRARIES)
 
 ELSE (WIN32)
   FIND_PATH(CURL_INCLUDE_DIR curl/curl.h
