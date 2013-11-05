@@ -719,7 +719,9 @@ bool vrLayerRasterGDAL::Open(const wxFileName & filename, bool readwrite) {
 
 		return false;
 	}
-
+    
+    // load aux.xml informations
+    m_Dataset->SetDescription(filename.GetFullPath());
 	return true;
 }
 
@@ -1034,6 +1036,41 @@ bool vrLayerRasterGDAL::HasOverviews() {
 	}
 	return false;
 }
+
+
+
+bool vrLayerRasterGDAL::GetMetadata (wxArrayString & names, wxArrayString & values, const wxString & domain){
+    wxASSERT(m_Dataset);
+    names.Clear();
+    values.Clear();
+    
+    char ** pmyMetadata;
+    pmyMetadata = m_Dataset->GetMetadata(domain);
+    if (CSLCount(pmyMetadata) == 0) {
+        return false;
+    }
+    
+    if (pmyMetadata){
+        bool bHasWrongStruture = false;
+        while(*pmyMetadata != NULL){
+            wxArrayString myTokens = wxStringTokenize(wxString(*pmyMetadata), _T(":="));
+            if (myTokens.GetCount() != 2) {
+                bHasWrongStruture = true;
+            }
+            else {
+                names.Add(myTokens [0]);
+                values.Add(myTokens[1]);
+            }
+            pmyMetadata++;
+        }
+        
+        if (bHasWrongStruture == true) {
+            wxLogWarning(_("Some metadata weren't fetched! wrong structure."));
+        }
+    }
+    return true;
+}
+
 
 
 
