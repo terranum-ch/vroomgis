@@ -55,7 +55,6 @@ class vrLayerRaster : public vrLayer {
   protected:
     GDALDataset * m_Dataset;
 
-
   public:
     vrLayerRaster();
     virtual ~vrLayerRaster();
@@ -69,10 +68,7 @@ class vrLayerRaster : public vrLayer {
 	virtual bool IsOK();
     virtual bool HasData ();
 
-    
     GDALDataset * GetDatasetRef() {return m_Dataset;}
-
-
 };
 
 
@@ -88,13 +84,11 @@ protected:
     double m_OneBandMax;
     double m_OneBandNoData;
 	
-	
-	
     bool _Close();
 	bool _ComputeDisplayPosSize(const wxSize & pximgsize, const vrRealRect & imgextent,
 								const vrRealRect & wndextent, double pxsize,
 								wxRect & pximginfo, wxRect & pximgpos);
-		
+    
 	bool _ComputeStat();
     bool _HasStat();
 	virtual bool _ComputeExtent();
@@ -106,8 +100,7 @@ protected:
 								const wxRect & readimgpxinfo, const vrRender * render);
 	virtual bool _GetRasterNoData(unsigned char ** imgdata, const wxSize & outimgpxsize,
 								  const wxRect & readimgpxinfo, const vrRender * render);
-
-	
+    
 	
 public:
     vrLayerRasterGDAL();
@@ -122,15 +115,16 @@ public:
 	virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize,
 						 const vrRender * render = NULL, vrLabel * label = NULL);
 
-	
 	virtual bool GetPixelValue(double coordx, double coordy, wxArrayDouble & values);
     bool BuildOverviews(const wxArrayInt & factors,
 						vrOVERVIEW_TYPE type = vrOVERVIEW_NEAREST,
 						GDALProgressFunc progress = NULL,
 						void * pfProgressData = NULL);
     bool HasOverviews();
-	
+    bool GetMetadata (wxArrayString & names, wxArrayString & values, const wxString & domain = _T(""));
 };
+
+
 
 
 
@@ -138,9 +132,7 @@ class vrLayerRasterEGRID : public vrLayerRasterGDAL {
 public:
     vrLayerRasterEGRID();
     virtual ~vrLayerRasterEGRID();
-	
     virtual wxFileName GetDisplayName();
-	
 };
 
 #endif
