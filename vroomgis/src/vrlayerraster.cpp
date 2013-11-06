@@ -1044,29 +1044,58 @@ bool vrLayerRasterGDAL::GetMetadata (wxArrayString & names, wxArrayString & valu
     names.Clear();
     values.Clear();
     
-    char ** pmyMetadata;
-    pmyMetadata = m_Dataset->GetMetadata(domain);
-    if (CSLCount(pmyMetadata) == 0) {
-        return false;
-    }
-    
-    if (pmyMetadata){
-        bool bHasWrongStruture = false;
-        while(*pmyMetadata != NULL){
-            wxArrayString myTokens = wxStringTokenize(wxString(*pmyMetadata), _T(":="));
-            if (myTokens.GetCount() != 2) {
-                bHasWrongStruture = true;
-            }
-            else {
-                names.Add(myTokens [0]);
-                values.Add(myTokens[1]);
-            }
-            pmyMetadata++;
+    // get metadata for dataset and then for each band
+    for (unsigned int i = 0; i< m_Dataset->GetRasterCount() + 1; i++) {
+        char ** pmyMetadata;
+        if (i == 0) {
+            pmyMetadata = m_Dataset->GetMetadata(domain);
+        }
+        else {
+            pmyMetadata = m_Dataset->GetRasterBand(i)->GetMetadata(domain);
         }
         
-        if (bHasWrongStruture == true) {
-            wxLogWarning(_("Some metadata weren't fetched! wrong structure."));
+        if (CSLCount(pmyMetadata) == 0) {
+            continue;
         }
+        
+        if (pmyMetadata){
+            bool bHasWrongStruture = false;
+            while(*pmyMetadata != NULL){
+                wxString myMetadataTxt (*pmyMetadata);
+                myMetadataTxt.Replace(_T("\n"), _T(" "));
+                
+                wxArrayString myTokens;
+                myTokens = wxStringTokenize(myMetadataTxt, "=");
+                if (myTokens.GetCount() != 2) {
+                    myTokens.Clear();
+                    myTokens = wxStringTokenize(myMetadataTxt, ":");
+                    if (myTokens.GetCount() != 2) {
+                        wxLogMessage(myMetadataTxt);
+                        bHasWrongStruture = true;
+                        pmyMetadata++;
+                        continue;
+                    }
+                }
+                
+                if (i > 0) {
+                    names.Add(wxString::Format(_T("B%d-"), i) + myTokens [0]);
+                }
+                else {
+                    names.Add(myTokens [0]);
+                }
+                
+                values.Add(myTokens[1]);
+                pmyMetadata++;
+            }
+            
+            if (bHasWrongStruture == true) {
+                wxLogWarning(_("Some metadata weren't fetched! wrong structure."));
+            }
+        }
+    }
+    
+    if (names.GetCount() == 0) {
+        return false;
     }
     return true;
 }
