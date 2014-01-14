@@ -643,13 +643,13 @@ void vrViewerTOCTree::_InitBitmapList() {
         // unchecked
         wxMemoryDC myDC;
         myDC.SelectObject(myCheckBmp);
-        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxSOLID));
+		myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(GetControl(), myDC, wxRect(0, 0, 16, 16), 0);
         
         // checked
         myDC.SelectObject(myUnCheckBmp);
-        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxSOLID));
+        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(GetControl(), myDC, wxRect(0, 0, 16, 16), wxCONTROL_CHECKED);
         myDC.SelectObject(wxNullBitmap);
