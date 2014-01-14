@@ -17,7 +17,7 @@ IF (WIN32)
     )
   # if not found in standard path, try home made
   IF (NOT CURL_LIBRARIES)
-    SET(CURL_LIBRARIES ${CURL_LIBRARIES}
+    SET(CURL_LIBRARIES 
       debug "${CURL_INCLUDE_DIR}/../lib/DLL-Debug/libcurld_imp.lib"   
       optimized "${CURL_INCLUDE_DIR}/../lib/DLL-Release/libcurl_imp.lib")
   ENDIF (NOT CURL_LIBRARIES)
