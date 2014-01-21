@@ -170,6 +170,7 @@ OGRwkbGeometryType  vrLayerVector::GetGeometryType() {
 	}
 
 	//OGRFeature * myFeature = m_Layer->GetFeature(0);
+	m_Layer->ResetReading();
 	OGRFeature * myFeature = m_Layer->GetNextFeature();
 	m_Layer->ResetReading();
 	if (myFeature == NULL) {
