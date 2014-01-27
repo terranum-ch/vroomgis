@@ -519,6 +519,7 @@ void vrLayerVectorOGR::_DrawLine(wxDC * dc, OGRFeature * feature, OGRGeometry * 
     wxASSERT(iNumVertex >= 2); // line cannot exists with only one vertex
 
     wxPointList myPtx;
+    myPtx.DeleteContents(true);
     for (int i = 0; i< iNumVertex; i++) {
         wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myLine->getX(i),myLine->getY(i)),coord.GetLeftTop(),pxsize);
         if (myPt != m_PreviousPoint) {
@@ -557,7 +558,6 @@ void vrLayerVectorOGR::_DrawLine(wxDC * dc, OGRFeature * feature, OGRGeometry * 
         dc->SetPen(mySelPen);
     }
     dc->DrawLines(&myPtx);
-    myPtx.DeleteContents(true);
 	m_ObjectDrawn++;
 }
 
