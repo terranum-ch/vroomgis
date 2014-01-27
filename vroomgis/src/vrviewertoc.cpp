@@ -325,6 +325,8 @@ void vrViewerTOCList::OnMouseRightDown(wxMouseEvent & event) {
 	wxMenu * myMenu = CreateContextualMenu(myRenderer, false);
     wxASSERT(myMenu);
     GetControl()->PopupMenu(myMenu);
+
+    wxDELETE(myMenu);
     
 }
 
