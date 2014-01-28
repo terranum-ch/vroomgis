@@ -10,7 +10,7 @@
 # VROOMGIS LIB
 SET(VROOMGIS_LIBRARY "vroomgis")
 
-#FINDING VROOMGIS PATH
+# FINDING VROOMGIS PATH
 FIND_PATH(VROOMGIS_PATH "vroomgis.h" 
 "${CMAKE_CURRENT_LIST_DIR}/../../src"
 "../plugins/vroomgis/src/"
@@ -37,12 +37,17 @@ IF(NOT VROOMGIS_PATH)
 ENDIF(NOT VROOMGIS_PATH)
 #MESSAGE ("VroomGIS found here : ${VROOMGIS_PATH}")
 
+# ADDITION OF CUSTOM MODULES
+set(CMAKE_MODULE_PATH ${VROOMGIS_PATH}/../build/cmake)
+
 # NEEDED LIBRARY
 SET (SEARCH_VROOMGIS_LIBS CACHE BOOL "Sould we search for libraries for vroomGIS ?" )
 IF(SEARCH_VROOMGIS_LIBS)
-	SET(WXWINDOWS_USE_GL 0) 
-  INCLUDE ("${CMAKE_CURRENT_LIST_DIR}/FindwxWidgets.cmake")
-  
+  mark_as_advanced(wxWidgets_wxrc_EXECUTABLE)
+  find_package(wxWidgets COMPONENTS core base adv xml qa REQUIRED)
+  include( "${wxWidgets_USE_FILE}" )
+  include_directories(${wxWidgets_INCLUDE_DIRS})
+
   FIND_PACKAGE(GEOS PATHS "${CMAKE_CURRENT_LIST_DIR}/")
   FIND_PACKAGE(GDAL PATHS "${CMAKE_CURRENT_LIST_DIR}/")
 

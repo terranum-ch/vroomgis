@@ -15,6 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef USE_VLD
+    #include <vld.h> // Visual Leak Detector (https://vld.codeplex.com/)
+#endif
+
 #include "frame.h"
 #include "tmlog.h"              // for double logging process
 #include "vrdisplayvalue.h"     // for displaying raster values

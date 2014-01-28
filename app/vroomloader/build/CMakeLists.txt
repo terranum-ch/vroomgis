@@ -2,13 +2,6 @@
 # (c) LUCIEN SCHREIBER CREALP 2012
 cmake_minimum_required(VERSION 2.6)
 
-## POLICY FOR WINDOWS ONLY ???
-## ENCORE NECESSAIRE ????????????????? A TESTER SOUS WIN
-if(COMMAND cmake_policy)
-    cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
-
-#SET (PROGNAME vroomLoader)
 PROJECT ("vroomLoader")
 
 #search all source and headers files
@@ -22,6 +15,17 @@ INCLUDE("../../../vroomgis/build/cmake/Use_vroomGISlib.cmake")
 
 #USE LSVERSION PLUGIN
 INCLUDE("../../../plugins/wxhgversion/build/use_wxhgversion.cmake")
+
+# Visual Leak Detector
+set(CMAKE_MODULE_PATH ${VROOMGIS_PATH}/../build/cmake)
+if (WIN32)
+    set(USE_VLD 0 CACHE BOOL "Sould we use Visual Leak Detector (https://vld.codeplex.com) ?" )
+    if (USE_VLD)
+        find_package(VLD)
+        include_directories(${VLD_INCLUDE_DIRS})
+        add_definitions(-DUSE_VLD)
+    endif (USE_VLD)
+endif (WIN32)
 
 # mac specific stuff
 IF( APPLE )
@@ -44,7 +48,7 @@ ENDIF (APPLE)
 IF (WIN32)
 	SOURCE_GROUP (resource FILES ../src/resource.rc)
 	ADD_EXECUTABLE (${CMAKE_PROJECT_NAME} WIN32 ${SRC_FILES} ${HEAD_FILES} "../src/resource.rc")
- 	TARGET_LINK_LIBRARIES (${CMAKE_PROJECT_NAME} ${WXWINDOWS_LIBS})
+ 	TARGET_LINK_LIBRARIES (${CMAKE_PROJECT_NAME} ${wxWidgets_LIBRARIES})
 ELSE (WIN32)
  	ADD_EXECUTABLE (${CMAKE_PROJECT_NAME} MACOSX_BUNDLE ${SRC_FILES} ${HEAD_FILES})
 ENDIF (WIN32)
@@ -56,6 +60,13 @@ TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
 IF(USE_WXHGVERSION)
   TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${WXHGVERSION_NAME})
 ENDIF(USE_WXHGVERSION)
+
+# Visual Leak Detector
+if (WIN32)
+	if (USE_VLD)
+		target_link_libraries(${CMAKE_PROJECT_NAME} ${VLD_LIBRARIES})
+	endif (USE_VLD)
+endif (WIN32)
 
 # copy libs to bundle if we are under mac...
 # check is done internally.
