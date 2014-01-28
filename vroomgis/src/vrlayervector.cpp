@@ -421,12 +421,10 @@ bool vrLayerVectorOGR::CopyLayer (vrLayerVectorOGR * layer, const wxString & new
 }
 
 
-bool vrLayerVectorOGR::AddField(const OGRFieldDefn & fielddef) {
+bool vrLayerVectorOGR::AddField(OGRFieldDefn & fielddef) {
     wxASSERT(m_Layer);
-    OGRFieldDefn * myField = new OGRFieldDefn(fielddef);
-    if( m_Layer->CreateField(myField) != OGRERR_NONE){
-        wxLogError("Error creating field : %s", myField->GetNameRef());
-        wxDELETE(myField);
+    if( m_Layer->CreateField(&fielddef) != OGRERR_NONE){
+        wxLogError("Error creating field : %s", fielddef.GetNameRef());
         return false;
     }
     return true;
