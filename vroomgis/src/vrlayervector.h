@@ -136,7 +136,7 @@ public:
     virtual bool Create(const wxFileName & filename, int spatialtype = wkbPoint);
     virtual bool CopyLayer (vrLayerVectorOGR * layer, const wxString & newlayername = wxEmptyString);
 
-    bool AddField(const OGRFieldDefn & fielddef);
+    bool AddField(OGRFieldDefn & fielddef);
     virtual long AddFeature(OGRGeometry * geometry, void * data = NULL);
 
 	virtual bool GetExtent(vrRealRect & rect);
