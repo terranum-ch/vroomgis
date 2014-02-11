@@ -19,7 +19,7 @@ IF (WIN32)
     )
 
   FIND_LIBRARY(GEOS_LIBRARIES
-    geos_c_i
+    geos_c_i geos_c 
     HINTS ${SEARCH_GEOS_LIB_PATH}/source
     ${SEARCH_GEOS_LIB_PATH}/src
     ${SEARCH_GEOS_LIB_PATH}/lib
