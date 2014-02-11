@@ -33,7 +33,9 @@ FIND_PATH(VROOMGIS_PATH "vroomgis.h"
 NO_DEFAULT_PATH)
 
 IF(NOT VROOMGIS_PATH)
-	MESSAGE(FATAL_ERROR "Path not found, not able to use the vroomgis library. You may fill the VROOMGIS_PATH manually")
+	MESSAGE("${CMAKE_CURRENT_LIST_DIR}/../../src")
+  MESSAGE(FATAL_ERROR "Path not found, not able to use the vroomgis library. You may fill the VROOMGIS_PATH manually")
+
 ENDIF(NOT VROOMGIS_PATH)
 #MESSAGE ("VroomGIS found here : ${VROOMGIS_PATH}")
 

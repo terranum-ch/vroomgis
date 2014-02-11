@@ -7,7 +7,7 @@ IF (WIN32)
     NO_DEFAULT_PATH)
 
   FIND_LIBRARY(GDAL_LIBRARIES
-    gdal_i
+    gdal_i gdal 
     HINTS ${SEARCH_GIS_LIB_PATH}/lib
     ${SEARCH_GIS_LIB_PATH}
     NO_DEFAULT_PATH)
