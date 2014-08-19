@@ -64,6 +64,8 @@ class vrLayerRaster : public vrLayer {
 	virtual bool GetExtent(vrRealRect & rect){return false;}
     virtual wxSize GetPixelSize();
 	bool GetGeoTransform(wxArrayDouble & geotransform);
+    double GetPixelWidth ();
+    double GetPixelHeight ();
 
 	virtual bool IsOK();
     virtual bool HasData ();
