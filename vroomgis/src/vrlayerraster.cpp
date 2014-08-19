@@ -94,6 +94,19 @@ bool vrLayerRaster::GetGeoTransform(wxArrayDouble & geotransform) {
 }
 
 
+double vrLayerRaster::GetPixelWidth (){
+    wxArrayDouble myGeotransform;
+    GetGeoTransform(myGeotransform);
+    return myGeotransform[1];
+}
+
+
+double vrLayerRaster::GetPixelHeight (){
+    wxArrayDouble myGeotransform;
+    GetGeoTransform(myGeotransform);
+    return myGeotransform[5];
+}
+
 
 
 /***************************************************************************//**
