@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gdalallregister.cpp 25798 2013-03-25 14:42:33Z aboudreault $
+ * $Id: gdalallregister.cpp 27196 2014-04-16 11:41:24Z rouault $
  *
  * Project:  GDAL Core
  * Purpose:  Implementation of GDALAllRegister(), primary format registration.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 1998, Frank Warmerdam
+ * Copyright (c) 2007-2014, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,7 +31,7 @@
 #include "gdal_priv.h"
 #include "gdal_frmts.h"
 
-CPL_CVSID("$Id: gdalallregister.cpp 25798 2013-03-25 14:42:33Z aboudreault $");
+CPL_CVSID("$Id: gdalallregister.cpp 27196 2014-04-16 11:41:24Z rouault $");
 
 #ifdef notdef
 // we may have a use for this some day
@@ -276,13 +277,6 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_JP2OpenJPEG();
 #endif
 
-#ifdef FRMT_jpeg2000
-// JPEG2000 support using JasPer toolkit
-// This one should always be placed after other JasPer supported formats,
-// such as BMP or PNM. In other case we will get bad side effects.
-    GDALRegister_JPEG2000();
-#endif
-
 #ifdef FRMT_l1b
     GDALRegister_L1B();
 #endif
@@ -297,6 +291,13 @@ void CPL_STDCALL GDALAllRegister()
 
 #ifdef FRMT_mrsid
     GDALRegister_MrSID();
+#endif
+
+#ifdef FRMT_jpeg2000
+// JPEG2000 support using JasPer toolkit
+// This one should always be placed after other JasPer supported formats,
+// such as BMP or PNM. In other case we will get bad side effects.
+    GDALRegister_JPEG2000();
 #endif
 
 #ifdef FRMT_mrsid_lidar
@@ -399,6 +400,7 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_CTable2();
     GDALRegister_ACE2();
     GDALRegister_SNODAS();
+    GDALRegister_KRO();
 #endif
 
 #ifdef FRMT_arg
@@ -531,7 +533,7 @@ void CPL_STDCALL GDALAllRegister()
 #endif
 
 #ifdef FRMT_c2d
-	GDALRegister_C2D();
+    GDALRegister_C2D();
 #endif
 /* -------------------------------------------------------------------- */
 /*      Deregister any drivers explicitly marked as supressed by the    */

@@ -1,5 +1,5 @@
 /******************************************************************************
- * $Id: gdal_frmts.h 25798 2013-03-25 14:42:33Z aboudreault $
+ * $Id: gdal_frmts.h 27044 2014-03-16 23:41:27Z rouault $
  *
  * Project:  GDAL
  * Purpose:  Prototypes for all format specific driver initializations.
@@ -7,6 +7,7 @@
  *
  ******************************************************************************
  * Copyright (c) 2001, Frank Warmerdam
+ * Copyright (c) 2007-2014, Even Rouault <even dot rouault at mines-paris dot org>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -176,6 +177,7 @@ void CPL_DLL GDALRegister_NGSGEOID(void);
 void CPL_DLL GDALRegister_MBTiles(void);
 void CPL_DLL GDALRegister_ARG(void);
 void CPL_DLL GDALRegister_IRIS(void);
+void CPL_DLL GDALRegister_KRO(void);
 void CPL_DLL GDALRegister_C2D(void);
 CPL_C_END
 
