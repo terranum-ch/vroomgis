@@ -28,6 +28,7 @@ wxString vrDrivers::GetWildcards(const vrDRIVERS_FLAG & flags)
 		myTypes.Add(vrDRIVER_RASTER_ESRIGRID);
 		myTypes.Add(vrDRIVER_RASTER_EASC);
 		myTypes.Add(vrDRIVER_RASTER_SGRD7);
+		myTypes.Add(vrDRIVER_RASTER_WMS);
 	}
 	
 	if (flags & vrDRIVERS_FLAG_COLTOP ) {
@@ -102,6 +103,7 @@ wxString vrDrivers::GetWildcardsRaster (){
     myType.Add(vrDRIVER_RASTER_ESRIGRID);
     myType.Add(vrDRIVER_RASTER_EASC);
     myType.Add(vrDRIVER_RASTER_SGRD7);
+    myType.Add(vrDRIVER_RASTER_WMS);
     return GetSpecificWildcards(myType);
 }
 
