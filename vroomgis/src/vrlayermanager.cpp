@@ -102,6 +102,10 @@ bool vrLayerManager::Open(const wxFileName & filename, bool readwrite) {
             myLayer = new vrLayerRasterGDAL();
             break;
 
+        case vrDRIVER_RASTER_WMS:
+            myLayer = new vrLayerRasterGDAL();
+            break;
+
 
 		default:
 			wxLogError("Extension \"%s\" not supported",filename.GetExt());
@@ -207,6 +211,7 @@ bool vrLayerManager::Erase(const wxFileName & filename) {
 		case vrDRIVER_RASTER_C2D:
         case vrDRIVER_RASTER_EASC:
         case vrDRIVER_RASTER_SGRD7:
+        case vrDRIVER_RASTER_WMS:
         {
             GDALDriver *myGDALDriver = GetGDALDriverManager()->GetDriverByName( myDriverName.mb_str(wxConvUTF8));
             wxASSERT(myGDALDriver);

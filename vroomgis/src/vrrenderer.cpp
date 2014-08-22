@@ -46,6 +46,7 @@ bool vrRenderer::_IsCorrectRender() {
 			if (m_Layer->GetType() == vrDRIVER_RASTER_ESRIGRID) { bReturn = true; break;}
 			if (m_Layer->GetType() == vrDRIVER_RASTER_EASC) { bReturn = true; break;}
 			if (m_Layer->GetType() == vrDRIVER_RASTER_SGRD7) { bReturn = true; break;}
+			if (m_Layer->GetType() == vrDRIVER_RASTER_WMS) { bReturn = true; break;}
 			break;
 			
 		case vrRENDER_RASTER_C2D:
@@ -95,6 +96,7 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 			case vrDRIVER_RASTER_ESRIGRID:
 			case vrDRIVER_RASTER_EASC:
 			case vrDRIVER_RASTER_SGRD7:
+			case vrDRIVER_RASTER_WMS:
 				m_Render = new vrRenderRaster();
 				break;
 				
