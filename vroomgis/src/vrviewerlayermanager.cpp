@@ -46,7 +46,7 @@ END_EVENT_TABLE()
 
 
 vrViewerLayerManager::vrViewerLayerManager(vrLayerManager * parent, wxWindow * window,
-										   vrViewerDisplay * viewer,vrViewerTOC * toc) {
+										   vrViewerDisplay * viewer, vrViewerTOC * toc) {
 
 	//wxASSERT(viewer);
 	wxASSERT(parent);
