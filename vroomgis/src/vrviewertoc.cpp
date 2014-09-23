@@ -311,7 +311,7 @@ void vrViewerTOCList::OnMouseRightDown(wxMouseEvent & event) {
 	// hit test
 	wxPoint myPos = event.GetPosition();
 	int myItemID = m_CheckList->HitTest(myPos);
-	wxLogMessage("Item seleced id is %d @ position %d - %d", myItemID, myPos.x, myPos.y);
+	wxLogMessage("Item selected id is %d @ position %d - %d", myItemID, myPos.x, myPos.y);
     
 	if (myItemID == wxNOT_FOUND) {
 		return;
