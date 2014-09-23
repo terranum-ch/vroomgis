@@ -408,7 +408,12 @@ vrRenderer * vrViewerLayerManager::GetRenderer(const unsigned int & index) {
 
 vrRenderer * vrViewerLayerManager::GetRenderer(const wxString & layername) {
     for (unsigned int i = 0; i< m_Renderers.GetCount(); i++) {
+        // check on the full path (with file name)
         if (m_Renderers.Item(i)->GetLayer()->GetFileName().GetFullPath() == layername){
+            return m_Renderers.Item(i);
+        }
+        // check on the path without the file name (for ESRI raster data)
+        if (m_Renderers.Item(i)->GetLayer()->GetFileName().GetPath() == layername){
             return m_Renderers.Item(i);
         }
     }
