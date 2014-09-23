@@ -42,6 +42,7 @@ class vrLayer {
 protected:
     vrDRIVERS_TYPE m_DriverType;
 	wxFileName m_FileName;
+    OGRSpatialReference m_OGRSpatialReference;
 		
 public:
 	vrLayer();
