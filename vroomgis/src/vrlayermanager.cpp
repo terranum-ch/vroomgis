@@ -28,6 +28,8 @@ vrLayerManager::vrLayerManager() {
 	// init all formats from library
 	OGRRegisterAll();
 	GDALAllRegister();
+    m_ReprojectOnTheFly = false;
+    m_WorkingCoordinateSystem = wxEmptyString;
 }
 
 
@@ -117,6 +119,10 @@ bool vrLayerManager::Open(const wxFileName & filename, bool readwrite) {
 	if (myLayer->Open(filename, readwrite)==false){
 		return false;
 	}
+
+    if (m_ReprojectOnTheFly) {
+
+    }
 
 	m_Layers.Add(myLayer);
 	//7wxLogMessage("%ld layers in the layermanager", m_Layers.GetCount());
@@ -288,6 +294,23 @@ bool vrLayerManager::RemoveViewerLayerManager (vrViewerLayerManager * manager){
         }
     }
     return false;
+}
+
+
+void vrLayerManager::AllowReprojectOnTheFly(bool enable) {
+    m_ReprojectOnTheFly = enable;
+}
+
+bool vrLayerManager::SetWorkingCoordinateSystem(wxString val) {
+    OGRErr err = m_WorkingOGRSpatialReference.SetWellKnownGeogCS(val);
+    if (err!=OGRERR_NONE)
+    {
+        wxLogError(_("Error setting the coordinate system \"%s\"! (Error number: %d)"), val.c_str(), err);
+        return false;
+    }
+    m_WorkingCoordinateSystem = val;
+    
+    return true;
 }
 
 

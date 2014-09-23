@@ -36,6 +36,10 @@ class vrLayerManager
 protected:
 	vrArrayViewerLayerManager m_ViewerManagers;
 	vrArrayLayer m_Layers;
+    
+    bool m_ReprojectOnTheFly;
+    wxString m_WorkingCoordinateSystem;
+    OGRSpatialReference m_WorkingOGRSpatialReference;
 	
 public:
 	vrLayerManager();
@@ -51,6 +55,9 @@ public:
 	
 	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
 	bool RemoveViewerLayerManager (vrViewerLayerManager * manager);
+
+    void AllowReprojectOnTheFly(bool enable);
+    bool SetWorkingCoordinateSystem(wxString val);
 };
 
 
