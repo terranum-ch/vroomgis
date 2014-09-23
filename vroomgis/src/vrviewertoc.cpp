@@ -380,7 +380,7 @@ void vrViewerTOCList::OnMouseWheel(wxMouseEvent & event) {
 	}
     
 	wxASSERT(GetViewerLayerManager());
-	wxLogMessage("Moving item : %d to %d", myItemSelected, myNewPosition);
+	wxLogDebug("Moving item : %d to %d", myItemSelected, myNewPosition);
 	GetViewerLayerManager()->Move(myItemSelected, myNewPosition);
 }
 
