@@ -27,7 +27,10 @@ IF(USE_CRASHREPORT)
   ENDIF(NOT LSCRASHREPORT_PATH)
 
   # CURL for sending crashreport
-  INCLUDE("${LSCRASHREPORT_PATH}/../build/FindCURL.cmake")
+  mark_as_advanced(CLEAR CURL_INCLUDE_DIR)
+  mark_as_advanced(CLEAR CURL_LIBRARY)
+  find_package(CURL REQUIRED)
+  include_directories(${CURL_INCLUDE_DIRS})	
 
   #
   # CREATE LIBRARY 

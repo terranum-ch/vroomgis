@@ -51,7 +51,11 @@ IF(SEARCH_VROOMGIS_LIBS)
   include_directories(${wxWidgets_INCLUDE_DIRS})
 
   FIND_PACKAGE(GEOS PATHS "${CMAKE_CURRENT_LIST_DIR}/")
-  FIND_PACKAGE(GDAL PATHS "${CMAKE_CURRENT_LIST_DIR}/")
+  
+  #GDAL
+  find_package(GDAL REQUIRED)
+  include_directories(${GDAL_INCLUDE_DIRS})
+  link_libraries(${GDAL_LIBRARIES})
 
   #INCLUDE ("${VROOMGIS_PATH}/../build/cmake/findGISLib.cmake")
 
