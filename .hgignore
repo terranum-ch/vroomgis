@@ -26,3 +26,5 @@ cmake_install.cmake
 desktop.ini
 wxhgversion_param.h
 lscrashreport_param.h
+GDAL\build\*.dir\*
+*.vcxproj.user
