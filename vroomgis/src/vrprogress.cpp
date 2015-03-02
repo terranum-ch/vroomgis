@@ -42,25 +42,25 @@ int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char * pszMessage, voi
 
 
 vrProgressSimple::vrProgressSimple(wxWindow * parent, wxString title, wxString message) {
-	m_ProgressWnd = new wxProgressDialog(title, message, 100, parent,
+	m_progressWnd = new wxProgressDialog(title, message, 100, parent,
 									 wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_CAN_ABORT);
-	m_Continue = true;
-	m_Percent.Create(100);
+	m_continue = true;
+	m_percent.Create(100);
 }
 
 
 
 vrProgressSimple::~vrProgressSimple() {
-	wxDELETE(m_ProgressWnd);
+	wxDELETE(m_progressWnd);
 }
 
 
 
 void vrProgressSimple::UpdateProgress() {
-	wxASSERT(m_ProgressWnd);
-	if (m_Percent.IsNewStep()) {
-		wxLogMessage("percent : %d", m_Percent.GetPercent());
-		m_Continue = m_ProgressWnd->Update(m_Percent.GetPercent());
+	wxASSERT(m_progressWnd);
+	if (m_percent.IsNewStep()) {
+		wxLogMessage("percent : %d", m_percent.GetPercent());
+		m_continue = m_progressWnd->Update(m_percent.GetPercent());
 	}
 }
 

@@ -52,11 +52,11 @@ size_t vrPerformance::_GetUsedMemory (bool resident){
 
 vrPerformance::vrPerformance(wxString file, wxString header) {
 	wxASSERT(file != wxEmptyString);
-	m_FilePath = wxFileName(file);
-	m_StopWatch.Start(0);
-	m_File.Open(m_FilePath.GetFullPath(), wxFile::write_append);
-	if (m_File.Length() < 10) {
-		m_File.Write(_("Date\tPlateform\tDebug\tElapsed time\tUsed Memory\t") + header + _T("\n"));
+	m_filePath = wxFileName(file);
+	m_stopWatch.Start(0);
+	m_file.Open(m_filePath.GetFullPath(), wxFile::write_append);
+	if (m_file.Length() < 10) {
+		m_file.Write(_("Date\tPlateform\tDebug\tElapsed time\tUsed Memory\t") + header + _T("\n"));
 	}
 }
 
@@ -76,11 +76,11 @@ void vrPerformance::StopWork(wxString text) {
 	myDebug = _("No");
 #endif
 
-	m_File.Write(wxString::Format(_T("%s\t%s\t%s\t%ld\t%ld\t"),
+	m_file.Write(wxString::Format(_T("%s\t%s\t%s\t%ld\t%ld\t"),
 								  wxDateTime::Now().FormatISOCombined(),
 								  wxGetOsDescription(),
 								  myDebug,
-								  m_StopWatch.Time(),
+								  m_stopWatch.Time(),
 								  myUsedMem)
 				 + text + _T("\n"));
 }

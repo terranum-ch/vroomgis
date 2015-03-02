@@ -12,11 +12,11 @@
 
 
 vrLabelC2P::vrLabelC2P(wxFont font, wxColour color) : vrLabel(font, color) {
-    m_ActualPt = wxDefaultPosition;
-    m_Offset = 5;
-    m_ActualRotation = 0.0;
-    m_ActualText = wxEmptyString;
-    m_ActualSelected = false;
+    m_actualPt = wxDefaultPosition;
+    m_offset = 5;
+    m_actualRotation = 0.0;
+    m_actualText = wxEmptyString;
+    m_actualSelected = false;
 }
 
 
@@ -31,15 +31,15 @@ bool vrLabelC2P::AddFeature(long fid, OGRGeometry * geom, const wxString & text,
         return false;
     }
     
-    m_ActualSelected = false;
+    m_actualSelected = false;
     if (fid == 1) {
-        m_ActualSelected = true;
+        m_actualSelected = true;
     }
     
     OGRPoint * myPt = (OGRPoint*) geom;
-    m_ActualPt = wxPoint(wxRound(myPt->getX()), wxRound(myPt->getY()));
-    m_ActualRotation = rotation;
-    m_ActualText = text + wxString("\u00B0"); // degree symbol
+    m_actualPt = wxPoint(wxRound(myPt->getX()), wxRound(myPt->getY()));
+    m_actualRotation = rotation;
+    m_actualText = text + wxString("\u00B0"); // degree symbol
     return true;
 }
 
@@ -48,7 +48,7 @@ bool vrLabelC2P::AddFeature(long fid, OGRGeometry * geom, const wxString & text,
 bool vrLabelC2P::Draw(wxGraphicsContext * gdc, const wxRect2DDouble & coord, const vrRender * render, double pixsize) {
     wxASSERT(gdc);
     vrRenderVectorC2PDips * myRender = (vrRenderVectorC2PDips*) render;
-    if (m_ActualSelected == true) {
+    if (m_actualSelected == true) {
         gdc->SetFont(GetFont(), myRender->GetSelectionColour());
     }
     else{
@@ -56,12 +56,12 @@ bool vrLabelC2P::Draw(wxGraphicsContext * gdc, const wxRect2DDouble & coord, con
     }
     // Rotate and transform matrix
     wxGraphicsMatrix myRotateMatrix = gdc->CreateMatrix();
-    myRotateMatrix.Rotate((m_ActualRotation * M_PI) / 180);
+    myRotateMatrix.Rotate((m_actualRotation * M_PI) / 180);
     wxGraphicsMatrix myTranslateMatrix = gdc->CreateMatrix();
-    myTranslateMatrix.Translate(m_ActualPt.x, m_ActualPt.y);
+    myTranslateMatrix.Translate(m_actualPt.x, m_actualPt.y);
     
     double labelpos = 2.0;
-    if (m_ActualRotation > 90 && m_ActualRotation < 270) {
+    if (m_actualRotation > 90 && m_actualRotation < 270) {
         labelpos = -2.0;
     }
     
@@ -71,7 +71,7 @@ bool vrLabelC2P::Draw(wxGraphicsContext * gdc, const wxRect2DDouble & coord, con
     myTempPath.Transform(myTranslateMatrix);
     
     wxPoint2DDouble myMovedPt = myTempPath.GetCurrentPoint();
-    gdc->DrawText(m_ActualText,
+    gdc->DrawText(m_actualText,
                   myMovedPt.m_x,
                   myMovedPt.m_y,
                   0);

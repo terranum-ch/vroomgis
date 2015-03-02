@@ -34,8 +34,8 @@ class vrViewerDisplay;
 *******************************************************************************/
 class vrViewerOverlay {
 private:
-    wxString m_Name;
-    bool m_Visible;
+    wxString m_name;
+    bool m_visible;
     
     
 public:
@@ -50,12 +50,12 @@ public:
 };
 
 inline const wxString vrViewerOverlay::GetName() const {
-    return m_Name;
+    return m_name;
 }
 
 
 inline const bool vrViewerOverlay::IsVisible() const {
-    return m_Visible;
+    return m_visible;
 }
 WX_DECLARE_OBJARRAY(vrViewerOverlay*, vrViewerOverlayArray);
 
@@ -70,10 +70,10 @@ WX_DECLARE_OBJARRAY(vrViewerOverlay*, vrViewerOverlayArray);
 *******************************************************************************/
 class vrViewerOverlayText : public vrViewerOverlay {
 private:
-    wxFont m_Font;
-    wxString m_Text;
-    wxPoint m_Pos;
-    wxColour m_TextColour;
+    wxFont m_font;
+    wxString m_text;
+    wxPoint m_pos;
+    wxColour m_textColour;
 
 public:
     vrViewerOverlayText(wxString name, wxString text);
@@ -93,19 +93,19 @@ public:
 
 
 inline const wxFont vrViewerOverlayText::GetFont() const {
-    return m_Font;
+    return m_font;
 }
 
 inline const wxString vrViewerOverlayText::GetText() const {
-    return m_Text;
+    return m_text;
 }
 
 inline const wxPoint vrViewerOverlayText::GetPosition() const {
-    return m_Pos;
+    return m_pos;
 }
 
 inline const wxColour vrViewerOverlayText::GetTextColour() const {
-    return m_TextColour;
+    return m_textColour;
 }
 
 
@@ -118,9 +118,9 @@ inline const wxColour vrViewerOverlayText::GetTextColour() const {
 // not used anymore...
 class vrViewerOverlayGeomPolygon : public vrViewerOverlay {
 private:
-    OGRPolygon * m_Polygon;
-    vrRenderVector m_RenderPolygon;
-    vrViewerDisplay * m_Display;
+    OGRPolygon * m_polygon;
+    vrRenderVector m_renderPolygon;
+    vrViewerDisplay * m_display;
     
 public:
     vrViewerOverlayGeomPolygon(const wxString & name, vrViewerDisplay * viewer);

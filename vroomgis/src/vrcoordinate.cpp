@@ -21,39 +21,39 @@
 
 bool vrCoordinate::_ComputePixelSize() {
 
-	wxASSERT(m_Viewer);
+	wxASSERT(m_viewer);
 	ClearPixelSize();
-	double myPxWidth = m_Viewer->GetSize().GetWidth();
+	double myPxWidth = m_viewer->GetSize().GetWidth();
 	
-	if(m_WndExtent.m_width <= 0){
+	if(m_wndExtent.m_width <= 0){
 		wxLogError("Extent not defined, computing pixel size not possible");
 		return false;
 	}
 	
-	double myPixelSize = m_WndExtent.m_width / myPxWidth;
+	double myPixelSize = m_wndExtent.m_width / myPxWidth;
 	if (myPixelSize <= 0) {
 		wxLogError("Error computing pixel size. It is bellow 0 : %.f", myPixelSize);
 		return false;
 	}
 	
-	m_PxSize = myPixelSize;
+	m_pxSize = myPixelSize;
 	return true;
 }
 
 
 vrCoordinate::vrCoordinate(vrViewerDisplay * viewer) {
 	wxASSERT(viewer);
-	m_Viewer = viewer;
+	m_viewer = viewer;
 	ClearPixelSize();
 }
 
 
 
 vrCoordinate::vrCoordinate(const vrCoordinate & source) {
-	m_Viewer = source.m_Viewer;
-	m_WndExtent = source.m_WndExtent;
-	m_LayersExtent = source.m_LayersExtent;
-	m_PxSize = source.m_PxSize;
+	m_viewer = source.m_viewer;
+	m_wndExtent = source.m_wndExtent;
+	m_layersExtent = source.m_layersExtent;
+	m_pxSize = source.m_pxSize;
 }
 
 
@@ -64,7 +64,7 @@ vrCoordinate::~vrCoordinate() {
 
 
 vrRealRect vrCoordinate::GetExtent() {
-	return m_WndExtent;
+	return m_wndExtent;
 }
 
 
@@ -75,32 +75,32 @@ void vrCoordinate::SetExtent(const vrRealRect & extent) {
 		return;
 	}
 	ClearPixelSize();
-	m_WndExtent = extent;
+	m_wndExtent = extent;
 }
 
 
 bool vrCoordinate::UpdateExtent() {
-	wxASSERT(m_Viewer);
-	if (m_WndExtent.IsOk() == false) {
+	wxASSERT(m_viewer);
+	if (m_wndExtent.IsOk() == false) {
 		wxLogError("Window real extent isn't defined, updating not possible");
 		return false;
 	}
 	
 	// ensure sign is kept when size is updated
 	double xpositive = 1, ypositive =1; 
-	if (m_WndExtent.m_width < 0){
+	if (m_wndExtent.m_width < 0){
 		xpositive = -1;
 	}	
 	
-	if (m_WndExtent.m_height < 0) {
+	if (m_wndExtent.m_height < 0) {
 		ypositive = -1;
 	}
 
-	wxSize myViewSize = m_Viewer->GetSize();
+	wxSize myViewSize = m_viewer->GetSize();
 	wxASSERT(myViewSize.IsFullySpecified());
 	
-	m_WndExtent.m_width = myViewSize.GetWidth() * fabs(GetPixelSize()) * xpositive;
-	m_WndExtent.m_height = myViewSize.GetHeight() * fabs(GetPixelSize()) * ypositive;
+	m_wndExtent.m_width = myViewSize.GetWidth() * fabs(GetPixelSize()) * xpositive;
+	m_wndExtent.m_height = myViewSize.GetHeight() * fabs(GetPixelSize()) * ypositive;
 	return true;
 }
 
@@ -111,10 +111,10 @@ vrRealRect vrCoordinate::GetRectFitted(const vrRealRect & originalrect) {
 		wxLogError("Specified extent isn't Correct, unable to compute fitted rectangle");
 		return originalrect;
 	}
-	wxASSERT(m_WndExtent.IsOk()==true);
+	wxASSERT(m_wndExtent.IsOk()==true);
 	
-	double xfactor = fabs(m_WndExtent.m_width / originalrect.m_width);
-	double yfactor = fabs(m_WndExtent.m_height / originalrect.m_height);
+	double xfactor = fabs(m_wndExtent.m_width / originalrect.m_width);
+	double yfactor = fabs(m_wndExtent.m_height / originalrect.m_height);
 	
 	double ratiofactor = xfactor;
 	if (yfactor < xfactor) {
@@ -122,13 +122,13 @@ vrRealRect vrCoordinate::GetRectFitted(const vrRealRect & originalrect) {
 	}
 	
 	vrRealRect myFittedRect;
-	myFittedRect.m_width = fabs(m_WndExtent.m_width / ratiofactor);
-	if (m_WndExtent.m_width < 0) {
+	myFittedRect.m_width = fabs(m_wndExtent.m_width / ratiofactor);
+	if (m_wndExtent.m_width < 0) {
 		wxASSERT(originalrect.m_width < 0);
 		myFittedRect.m_width *= -1;
 	}
-	myFittedRect.m_height = fabs(m_WndExtent.m_height / ratiofactor);
-	if (m_WndExtent.m_height < 0) {
+	myFittedRect.m_height = fabs(m_wndExtent.m_height / ratiofactor);
+	if (m_wndExtent.m_height < 0) {
 		wxASSERT(originalrect.m_height < 0);
 		myFittedRect.m_height *= -1;
 	}
@@ -140,46 +140,46 @@ vrRealRect vrCoordinate::GetRectFitted(const vrRealRect & originalrect) {
 
 
 void vrCoordinate::ClearLayersExtent() {
-	m_LayersExtent = vrRealRect();
+	m_layersExtent = vrRealRect();
 }
 
 
 
 void vrCoordinate::ClearPixelSize() {
-	m_PxSize = wxNOT_FOUND;
+	m_pxSize = wxNOT_FOUND;
 }
 
 
 
 void vrCoordinate::AddLayersExtent(const vrRealRect & rect) {
 	
-	if (m_LayersExtent.IsOk()==false) {
-		m_LayersExtent = rect;
+	if (m_layersExtent.IsOk()==false) {
+		m_layersExtent = rect;
 		return;
 	}
 	
-	//vrRealRect myTempRect (m_LayersExtent);
-	vrRealRect myResult = m_LayersExtent.Union(rect);
+	//vrRealRect myTempRect (m_layersExtent);
+	vrRealRect myResult = m_layersExtent.Union(rect);
 	if (myResult.IsOk() == false) {
 		wxLogError("Computing rectangle union failed, result invalid");
 		return;
 	}
 	
-	m_LayersExtent = myResult;
+	m_layersExtent = myResult;
 	
 }
 
 
 bool vrCoordinate::ComputeFullExtent() {
 	
-	if (m_LayersExtent.IsOk() == false) {
+	if (m_layersExtent.IsOk() == false) {
 		wxLogError("Extent for layers not specified, unable to compute full extent");
 		return false;
 	}
 	
-	wxASSERT(m_Viewer);
-	wxSize myWndSizePx = m_Viewer->GetSize();
-	vrRealRect myLayerExtent (m_LayersExtent);
+	wxASSERT(m_viewer);
+	wxSize myWndSizePx = m_viewer->GetSize();
+	vrRealRect myLayerExtent (m_layersExtent);
 	
 	double dWndwidth = myWndSizePx.GetWidth() - vrCOORDINATE_MARGIN;
 	double dWndheight = myWndSizePx.GetHeight()  - vrCOORDINATE_MARGIN;
@@ -210,18 +210,18 @@ bool vrCoordinate::ComputeFullExtent() {
 	
 	
 	
-	m_WndExtent = vrRealRect();
-	m_WndExtent.m_width = myWndSizePx.GetWidth();
-	m_WndExtent.m_height = myWndSizePx.GetHeight();
+	m_wndExtent = vrRealRect();
+	m_wndExtent.m_width = myWndSizePx.GetWidth();
+	m_wndExtent.m_height = myWndSizePx.GetHeight();
 	
 	// scale
-	m_WndExtent.m_width *= myDivFactorX;
-	m_WndExtent.m_height *= myDivFactorY;
+	m_wndExtent.m_width *= myDivFactorX;
+	m_wndExtent.m_height *= myDivFactorY;
 	
 	
 	// center rect
 	wxPoint2DDouble myCenter = myLayerExtent.GetCentre();
-	m_WndExtent.SetCentre(myCenter);
+	m_wndExtent.SetCentre(myCenter);
 
 	return true;
 }
@@ -229,14 +229,14 @@ bool vrCoordinate::ComputeFullExtent() {
 
 double vrCoordinate::GetPixelSize() {
 	
-	if (m_PxSize == wxNOT_FOUND) {
+	if (m_pxSize == wxNOT_FOUND) {
 		if (_ComputePixelSize() == false) {
 			wxLogError("Error computing pixel size");
 			return wxNOT_FOUND;
 		}
 	}
 	
-	return m_PxSize;
+	return m_pxSize;
 }
 
 
@@ -274,16 +274,16 @@ bool vrCoordinate::ConvertFromPixels(const wxPoint & in, wxPoint2DDouble & out) 
 		wxLogError("Unable to convert point (%d, %d)", in.x, in.y);
 		return false;
 	}
-	wxASSERT(m_WndExtent.IsOk());
+	wxASSERT(m_wndExtent.IsOk());
 	
-	wxPoint2DDouble myLeftTop = m_WndExtent.GetLeftTop();
-	if (m_WndExtent.m_width > 0) {
+	wxPoint2DDouble myLeftTop = m_wndExtent.GetLeftTop();
+	if (m_wndExtent.m_width > 0) {
 		out.m_x = myLeftTop.m_x + (in.x * GetPixelSize());
 	}else {
 		out.m_x = myLeftTop.m_x - (in.x * GetPixelSize());
 	}
 
-	if (m_WndExtent.m_height > 0) {
+	if (m_wndExtent.m_height > 0) {
 		out.m_y = myLeftTop.m_y + (in.y * GetPixelSize());
 	}else {
 		out.m_y = myLeftTop.m_y - (in.y * GetPixelSize());
@@ -295,16 +295,16 @@ bool vrCoordinate::ConvertFromPixels(const wxPoint & in, wxPoint2DDouble & out) 
 
 bool vrCoordinate::ConvertToPixels (const wxPoint2DDouble & in, wxPoint & out){
 	out = wxPoint(0,0);
-    out.x = wxRound((in.m_x - m_WndExtent.GetLeftTop().m_x) / GetPixelSize());
-    out.y = wxRound((m_WndExtent.GetLeftTop().m_y - in.m_y) / GetPixelSize());
+    out.x = wxRound((in.m_x - m_wndExtent.GetLeftTop().m_x) / GetPixelSize());
+    out.y = wxRound((m_wndExtent.GetLeftTop().m_y - in.m_y) / GetPixelSize());
     return true;
 }
 
 
 bool vrCoordinate::IsOk() {
-	wxASSERT(m_Viewer);
+	wxASSERT(m_viewer);
 	
-	return m_WndExtent.IsOk();
+	return m_wndExtent.IsOk();
 }
 
 

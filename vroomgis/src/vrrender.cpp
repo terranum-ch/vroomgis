@@ -17,12 +17,12 @@
 
 #include "vrrender.h"
 
-wxColour vrRender::m_DefaultSelectionColour = *wxRED;
+wxColour vrRender::m_defaultSelectionColour = *wxRED;
 
 vrRender::vrRender() {
-	m_Type = vrRENDER_UNKNOWN;
-	m_Transparency = 0;
-	m_SelectionColour = m_DefaultSelectionColour;
+	m_type = vrRENDER_UNKNOWN;
+	m_transparency = 0;
+	m_selectionColour = m_defaultSelectionColour;
 }
 
 
@@ -33,38 +33,38 @@ vrRender::~vrRender() {
 
 
 vrRENDER_TYPE vrRender::GetType() const{
-	return m_Type;
+	return m_type;
 }
 
 
 
 void vrRender::SetTransparency(int value) {
 	wxASSERT(value >= 0 && value <= 100);
-	m_Transparency = value;
+	m_transparency = value;
 }
 
 
 unsigned char vrRender::GetTransparencyChar() {
-	int myValue = m_Transparency * 255 / 100;
+	int myValue = m_transparency * 255 / 100;
 	return 255 - myValue;
 }
 
 
 
 void vrRender::SetSelectionColour(wxColour value) {
-	m_SelectionColour = value;
+	m_selectionColour = value;
 }
 
 
 void vrRender::SetDefaultSelectionColour(wxColour value)
 {
-	m_DefaultSelectionColour = value;
+	m_defaultSelectionColour = value;
 }
 
 wxColour vrRender::GetSelectionColour(){
-	char myBlue = m_SelectionColour.Blue();
-	char myGreen = m_SelectionColour.Green();
-	char myRed = m_SelectionColour.Red();
+	char myBlue = m_selectionColour.Blue();
+	char myGreen = m_selectionColour.Green();
+	char myRed = m_selectionColour.Red();
 	return wxColour(myRed, myGreen, myBlue, GetTransparencyChar());
 }
 
@@ -76,8 +76,8 @@ bool vrRender::Serialize(vrSerialize & serialobj) {
 		//serialobj << GetSelectionColour();
 	}
 	else {
-		serialobj >> m_Transparency;
-		//serialobj >> m_SelectionColour;
+		serialobj >> m_transparency;
+		//serialobj >> m_selectionColour;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();
@@ -89,12 +89,12 @@ bool vrRender::Serialize(vrSerialize & serialobj) {
 
 
 vrRenderVector::vrRenderVector() {
-	m_Type = vrRENDER_VECTOR;
-	m_Size = 1;
-	m_ColorPen = *wxBLACK;
-	m_ColorBrush = *wxBLACK;
-	m_BrushStyle = wxBRUSHSTYLE_SOLID;
-    m_UseFastAndUglyDC = false;
+	m_type = vrRENDER_VECTOR;
+	m_size = 1;
+	m_colorPen = *wxBLACK;
+	m_colorBrush = *wxBLACK;
+	m_brushStyle = wxBRUSHSTYLE_SOLID;
+    m_useFastAndUglyDC = false;
 }
 
 
@@ -104,51 +104,51 @@ vrRenderVector::~vrRenderVector() {
 
 
 void vrRenderVector::SetColorPen(const wxColour & color) {
-	m_ColorPen = color;
+	m_colorPen = color;
 }
 
 void vrRenderVector::SetColorBrush(const wxColour & color) {
-	m_ColorBrush = color;
+	m_colorBrush = color;
 }
 
 
 void vrRenderVector::SetSize(int value) {
-	m_Size = value;
+	m_size = value;
 }
 
 
 void vrRenderVector::SetUseFastAndUglyDC(bool value){
-    m_UseFastAndUglyDC = value;
+    m_useFastAndUglyDC = value;
 }
 
 
 wxColour vrRenderVector::GetColorPen() {
-	char myRed = m_ColorPen.Red();
-	char myGreen = m_ColorPen.Green();
-	char myBlue = m_ColorPen.Blue();
+	char myRed = m_colorPen.Red();
+	char myGreen = m_colorPen.Green();
+	char myBlue = m_colorPen.Blue();
 	
-	m_ColorPen.Set(myRed, myGreen, myBlue, GetTransparencyChar());	
-	return m_ColorPen;
+	m_colorPen.Set(myRed, myGreen, myBlue, GetTransparencyChar());	
+	return m_colorPen;
 }
 
 
 wxColour vrRenderVector::GetColorBrush(){
-	char myRed = m_ColorBrush.Red();
-	char myGreen = m_ColorBrush.Green();
-	char myBlue = m_ColorBrush.Blue();
+	char myRed = m_colorBrush.Red();
+	char myGreen = m_colorBrush.Green();
+	char myBlue = m_colorBrush.Blue();
 	
-	m_ColorBrush.Set(myRed, myGreen, myBlue, GetTransparencyChar());	
-	return m_ColorBrush;
+	m_colorBrush.Set(myRed, myGreen, myBlue, GetTransparencyChar());	
+	return m_colorBrush;
 }
 
 
 wxBrushStyle vrRenderVector::GetBrushStyle(){
-	return m_BrushStyle;
+	return m_brushStyle;
 }
 
 
 void vrRenderVector::SetBrushStyle (wxBrushStyle brushstyle){
-	m_BrushStyle = brushstyle;
+	m_brushStyle = brushstyle;
 }
 
 
@@ -162,10 +162,10 @@ bool vrRenderVector::Serialize(vrSerialize & serialobj) {
         serialobj << GetBrushStyle();
 	}
 	else {
-		serialobj >> m_ColorPen;
-		serialobj >> m_ColorBrush;
-		serialobj >> m_Size;
-        serialobj >> m_BrushStyle;
+		serialobj >> m_colorPen;
+		serialobj >> m_colorBrush;
+		serialobj >> m_size;
+        serialobj >> m_brushStyle;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();
@@ -173,7 +173,7 @@ bool vrRenderVector::Serialize(vrSerialize & serialobj) {
 
 
 vrRenderRaster::vrRenderRaster() {
-	m_Type = vrRENDER_RASTER;
+	m_type = vrRENDER_RASTER;
 }
 
 vrRenderRaster::~vrRenderRaster() {

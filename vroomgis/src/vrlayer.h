@@ -40,8 +40,8 @@ class vrLabel;
 //Abstact base class for layers
 class vrLayer { 
 protected:
-    vrDRIVERS_TYPE m_DriverType;
-	wxFileName m_FileName;
+    vrDRIVERS_TYPE m_driverType;
+	wxFileName m_fileName;
 		
 public:
 	vrLayer();

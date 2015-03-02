@@ -36,10 +36,10 @@ enum vrRENDER_TYPE {
 
 class vrRender {
   protected:
-    vrRENDER_TYPE  m_Type;
-    int m_Transparency;
-	wxColour m_SelectionColour;
-	static wxColour m_DefaultSelectionColour;
+    vrRENDER_TYPE  m_type;
+    int m_transparency;
+	wxColour m_selectionColour;
+	static wxColour m_defaultSelectionColour;
 
 	
     unsigned char GetTransparencyChar();
@@ -62,7 +62,7 @@ class vrRender {
 
 
 inline const int vrRender::GetTransparency() const {
-  return m_Transparency;
+  return m_transparency;
 }
 
 
@@ -72,11 +72,11 @@ inline const int vrRender::GetTransparency() const {
 
 class vrRenderVector : public vrRender {
 private:
-	wxColour m_ColorPen;
-    wxColour m_ColorBrush;
-	wxBrushStyle m_BrushStyle;
-	int m_Size;
-    bool m_UseFastAndUglyDC;
+	wxColour m_colorPen;
+    wxColour m_colorBrush;
+	wxBrushStyle m_brushStyle;
+	int m_size;
+    bool m_useFastAndUglyDC;
 
   public:
     vrRenderVector();
@@ -104,13 +104,13 @@ private:
 
 
 inline const int vrRenderVector::GetSize() const {
-	return m_Size;
+	return m_size;
 }
 
 
 
 inline const bool vrRenderVector::IsUsingFastAndUglyDC() const {
-    return m_UseFastAndUglyDC;
+    return m_useFastAndUglyDC;
 }
 
 

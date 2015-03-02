@@ -18,9 +18,9 @@
 #include "vrrendervectorc2p.h"
 
 vrDipColour::vrDipColour(const wxColour & colour, long familyid, bool visible) {
-	m_Colour = colour;
-	m_FamilyID = familyid;
-    m_Visible = visible;
+	m_colour = colour;
+	m_familyID = familyid;
+    m_visible = visible;
 }
 
 vrDipColour::~vrDipColour() {
@@ -33,16 +33,16 @@ WX_DEFINE_OBJARRAY(vrArrayDipColours);
 
 
 vrRenderVectorC2PDips::vrRenderVectorC2PDips(const wxColour & defaultcolour, int size, int dipwith) {
-	m_Type = vrRENDER_VECTOR_C2P_DIPS;
-	m_DipWidth = dipwith;
-	m_Size = size;
-	m_UseDefaultColour = true;
-    m_UseOutline = true;
+	m_type = vrRENDER_VECTOR_C2P_DIPS;
+	m_dipWidth = dipwith;
+	m_size = size;
+	m_useDefaultColour = true;
+    m_useOutline = true;
 	ClearDipColours();
 	AddDipColour(defaultcolour, 0, true);
-	m_MemoryFamilyID = wxNOT_FOUND;
-	m_MemoryColour = wxColour();
-	wxASSERT(m_MemoryColour.IsOk() == false);
+	m_memoryFamilyID = wxNOT_FOUND;
+	m_memoryColour = wxColour();
+	wxASSERT(m_memoryColour.IsOk() == false);
 }
 
 
@@ -54,12 +54,12 @@ vrRenderVectorC2PDips::~vrRenderVectorC2PDips() {
 
 
 const int vrRenderVectorC2PDips::GetDipWidth() const {
-  return m_DipWidth;
+  return m_dipWidth;
 }
 
 
 void vrRenderVectorC2PDips::SetDipWidth(int value) {
-  m_DipWidth = value;
+  m_dipWidth = value;
 }
 
 
@@ -67,25 +67,25 @@ void vrRenderVectorC2PDips::SetDipWidth(int value) {
 void vrRenderVectorC2PDips::SetTransparency(int value) {
 	vrRender::SetTransparency(value);
 	// change all colours
-	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
-		wxColour myColour (m_DipColours.Item(i).m_Colour.Red(),
-						   m_DipColours.Item(i).m_Colour.Green(),
-						   m_DipColours.Item(i).m_Colour.Blue(),
+	for (unsigned int i = 0; i<m_dipColours.GetCount(); i++) {
+		wxColour myColour (m_dipColours.Item(i).m_colour.Red(),
+						   m_dipColours.Item(i).m_colour.Green(),
+						   m_dipColours.Item(i).m_colour.Blue(),
 						   GetTransparencyChar());
-		m_DipColours.Item(i).m_Colour = myColour;
+		m_dipColours.Item(i).m_colour = myColour;
 	}
 }
 */
 
 
 void vrRenderVectorC2PDips::SetSize(int value) {
-  m_Size = value;
+  m_size = value;
 }
 
 
 
 void vrRenderVectorC2PDips::SetOutline(bool value) {
-    m_UseOutline = value;
+    m_useOutline = value;
 }
 
 
@@ -103,17 +103,17 @@ wxColour vrRenderVectorC2PDips::GetOutlineColour(const wxColour & dipcolour) {
 
 
 void vrRenderVectorC2PDips::ClearDipColours() {
-	m_DipColours.Clear();
-	m_MemoryFamilyID = wxNOT_FOUND;
-	m_MemoryColour = wxColour();
+	m_dipColours.Clear();
+	m_memoryFamilyID = wxNOT_FOUND;
+	m_memoryColour = wxColour();
 }
 
 
 
 bool vrRenderVectorC2PDips::AddDipColour(const wxColour & colour, long familyid, bool visible) {
 	// ensure this family ID didn't exists
-	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
-		if (m_DipColours.Item(i).m_FamilyID == familyid) {
+	for (unsigned int i = 0; i<m_dipColours.GetCount(); i++) {
+		if (m_dipColours.Item(i).m_familyID == familyid) {
 			wxLogError(_("Adding '%s' colour with '%d' id isn't allowed. ID allready used."),
 					   colour.GetAsString(), familyid);
 			return false;
@@ -121,16 +121,16 @@ bool vrRenderVectorC2PDips::AddDipColour(const wxColour & colour, long familyid,
 	}
 	
 	vrDipColour myDipColour (colour, familyid, visible);
-	m_DipColours.Add(myDipColour);
+	m_dipColours.Add(myDipColour);
 	return true;
 }
 
 
 bool vrRenderVectorC2PDips::SetDipColour(const wxColour & colour, long familyid, bool visible) {
-	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
-		if (m_DipColours.Item(i).m_FamilyID == familyid) {
-			m_DipColours.Item(i).m_Colour = colour;
-            m_DipColours.Item(i).m_Visible = visible;
+	for (unsigned int i = 0; i<m_dipColours.GetCount(); i++) {
+		if (m_dipColours.Item(i).m_familyID == familyid) {
+			m_dipColours.Item(i).m_colour = colour;
+            m_dipColours.Item(i).m_visible = visible;
 			return true;
 		}
 	}
@@ -142,42 +142,42 @@ bool vrRenderVectorC2PDips::SetDipColour(const wxColour & colour, long familyid,
 
 wxColour vrRenderVectorC2PDips::GetDipColour(long familyID) {
 	wxASSERT(familyID >= 0);
-	wxASSERT(m_DipColours.GetCount() >= 1);
+	wxASSERT(m_dipColours.GetCount() >= 1);
 	
 	// speed up search, by keeping last colour on memory
-	if (familyID == m_MemoryFamilyID && m_MemoryColour.IsOk()) {
-		return m_MemoryColour;
+	if (familyID == m_memoryFamilyID && m_memoryColour.IsOk()) {
+		return m_memoryColour;
 	}
 	
 	// not the same family, then search into array
-	m_MemoryColour = wxColour();
-	m_MemoryFamilyID = wxNOT_FOUND;
-	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
-		if (m_DipColours.Item(i).m_FamilyID == familyID) {
-			m_MemoryFamilyID = familyID;
-			m_MemoryColour = m_DipColours.Item(i).m_Colour;
+	m_memoryColour = wxColour();
+	m_memoryFamilyID = wxNOT_FOUND;
+	for (unsigned int i = 0; i<m_dipColours.GetCount(); i++) {
+		if (m_dipColours.Item(i).m_familyID == familyID) {
+			m_memoryFamilyID = familyID;
+			m_memoryColour = m_dipColours.Item(i).m_colour;
             
-            char myred = m_MemoryColour.Red();
-            char mygreen = m_MemoryColour.Green();
-            char myblue = m_MemoryColour.Blue();
-            m_MemoryColour.Set(myred, mygreen, myblue, GetTransparencyChar());
-			return m_MemoryColour;
+            char myred = m_memoryColour.Red();
+            char mygreen = m_memoryColour.Green();
+            char myblue = m_memoryColour.Blue();
+            m_memoryColour.Set(myred, mygreen, myblue, GetTransparencyChar());
+			return m_memoryColour;
 		}
 	}
 	
 	// if family not found, return the default colour
-	return m_DipColours.Item(0).m_Colour;
+	return m_dipColours.Item(0).m_colour;
 }
 
 
 
 bool vrRenderVectorC2PDips::IsFamilyVisible(long familyID){
     wxASSERT(familyID >= 0);
-	wxASSERT(m_DipColours.GetCount() >= 1);
+	wxASSERT(m_dipColours.GetCount() >= 1);
 	
-	for (unsigned int i = 0; i<m_DipColours.GetCount(); i++) {
-		if (m_DipColours.Item(i).m_FamilyID == familyID) {
-			return m_DipColours.Item(i).m_Visible;
+	for (unsigned int i = 0; i<m_dipColours.GetCount(); i++) {
+		if (m_dipColours.Item(i).m_familyID == familyID) {
+			return m_dipColours.Item(i).m_visible;
 		}
 	}
 	
@@ -187,7 +187,7 @@ bool vrRenderVectorC2PDips::IsFamilyVisible(long familyID){
 
 
 int vrRenderVectorC2PDips::GetCountColor(){
-	int myCount = m_DipColours.GetCount();
+	int myCount = m_dipColours.GetCount();
 	// always the default colour
 	wxASSERT(myCount > 0);
 	return myCount;
@@ -202,15 +202,15 @@ bool vrRenderVectorC2PDips::Serialize(vrSerialize & serialobj) {
 		serialobj << GetSize();
 		serialobj << GetDipWidth();
 		serialobj << IsUsingDefaultColour();
-		serialobj << m_DipColours.Item(0).m_Colour;
+		serialobj << m_dipColours.Item(0).m_colour;
         serialobj << GetOutline();
 	}
 	else {
-		serialobj >> m_Size;
-		serialobj >> m_DipWidth;
-		serialobj >> m_UseDefaultColour;
-		serialobj >> m_DipColours.Item(0).m_Colour;
-        serialobj >> m_UseOutline;
+		serialobj >> m_size;
+		serialobj >> m_dipWidth;
+		serialobj >> m_useDefaultColour;
+		serialobj >> m_dipColours.Item(0).m_colour;
+        serialobj >> m_useOutline;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();
@@ -227,14 +227,14 @@ bool vrRenderVectorC2PDips::Serialize(vrSerialize & serialobj) {
 @date 23 janvier 2013
 *****************************************************************************************/
 vrRenderVectorC2PPoly::vrRenderVectorC2PPoly(const wxColour & defaultcolour) {
-    m_Type = vrRENDER_VECTOR_C2P_POLY;
-    m_UseDefaultBrush = true;
+    m_type = vrRENDER_VECTOR_C2P_POLY;
+    m_useDefaultBrush = true;
     SetColorBrush(defaultcolour);
     ClearPolyColours();
 	AddPolyColour(defaultcolour, 0);
-    m_MemoryFamilyID = wxNOT_FOUND;
-	m_MemoryColour = wxColour();
-	wxASSERT(m_MemoryColour.IsOk() == false);
+    m_memoryFamilyID = wxNOT_FOUND;
+	m_memoryColour = wxColour();
+	wxASSERT(m_memoryColour.IsOk() == false);
 }
 
 
@@ -246,31 +246,31 @@ vrRenderVectorC2PPoly::~vrRenderVectorC2PPoly() {
 
 
 void vrRenderVectorC2PPoly::ClearPolyColours() {
-    m_PolyColours.Clear();
+    m_polyColours.Clear();
 }
 
 
 
 bool vrRenderVectorC2PPoly::AddPolyColour(const wxColour & colour, long familyid) {
     // ensure this family ID didn't exists
-	for (unsigned int i = 0; i<m_PolyColours.GetCount(); i++) {
-		if (m_PolyColours.Item(i).m_FamilyID == familyid) {
+	for (unsigned int i = 0; i<m_polyColours.GetCount(); i++) {
+		if (m_polyColours.Item(i).m_familyID == familyid) {
 			wxLogError(_("Adding '%s' colour with '%d' id isn't allowed. ID allready used."),colour.GetAsString(), familyid);
 			return false;
 		}
 	}
 	
 	vrDipColour myDipColour (colour, familyid, true);
-	m_PolyColours.Add(myDipColour);
+	m_polyColours.Add(myDipColour);
 	return true;
 }
 
 
 
 bool vrRenderVectorC2PPoly::SetPolyColour(const wxColour & colour, long familyid) {
-    for (unsigned int i = 0; i<m_PolyColours.GetCount(); i++) {
-		if (m_PolyColours.Item(i).m_FamilyID == familyid) {
-			m_PolyColours.Item(i).m_Colour = colour;
+    for (unsigned int i = 0; i<m_polyColours.GetCount(); i++) {
+		if (m_polyColours.Item(i).m_familyID == familyid) {
+			m_polyColours.Item(i).m_colour = colour;
 			return true;
 		}
 	}
@@ -282,36 +282,36 @@ bool vrRenderVectorC2PPoly::SetPolyColour(const wxColour & colour, long familyid
 
 wxColour vrRenderVectorC2PPoly::GetPolyColour(long familyid) {
     wxASSERT(familyid >= 0);
-	wxASSERT(m_PolyColours.GetCount() >= 1);
+	wxASSERT(m_polyColours.GetCount() >= 1);
 	
 	// speed up search, by keeping last colour on memory
-	if (familyid == m_MemoryFamilyID && m_MemoryColour.IsOk()) {
-		return m_MemoryColour;
+	if (familyid == m_memoryFamilyID && m_memoryColour.IsOk()) {
+		return m_memoryColour;
 	}
 	
 	// not the same family, then search into array
-	m_MemoryColour = wxColour();
-	m_MemoryFamilyID = wxNOT_FOUND;
-	for (unsigned int i = 0; i<m_PolyColours.GetCount(); i++) {
-		if (m_PolyColours.Item(i).m_FamilyID == familyid) {
-			m_MemoryFamilyID = familyid;
-			m_MemoryColour = m_PolyColours.Item(i).m_Colour;
+	m_memoryColour = wxColour();
+	m_memoryFamilyID = wxNOT_FOUND;
+	for (unsigned int i = 0; i<m_polyColours.GetCount(); i++) {
+		if (m_polyColours.Item(i).m_familyID == familyid) {
+			m_memoryFamilyID = familyid;
+			m_memoryColour = m_polyColours.Item(i).m_colour;
             
-            char myred = m_MemoryColour.Red();
-            char mygreen = m_MemoryColour.Green();
-            char myblue = m_MemoryColour.Blue();
-            m_MemoryColour.Set(myred, mygreen, myblue, GetTransparencyChar());
-			return m_MemoryColour;
+            char myred = m_memoryColour.Red();
+            char mygreen = m_memoryColour.Green();
+            char myblue = m_memoryColour.Blue();
+            m_memoryColour.Set(myred, mygreen, myblue, GetTransparencyChar());
+			return m_memoryColour;
 		}
 	}
 	
 	// if family not found, return the default colour
-	return m_PolyColours.Item(0).m_Colour;
+	return m_polyColours.Item(0).m_colour;
 }
 
 
 void vrRenderVectorC2PPoly::SetUseDefaultBrush(bool value) {
-    m_UseDefaultBrush = value;
+    m_useDefaultBrush = value;
 }
 
 
@@ -333,8 +333,8 @@ bool vrRenderVectorC2PPoly::Serialize(vrSerialize & serialobj) {
 		serialobj >> myBrushStyle;
 		serialobj >> myBrushColour;
         serialobj >> myPenColour;
-		serialobj >> m_UseDefaultBrush;
-        serialobj >> m_Transparency;
+		serialobj >> m_useDefaultBrush;
+        serialobj >> m_transparency;
         
         SetBrushStyle(myBrushStyle);
         SetColorBrush(myBrushColour);

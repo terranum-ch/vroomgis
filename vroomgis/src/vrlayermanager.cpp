@@ -35,23 +35,23 @@ vrLayerManager::vrLayerManager() {
 vrLayerManager::~vrLayerManager() {
 
 	// manually clearing array of layers, Clear() or Empty() didn't work
-	unsigned int iCount = m_Layers.GetCount();
+	unsigned int iCount = m_layers.GetCount();
 	for (unsigned int i = 0; i<iCount; i++)
 	{
-		vrLayer * myLayer = m_Layers.Item(0);
+		vrLayer * myLayer = m_layers.Item(0);
 		wxDELETE(myLayer);
-		m_Layers.RemoveAt(0);
+		m_layers.RemoveAt(0);
 	}
-	wxASSERT(m_Layers.GetCount()==0);
+	wxASSERT(m_layers.GetCount()==0);
 
 	// manually clearing array of viewermanagers
-	int iCountVM = m_ViewerManagers.GetCount();
+	int iCountVM = m_viewerManagers.GetCount();
 	for (int j = iCountVM - 1; j >= 0; j--){
-		vrViewerLayerManager * myManager = m_ViewerManagers.Item(0);
+		vrViewerLayerManager * myManager = m_viewerManagers.Item(0);
 		wxDELETE(myManager);
-		m_ViewerManagers.RemoveAt(0);
+		m_viewerManagers.RemoveAt(0);
 	}
-	wxASSERT(m_ViewerManagers.GetCount()==0);
+	wxASSERT(m_viewerManagers.GetCount()==0);
 }
 
 
@@ -118,9 +118,9 @@ bool vrLayerManager::Open(const wxFileName & filename, bool readwrite) {
 		return false;
 	}
 
-	m_Layers.Add(myLayer);
-	//7wxLogMessage("%ld layers in the layermanager", m_Layers.GetCount());
-	//bool bValue = m_Layers.Item(0)->IsOK();
+	m_layers.Add(myLayer);
+	//7wxLogMessage("%ld layers in the layermanager", m_layers.GetCount());
+	//bool bValue = m_layers.Item(0)->IsOK();
 	//wxLogMessage("added layer is %d", bValue);
 	return true;
 }
@@ -138,7 +138,7 @@ bool vrLayerManager::Add(vrLayer * layer) {
 		return false;
 	}
 
-	m_Layers.Add(layer);
+	m_layers.Add(layer);
 	return true;
 }
 
@@ -149,9 +149,9 @@ bool vrLayerManager::Close(vrLayer * layer) {
 
 	//check all viewerlayermanagers to ensure that this layer
 	//isn't open anywhere.
-	for (unsigned int i = 0; i<m_ViewerManagers.GetCount(); i++) {
-		for (int j = 0; j<m_ViewerManagers.Item(i)->GetCount(); j++) {
-			vrRenderer * myRenderer = m_ViewerManagers.Item(i)->GetRenderer(j);
+	for (unsigned int i = 0; i<m_viewerManagers.GetCount(); i++) {
+		for (int j = 0; j<m_viewerManagers.Item(i)->GetCount(); j++) {
+			vrRenderer * myRenderer = m_viewerManagers.Item(i)->GetRenderer(j);
 			if (layer == myRenderer->GetLayer()) {
 				wxLogError("Unable to close '%s', layer still in use",
 						   layer->GetDisplayName().GetFullName());
@@ -162,8 +162,8 @@ bool vrLayerManager::Close(vrLayer * layer) {
 
 	// Layer isn't anymore used we can close now
 	int iRemoveIndex = wxNOT_FOUND;
-	for (unsigned int i = 0; i< m_Layers.GetCount(); i++) {
-		if (m_Layers.Item(i) == layer) {
+	for (unsigned int i = 0; i< m_layers.GetCount(); i++) {
+		if (m_layers.Item(i) == layer) {
 			iRemoveIndex = i;
 		}
 	}
@@ -174,10 +174,10 @@ bool vrLayerManager::Close(vrLayer * layer) {
 		return false;
 	}
 
-	vrLayer * myLayer = m_Layers.Item(iRemoveIndex);
+	vrLayer * myLayer = m_layers.Item(iRemoveIndex);
 	wxASSERT(myLayer);
 	wxDELETE(myLayer);
-	m_Layers.RemoveAt(iRemoveIndex);
+	m_layers.RemoveAt(iRemoveIndex);
 	return true;
 }
 
@@ -238,7 +238,7 @@ bool vrLayerManager::Erase(const wxFileName & filename) {
 
 
 int vrLayerManager::GetCount() {
-	return m_Layers.GetCount();
+	return m_layers.GetCount();
 }
 
 
@@ -246,11 +246,11 @@ int vrLayerManager::GetCount() {
 vrLayer * vrLayerManager::GetLayer(const wxFileName & filename){
 	vrLayer * myLayer = NULL;
 
-	for (unsigned int i = 0; i<m_Layers.GetCount(); i++)
+	for (unsigned int i = 0; i<m_layers.GetCount(); i++)
 	{
-		//wxLogMessage("'%s' filename, '%s' layername", filename.GetFullPath(), m_Layers.Item(i)->GetFileName().GetFullPath());
-		if (m_Layers.Item(i)->GetFileName().SameAs(filename)){
-			myLayer = m_Layers.Item(i);
+		//wxLogMessage("'%s' filename, '%s' layername", filename.GetFullPath(), m_layers.Item(i)->GetFileName().GetFullPath());
+		if (m_layers.Item(i)->GetFileName().SameAs(filename)){
+			myLayer = m_layers.Item(i);
 			break;
 		}
 	}
@@ -262,14 +262,14 @@ vrLayer * vrLayerManager::GetLayer(const wxFileName & filename){
 bool vrLayerManager::AddViewerLayerManager(vrViewerLayerManager * manager){
 	wxASSERT(manager);
 
-	for (unsigned int i = 0; i< m_ViewerManagers.GetCount(); i++){
-		if (m_ViewerManagers.Item(i)==manager){
+	for (unsigned int i = 0; i< m_viewerManagers.GetCount(); i++){
+		if (m_viewerManagers.Item(i)==manager){
 			wxLogError("This manager was already added into the vrLayerManager");
 			return false;
 		}
 	}
 
-	m_ViewerManagers.Add(manager);
+	m_viewerManagers.Add(manager);
 	return true;
 }
 
@@ -279,11 +279,11 @@ bool vrLayerManager::RemoveViewerLayerManager (vrViewerLayerManager * manager){
         return false;
     }
     
-    for (unsigned int i = 0; i< m_ViewerManagers.GetCount(); i++) {
-        vrViewerLayerManager * myManager = m_ViewerManagers.Item(i);
+    for (unsigned int i = 0; i< m_viewerManagers.GetCount(); i++) {
+        vrViewerLayerManager * myManager = m_viewerManagers.Item(i);
 		if (myManager == manager) {
             wxDELETE(myManager);
-            m_ViewerManagers.RemoveAt(i);
+            m_viewerManagers.RemoveAt(i);
             return true;
         }
     }

@@ -29,10 +29,10 @@ class vrRender;
 
 class vrLabel {
 private:
-    wxFont m_Font;
-    wxColor m_Color;
-    bool m_Active;
-    int m_Field;
+    wxFont m_font;
+    wxColor m_color;
+    bool m_active;
+    int m_field;
     
 public:
     vrLabel(const wxFont & font = wxNullFont , const wxColour & color = *wxBLACK);
@@ -58,25 +58,25 @@ public:
 
 
 inline const wxFont vrLabel::GetFont() const {
-    return m_Font;
+    return m_font;
 }
 
 
 
 inline const wxColor vrLabel::GetColor() const {
-    return m_Color;
+    return m_color;
 }
 
 
 
 inline const bool vrLabel::IsActive() const {
-    return m_Active;
+    return m_active;
 }
 
 
 
 inline const int vrLabel::GetField() const {
-    return m_Field;
+    return m_field;
 }
 
 

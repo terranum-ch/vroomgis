@@ -34,8 +34,8 @@ class vrLayerManager
 {
 	
 protected:
-	vrArrayViewerLayerManager m_ViewerManagers;
-	vrArrayLayer m_Layers;
+	vrArrayViewerLayerManager m_viewerManagers;
+	vrArrayLayer m_layers;
 	
 public:
 	vrLayerManager();

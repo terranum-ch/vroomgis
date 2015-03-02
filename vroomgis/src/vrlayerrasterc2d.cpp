@@ -30,9 +30,9 @@ vrLayerRasterC2D::~vrLayerRasterC2D() {
 bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & outimgpxsize,
 									  const wxRect & readimgpxinfo, const vrRender * render) {
 	
-	wxASSERT(m_Dataset);
-	m_Dataset->FlushCache();
-    int myRasterCount  = m_Dataset->GetRasterCount();
+	wxASSERT(m_dataset);
+	m_dataset->FlushCache();
+    int myRasterCount  = m_dataset->GetRasterCount();
 	
 	if (myRasterCount != 3) {
 		wxLogError("Corrupted C2D file, contain %d band instead of 3", myRasterCount);
@@ -49,7 +49,7 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & o
 	
 	
 	// read band 2 (slope)
-	GDALRasterBand *band = m_Dataset->GetRasterBand(2);
+	GDALRasterBand *band = m_dataset->GetRasterBand(2);
 	int myDataSize = GDALGetDataTypeSize(GDT_Float32) / 8;
 	void * mySlopeData = CPLMalloc(myDataSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight());
 	if (band->RasterIO(GF_Read,
@@ -68,7 +68,7 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char ** imgdata, const wxSize & o
 
 	
 	// read band 3 (aspect)
-	band = m_Dataset->GetRasterBand(3);
+	band = m_dataset->GetRasterBand(3);
 	void * myAspectData = CPLMalloc(myDataSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight());
 	if (band->RasterIO(GF_Read,
 					   readimgpxinfo.GetX(), readimgpxinfo.GetY(),

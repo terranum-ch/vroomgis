@@ -40,9 +40,9 @@ int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char * pszMessage, voi
 
 class vrProgressSimple : public vrProgress {
 private:
-    wxProgressDialog * m_ProgressWnd;
-	tmPercent m_Percent;
-	bool m_Continue;
+    wxProgressDialog * m_progressWnd;
+	tmPercent m_percent;
+	bool m_continue;
 
 
 public:
@@ -54,11 +54,11 @@ public:
 };
 
 inline tmPercent * vrProgressSimple::GetPercent() {
-	return &m_Percent;
+	return &m_percent;
 }
 
 inline const bool vrProgressSimple::GetContinue() const {
-	return m_Continue;
+	return m_continue;
 }
 
 #endif

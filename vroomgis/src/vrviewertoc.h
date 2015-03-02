@@ -44,8 +44,8 @@ const int vrID_POPUP_GROUP_ADD = wxID_HIGHEST + 9 + vrID_VIEWERTOC_BASE;
 
 class vrViewerTOC{
 private:
-    bool m_FreezeStatus;
-    vrViewerLayerManager * m_ViewerManager;
+    bool m_freezeStatus;
+    vrViewerLayerManager * m_viewerManager;
     
 protected:
     virtual wxMenu * CreateContextualMenu(vrRenderer * renderer, bool usegroup=false);
@@ -83,13 +83,13 @@ public:
 
 
 inline vrViewerLayerManager * vrViewerTOC::GetViewerLayerManager() const{
-    return m_ViewerManager;
+    return m_viewerManager;
 }
 
 
 
 inline const bool vrViewerTOC::IsFreezed() const {
-    return m_FreezeStatus;
+    return m_freezeStatus;
 }
 
 
@@ -101,7 +101,7 @@ inline const bool vrViewerTOC::IsFreezed() const {
 /************************************ vrViewerTOCList **********************************************/
 class vrViewerTOCList : public vrViewerTOC {
 private:
-    wxCheckListBox * m_CheckList;
+    wxCheckListBox * m_checkList;
     
     void OnMouseRightDown(wxMouseEvent & event);
     void OnMouseWheel(wxMouseEvent & event);
@@ -151,8 +151,8 @@ class vrViewerTOCTreeData : public wxTreeItemData {
 public:
     vrViewerTOCTreeData();
     virtual ~vrViewerTOCTreeData();
-    vrVIEWERTOC_TREEDATA_TYPES m_ItemType;
-    vrVIEWERTOC_IMAGES_TYPES m_CheckedImgType;
+    vrVIEWERTOC_TREEDATA_TYPES m_itemType;
+    vrVIEWERTOC_IMAGES_TYPES m_checkedImgType;
 };
 
 
@@ -161,9 +161,9 @@ public:
 /************************************ vrViewerTOCTree **********************************************/
 class vrViewerTOCTree : public vrViewerTOC {
 private:
-    wxTreeCtrl  * m_Tree;
-    wxTreeItemId m_RootNode;
-    bool m_UseGroupMenu;
+    wxTreeCtrl  * m_tree;
+    wxTreeItemId m_rootNode;
+    bool m_useGroupMenu;
 
     
     wxTreeItemId _IndexToTree(wxTreeItemId root, const wxString& searchtext, vrVIEWERTOC_TREEDATA_TYPES searchtype);
@@ -189,7 +189,7 @@ private:
     void OnNewGroup(wxCommandEvent & event);
     
     // dragging functions
-    wxTreeItemId m_DragItemID;
+    wxTreeItemId m_dragItemID;
     void OnDragStart(wxTreeEvent & event);
     void OnDragStop(wxTreeEvent & event);
     
@@ -212,7 +212,7 @@ public:
     virtual bool SetNormalStyle(int index);
     
     bool AddGroup(const wxString & name);
-    void SetUseGroupMenu(bool value){m_UseGroupMenu = value;}
+    void SetUseGroupMenu(bool value){m_useGroupMenu = value;}
 
 
 };

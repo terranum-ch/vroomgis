@@ -32,12 +32,12 @@
 *******************************************************************************/
 void vrDisplayToolMessage::_InitMembers() {
 	m_EvtType = wxEVT_NULL;
-	m_Rect = wxRect();
-	wxASSERT(m_Rect.IsEmpty());
-	m_Position = wxDefaultPosition;
-	m_ParentManager = NULL;
-    m_MouseStatus = vrMOUSE_UNKNOWN;
-    m_LongData = wxNOT_FOUND;
+	m_rect = wxRect();
+	wxASSERT(m_rect.IsEmpty());
+	m_position = wxDefaultPosition;
+	m_parentManager = NULL;
+    m_mouseStatus = vrMOUSE_UNKNOWN;
+    m_longData = wxNOT_FOUND;
 }
 
 vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
@@ -45,9 +45,9 @@ vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
                                            vrMOUSE_STATUS mousestat) {
 	_InitMembers();
 	m_EvtType = eventtype;
-	m_Rect = rect;
-	m_ParentManager = parent->GetViewerLayerManager();
-    m_MouseStatus = mousestat;
+	m_rect = rect;
+	m_parentManager = parent->GetViewerLayerManager();
+    m_mouseStatus = mousestat;
 }
 
 vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
@@ -55,9 +55,9 @@ vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
                                            vrMOUSE_STATUS mousestat) {
 	_InitMembers();
 	m_EvtType = eventtype;
-	m_Position = pos;
-	m_ParentManager = parent->GetViewerLayerManager();
-    m_MouseStatus = mousestat;
+	m_position = pos;
+	m_parentManager = parent->GetViewerLayerManager();
+    m_mouseStatus = mousestat;
 
 }
 
@@ -76,9 +76,9 @@ vrDisplayToolMessage::~vrDisplayToolMessage() {
 @date 20 avril 2010
 *******************************************************************************/
 vrDisplayTool::vrDisplayTool() {
-	m_ID = wxNOT_FOUND;
-	m_Name = wxEmptyString;
-	m_Rubber = NULL;
+	m_iD = wxNOT_FOUND;
+	m_name = wxEmptyString;
+	m_rubber = NULL;
 }
 
 
@@ -94,17 +94,17 @@ void vrDisplayTool::Create(vrViewerDisplay * display, int id, wxString name, wxC
 	wxASSERT(name.IsEmpty() == false);
 	wxASSERT(display != NULL);
 
-	m_ID = id;
-	m_Name = name;
-	m_Cursor = cursor;
-	m_Display = display;
-	m_Rubber = NULL;
+	m_iD = id;
+	m_name = name;
+	m_cursor = cursor;
+	m_display = display;
+	m_rubber = NULL;
 }
 
 
 
 vrDisplayTool::~vrDisplayTool() {
-	wxDELETE(m_Rubber);
+	wxDELETE(m_rubber);
 }
 
 
@@ -144,7 +144,7 @@ bool vrDisplayTool::MouseDClickLeft(const wxMouseEvent & event) {
 @date 20 avril 2010
  *******************************************************************************/
 void vrDisplayTool::SendMessage(vrDisplayToolMessage * message) {
-	wxASSERT(m_Display);
+	wxASSERT(m_display);
 	wxASSERT(message);
 	wxASSERT(message->m_EvtType != wxEVT_NULL);
 
@@ -152,14 +152,14 @@ void vrDisplayTool::SendMessage(vrDisplayToolMessage * message) {
 	myEvt.SetClientData(message);
 
 	// send message to the top level window if found
-	wxWindow * myTopWin = wxGetTopLevelParent(m_Display);
+	wxWindow * myTopWin = wxGetTopLevelParent(m_display);
 	if (myTopWin != NULL) {
 		myTopWin->ProcessWindowEvent(myEvt);
 		return;
 	}
 
 	// send message to the display if not found
-	m_Display->ProcessWindowEvent(myEvt);
+	m_display->ProcessWindowEvent(myEvt);
 }
 
 
@@ -205,29 +205,29 @@ vrDisplayToolSelect::~vrDisplayToolSelect() {
 
 
 bool vrDisplayToolSelect::MouseDown(const wxMouseEvent & event) {
-	wxASSERT(m_Rubber == NULL);
-	m_Rubber = new vrRubberBand(GetDisplay());
-	wxASSERT(m_Rubber);
-	m_Rubber->SetPointFirst(event.GetPosition());
+	wxASSERT(m_rubber == NULL);
+	m_rubber = new vrRubberBand(GetDisplay());
+	wxASSERT(m_rubber);
+	m_rubber->SetPointFirst(event.GetPosition());
 	return false;
 }
 
 
 
 bool vrDisplayToolSelect::MouseUp(const wxMouseEvent & event) {
-	if (m_Rubber == NULL) {
+	if (m_rubber == NULL) {
 		return true;
 	}
 
-	m_Rubber->SetPointLast(event.GetPosition());
+	m_rubber->SetPointLast(event.GetPosition());
 
 	wxRect myRect;
 	myRect.SetLeftTop(event.GetPosition());
 	myRect.SetRightBottom(event.GetPosition());
-	if (m_Rubber->IsValid()==true) {
-		myRect = m_Rubber->GetRect();
+	if (m_rubber->IsValid()==true) {
+		myRect = m_rubber->GetRect();
 	}
-	wxDELETE(m_Rubber);
+	wxDELETE(m_rubber);
 
 	/*wxLogMessage("Selection rect is %d, %d, %d, %d",
 				 myRect.GetLeft(),
@@ -245,9 +245,9 @@ bool vrDisplayToolSelect::MouseUp(const wxMouseEvent & event) {
 }
 
 bool vrDisplayToolSelect::MouseMove(const wxMouseEvent & event) {
-	if (event.Dragging()==true && m_Rubber != NULL) {
-		m_Rubber->SetPointLast(event.GetPosition());
-		m_Rubber->Update();
+	if (event.Dragging()==true && m_rubber != NULL) {
+		m_rubber->SetPointLast(event.GetPosition());
+		m_rubber->Update();
 	}
 	return false;
 }
@@ -264,10 +264,10 @@ vrDisplayToolZoom::~vrDisplayToolZoom() {
 }
 
 bool vrDisplayToolZoom::MouseDown(const wxMouseEvent & event) {
-	wxASSERT(m_Rubber == NULL);
-	m_Rubber = new vrRubberBand(GetDisplay());
-	wxASSERT(m_Rubber);
-	m_Rubber->SetPointFirst(event.GetPosition());
+	wxASSERT(m_rubber == NULL);
+	m_rubber = new vrRubberBand(GetDisplay());
+	wxASSERT(m_rubber);
+	m_rubber->SetPointFirst(event.GetPosition());
 	return false;
 }
 
@@ -277,13 +277,13 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 
     wxRect myRect;
 
-	if (!m_Rubber) {
+	if (!m_rubber) {
         return false;
     }
 
-    m_Rubber->SetPointLast(event.GetPosition());
-	if (m_Rubber->IsValid()==false) { // e.g. if user only clicks
-		wxDELETE(m_Rubber);
+    m_rubber->SetPointLast(event.GetPosition());
+	if (m_rubber->IsValid()==false) { // e.g. if user only clicks
+		wxDELETE(m_rubber);
 
         // Set a rectangle centered with a size 1.5 times smaller
         myRect = wxRect(event.GetPosition().x / 3,
@@ -292,8 +292,8 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
                         GetDisplay()->GetSize().GetHeight()/1.5);
 	}
     else {
-        myRect = m_Rubber->GetRect();
-        wxDELETE(m_Rubber);
+        myRect = m_rubber->GetRect();
+        wxDELETE(m_rubber);
 
         // Check that no dimension is too small
         if(myRect.GetWidth()<5) {
@@ -321,13 +321,13 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolZoom::MouseMove(const wxMouseEvent & event) {
-	if (!m_Rubber) {
+	if (!m_rubber) {
         return false;
     }
 
 	if (event.Dragging()==true) {
-		m_Rubber->SetPointLast(event.GetPosition());
-		m_Rubber->Update();
+		m_rubber->SetPointLast(event.GetPosition());
+		m_rubber->Update();
 	}
 	return false;
 }
@@ -347,13 +347,13 @@ bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent & event) {
 
 	wxRect myRect;
 
-	if (!m_Rubber) {
+	if (!m_rubber) {
         return false;
     }
 
-    m_Rubber->SetPointLast(event.GetPosition());
-    if (m_Rubber->IsValid()==false) { // e.g. if user only clicks
-        wxDELETE(m_Rubber);
+    m_rubber->SetPointLast(event.GetPosition());
+    if (m_rubber->IsValid()==false) { // e.g. if user only clicks
+        wxDELETE(m_rubber);
 
         // Set a rectangle centered with a size 1.5 times smaller
         myRect = wxRect(event.GetPosition().x - GetDisplay()->GetSize().GetWidth()/3,
@@ -362,8 +362,8 @@ bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent & event) {
                               GetDisplay()->GetSize().GetHeight()/1.5);
     }
     else {
-        myRect = m_Rubber->GetRect();
-        wxDELETE(m_Rubber);
+        myRect = m_rubber->GetRect();
+        wxDELETE(m_rubber);
 
         // Check that no dimension is too small
         if(myRect.GetWidth()<5) {
@@ -398,8 +398,8 @@ bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent & event) {
  *******************************************************************************/
 vrDisplayToolPan::vrDisplayToolPan(vrViewerDisplay * display) {
 	Create(display, wxID_DEFAULT, "Pan", wxCursor(wxCURSOR_HAND));
-	m_Point = wxDefaultPosition;
-	m_PanBitmap = NULL;
+	m_point = wxDefaultPosition;
+	m_panBitmap = NULL;
 }
 
 
@@ -410,27 +410,27 @@ vrDisplayToolPan::~vrDisplayToolPan() {
 
 
 bool vrDisplayToolPan::MouseDown(const wxMouseEvent & event) {
-	wxASSERT(m_Point == wxDefaultPosition);
-	m_Point = event.GetPosition();
+	wxASSERT(m_point == wxDefaultPosition);
+	m_point = event.GetPosition();
 
-	wxASSERT(m_PanBitmap == NULL);
+	wxASSERT(m_panBitmap == NULL);
     wxBitmap * myDisplayBmpRef = GetDisplay()->GetBitmapRef();
     wxASSERT(myDisplayBmpRef);
     
-    m_PanBitmap = new wxBitmap(myDisplayBmpRef->GetSubBitmap(wxRect(0,0,myDisplayBmpRef->GetWidth(), myDisplayBmpRef->GetHeight())));
+    m_panBitmap = new wxBitmap(myDisplayBmpRef->GetSubBitmap(wxRect(0,0,myDisplayBmpRef->GetWidth(), myDisplayBmpRef->GetHeight())));
     return true;
 }
 
 
 
 bool vrDisplayToolPan::MouseUp(const wxMouseEvent & event) {
-    if (m_PanBitmap == NULL) {
+    if (m_panBitmap == NULL) {
         return false;
     }
 
 	// compute the new raster origin
-	wxPoint myNewPos(m_Point.x - event.GetPosition().x,
-					 m_Point.y - event.GetPosition().y);
+	wxPoint myNewPos(m_point.x - event.GetPosition().x,
+					 m_point.y - event.GetPosition().y);
 
 
 	vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_PAN,
@@ -439,34 +439,34 @@ bool vrDisplayToolPan::MouseUp(const wxMouseEvent & event) {
 	wxASSERT(myMessage);
 	SendMessage(myMessage);
 
-	wxDELETE(m_PanBitmap);
-	m_Point = wxDefaultPosition;
+	wxDELETE(m_panBitmap);
+	m_point = wxDefaultPosition;
 	return true;
 }
 
 
 
 bool vrDisplayToolPan::MouseMove(const wxMouseEvent & event) {
-	if (event.Dragging()==false || m_PanBitmap == NULL) {
+	if (event.Dragging()==false || m_panBitmap == NULL) {
 		return false;
 	}
 
 	// compute the new raster origin
-	wxPoint myNewPos(event.GetPosition().x - m_Point.x,
-					 event.GetPosition().y - m_Point.y);
+	wxPoint myNewPos(event.GetPosition().x - m_point.x,
+					 event.GetPosition().y - m_point.y);
 
 	if (myNewPos.x == 0 && myNewPos.y == 0) {
 		return false;
 	}
 
 	wxMemoryDC memdc;
-	wxBitmap * myMovedBmp = new wxBitmap(m_PanBitmap->GetSize());
+	wxBitmap * myMovedBmp = new wxBitmap(m_panBitmap->GetSize());
 	wxASSERT(myMovedBmp);
 	memdc.SelectObject(*myMovedBmp);
 	memdc.SetBrush(GetDisplay()->GetBackgroundColour());
 	memdc.SetPen(GetDisplay()->GetBackgroundColour());
-	memdc.DrawRectangle (0,0, m_PanBitmap->GetSize().x,m_PanBitmap->GetSize().y);
-	memdc.DrawBitmap (*m_PanBitmap, myNewPos.x, myNewPos.y);
+	memdc.DrawRectangle (0,0, m_panBitmap->GetSize().x,m_panBitmap->GetSize().y);
+	memdc.DrawBitmap (*m_panBitmap, myNewPos.x, myNewPos.y);
 	memdc.SelectObject(wxNullBitmap);
 
 	GetDisplay()->SetBitmap(myMovedBmp);
@@ -512,7 +512,7 @@ vrDisplayToolSight::~vrDisplayToolSight() {
 
 bool vrDisplayToolSight::MouseDown(const wxMouseEvent & event) {
 	wxClientDC myDC (GetDisplay());
-	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	wxDCOverlay overlaydc (m_overlay, &myDC);
 	overlaydc.Clear();
 	myDC.SetPen(*wxRED_PEN);
 	myDC.CrossHair(event.GetPosition());
@@ -529,10 +529,10 @@ bool vrDisplayToolSight::MouseDown(const wxMouseEvent & event) {
 bool vrDisplayToolSight::MouseUp(const wxMouseEvent & event) {
 	{
 		wxClientDC myDC (GetDisplay());
-		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		wxDCOverlay overlaydc (m_overlay, &myDC);
 		overlaydc.Clear();
 	}
-	m_Overlay.Reset();
+	m_overlay.Reset();
 
 	vrDisplayToolMessage * myMsg = new vrDisplayToolMessage(vrEVT_TOOL_SIGHT,
 															GetDisplay(),
@@ -551,14 +551,14 @@ bool vrDisplayToolSight::MouseMove(const wxMouseEvent & event) {
 
 	{
 		wxClientDC myDC (GetDisplay());
-		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		wxDCOverlay overlaydc (m_overlay, &myDC);
 		overlaydc.Clear();
 	}
-	m_Overlay.Reset();
+	m_overlay.Reset();
 
 
 	wxClientDC myDC (GetDisplay());
-	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	wxDCOverlay overlaydc (m_overlay, &myDC);
 	overlaydc.Clear();
 	myDC.SetPen(*wxRED_PEN);
 	myDC.CrossHair(event.GetPosition());
@@ -612,8 +612,8 @@ bool vrDisplayToolEdit::MouseUp(const wxMouseEvent & event) {
 @date 30 mars 2012
 *****************************************************************************************/
 vrDisplayToolEditLine::vrDisplayToolEditLine(vrViewerDisplay * display, int toolid): vrDisplayToolEdit(display,  toolid) {
-    m_PreviousPoint = wxDefaultPosition;
-    m_DoubleClicked = false;
+    m_previousPoint = wxDefaultPosition;
+    m_doubleClicked = false;
 }
 
 
@@ -632,15 +632,15 @@ bool vrDisplayToolEditLine::MouseDown(const wxMouseEvent & event) {
 bool vrDisplayToolEditLine::MouseUp(const wxMouseEvent & event) {
     {
 		wxClientDC myDC (GetDisplay());
-		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		wxDCOverlay overlaydc (m_overlay, &myDC);
 		overlaydc.Clear();
 	}
-	m_Overlay.Reset();
-    m_PreviousPoint = event.GetPosition();
+	m_overlay.Reset();
+    m_previousPoint = event.GetPosition();
     
-    if (m_DoubleClicked == true){
-        m_PreviousPoint = wxDefaultPosition;
-        m_DoubleClicked = false;
+    if (m_doubleClicked == true){
+        m_previousPoint = wxDefaultPosition;
+        m_doubleClicked = false;
         vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT_FINISHED, GetDisplay(),event.GetPosition());
         wxASSERT(myMessage);
         SendMessage(myMessage);
@@ -656,19 +656,19 @@ bool vrDisplayToolEditLine::MouseUp(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolEditLine::MouseMove(const wxMouseEvent & event) {
-    if (m_PreviousPoint == wxDefaultPosition) {
+    if (m_previousPoint == wxDefaultPosition) {
         return false;
     }
     
     {
 		wxClientDC myDC (GetDisplay());
-		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		wxDCOverlay overlaydc (m_overlay, &myDC);
 		overlaydc.Clear();
 	}
-	m_Overlay.Reset();
+	m_overlay.Reset();
     
 	wxClientDC myDC (GetDisplay());
-	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	wxDCOverlay overlaydc (m_overlay, &myDC);
 	overlaydc.Clear();
 #ifdef __WXMAC__
 	myDC.SetPen( *wxGREY_PEN );
@@ -676,14 +676,14 @@ bool vrDisplayToolEditLine::MouseMove(const wxMouseEvent & event) {
 	myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxSOLID ));
 #endif
 	
-    myDC.DrawLine(m_PreviousPoint, event.GetPosition());
+    myDC.DrawLine(m_previousPoint, event.GetPosition());
     return true;
 }
 
 
 
 bool vrDisplayToolEditLine::MouseDClickLeft(const wxMouseEvent & event) {
-    m_DoubleClicked = true;
+    m_doubleClicked = true;
     return true;
 }
 
@@ -697,8 +697,8 @@ bool vrDisplayToolEditLine::MouseDClickLeft(const wxMouseEvent & event) {
 *******************************************************************************/
 vrDisplayToolModify::vrDisplayToolModify(vrViewerDisplay * display) {
     Create(display, wxID_DEFAULT, "Modify", wxCursor(wxCURSOR_CROSS));
-    m_ActiveVertex = wxNOT_FOUND;
-    m_GeometryType = wkbUnknown;
+    m_activeVertex = wxNOT_FOUND;
+    m_geometryType = wkbUnknown;
 }
 
 
@@ -709,30 +709,30 @@ vrDisplayToolModify::~vrDisplayToolModify() {
 
 
 void vrDisplayToolModify::ClearPoints() {
-    m_PointsX.Clear();
-    m_PointsY.Clear();
+    m_pointsX.Clear();
+    m_pointsY.Clear();
     
    // clear overlay
     {
 		wxClientDC myDC (GetDisplay());
-		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		wxDCOverlay overlaydc (m_overlay, &myDC);
 		overlaydc.Clear();
 	}
-	m_Overlay.Reset();
+	m_overlay.Reset();
 }
 
 
 
 void vrDisplayToolModify::AddToPoints(const wxPoint & pts) {
-    m_PointsX.Add(pts.x);
-    m_PointsY.Add(pts.y);
+    m_pointsX.Add(pts.x);
+    m_pointsY.Add(pts.y);
 }
 
 
 
 bool vrDisplayToolModify::SetActiveGeometry(OGRGeometry * geometry, OGRwkbGeometryType geometrytype, vrCoordinate * coordinate){
     bool bReturn = true;
-    m_GeometryType = geometrytype;
+    m_geometryType = geometrytype;
     ClearPoints();
     switch (geometrytype) {
         case wkbLineString:
@@ -783,41 +783,41 @@ bool vrDisplayToolModify::SetActiveGeometry(OGRGeometry * geometry, OGRwkbGeomet
 
 
 bool vrDisplayToolModify::MouseDown(const wxMouseEvent & event) {
-    m_ActiveVertex = wxNOT_FOUND;
-    if (m_PointsX.GetCount() == 0) {
+    m_activeVertex = wxNOT_FOUND;
+    if (m_pointsX.GetCount() == 0) {
         return true;
     }
     
     // search closest vertex
     wxPoint myClickedPt = event.GetPosition();
     wxRect myClickedRect (myClickedPt.x -2, myClickedPt.y -2, 5,5);
-    for (unsigned int i = 0; i< m_PointsX.GetCount(); i++) {
-        wxPoint myPt (m_PointsX[i], m_PointsY[i]);
+    for (unsigned int i = 0; i< m_pointsX.GetCount(); i++) {
+        wxPoint myPt (m_pointsX[i], m_pointsY[i]);
         if (myClickedRect.Contains(myPt)==true) {
-            m_ActiveVertex = i;
+            m_activeVertex = i;
             break;
         }
-    }    wxLogMessage(_T("Active vertex is : %d"), m_ActiveVertex);
+    }    wxLogMessage(_T("Active vertex is : %d"), m_activeVertex);
     return true;
 }
 
 
 
 bool vrDisplayToolModify::MouseMove(const wxMouseEvent & event) {
-    if (m_ActiveVertex == wxNOT_FOUND) {
+    if (m_activeVertex == wxNOT_FOUND) {
         return true;
     }
     
     // drawing modification lines
     {
 		wxClientDC myDC (GetDisplay());
-		wxDCOverlay overlaydc (m_Overlay, &myDC);
+		wxDCOverlay overlaydc (m_overlay, &myDC);
 		overlaydc.Clear();
 	}
-	m_Overlay.Reset();
+	m_overlay.Reset();
     
 	wxClientDC myDC (GetDisplay());
-	wxDCOverlay overlaydc (m_Overlay, &myDC);
+	wxDCOverlay overlaydc (m_overlay, &myDC);
 	overlaydc.Clear();
 #ifdef __WXMAC__
 	myDC.SetPen( *wxGREY_PEN );
@@ -825,20 +825,20 @@ bool vrDisplayToolModify::MouseMove(const wxMouseEvent & event) {
 	myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxSOLID ));
 #endif
     
-    if (m_ActiveVertex != 0) {
-        myDC.DrawLine(wxPoint(m_PointsX[m_ActiveVertex-1], m_PointsY[m_ActiveVertex-1]),event.GetPosition());
+    if (m_activeVertex != 0) {
+        myDC.DrawLine(wxPoint(m_pointsX[m_activeVertex-1], m_pointsY[m_activeVertex-1]),event.GetPosition());
     }
-    else if (m_GeometryType == wkbPolygon) {
+    else if (m_geometryType == wkbPolygon) {
         // use last vertex as previous (polygon are closed)
-        myDC.DrawLine(wxPoint(m_PointsX[m_PointsX.GetCount()-2], m_PointsY[m_PointsY.GetCount()-2]), event.GetPosition());
+        myDC.DrawLine(wxPoint(m_pointsX[m_pointsX.GetCount()-2], m_pointsY[m_pointsY.GetCount()-2]), event.GetPosition());
     }
     
-    if (m_ActiveVertex < (m_PointsX.GetCount()-1)){
-        myDC.DrawLine(wxPoint(m_PointsX[m_ActiveVertex+1], m_PointsY[m_ActiveVertex+1]),event.GetPosition());
+    if (m_activeVertex < (m_pointsX.GetCount()-1)){
+        myDC.DrawLine(wxPoint(m_pointsX[m_activeVertex+1], m_pointsY[m_activeVertex+1]),event.GetPosition());
     }
-    else if (m_GeometryType == wkbPolygon){
+    else if (m_geometryType == wkbPolygon){
         // use first vertex as next one (polygon are closed)
-        myDC.DrawLine(wxPoint(m_PointsX[1], m_PointsY[1]), event.GetPosition());
+        myDC.DrawLine(wxPoint(m_pointsX[1], m_pointsY[1]), event.GetPosition());
     }
     return true;
 }
@@ -846,11 +846,11 @@ bool vrDisplayToolModify::MouseMove(const wxMouseEvent & event) {
 
 
 bool vrDisplayToolModify::MouseUp(const wxMouseEvent & event) {
-    if (m_ActiveVertex != wxNOT_FOUND) {
+    if (m_activeVertex != wxNOT_FOUND) {
         vrDisplayToolMessage * myMessage = new vrDisplayToolMessage(vrEVT_TOOL_MODIFY_FINISHED, GetDisplay(), event.GetPosition());
-        myMessage->m_LongData = m_ActiveVertex;
+        myMessage->m_longData = m_activeVertex;
         SendMessage(myMessage);
-        m_ActiveVertex = wxNOT_FOUND;
+        m_activeVertex = wxNOT_FOUND;
         return true;
     }
     

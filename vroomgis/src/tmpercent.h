@@ -28,10 +28,10 @@ class tmPercent : public wxObject
 {
 private:
     bool m_inited;
-    long m_TotalValue;
-    double m_Increment;
-    int m_PreviousPercent;
-    long m_ActualValue;
+    long m_totalValue;
+    double m_increment;
+    int m_previousPercent;
+    long m_actualValue;
     
     void InitMemberValue();
     
@@ -44,7 +44,7 @@ public:
     ~tmPercent();
     
     void SetValue (long actualvalue);
-    long GetValue () {return m_ActualValue;}
+    long GetValue () {return m_actualValue;}
     
     bool IsNewStep();
     int GetPercent();

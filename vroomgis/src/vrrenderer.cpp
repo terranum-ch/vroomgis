@@ -26,39 +26,39 @@
 
 
 bool vrRenderer::_IsCorrectRender() {
-	wxASSERT(m_Layer);
-	if (m_Render == NULL){
+	wxASSERT(m_layer);
+	if (m_render == NULL){
 		return false;
 	}
 	
 	bool bReturn = false;
-	switch (m_Render->GetType())
+	switch (m_render->GetType())
 	{
 		case vrRENDER_VECTOR:
-			if (m_Layer->GetType() == vrDRIVER_VECTOR_SHP) { bReturn = true; break;}
-			if (m_Layer->GetType() == vrDRIVER_VECTOR_MEMORY) { bReturn = true; break;}
-            if (m_Layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
+			if (m_layer->GetType() == vrDRIVER_VECTOR_SHP) { bReturn = true; break;}
+			if (m_layer->GetType() == vrDRIVER_VECTOR_MEMORY) { bReturn = true; break;}
+            if (m_layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
 			break;
 			
 		case vrRENDER_RASTER:
-			if (m_Layer->GetType() == vrDRIVER_RASTER_TIFF) { bReturn = true; break;}
-			if (m_Layer->GetType() == vrDRIVER_RASTER_JPEG) { bReturn = true; break;}
-			if (m_Layer->GetType() == vrDRIVER_RASTER_ESRIGRID) { bReturn = true; break;}
-			if (m_Layer->GetType() == vrDRIVER_RASTER_EASC) { bReturn = true; break;}
-			if (m_Layer->GetType() == vrDRIVER_RASTER_SGRD7) { bReturn = true; break;}
-			if (m_Layer->GetType() == vrDRIVER_RASTER_WMS) { bReturn = true; break;}
+			if (m_layer->GetType() == vrDRIVER_RASTER_TIFF) { bReturn = true; break;}
+			if (m_layer->GetType() == vrDRIVER_RASTER_JPEG) { bReturn = true; break;}
+			if (m_layer->GetType() == vrDRIVER_RASTER_ESRIGRID) { bReturn = true; break;}
+			if (m_layer->GetType() == vrDRIVER_RASTER_EASC) { bReturn = true; break;}
+			if (m_layer->GetType() == vrDRIVER_RASTER_SGRD7) { bReturn = true; break;}
+			if (m_layer->GetType() == vrDRIVER_RASTER_WMS) { bReturn = true; break;}
 			break;
 			
 		case vrRENDER_RASTER_C2D:
-			if (m_Layer->GetType() == vrDRIVER_RASTER_C2D) { bReturn = true;}
+			if (m_layer->GetType() == vrDRIVER_RASTER_C2D) { bReturn = true;}
 			break;
 			
 		case vrRENDER_VECTOR_C2P_DIPS:
-			if (m_Layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
+			if (m_layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
 			break;
             
         case vrRENDER_VECTOR_C2P_POLY:
-            if (m_Layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
+            if (m_layer->GetType() == vrDRIVER_VECTOR_C2P) {bReturn = true;}
             break;
 			
 		default:
@@ -71,7 +71,7 @@ bool vrRenderer::_IsCorrectRender() {
 
 vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 	wxASSERT(layer);
-	m_Layer = layer;
+	m_layer = layer;
 	
 	// setting visible status on true
 	SetVisible(true);
@@ -79,14 +79,14 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 	
 	// create default render and label if null
 	if (render == NULL){
-		switch (m_Layer->GetType()){
+		switch (m_layer->GetType()){
 			case vrDRIVER_VECTOR_SHP:
 			case vrDRIVER_VECTOR_MEMORY:
-				m_Render = new vrRenderVector();
+				m_render = new vrRenderVector();
             {
                 OGRwkbGeometryType myGeomType = ((vrLayerVector*) GetLayer())->GetGeometryType();
                 if (myGeomType == wkbPoint || myGeomType == wkbPoint25D) {
-                    ((vrRenderVector*)m_Render)->SetSize(vrRENDERER_VECTOR_POINT_DEFAULT_SIZE);
+                    ((vrRenderVector*)m_render)->SetSize(vrRENDERER_VECTOR_POINT_DEFAULT_SIZE);
                 }
             }
 				break;
@@ -97,20 +97,20 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 			case vrDRIVER_RASTER_EASC:
 			case vrDRIVER_RASTER_SGRD7:
 			case vrDRIVER_RASTER_WMS:
-				m_Render = new vrRenderRaster();
+				m_render = new vrRenderRaster();
 				break;
 				
 			case vrDRIVER_RASTER_C2D:
-				m_Render = new vrRenderRasterColtop();
+				m_render = new vrRenderRasterColtop();
 				break;
 				
 			case vrDRIVER_VECTOR_C2P:
             {
                 CT_LAYER_TYPE myLayerType =((vrLayerVectorC2P*) GetLayer())->GetActiveLayerType();
                 if (myLayerType == CT_DIP){
-                    m_Render = new vrRenderVectorC2PDips();
+                    m_render = new vrRenderVectorC2PDips();
                 } else if (myLayerType == CT_POLYGON){
-                    m_Render = new vrRenderVectorC2PPoly();
+                    m_render = new vrRenderVectorC2PPoly();
                 }
                 else{
                     wxLogError(_("Unsupported geometry type: %d"), myLayerType);
@@ -120,12 +120,12 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
                 
                 
 			default:
-				m_Render = new vrRender();
+				m_render = new vrRender();
 				break;
 		}
 	}
 	else {
-		m_Render = render;
+		m_render = render;
 		// assert correct render is passed.
 		bool bCorrectRender = _IsCorrectRender();
 		wxASSERT(bCorrectRender);
@@ -133,20 +133,20 @@ vrRenderer::vrRenderer(vrLayer * layer, vrRender * render, vrLabel * label) {
 	
 	
 	if (label == NULL) {
-		m_Label = new vrLabel();
+		m_label = new vrLabel();
 	}
 	else {
-		m_Label = label;
+		m_label = label;
 	}
 }
 
 
 
 vrRenderer::~vrRenderer() {
-	wxASSERT(m_Render);
-	wxASSERT(m_Label);
-	wxDELETE(m_Render);
-	wxDELETE(m_Label);
+	wxASSERT(m_render);
+	wxASSERT(m_label);
+	wxDELETE(m_render);
+	wxDELETE(m_label);
 }
 
 
@@ -183,21 +183,21 @@ bool vrRenderer::GetBitmapData(wxBitmap * bmp, const vrRealRect & coord, double 
 
 
 void vrRenderer::SetRender(vrRender * value) {
-	m_Render = value;
+	m_render = value;
 }
 
 void vrRenderer::SetLabel(vrLabel * value) {
-	m_Label = value;
+	m_label = value;
 }
 
 
 void vrRenderer::SetVisible(bool value) {
-	m_Visible = value;
+	m_visible = value;
 }
 
 
 void vrRenderer::SetInEdition(bool value) {
-    m_InEdition = value;
+    m_inEdition = value;
 }
 
 #include <wx/arrimpl.cpp>

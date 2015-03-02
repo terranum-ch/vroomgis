@@ -31,11 +31,11 @@ const int vrCOORDINATE_MARGIN = 10;
 
 class vrCoordinate {
   private:
-    vrViewerDisplay * m_Viewer;
+    vrViewerDisplay * m_viewer;
 	
-	vrRealRect m_WndExtent;
-    vrRealRect m_LayersExtent;
-	double m_PxSize;
+	vrRealRect m_wndExtent;
+    vrRealRect m_layersExtent;
+	double m_pxSize;
 	
 
     bool _ComputePixelSize();

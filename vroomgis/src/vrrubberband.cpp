@@ -18,56 +18,56 @@
 #include "vrrubberband.h"
 
 vrRubberBand::vrRubberBand(wxWindow * window) {
-	m_Window = window;
-	m_PointStart = wxDefaultPosition;
-	m_PointEnd = wxDefaultPosition;
+	m_window = window;
+	m_pointStart = wxDefaultPosition;
+	m_pointEnd = wxDefaultPosition;
 	
 }
 
 
 
 vrRubberBand::~vrRubberBand() {
-	// during unit testing, m_Window is allways null otherwise
-	// m_Window should be valid
-	if (m_Window == NULL) {
+	// during unit testing, m_window is allways null otherwise
+	// m_window should be valid
+	if (m_window == NULL) {
 		wxLogError("Window object is NULL in rubberband (normal for unit testing)");
 		return;
 	}
 	
 	// brakets are needed to destroy wxClientDC before reseting
-	// m_Overlay.
+	// m_overlay.
 	{
-		wxClientDC dc( m_Window );
-		wxDCOverlay overlaydc( m_Overlay, &dc );
+		wxClientDC dc( m_window );
+		wxDCOverlay overlaydc( m_overlay, &dc );
 		overlaydc.Clear();
 	}
-	m_Overlay.Reset();
+	m_overlay.Reset();
 }
 
 
 
 void vrRubberBand::SetPointFirst(const wxPoint & pt) {
-	m_PointStart = pt;
+	m_pointStart = pt;
 }
 
 
 
 void vrRubberBand::SetPointLast(const wxPoint & pt) {
-	m_PointEnd = pt;
+	m_pointEnd = pt;
 }
 
 
 
 wxRect vrRubberBand::_CreateRect() {
-	if (m_PointStart == wxDefaultPosition || 
-		m_PointEnd == wxDefaultPosition) {
+	if (m_pointStart == wxDefaultPosition || 
+		m_pointEnd == wxDefaultPosition) {
 		wxLogError("Rubber-band not inited correctly");
 		wxFAIL;
 	}
 	
 	wxRect myRect;
-	myRect.SetTopLeft(m_PointStart);
-	myRect.SetBottomRight(m_PointEnd);
+	myRect.SetTopLeft(m_pointStart);
+	myRect.SetBottomRight(m_pointEnd);
 	return myRect;
 }
 
@@ -110,14 +110,14 @@ bool vrRubberBand::IsPositive() {
 
 
 bool vrRubberBand::IsValid() {
-	if (m_PointStart == wxDefaultPosition ||
-		m_PointEnd == wxDefaultPosition) {
+	if (m_pointStart == wxDefaultPosition ||
+		m_pointEnd == wxDefaultPosition) {
 		wxLogError("First and / or last point not set, rubber band isn't valid");
 		return false;
 	}
 	
-	if (m_PointStart.x == m_PointEnd.x ||
-		m_PointStart.y == m_PointEnd.y) {
+	if (m_pointStart.x == m_pointEnd.x ||
+		m_pointStart.y == m_pointEnd.y) {
 		return false;
 	}
 	
@@ -127,8 +127,8 @@ bool vrRubberBand::IsValid() {
 
 void vrRubberBand::Update() {
 	
-	wxClientDC dc( m_Window ) ;
-	wxDCOverlay overlaydc( m_Overlay, &dc );
+	wxClientDC dc( m_window ) ;
+	wxDCOverlay overlaydc( m_overlay, &dc );
 	overlaydc.Clear();
 #ifdef __WXMAC__
 	dc.SetPen( *wxGREY_PEN );

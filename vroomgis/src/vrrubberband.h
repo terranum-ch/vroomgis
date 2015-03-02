@@ -26,10 +26,10 @@
 
 class vrRubberBand {
   private:
-    wxWindow * m_Window;
-    wxPoint m_PointStart;
-    wxPoint m_PointEnd;
-    wxOverlay m_Overlay;
+    wxWindow * m_window;
+    wxPoint m_pointStart;
+    wxPoint m_pointEnd;
+    wxOverlay m_overlay;
 
 	wxRect _CreateRect();
 

@@ -100,8 +100,8 @@ void vrLayerVectorC2P::_DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry *
     gdc->SetPen(myActualPen);
     gdc->StrokePath(myHPath);
     gdc->StrokePath(myVPath);
-    ++m_ObjectDrawn;
-    ++m_DrawnVertex;
+    ++m_objectDrawn;
+    ++m_drawnVertex;
     
     // label feature
     if (label != NULL && label->IsActive() == true) {
@@ -186,10 +186,10 @@ void vrLayerVectorC2P::_DrawPolygon(wxDC * dc, OGRFeature * feature, OGRGeometry
 
 
 vrLayerVectorC2P::vrLayerVectorC2P() {
-	wxASSERT(m_Dataset==NULL);
-	wxASSERT(m_Layer==NULL);
-	m_DriverType = vrDRIVER_VECTOR_C2P;
-    m_ActiveLayerIndex = CT_DIP;
+	wxASSERT(m_dataset==NULL);
+	wxASSERT(m_layer==NULL);
+	m_driverType = vrDRIVER_VECTOR_C2P;
+    m_activeLayerIndex = CT_DIP;
 }
 
 
@@ -201,20 +201,20 @@ vrLayerVectorC2P::~vrLayerVectorC2P() {
 bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 	wxFileName myFileName = filename;
     // Support layer number to open in extension (.c2p 1) open layer 1
-    m_ActiveLayerIndex = 0;
+    m_activeLayerIndex = 0;
     wxRegEx reLayer(_T("(c2p) ([0-9]+)"),wxRE_ADVANCED);
     if (reLayer.Matches(myFileName.GetExt())==true) {
         wxASSERT(reLayer.GetMatchCount()==2+1);
         wxString myLayerNumTxt = reLayer.GetMatch(myFileName.GetExt(),2);
-        m_ActiveLayerIndex = wxAtoi(myLayerNumTxt);
+        m_activeLayerIndex = wxAtoi(myLayerNumTxt);
         myFileName.SetExt(_T("c2p"));
     }
     
     // Need to reimplement Open to allow opening c2p files as if it was sqlite.
 	_Close();
-	wxASSERT(m_Dataset == NULL);
+	wxASSERT(m_dataset == NULL);
 
-	m_FileName = filename;
+	m_fileName = filename;
 	OGRSFDriverRegistrar * myRegistar = OGRSFDriverRegistrar::GetRegistrar();
 	OGRSFDriver * myDriver = myRegistar->GetDriverByName("SQLite");
 	if (myDriver == NULL) {
@@ -222,19 +222,19 @@ bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 		return false;
 	}
 
-	m_Dataset = myDriver->Open(myFileName.GetFullPath(), readwrite);
-	if( m_Dataset == NULL ){
+	m_dataset = myDriver->Open(myFileName.GetFullPath(), readwrite);
+	if( m_dataset == NULL ){
 		wxLogError("Unable to open %s", myFileName.GetFullName());
 		return false;
 	}
-	m_Dataset->SetDriver(myDriver);
+	m_dataset->SetDriver(myDriver);
 
 	// get layer
-	wxASSERT(m_Layer == NULL);
-	wxLogMessage("Found %d layer", m_Dataset->GetLayerCount());
-	m_Layer = m_Dataset->GetLayer(m_ActiveLayerIndex);
-	if (m_Layer == NULL) {
-		wxLogError("Unable to get layer %d, number of layer found : %d", m_ActiveLayerIndex, m_Dataset->GetLayerCount());
+	wxASSERT(m_layer == NULL);
+	wxLogMessage("Found %d layer", m_dataset->GetLayerCount());
+	m_layer = m_dataset->GetLayer(m_activeLayerIndex);
+	if (m_layer == NULL) {
+		wxLogError("Unable to get layer %d, number of layer found : %d", m_activeLayerIndex, m_dataset->GetLayerCount());
 		return false;
 	}
 	return true;
@@ -242,13 +242,13 @@ bool vrLayerVectorC2P::Open(const wxFileName & filename, bool readwrite) {
 
 
 CT_LAYER_TYPE vrLayerVectorC2P::GetActiveLayerType(){
-    return (CT_LAYER_TYPE) m_ActiveLayerIndex;
+    return (CT_LAYER_TYPE) m_activeLayerIndex;
 }
 
 
 wxFileName vrLayerVectorC2P::GetDisplayName() {
-    wxASSERT(m_Layer);
-    wxString myLayerName (m_Layer->GetName());
+    wxASSERT(m_layer);
+    wxString myLayerName (m_layer->GetName());
     wxFileName myDisplayName (wxEmptyString, wxEmptyString, _T("UNKNOWN"), wxEmptyString);
     if (myLayerName == _T("CT_DIP")) {
         myDisplayName.Assign(wxEmptyString, wxEmptyString, _T("DIPS"),wxEmptyString);
@@ -262,13 +262,13 @@ wxFileName vrLayerVectorC2P::GetDisplayName() {
 
 
 long vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
-	wxASSERT(m_Layer);
-	OGRFeature * myFeature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
-	wxASSERT(m_Layer);
+	wxASSERT(m_layer);
+	OGRFeature * myFeature = OGRFeature::CreateFeature(m_layer->GetLayerDefn());
+	wxASSERT(m_layer);
 	myFeature->SetGeometry(geometry);
 
     if (data != NULL) {
-        if (m_ActiveLayerIndex == CT_DIP) {
+        if (m_activeLayerIndex == CT_DIP) {
             wxArrayDouble * myArray = (wxArrayDouble*) data;
             wxASSERT(myArray->GetCount() == 4);
             myFeature->SetField(0, myArray->Item(1));
@@ -276,7 +276,7 @@ long vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
             myFeature->SetField(2, myArray->Item(0));
             myFeature->SetField(3, myArray->Item(3));
         }
-        else if (m_ActiveLayerIndex == CT_POLYGON){
+        else if (m_activeLayerIndex == CT_POLYGON){
             wxArrayString * myArray = (wxArrayString*) data;
             wxASSERT(myArray->GetCount() == 2);
             myFeature->SetField(0, (const char*) myArray->Item(0).mb_str(wxConvUTF8));
@@ -284,7 +284,7 @@ long vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
         }
 	}
 
-	if(m_Layer->CreateFeature(myFeature) != OGRERR_NONE){
+	if(m_layer->CreateFeature(myFeature) != OGRERR_NONE){
 		wxLogError(_("Error creating feature"));
 		OGRFeature::DestroyFeature(myFeature);
 		return wxNOT_FOUND;
@@ -298,7 +298,7 @@ long vrLayerVectorC2P::AddFeature(OGRGeometry * geometry, void * data) {
 
 
 bool vrLayerVectorC2P::DeleteFeature(long fid) {
-    if (m_Layer->DeleteFeature(fid) != OGRERR_NONE) {
+    if (m_layer->DeleteFeature(fid) != OGRERR_NONE) {
         return false;
     }
     return true;
@@ -307,27 +307,27 @@ bool vrLayerVectorC2P::DeleteFeature(long fid) {
 
 
 bool vrLayerVectorC2P::GetExtent(vrRealRect & rect) {
-	if (m_Layer == NULL) {
+	if (m_layer == NULL) {
 		wxLogError("Layer isn't inited");
 		return false;
 	}
     
-	wxASSERT(m_Layer);
-	m_Layer->SetSpatialFilter(NULL);
+	wxASSERT(m_layer);
+	m_layer->SetSpatialFilter(NULL);
 	rect = vrRealRect();
-	if (m_Layer->GetFeatureCount() == 0) {
+	if (m_layer->GetFeatureCount() == 0) {
 		rect.SetLeftBottom(wxPoint2DDouble(0.0, 0.0));
 		rect.SetRightTop(wxPoint2DDouble(1000.0, 1000.0));
 		return true;
 	}
     
     OGREnvelope myExtent;
-    m_Layer->GetExtent(&myExtent);
+    m_layer->GetExtent(&myExtent);
     
     /*
     wxASSERT(myExtent.IsInit() == false);
     while (1) {
-        OGRFeature * myFeat = m_Layer->GetNextFeature();
+        OGRFeature * myFeat = m_layer->GetNextFeature();
         if (myFeat == NULL) {
             break;
         }
