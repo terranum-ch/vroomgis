@@ -18,12 +18,12 @@
 #include "vrrendercoltop.h"
 
 vrRenderRasterColtop::vrRenderRasterColtop() {
-	m_Type = vrRENDER_RASTER_C2D;
-	m_NorthAngle = 0;
-	m_IsColorInverted = false;
-	m_IsLowerHemisphere = true;
-	m_ColorStretchMin = 0;
-	m_ColorStretchMax = 90;
+	m_type = vrRENDER_RASTER_C2D;
+	m_northAngle = 0;
+	m_isColorInverted = false;
+	m_isLowerHemisphere = true;
+	m_colorStretchMin = 0;
+	m_colorStretchMax = 90;
 }
 
 
@@ -37,12 +37,12 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
 	double myDir = dipdir;
 	double myDip = dip;
 	
-	if (m_IsLowerHemisphere == false) {
+	if (m_isLowerHemisphere == false) {
 		myDir = myDir + 180.0;
 	}
 	
 	
-	myDir = myDir + m_NorthAngle;
+	myDir = myDir + m_northAngle;
 	while (myDir > 360.0) {
 		myDir = myDir - 360.0;
 	}
@@ -57,12 +57,12 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
 	
 	// Stretch colors
 	double myNDip = 0;
-	if (myDip >= m_ColorStretchMin && myDip <= m_ColorStretchMax) {
-		myNDip = (myDip - m_ColorStretchMin) * 90.0 / (m_ColorStretchMax - m_ColorStretchMin)  / 90.0;
+	if (myDip >= m_colorStretchMin && myDip <= m_colorStretchMax) {
+		myNDip = (myDip - m_colorStretchMin) * 90.0 / (m_colorStretchMax - m_colorStretchMin)  / 90.0;
 	}
 	
 	double myNDir = myDir / 360.0;	
-	if (m_IsColorInverted == true) {
+	if (m_isColorInverted == true) {
 		myNDir = 1.0 - myNDir;
 	}
 	
@@ -80,16 +80,16 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint & 
 	
 	// STRETCHING COORDINATES
 	double pixelbydegree = radius / 90.0;
-	double minstretchradius = pixelbydegree * m_ColorStretchMin;
-	if (m_ColorStretchMin > 0) {
+	double minstretchradius = pixelbydegree * m_colorStretchMin;
+	if (m_colorStretchMin > 0) {
 		
 		if (coord.x * coord.x + coord.y * coord.y < minstretchradius * minstretchradius) {
 			return wxImage::RGBValue(255,255,255);
 		}
 	}
 	
-	if (m_ColorStretchMax < 90){
-		double maxstretchradius = pixelbydegree * m_ColorStretchMax;
+	if (m_colorStretchMax < 90){
+		double maxstretchradius = pixelbydegree * m_colorStretchMax;
 		if (coord.x * coord.x + coord.y * coord.y >= maxstretchradius * maxstretchradius) {
 			return wxImage::RGBValue(255,255,255);
 		}	
@@ -99,13 +99,13 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint & 
 	
 	// HUE (Color rotation)
 	double myHue = 0;
-	if (m_IsColorInverted == false){
+	if (m_isColorInverted == false){
 		myHue = 180.0*(1.0 + atan2(wxDouble(coord.x), wxDouble(coord.y))*(1/M_PI));
-		myHue = myHue + m_NorthAngle;
+		myHue = myHue + m_northAngle;
 	}
 	else {
 		myHue = 180.0*(1.0 - atan2(wxDouble(coord.x), wxDouble(coord.y))*(1/M_PI));
-		myHue = myHue - m_NorthAngle;
+		myHue = myHue - m_northAngle;
 	}
 	while (myHue > 360.0) {
 		myHue = myHue - 360.0;
@@ -140,30 +140,30 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint & 
 
 
 void vrRenderRasterColtop::SetNorthAngle(int value) {
-  m_NorthAngle = 360.0 - value;
+  m_northAngle = 360.0 - value;
 }
 
 
 
 void vrRenderRasterColtop::SetColorInverted(bool value) {
-  m_IsColorInverted = value;
+  m_isColorInverted = value;
 }
 
 
 
 void vrRenderRasterColtop::SetLowerHemisphere(bool value) {
-  m_IsLowerHemisphere = value;
+  m_isLowerHemisphere = value;
 }
 
 
 void vrRenderRasterColtop::SetColorStretchMin(int value) {
-	m_ColorStretchMin = value;
+	m_colorStretchMin = value;
 }
 
 
 
 void vrRenderRasterColtop::SetColorStretchMax(int value) {
-	m_ColorStretchMax = value;
+	m_colorStretchMax = value;
 }
 
 

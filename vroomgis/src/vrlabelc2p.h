@@ -22,11 +22,11 @@ class vrRender;
 
 class vrLabelC2P : public vrLabel {
 private:
-    wxPoint m_ActualPt;
-    int m_Offset;
-    double m_ActualRotation;
-    wxString m_ActualText;
-    bool m_ActualSelected;
+    wxPoint m_actualPt;
+    int m_offset;
+    double m_actualRotation;
+    wxString m_actualText;
+    bool m_actualSelected;
     
 public:
     vrLabelC2P(wxFont font = *wxNORMAL_FONT, wxColour color = *wxBLACK);

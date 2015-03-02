@@ -40,23 +40,23 @@ WX_DECLARE_OBJARRAY(wxImage*, wxArrayImage);
 
 class vrViewerLayerManager : public wxEvtHandler {
   private:
-    vrLayerManager * m_LayerManager;
-    vrArrayRenderer m_Renderers;
-    vrViewerDisplay * m_Display;
-    vrViewerTOC * m_Toc;
-	wxWindow * m_WindowParent;
-	wxFileName m_PerfMonitorFile;
-    bool m_ReloadThread;
+    vrLayerManager * m_layerManager;
+    vrArrayRenderer m_renderers;
+    vrViewerDisplay * m_display;
+    vrViewerTOC * m_toc;
+	wxWindow * m_windowParent;
+	wxFileName m_perfMonitorFile;
+    bool m_reloadThread;
 
 
 
 	// using array of wxImages instead of array of wxBitmap because bitmap are
 	// limited ressources on some systems
-	wxArrayImage m_Images;
+	wxArrayImage m_images;
 
-	bool m_FreezeStatus;
-	bool m_ComputeExtentStatus;
-	bool m_UserDefinedExtent;
+	bool m_freezeStatus;
+	bool m_computeExtentStatus;
+	bool m_userDefinedExtent;
 
 
 
@@ -114,7 +114,7 @@ class vrViewerLayerManager : public wxEvtHandler {
 };
 
 inline vrViewerDisplay * vrViewerLayerManager::GetDisplay() const {
-	return m_Display;
+	return m_display;
 }
 
 

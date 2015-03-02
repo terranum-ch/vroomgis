@@ -122,8 +122,8 @@ void vrViewerTOC::SymbologyModified() {
 
 void vrViewerTOC::ReloadData() {
     // ask for reloading data
-	wxASSERT(m_ViewerManager);
-	m_ViewerManager->Reload();
+	wxASSERT(m_viewerManager);
+	m_viewerManager->Reload();
 }
 
 
@@ -266,8 +266,8 @@ bool vrViewerTOC::SetColorBrush(int itemindex) {
 
 
 vrViewerTOC::vrViewerTOC() {
-    m_FreezeStatus = false;
-	m_ViewerManager = NULL;
+    m_freezeStatus = false;
+	m_viewerManager = NULL;
 }
 
 
@@ -278,7 +278,7 @@ vrViewerTOC::~vrViewerTOC() {
 
 void vrViewerTOC::FreezeBegin() {
     wxASSERT(IsFreezed() == false);
-    m_FreezeStatus = true;
+    m_freezeStatus = true;
     GetControl()->Freeze();
 }
 
@@ -286,7 +286,7 @@ void vrViewerTOC::FreezeBegin() {
 
 void vrViewerTOC::FreezeEnd() {
     wxASSERT(IsFreezed() == true);
-    m_FreezeStatus = false;
+    m_freezeStatus = false;
     GetControl()->Thaw();
 }
 
@@ -294,7 +294,7 @@ void vrViewerTOC::FreezeEnd() {
 
 void vrViewerTOC::SetViewerLayerManager(vrViewerLayerManager * value) {
     wxASSERT(value);
-    m_ViewerManager = value;
+    m_viewerManager = value;
 }
 
 
@@ -304,20 +304,20 @@ void vrViewerTOC::SetViewerLayerManager(vrViewerLayerManager * value) {
 
 /************************************ vrViewerTOCList **********************************************/
 void vrViewerTOCList::OnMouseRightDown(wxMouseEvent & event) {
-    if (m_CheckList->GetCount() == 0) {
+    if (m_checkList->GetCount() == 0) {
 		return;
 	}
     
 	// hit test
 	wxPoint myPos = event.GetPosition();
-	int myItemID = m_CheckList->HitTest(myPos);
+	int myItemID = m_checkList->HitTest(myPos);
 	wxLogMessage("Item selected id is %d @ position %d - %d", myItemID, myPos.x, myPos.y);
     
 	if (myItemID == wxNOT_FOUND) {
 		return;
 	}
     
-	m_CheckList->SetSelection(myItemID);
+	m_checkList->SetSelection(myItemID);
 	wxASSERT(GetViewerLayerManager());
 	vrRenderer * myRenderer = GetViewerLayerManager()->GetRenderer(myItemID);
 	wxASSERT(myRenderer);
@@ -333,7 +333,7 @@ void vrViewerTOCList::OnMouseRightDown(wxMouseEvent & event) {
 
 
 void vrViewerTOCList::OnMouseWheel(wxMouseEvent & event) {
-    if (m_CheckList->GetCount() == 0) {
+    if (m_checkList->GetCount() == 0) {
 		return;
 	}
     
@@ -370,7 +370,7 @@ void vrViewerTOCList::OnMouseWheel(wxMouseEvent & event) {
 	}
 	// going down
 	else if (myRotation < 0) {
-		if (myItemSelected == (signed) m_CheckList->GetCount() -1) {
+		if (myItemSelected == (signed) m_checkList->GetCount() -1) {
 			return;
 		}
 		myNewPosition++;
@@ -450,7 +450,7 @@ void vrViewerTOCList::OnVisibleStatusChanged(wxCommandEvent & event) {
     wxASSERT(GetViewerLayerManager());
 	vrRenderer * myItemRenderer = GetViewerLayerManager()->GetRenderer(event.GetInt());
 	wxASSERT(myItemRenderer);
-	myItemRenderer->SetVisible(m_CheckList->IsChecked(event.GetInt()));
+	myItemRenderer->SetVisible(m_checkList->IsChecked(event.GetInt()));
     SymbologyModified();
 	ReloadData();
 }
@@ -461,43 +461,43 @@ vrViewerTOCList::vrViewerTOCList(wxWindow * parent, wxWindowID id,
                                  const wxPoint & pos, const wxSize & size,
                                  int  n , const wxString choices[],
                                  long  style) {
-    m_CheckList = new wxCheckListBox(parent, id, pos, size,n, choices, style);
+    m_checkList = new wxCheckListBox(parent, id, pos, size,n, choices, style);
     
     // connect event
-    m_CheckList->Bind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &vrViewerTOCList::OnVisibleStatusChanged, this);
-    m_CheckList->Bind(wxEVT_RIGHT_DOWN, &vrViewerTOCList::OnMouseRightDown, this);
-    m_CheckList->Bind(wxEVT_MOUSEWHEEL, &vrViewerTOCList::OnMouseWheel, this);
+    m_checkList->Bind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &vrViewerTOCList::OnVisibleStatusChanged, this);
+    m_checkList->Bind(wxEVT_RIGHT_DOWN, &vrViewerTOCList::OnMouseRightDown, this);
+    m_checkList->Bind(wxEVT_MOUSEWHEEL, &vrViewerTOCList::OnMouseWheel, this);
     
-    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
-    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
-    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
-    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
-    m_CheckList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
+    m_checkList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
+    m_checkList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
+    m_checkList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
+    m_checkList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
+    m_checkList->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
 }
 
 
 
 vrViewerTOCList::~vrViewerTOCList() {
     // disconnect event
-    m_CheckList->Unbind(wxEVT_RIGHT_DOWN, &vrViewerTOCList::OnMouseRightDown, this);
-    m_CheckList->Unbind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &vrViewerTOCList::OnVisibleStatusChanged, this);
-    m_CheckList->Unbind(wxEVT_MOUSEWHEEL, &vrViewerTOCList::OnMouseWheel, this);
+    m_checkList->Unbind(wxEVT_RIGHT_DOWN, &vrViewerTOCList::OnMouseRightDown, this);
+    m_checkList->Unbind(wxEVT_COMMAND_CHECKLISTBOX_TOGGLED, &vrViewerTOCList::OnVisibleStatusChanged, this);
+    m_checkList->Unbind(wxEVT_MOUSEWHEEL, &vrViewerTOCList::OnMouseWheel, this);
 
-    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
-    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
-    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
-    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
-    m_CheckList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
+    m_checkList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
+    m_checkList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
+    m_checkList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
+    m_checkList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
+    m_checkList->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCList::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
     
-    wxDELETE(m_CheckList);
+    wxDELETE(m_checkList);
 }
 
 
 
 bool vrViewerTOCList::Add(int index, vrRenderer * renderer) {
-	if (index >= (signed) m_CheckList->GetCount()) {
-		int myPos = m_CheckList->Append(renderer->GetLayer()->GetDisplayName().GetFullName());
-		m_CheckList->Check(myPos, renderer->GetVisible());
+	if (index >= (signed) m_checkList->GetCount()) {
+		int myPos = m_checkList->Append(renderer->GetLayer()->GetDisplayName().GetFullName());
+		m_checkList->Check(myPos, renderer->GetVisible());
 		return true;
 	}
     
@@ -506,30 +506,30 @@ bool vrViewerTOCList::Add(int index, vrRenderer * renderer) {
 		index = 0;
 	}
     
-	int myPos = m_CheckList->Insert(renderer->GetLayer()->GetDisplayName().GetFullName(), index);
-	m_CheckList->Check(myPos, renderer->GetVisible());
+	int myPos = m_checkList->Insert(renderer->GetLayer()->GetDisplayName().GetFullName(), index);
+	m_checkList->Check(myPos, renderer->GetVisible());
 	return true;
 }
 
 
 
 bool vrViewerTOCList::Move(long oldpos, long newpos) {
-    wxString myOldText = m_CheckList->GetString(oldpos);
-	bool myOldChecked = m_CheckList->IsChecked(oldpos);
-	bool myOldSelected = m_CheckList->IsSelected(oldpos);
+    wxString myOldText = m_checkList->GetString(oldpos);
+	bool myOldChecked = m_checkList->IsChecked(oldpos);
+	bool myOldSelected = m_checkList->IsSelected(oldpos);
     
 	// switching two values
 	if (abs(oldpos - newpos) == 1) {
-		m_CheckList->SetString (oldpos, m_CheckList->GetString(newpos));
-		m_CheckList->Check(oldpos, m_CheckList->IsChecked(newpos));
-		if (m_CheckList->IsSelected(newpos)) {
-			m_CheckList->Select(oldpos);
+		m_checkList->SetString (oldpos, m_checkList->GetString(newpos));
+		m_checkList->Check(oldpos, m_checkList->IsChecked(newpos));
+		if (m_checkList->IsSelected(newpos)) {
+			m_checkList->Select(oldpos);
 		}
         
-		m_CheckList->SetString(newpos, myOldText);
-		m_CheckList->Check(newpos, myOldChecked);
+		m_checkList->SetString(newpos, myOldText);
+		m_checkList->Check(newpos, myOldChecked);
 		if (myOldSelected) {
-			m_CheckList->Select(newpos);
+			m_checkList->Select(newpos);
 		}
 	}
 	else {
@@ -539,10 +539,10 @@ bool vrViewerTOCList::Move(long oldpos, long newpos) {
 		}
         
 		Remove(oldpos);
-		m_CheckList->Insert(myOldText, myNewPos);
-		m_CheckList->Check(myNewPos, myOldChecked);
+		m_checkList->Insert(myOldText, myNewPos);
+		m_checkList->Check(myNewPos, myOldChecked);
 		if (myOldSelected) {
-			m_CheckList->Select(myNewPos);
+			m_checkList->Select(myNewPos);
 		}
 	}
 	return true;
@@ -552,19 +552,19 @@ bool vrViewerTOCList::Move(long oldpos, long newpos) {
 
 bool vrViewerTOCList::Remove(int index) {
     wxASSERT(index != wxNOT_FOUND);
-	m_CheckList->Delete(index);
+	m_checkList->Delete(index);
     return true;
 }
 
 
 
 int vrViewerTOCList::GetSelection() {
-    return m_CheckList->GetSelection();
+    return m_checkList->GetSelection();
 }
 
 
 wxControl * vrViewerTOCList::GetControl(){
-    return m_CheckList;
+    return m_checkList;
 }
 
 
@@ -575,8 +575,8 @@ wxControl * vrViewerTOCList::GetControl(){
 
 /************************************ vrViewerTOCTreeData ******************************************/
 vrViewerTOCTreeData::vrViewerTOCTreeData() {
-    m_ItemType = vrTREEDATA_TYPE_INVALID;
-    m_CheckedImgType = vrVIEWERTOC_IMAGE_CHECKED;
+    m_itemType = vrTREEDATA_TYPE_INVALID;
+    m_checkedImgType = vrVIEWERTOC_IMAGE_CHECKED;
 }
 
 
@@ -591,22 +591,22 @@ wxTreeItemId vrViewerTOCTree::_IndexToTree( wxTreeItemId root, const wxString& s
 {
 	wxTreeItemIdValue cookie;
 	wxTreeItemId search;
-	wxTreeItemId item = m_Tree->GetFirstChild( root, cookie );
+	wxTreeItemId item = m_tree->GetFirstChild( root, cookie );
 	wxTreeItemId child;
     
 	while( item.IsOk() ){
-		wxString sData = m_Tree->GetItemText(item);
-        vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(item);
-		if( searchtext.CompareTo(sData) == 0 && myData->m_ItemType == searchtype){
+		wxString sData = m_tree->GetItemText(item);
+        vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_tree->GetItemData(item);
+		if( searchtext.CompareTo(sData) == 0 && myData->m_itemType == searchtype){
 			return item;
 		}
-		if( m_Tree->ItemHasChildren( item ) ){
+		if( m_tree->ItemHasChildren( item ) ){
 			wxTreeItemId search = _IndexToTree( item, searchtext, searchtype);
 			if( search.IsOk() ){
 				return search;
 			}
 		}
-		item = m_Tree->GetNextChild( root, cookie);
+		item = m_tree->GetNextChild( root, cookie);
 	}
     
 	/* Not found */
@@ -617,18 +617,18 @@ wxTreeItemId vrViewerTOCTree::_IndexToTree( wxTreeItemId root, const wxString& s
 
 
 int vrViewerTOCTree::_TreeToIndex(wxTreeItemId treeitem, vrVIEWERTOC_TREEDATA_TYPES searchtype) {
-    wxASSERT(m_Tree);
+    wxASSERT(m_tree);
     wxASSERT(GetViewerLayerManager());
     
-    wxString myItemText =  m_Tree->GetItemText(treeitem);
-    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(treeitem);
+    wxString myItemText =  m_tree->GetItemText(treeitem);
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_tree->GetItemData(treeitem);
     if(myData == NULL){
         return wxNOT_FOUND;
     }
     
     for (int i = 0; i< GetViewerLayerManager()->GetCount(); i++) {
         wxString myTmpText = GetViewerLayerManager()->GetRenderer(i)->GetLayer()->GetDisplayName().GetFullName();
-        if (myData->m_ItemType == searchtype && myTmpText.CompareTo(myItemText) == 0) {
+        if (myData->m_itemType == searchtype && myTmpText.CompareTo(myItemText) == 0) {
             return i;
         }
     }
@@ -645,13 +645,13 @@ void vrViewerTOCTree::_InitBitmapList() {
         // unchecked
         wxMemoryDC myDC;
         myDC.SelectObject(myCheckBmp);
-		myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
+		myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_tree->GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(GetControl(), myDC, wxRect(0, 0, 16, 16), 0);
         
         // checked
         myDC.SelectObject(myUnCheckBmp);
-        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_Tree->GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
+        myDC.SetBackground(*wxTheBrushList->FindOrCreateBrush(m_tree->GetBackgroundColour(), wxBRUSHSTYLE_SOLID));
         myDC.Clear();
         wxRendererNative::Get().DrawCheckBox(GetControl(), myDC, wxRect(0, 0, 16, 16), wxCONTROL_CHECKED);
         myDC.SelectObject(wxNullBitmap);
@@ -664,28 +664,28 @@ void vrViewerTOCTree::_InitBitmapList() {
     images->Add(myCheckBmp);
     images->Add(myGroupBmp);
     images->Add(myGroupBmpOff);
-    m_Tree->AssignImageList(images);
+    m_tree->AssignImageList(images);
 }
 
 
 
 void vrViewerTOCTree::_SetItemImageUnique(wxTreeItemId item, vrVIEWERTOC_IMAGES_TYPES image) {
-    m_Tree->SetItemImage(item, image, wxTreeItemIcon_Normal);
-    m_Tree->SetItemImage(item, image, wxTreeItemIcon_Selected);
+    m_tree->SetItemImage(item, image, wxTreeItemIcon_Normal);
+    m_tree->SetItemImage(item, image, wxTreeItemIcon_Selected);
 }
 
 
 
 void vrViewerTOCTree::_FillTreeList(wxTreeItemId root, wxArrayTreeItemIds & array) {
     wxTreeItemIdValue cookie;
-	wxTreeItemId myItem = m_Tree->GetFirstChild( root, cookie );
+	wxTreeItemId myItem = m_tree->GetFirstChild( root, cookie );
     
 	while( myItem.IsOk() ){
         array.Add(myItem);
-		if( m_Tree->ItemHasChildren( myItem ) ){
+		if( m_tree->ItemHasChildren( myItem ) ){
             _FillTreeList(myItem, array);
 		}
-		myItem = m_Tree->GetNextChild( root, cookie);
+		myItem = m_tree->GetNextChild( root, cookie);
 	}
 }
 
@@ -694,49 +694,49 @@ void vrViewerTOCTree::_CopyTreeItems(wxTreeItemId origin, wxTreeItemId destinati
 	wxTreeItemId myDestination = destination;
     if (isRoot == true) {
         // first loop, no recursivity
-        vrViewerTOCTreeData * myDataOrigin = (vrViewerTOCTreeData*) m_Tree->GetItemData(origin);
+        vrViewerTOCTreeData * myDataOrigin = (vrViewerTOCTreeData*) m_tree->GetItemData(origin);
         vrViewerTOCTreeData * myDataCopy = new vrViewerTOCTreeData(*myDataOrigin);
-        myDestination = m_Tree->AppendItem(destination, m_Tree->GetItemText(origin),
-                                           m_Tree->GetItemImage(origin), -1,
+        myDestination = m_tree->AppendItem(destination, m_tree->GetItemText(origin),
+                                           m_tree->GetItemImage(origin), -1,
                                            myDataCopy);
     }
     
     wxTreeItemIdValue cookie;
-    wxTreeItemId myItem =  m_Tree->GetFirstChild( origin, cookie );;
+    wxTreeItemId myItem =  m_tree->GetFirstChild( origin, cookie );;
     
 	while( myItem.IsOk() ){
-        vrViewerTOCTreeData * myDataOrigin = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItem);
+        vrViewerTOCTreeData * myDataOrigin = (vrViewerTOCTreeData*) m_tree->GetItemData(myItem);
         vrViewerTOCTreeData * myDataCopy = new vrViewerTOCTreeData(*myDataOrigin);
-        wxTreeItemId myCopyItem =  m_Tree->AppendItem(myDestination, m_Tree->GetItemText(myItem),
-                                                      m_Tree->GetItemImage(myItem), -1,
+        wxTreeItemId myCopyItem =  m_tree->AppendItem(myDestination, m_tree->GetItemText(myItem),
+                                                      m_tree->GetItemImage(myItem), -1,
                                                       myDataCopy);
         
-		if( m_Tree->ItemHasChildren( myItem ) ){
+		if( m_tree->ItemHasChildren( myItem ) ){
             _CopyTreeItems(myItem, myCopyItem, false);
 		}
-		myItem = m_Tree->GetNextChild( origin, cookie);
+		myItem = m_tree->GetNextChild( origin, cookie);
 	}
 }
 
 
 
 void vrViewerTOCTree::_MoveLayer (wxTreeItemId origin, wxTreeItemId destination){
-    vrViewerTOCTreeData * myDataOrigin = (vrViewerTOCTreeData*) m_Tree->GetItemData(origin);
+    vrViewerTOCTreeData * myDataOrigin = (vrViewerTOCTreeData*) m_tree->GetItemData(origin);
     vrViewerTOCTreeData * myDataCopy = new vrViewerTOCTreeData(*myDataOrigin);
 
-    wxTreeItemId myDestParent = m_Tree->GetItemParent(destination);
-    wxTreeItemId myTarget = m_Tree->GetPrevSibling(destination);
+    wxTreeItemId myDestParent = m_tree->GetItemParent(destination);
+    wxTreeItemId myTarget = m_tree->GetPrevSibling(destination);
     if (myTarget.IsOk() == false) {
         myTarget = 0;
     }
     wxASSERT(myDestParent.IsOk());
     // insert item before destination
-    wxTreeItemId myNewId =  m_Tree->InsertItem(myDestParent, myTarget,
-                                               m_Tree->GetItemText(origin),
-                                               m_Tree->GetItemImage(origin),
+    wxTreeItemId myNewId =  m_tree->InsertItem(myDestParent, myTarget,
+                                               m_tree->GetItemText(origin),
+                                               m_tree->GetItemImage(origin),
                                                -1,
                                                myDataCopy);
-    m_Tree->SelectItem(myNewId);
+    m_tree->SelectItem(myNewId);
     //_CopyTreeItems(origin, myNewId);
     
     _ReorderFromTree(myNewId);
@@ -745,18 +745,18 @@ void vrViewerTOCTree::_MoveLayer (wxTreeItemId origin, wxTreeItemId destination)
 
 
 void vrViewerTOCTree::_SetVisible(wxTreeItemId item, bool visible) {
-    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(item);
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_tree->GetItemData(item);
     wxASSERT(myData);
     
     int myImgOffset = 0;
     if (visible == false) {
         myImgOffset = 1;
     }
-    int myImageIndex = (int) myData->m_CheckedImgType + myImgOffset;
+    int myImageIndex = (int) myData->m_checkedImgType + myImgOffset;
     _SetItemImageUnique(item, (vrVIEWERTOC_IMAGES_TYPES) myImageIndex);
     
     
-    if (myData->m_ItemType == vrTREEDATA_TYPE_LAYER) {
+    if (myData->m_itemType == vrTREEDATA_TYPE_LAYER) {
         int myItemIndex = _TreeToIndex(item, vrTREEDATA_TYPE_LAYER);
         wxASSERT(myItemIndex != wxNOT_FOUND);
         GetViewerLayerManager()->GetRenderer(myItemIndex)->SetVisible(visible);
@@ -766,9 +766,9 @@ void vrViewerTOCTree::_SetVisible(wxTreeItemId item, bool visible) {
 
 
 bool vrViewerTOCTree::_IsVisible(wxTreeItemId item) {
-    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(item);
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_tree->GetItemData(item);
     wxASSERT(myData);
-    if (m_Tree->GetItemImage(item) - myData->m_CheckedImgType > 0) {
+    if (m_tree->GetItemImage(item) - myData->m_checkedImgType > 0) {
         return false;
     }
     return true;
@@ -779,15 +779,15 @@ bool vrViewerTOCTree::_IsVisible(wxTreeItemId item) {
 void vrViewerTOCTree::_ReorderFromTree(wxTreeItemId moveditem) {
     // reorder items after a DND operation. items before moveditem should be moved!
     wxArrayTreeItemIds myIdList;
-    _FillTreeList(m_RootNode, myIdList);
+    _FillTreeList(m_rootNode, myIdList);
     int myLayerIndex = 0;
     for (unsigned int i = 0; i< myIdList.GetCount(); i++) {
-        vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(myIdList.Item(i));
+        vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_tree->GetItemData(myIdList.Item(i));
         wxASSERT(myData);
-        if (myData->m_ItemType != vrTREEDATA_TYPE_LAYER) {
+        if (myData->m_itemType != vrTREEDATA_TYPE_LAYER) {
             continue;
         }
-        wxString myLayerName = m_Tree->GetItemText(myIdList.Item(i));
+        wxString myLayerName = m_tree->GetItemText(myIdList.Item(i));
         int iViewerLMIndex = _SearchIntoViewerLayerManager(myLayerName);
         if (iViewerLMIndex == wxNOT_FOUND) {
             wxLogError(_("Error layer '%s' not found into ViewerLayerMaanger!"),myLayerName);
@@ -823,14 +823,14 @@ int vrViewerTOCTree::_SearchIntoViewerLayerManager(const wxString & layername){
 
 void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
 	int flags = 0;
-	wxTreeItemId clickedid = m_Tree->HitTest(event.GetPosition(), flags);
+	wxTreeItemId clickedid = m_tree->HitTest(event.GetPosition(), flags);
 	if (flags & wxTREE_HITTEST_ONITEMICON)
 	{
-        vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(clickedid);
-        switch (myData->m_ItemType) {
+        vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_tree->GetItemData(clickedid);
+        switch (myData->m_itemType) {
             case vrTREEDATA_TYPE_LAYER:
             {
-                int myItemIndex = _TreeToIndex(clickedid, myData->m_ItemType);
+                int myItemIndex = _TreeToIndex(clickedid, myData->m_itemType);
                 if (myItemIndex == wxNOT_FOUND){
                     return;
                 }
@@ -873,17 +873,17 @@ void vrViewerTOCTree::OnMouseDown(wxMouseEvent & event) {
 
 
 void vrViewerTOCTree::OnItemRightDown(wxTreeEvent & event) {
-	m_Tree->SelectItem(event.GetItem());
-    vrViewerTOCTreeData * myItemData = (vrViewerTOCTreeData*) m_Tree->GetItemData(event.GetItem());
+	m_tree->SelectItem(event.GetItem());
+    vrViewerTOCTreeData * myItemData = (vrViewerTOCTreeData*) m_tree->GetItemData(event.GetItem());
     wxASSERT(myItemData);
     vrRenderer * myRenderer = NULL;
-    if (myItemData->m_ItemType == vrTREEDATA_TYPE_LAYER) {
+    if (myItemData->m_itemType == vrTREEDATA_TYPE_LAYER) {
         int myItemIndex = _TreeToIndex(event.GetItem(), vrTREEDATA_TYPE_LAYER);
         myRenderer = GetViewerLayerManager()->GetRenderer(myItemIndex);
         wxASSERT(myRenderer);
     }
     
-    wxMenu * myMenu = CreateContextualMenu(myRenderer, m_UseGroupMenu);
+    wxMenu * myMenu = CreateContextualMenu(myRenderer, m_useGroupMenu);
     wxASSERT(myMenu);
     GetControl()->PopupMenu(myMenu);
     event.Skip();
@@ -892,7 +892,7 @@ void vrViewerTOCTree::OnItemRightDown(wxTreeEvent & event) {
 
 
 void vrViewerTOCTree::OnSetColorPen(wxCommandEvent & event) {
-    int mySelItem = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
+    int mySelItem = _TreeToIndex(m_tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
     if (SetColorPen(mySelItem) == true) {
         ReloadData();
     }
@@ -901,7 +901,7 @@ void vrViewerTOCTree::OnSetColorPen(wxCommandEvent & event) {
 
 
 void vrViewerTOCTree::OnSetColorBrush(wxCommandEvent & event) {
-    int mySelItem = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
+    int mySelItem = _TreeToIndex(m_tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
 	if (SetColorBrush(mySelItem) == true) {
 		ReloadData();
 	}
@@ -910,7 +910,7 @@ void vrViewerTOCTree::OnSetColorBrush(wxCommandEvent & event) {
 
 
 void vrViewerTOCTree::OnSetBrushStyle (wxCommandEvent & event){
-    int mySelItem = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
+    int mySelItem = _TreeToIndex(m_tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
 	if (SetBrushStyle(mySelItem, event.GetId()) == true) {
 		ReloadData();
 	}
@@ -919,7 +919,7 @@ void vrViewerTOCTree::OnSetBrushStyle (wxCommandEvent & event){
 
 
 void vrViewerTOCTree::OnSetWidth(wxCommandEvent & event) {
-    int mySelItem = _TreeToIndex(m_Tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
+    int mySelItem = _TreeToIndex(m_tree->GetSelection(), vrTREEDATA_TYPE_LAYER);
     if (SetWidth(mySelItem)==true) {
         ReloadData();
     }
@@ -929,13 +929,13 @@ void vrViewerTOCTree::OnSetWidth(wxCommandEvent & event) {
 
 void vrViewerTOCTree::OnSetTransparency(wxCommandEvent & event) {
     // apply transparency recursively
-    wxTreeItemId mySelectedId = m_Tree->GetSelection();
+    wxTreeItemId mySelectedId = m_tree->GetSelection();
     wxArrayTreeItemIds myListIds;
     myListIds.Add(mySelectedId);
-    vrViewerTOCTreeData * myItemData = (vrViewerTOCTreeData*) m_Tree->GetItemData(mySelectedId);
+    vrViewerTOCTreeData * myItemData = (vrViewerTOCTreeData*) m_tree->GetItemData(mySelectedId);
     wxASSERT(myItemData);
     int myActualTransparancy = 0;
-    if (myItemData->m_ItemType == vrTREEDATA_TYPE_GROUP) {
+    if (myItemData->m_itemType == vrTREEDATA_TYPE_GROUP) {
         _FillTreeList(mySelectedId, myListIds);
     }
     else {
@@ -979,7 +979,7 @@ void vrViewerTOCTree::OnNewGroup(wxCommandEvent & event) {
     wxString myGroupNameOrigin = _("New group");
     wxString myGroupName = myGroupNameOrigin;
     int index = 1;
-    while (_IndexToTree(m_RootNode, myGroupName, vrTREEDATA_TYPE_GROUP).IsOk() == true) {
+    while (_IndexToTree(m_rootNode, myGroupName, vrTREEDATA_TYPE_GROUP).IsOk() == true) {
         myGroupName = myGroupNameOrigin + wxString::Format(_T(" %d"), index);
         index++;
     }
@@ -988,19 +988,19 @@ void vrViewerTOCTree::OnNewGroup(wxCommandEvent & event) {
 
 
 void vrViewerTOCTree::OnDragStart(wxTreeEvent & event){
-    m_DragItemID = wxTreeItemId();
-	wxASSERT(m_DragItemID.IsOk() == false);
+    m_dragItemID = wxTreeItemId();
+	wxASSERT(m_dragItemID.IsOk() == false);
 	
-    m_DragItemID = event.GetItem();
-    if (m_DragItemID == m_RootNode) {
+    m_dragItemID = event.GetItem();
+    if (m_dragItemID == m_rootNode) {
         wxLogWarning("This can't be dragged!");
         return;
     }
     
-    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(m_DragItemID);
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_tree->GetItemData(m_dragItemID);
     wxASSERT(myData);
     
-    switch (myData->m_ItemType) {
+    switch (myData->m_itemType) {
         case vrTREEDATA_TYPE_LAYER:
         case vrTREEDATA_TYPE_GROUP:
             event.Allow();
@@ -1014,11 +1014,11 @@ void vrViewerTOCTree::OnDragStart(wxTreeEvent & event){
 
 
 void vrViewerTOCTree::OnDragStop(wxTreeEvent & event){
-    if (m_DragItemID.IsOk() == false) {
+    if (m_dragItemID.IsOk() == false) {
         return;
     }
     
-    wxTreeItemId myItemStart = m_DragItemID;
+    wxTreeItemId myItemStart = m_dragItemID;
 	wxTreeItemId myItemStop = event.GetItem();
     
     if (myItemStart == myItemStop){
@@ -1029,36 +1029,36 @@ void vrViewerTOCTree::OnDragStop(wxTreeEvent & event){
 		return;
 	}
 
-	vrViewerTOCTreeData * myDataStop = (vrViewerTOCTreeData*) m_Tree->GetItemData(myItemStop);
+	vrViewerTOCTreeData * myDataStop = (vrViewerTOCTreeData*) m_tree->GetItemData(myItemStop);
 	if(myDataStop == NULL){
 		return;
 	}
 
-	bool m_AllreadyFreezed = IsFreezed();
-    if (m_AllreadyFreezed == false) {
+	bool m_allreadyFreezed = IsFreezed();
+    if (m_allreadyFreezed == false) {
         FreezeBegin();
     }
 
     // drag into group
-    if (myDataStop->m_ItemType == vrTREEDATA_TYPE_GROUP) {
+    if (myDataStop->m_itemType == vrTREEDATA_TYPE_GROUP) {
         _CopyTreeItems(myItemStart, myItemStop);
         //_ReorderFromTree(myItemStop);
-        m_Tree->Delete(myItemStart);
+        m_tree->Delete(myItemStart);
     }
     
-    if (myDataStop->m_ItemType == vrTREEDATA_TYPE_LAYER) {
-        if (myItemStop == m_Tree->GetNextSibling(myItemStart)) {
-            if (m_AllreadyFreezed == false) {
+    if (myDataStop->m_itemType == vrTREEDATA_TYPE_LAYER) {
+        if (myItemStop == m_tree->GetNextSibling(myItemStart)) {
+            if (m_allreadyFreezed == false) {
                 FreezeEnd();
             }
             return;
         }
         _MoveLayer(myItemStart, myItemStop);
-        m_Tree->Delete(myItemStart);
+        m_tree->Delete(myItemStart);
     }
     
     SymbologyModified();
-    if (m_AllreadyFreezed == false) {
+    if (m_allreadyFreezed == false) {
         FreezeEnd();
     }
 }
@@ -1066,10 +1066,10 @@ void vrViewerTOCTree::OnDragStop(wxTreeEvent & event){
 
 
 void vrViewerTOCTree::OnEditStart(wxTreeEvent & event) {
-    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_Tree->GetItemData(event.GetItem());
+    vrViewerTOCTreeData * myData = (vrViewerTOCTreeData*) m_tree->GetItemData(event.GetItem());
     wxASSERT(myData);
     
-    if (myData->m_ItemType != vrTREEDATA_TYPE_GROUP) {
+    if (myData->m_itemType != vrTREEDATA_TYPE_GROUP) {
         event.Veto();
         return;
     }
@@ -1083,24 +1083,24 @@ void vrViewerTOCTree::OnEditStart(wxTreeEvent & event) {
 vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id,
                                  const wxPoint & pos, const wxSize & size,
                                  long style) {
-    m_Tree = new wxTreeCtrl(parent, id, pos, size, style);
-    m_RootNode = m_Tree->AddRoot("Project");
+    m_tree = new wxTreeCtrl(parent, id, pos, size, style);
+    m_rootNode = m_tree->AddRoot("Project");
     SetUseGroupMenu(false);
     _InitBitmapList();
     
     // connect event
-    m_Tree->Bind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
-    m_Tree->Bind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
-    m_Tree->Bind(wxEVT_COMMAND_TREE_BEGIN_DRAG, &vrViewerTOCTree::OnDragStart, this);
-    m_Tree->Bind(wxEVT_COMMAND_TREE_END_DRAG, &vrViewerTOCTree::OnDragStop, this);
-    m_Tree->Bind(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT, &vrViewerTOCTree::OnEditStart, this);
+    m_tree->Bind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
+    m_tree->Bind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
+    m_tree->Bind(wxEVT_COMMAND_TREE_BEGIN_DRAG, &vrViewerTOCTree::OnDragStart, this);
+    m_tree->Bind(wxEVT_COMMAND_TREE_END_DRAG, &vrViewerTOCTree::OnDragStop, this);
+    m_tree->Bind(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT, &vrViewerTOCTree::OnEditStart, this);
     
-    m_Tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnNewGroup, this, vrID_POPUP_GROUP_ADD);
-    m_Tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
-    m_Tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
-    m_Tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
-    m_Tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
-    m_Tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
+    m_tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnNewGroup, this, vrID_POPUP_GROUP_ADD);
+    m_tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
+    m_tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
+    m_tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
+    m_tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
+    m_tree->Bind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
 
 }
 
@@ -1108,35 +1108,35 @@ vrViewerTOCTree::vrViewerTOCTree(wxWindow * parent, wxWindowID id,
 
 vrViewerTOCTree::~vrViewerTOCTree() {
     // disconnect event
-    m_Tree->Unbind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
-    m_Tree->Unbind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
-    m_Tree->Unbind(wxEVT_COMMAND_TREE_BEGIN_DRAG, &vrViewerTOCTree::OnDragStart, this);
-    m_Tree->Unbind(wxEVT_COMMAND_TREE_END_DRAG, &vrViewerTOCTree::OnDragStop, this);
-    m_Tree->Unbind(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT, &vrViewerTOCTree::OnEditStart, this);
+    m_tree->Unbind(wxEVT_LEFT_DOWN, &vrViewerTOCTree::OnMouseDown, this);
+    m_tree->Unbind(wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK, &vrViewerTOCTree::OnItemRightDown, this);
+    m_tree->Unbind(wxEVT_COMMAND_TREE_BEGIN_DRAG, &vrViewerTOCTree::OnDragStart, this);
+    m_tree->Unbind(wxEVT_COMMAND_TREE_END_DRAG, &vrViewerTOCTree::OnDragStop, this);
+    m_tree->Unbind(wxEVT_COMMAND_TREE_BEGIN_LABEL_EDIT, &vrViewerTOCTree::OnEditStart, this);
 
-    m_Tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnNewGroup, this, vrID_POPUP_GROUP_ADD);
-    m_Tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
-    m_Tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
-    m_Tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
-    m_Tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
-    m_Tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
+    m_tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnNewGroup, this, vrID_POPUP_GROUP_ADD);
+    m_tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetTransparency, this, vrID_POPUP_TRANSPARENCY);
+    m_tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetColorPen, this, vrID_POPUP_PEN_COLOR);
+    m_tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetWidth, this, vrID_POPUP_DRAWING_WIDTH);
+    m_tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetColorBrush, this, vrID_POPUP_BRUSH_COLOR);
+    m_tree->Unbind(wxEVT_COMMAND_MENU_SELECTED, &vrViewerTOCTree::OnSetBrushStyle, this, vrID_POPUP_BRUSH_SOLID, vrID_POPUP_BRUSH_BDIAGONAL);
     
-    wxDELETE(m_Tree);
+    wxDELETE(m_tree);
 }
 
 
 
 bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
     vrViewerTOCTreeData * myData = new vrViewerTOCTreeData();
-    myData->m_ItemType = vrTREEDATA_TYPE_LAYER;
-    myData->m_CheckedImgType = vrVIEWERTOC_IMAGE_CHECKED;
+    myData->m_itemType = vrTREEDATA_TYPE_LAYER;
+    myData->m_checkedImgType = vrVIEWERTOC_IMAGE_CHECKED;
     int myImgStatus = vrVIEWERTOC_IMAGE_CHECKED;
     if (renderer->GetVisible() == false) {
         myImgStatus = vrVIEWERTOC_IMAGE_UNCHECKED;
     }
     
-    if (index >= (signed) m_Tree->GetCount()) {
-		m_Tree->AppendItem(m_RootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus, -1, myData);
+    if (index >= (signed) m_tree->GetCount()) {
+		m_tree->AppendItem(m_rootNode, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus, -1, myData);
 		return true;
 	}
     
@@ -1145,8 +1145,8 @@ bool vrViewerTOCTree::Add(int index, vrRenderer * renderer) {
 		index = 0;
 	}
     
-    m_Tree->InsertItem(m_RootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus,-1,myData);
-    //m_Tree->SetItemState(myAddedId, wxTREE_ITEMSTATE_NONE);
+    m_tree->InsertItem(m_rootNode, index, renderer->GetLayer()->GetDisplayName().GetFullName(),myImgStatus,-1,myData);
+    //m_tree->SetItemState(myAddedId, wxTREE_ITEMSTATE_NONE);
     
     return true;
 }
@@ -1163,7 +1163,7 @@ bool vrViewerTOCTree::Move(long oldpos, long newpos) {
 bool vrViewerTOCTree::Remove(int index) {
     // search for item text
     wxString myItemText = GetViewerLayerManager()->GetRenderer(index)->GetLayer()->GetDisplayName().GetFullName();
-    wxTreeItemId myFound = _IndexToTree (m_RootNode, myItemText, vrTREEDATA_TYPE_LAYER);    
+    wxTreeItemId myFound = _IndexToTree (m_rootNode, myItemText, vrTREEDATA_TYPE_LAYER);    
     if (myFound.IsOk() == false) {
         wxLogError(_("Error, item %d not found!!!"), index);
         return false;
@@ -1172,35 +1172,35 @@ bool vrViewerTOCTree::Remove(int index) {
         wxLogMessage("Item : %s found (index = %d) ", myItemText, index);
     }
  
-    m_Tree->Delete(myFound);
+    m_tree->Delete(myFound);
     return true;
 }
 
 
 
 int vrViewerTOCTree::GetSelection() {
-    if (m_Tree->GetSelection().IsOk() == false) {
+    if (m_tree->GetSelection().IsOk() == false) {
         return wxNOT_FOUND;
     }
     
-    wxTreeItemId mySelTreeId = m_Tree->GetSelection();
+    wxTreeItemId mySelTreeId = m_tree->GetSelection();
     return _TreeToIndex(mySelTreeId, vrTREEDATA_TYPE_LAYER);
 }
 
 
 
 wxControl * vrViewerTOCTree::GetControl() {
-    wxASSERT(m_Tree);
-    return m_Tree;
+    wxASSERT(m_tree);
+    return m_tree;
 }
 
 
 bool vrViewerTOCTree::AddGroup(const wxString & name) {
     vrViewerTOCTreeData * myData = new vrViewerTOCTreeData();
-    myData->m_ItemType = vrTREEDATA_TYPE_GROUP;
-    myData->m_CheckedImgType = vrVIEWERTOC_IMAGE_GROUP_ON;
+    myData->m_itemType = vrTREEDATA_TYPE_GROUP;
+    myData->m_checkedImgType = vrVIEWERTOC_IMAGE_GROUP_ON;
     
-    m_Tree->AppendItem(m_RootNode, name, myData->m_CheckedImgType, -1, myData);
+    m_tree->AppendItem(m_rootNode, name, myData->m_checkedImgType, -1, myData);
     return true;
 }
 
@@ -1209,14 +1209,14 @@ bool vrViewerTOCTree::AddGroup(const wxString & name) {
 bool vrViewerTOCTree::SetEditStyle(int index) {
     // search for item text
     wxString myItemText = GetViewerLayerManager()->GetRenderer(index)->GetLayer()->GetDisplayName().GetFullName();
-    wxTreeItemId myFound = _IndexToTree (m_RootNode, myItemText, vrTREEDATA_TYPE_LAYER);
+    wxTreeItemId myFound = _IndexToTree (m_rootNode, myItemText, vrTREEDATA_TYPE_LAYER);
     if (myFound.IsOk() == false) {
         wxLogError(_("Error, item %d not found!!!"), index);
         return false;
     }
    
-    wxFont myUnderlineFont = m_Tree->GetFont();
-    m_Tree->SetItemFont(myFound, myUnderlineFont.Underlined());
+    wxFont myUnderlineFont = m_tree->GetFont();
+    m_tree->SetItemFont(myFound, myUnderlineFont.Underlined());
     return true;
 }
 
@@ -1225,14 +1225,14 @@ bool vrViewerTOCTree::SetEditStyle(int index) {
 bool vrViewerTOCTree::SetNormalStyle(int index) {
     // search for item text
     wxString myItemText = GetViewerLayerManager()->GetRenderer(index)->GetLayer()->GetDisplayName().GetFullName();
-    wxTreeItemId myFound = _IndexToTree (m_RootNode, myItemText, vrTREEDATA_TYPE_LAYER);
+    wxTreeItemId myFound = _IndexToTree (m_rootNode, myItemText, vrTREEDATA_TYPE_LAYER);
     if (myFound.IsOk() == false) {
         wxLogError(_("Error, item %d not found!!!"), index);
         return false;
     }
     
-    wxFont myUnderlineFont = m_Tree->GetFont();
-    m_Tree->SetItemFont(myFound, myUnderlineFont);
+    wxFont myUnderlineFont = m_tree->GetFont();
+    m_tree->SetItemFont(myFound, myUnderlineFont);
     return true;
 }
 

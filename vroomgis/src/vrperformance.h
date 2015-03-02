@@ -35,9 +35,9 @@
 
 class vrPerformance {
   private:
-    wxStopWatch m_StopWatch;
-    wxFileName m_FilePath;
-	wxFile m_File;
+    wxStopWatch m_stopWatch;
+    wxFileName m_filePath;
+	wxFile m_file;
 
 	
 	size_t _GetUsedMemory (bool resident=false);

@@ -18,19 +18,19 @@
 #include "vrlayerraster.h"
 
 vrOperationVectorProfiler::vrOperationVectorProfiler(OGRGeometry * geometry, vrLayerRasterGDAL * raster) {
-    m_LineString = NULL;
+    m_lineString = NULL;
     if(geometry->getGeometryType() == wkbFlatten(wkbLineString)){
-        m_LineString = static_cast<OGRLineString*>(geometry);
+        m_lineString = static_cast<OGRLineString*>(geometry);
     }
-    m_RasterLayer = raster;
-    m_PixelWidth = 0;
-    m_PixelHeight = 0;
-    m_NoDataValue = -9999;
+    m_rasterLayer = raster;
+    m_pixelWidth = 0;
+    m_pixelHeight = 0;
+    m_noDataValue = -9999;
     
     wxArrayDouble myGeoTransform;
-    m_RasterLayer->GetGeoTransform(myGeoTransform);
-    m_PixelWidth = myGeoTransform.Item(1);
-    m_PixelHeight = myGeoTransform.Item(5);
+    m_rasterLayer->GetGeoTransform(myGeoTransform);
+    m_pixelWidth = myGeoTransform.Item(1);
+    m_pixelHeight = myGeoTransform.Item(5);
 }
 
 
@@ -41,11 +41,11 @@ vrOperationVectorProfiler::~vrOperationVectorProfiler() {
 
 
 bool vrOperationVectorProfiler::IsOk() {
-    if (m_LineString == NULL) {
+    if (m_lineString == NULL) {
         return false;
     }
     
-    if (m_RasterLayer == NULL) {
+    if (m_rasterLayer == NULL) {
         return false;
     }
     return true;
@@ -58,21 +58,21 @@ bool vrOperationVectorProfiler::DoProfile(int bandindex) {
     }
     
     // work only on two vertex lines
-    if (m_LineString->getNumPoints() != 2) {
-        wxLogError(_("Actually Profile works only on line with 2 vertex, found: %d vertex"), m_LineString->getNumPoints());
+    if (m_lineString->getNumPoints() != 2) {
+        wxLogError(_("Actually Profile works only on line with 2 vertex, found: %d vertex"), m_lineString->getNumPoints());
         return false;
     }
     
     OGRPoint p1;
     OGRPoint p2;
-    m_LineString->getPoint(0, &p1);
-    m_LineString->getPoint(1, &p2);
+    m_lineString->getPoint(0, &p1);
+    m_lineString->getPoint(1, &p2);
     
     double dx = p2.getX() - p1.getX();
     double dy = p2.getY() - p1.getY();
     
-    int myPointX = wxRound(fabs(dx / m_PixelWidth));
-    int myPointY = wxRound(fabs(dy / m_PixelHeight));
+    int myPointX = wxRound(fabs(dx / m_pixelWidth));
+    int myPointY = wxRound(fabs(dy / m_pixelHeight));
     int iNbPoints = MAX(myPointX, myPointY);
     
     if (myPointX == 0 && myPointY == 0) {
@@ -80,35 +80,35 @@ bool vrOperationVectorProfiler::DoProfile(int bandindex) {
         return false;
     }
     
-    m_Increment_X = fabs(m_PixelWidth);
-    m_Increment_Y = fabs(m_PixelHeight);
+    m_increment_X = fabs(m_pixelWidth);
+    m_increment_Y = fabs(m_pixelHeight);
     
     if (iNbPoints  == myPointX) {
-        m_Increment_Y = dy / iNbPoints;        
+        m_increment_Y = dy / iNbPoints;        
     } else {
-        m_Increment_X = dx / iNbPoints;
+        m_increment_X = dx / iNbPoints;
     }
     
-    if (dx < 0 && m_Increment_X > 0) {
-        m_Increment_X = m_Increment_X * -1.0;
+    if (dx < 0 && m_increment_X > 0) {
+        m_increment_X = m_increment_X * -1.0;
     }
-    if (dy < 0 && m_Increment_Y > 0) {
-        m_Increment_Y = m_Increment_Y * -1.0;
+    if (dy < 0 && m_increment_Y > 0) {
+        m_increment_Y = m_increment_Y * -1.0;
     }
     
     
     wxArrayDouble myValues;
     for (int i = 0; i < iNbPoints + 1; i++) {
-        double myX = p1.getX() + (i* m_Increment_X);
-        double myY = p1.getY() + (i* m_Increment_Y);
-        m_RasterLayer->GetPixelValue(myX, myY, myValues);
+        double myX = p1.getX() + (i* m_increment_X);
+        double myY = p1.getY() + (i* m_increment_Y);
+        m_rasterLayer->GetPixelValue(myX, myY, myValues);
         if (myValues.GetCount() == 0) {
-            m_ZResults.Add(m_NoDataValue);
+            m_zResults.Add(m_noDataValue);
             continue;
         }
         double myZVal = myValues.Item(bandindex);
         //wxLogMessage(_("%f"), myZVal);
-        m_ZResults.Add(myZVal);
+        m_zResults.Add(myZVal);
     }
     
     return true;
@@ -121,11 +121,11 @@ bool vrOperationVectorProfiler::GetResultPoint(int index, OGRPoint * point) {
         return false;
     }
     
-    if (m_ZResults.GetCount() == 0) {
+    if (m_zResults.GetCount() == 0) {
         return false;
     }
     
-    if (index < 0 || index >= m_ZResults.GetCount()) {
+    if (index < 0 || index >= m_zResults.GetCount()) {
         wxLogError(_("Index out of bounds!"));
         return false;
     }
@@ -135,9 +135,9 @@ bool vrOperationVectorProfiler::GetResultPoint(int index, OGRPoint * point) {
         return false;
     }
     
-    point->setX(m_LineString->getX(0) + index * GetIncrementX());
-    point->setY(m_LineString->getY(0) + index * GetIncrementY());
-    point->setZ(m_ZResults.Item(index));
+    point->setX(m_lineString->getX(0) + index * GetIncrementX());
+    point->setY(m_lineString->getY(0) + index * GetIncrementY());
+    point->setZ(m_zResults.Item(index));
     return true;
 }
 
@@ -148,7 +148,7 @@ bool vrOperationVectorProfiler::GetResultLine(OGRGeometry * line) {
         return false;
     }
     
-    if (m_ZResults.GetCount() == 0) {
+    if (m_zResults.GetCount() == 0) {
         return false;
     }
         
@@ -158,7 +158,7 @@ bool vrOperationVectorProfiler::GetResultLine(OGRGeometry * line) {
     }
     
     OGRLineString * myLine = static_cast<OGRLineString*>(line);
-    for (unsigned int i = 0; i< m_ZResults.GetCount(); i++) {
+    for (unsigned int i = 0; i< m_zResults.GetCount(); i++) {
         OGRPoint * myPt = static_cast<OGRPoint*>(OGRGeometryFactory::createGeometry(wkbPoint));
         if(GetResultPoint(i, myPt) == false){
             wxLogError(_("Error getting point: %ld"), i);
@@ -174,7 +174,7 @@ bool vrOperationVectorProfiler::GetResultLine(OGRGeometry * line) {
 
 
 double vrOperationVectorProfiler::GetIncrementDistance() {
-    double myDistance = sqrt( (m_Increment_X * m_Increment_X) + (m_Increment_Y * m_Increment_Y) );
+    double myDistance = sqrt( (m_increment_X * m_increment_X) + (m_increment_Y * m_increment_Y) );
     return myDistance;
 }
 

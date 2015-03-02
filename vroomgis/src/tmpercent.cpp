@@ -39,32 +39,32 @@ tmPercent::tmPercent(long value)
 
 void tmPercent::Create(long value)
 {
-	m_TotalValue = value;
-	m_Increment = m_TotalValue / 100;
+	m_totalValue = value;
+	m_increment = m_totalValue / 100;
 }
 
 
 void tmPercent::InitMemberValue()
 {
 	m_inited = false;
-	m_TotalValue = 0;
-	m_ActualValue = 0;
-	m_PreviousPercent = 0;
-	m_Increment = 0.0;
+	m_totalValue = 0;
+	m_actualValue = 0;
+	m_previousPercent = 0;
+	m_increment = 0.0;
 }
 
 void tmPercent::SetValue (long actualvalue)
 {
-	m_ActualValue = actualvalue;
+	m_actualValue = actualvalue;
 }
 
 
 bool tmPercent::IsNewStep()
 {
 	int iActualPercent = (int) GetPercent();
-	if (iActualPercent > m_PreviousPercent)
+	if (iActualPercent > m_previousPercent)
 	{
-		m_PreviousPercent = iActualPercent;
+		m_previousPercent = iActualPercent;
 		return true;
 	}
 	
@@ -73,8 +73,8 @@ bool tmPercent::IsNewStep()
 
 int tmPercent::GetPercent()
 {
-	if (m_ActualValue > m_TotalValue)
+	if (m_actualValue > m_totalValue)
 		return 100;
 	
-	return (int) m_ActualValue * 100 / m_TotalValue;
+	return (int) m_actualValue * 100 / m_totalValue;
 }

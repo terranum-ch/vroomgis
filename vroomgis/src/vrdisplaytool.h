@@ -51,12 +51,12 @@ private:
 
 
 public:
-    wxRect m_Rect;
-	wxPoint m_Position;
+    wxRect m_rect;
+	wxPoint m_position;
     wxEventType m_EvtType;
-    vrMOUSE_STATUS m_MouseStatus;
-	vrViewerLayerManager * m_ParentManager;
-    long m_LongData;
+    vrMOUSE_STATUS m_mouseStatus;
+	vrViewerLayerManager * m_parentManager;
+    long m_longData;
 
 
     vrDisplayToolMessage(const wxEventType & eventtype,
@@ -78,14 +78,14 @@ public:
 *******************************************************************************/
 class vrDisplayTool {
 private:
-    wxString m_Name;
-    int m_ID;
-    wxCursor m_Cursor;
-    vrViewerDisplay * m_Display;
+    wxString m_name;
+    int m_iD;
+    wxCursor m_cursor;
+    vrViewerDisplay * m_display;
 
 
 protected:
-	vrRubberBand * m_Rubber;
+	vrRubberBand * m_rubber;
     inline vrViewerDisplay * GetDisplay() const;
 
 
@@ -109,19 +109,19 @@ public:
 };
 
 inline vrViewerDisplay * vrDisplayTool::GetDisplay() const {
-	return m_Display;
+	return m_display;
 }
 
 inline const wxString vrDisplayTool::GetName() const {
-  return m_Name;
+  return m_name;
 }
 
 inline const int vrDisplayTool::GetID() const {
-  return m_ID;
+  return m_iD;
 }
 
 inline const wxCursor vrDisplayTool::GetCursor() const {
-  return m_Cursor;
+  return m_cursor;
 }
 
 
@@ -210,8 +210,8 @@ class vrDisplayToolZoomOut : public vrDisplayToolZoom {
  *******************************************************************************/
 class vrDisplayToolPan : public vrDisplayTool {
 private:
-    wxPoint m_Point;
-	wxBitmap * m_PanBitmap;
+    wxPoint m_point;
+	wxBitmap * m_panBitmap;
 
 public:
     vrDisplayToolPan(vrViewerDisplay * display);
@@ -233,7 +233,7 @@ public:
  *******************************************************************************/
 class vrDisplayToolSight : public vrDisplayTool {
 private:
-   wxOverlay m_Overlay;
+   wxOverlay m_overlay;
 
 public:
     vrDisplayToolSight(vrViewerDisplay * display);
@@ -255,7 +255,7 @@ public:
  *****************************************************************************************/
 class vrDisplayToolEdit : public vrDisplayTool {
 private:
-    wxOverlay m_Overlay;
+    wxOverlay m_overlay;
     
 public:
     vrDisplayToolEdit(vrViewerDisplay * display, int toolid = wxID_EDIT);
@@ -277,9 +277,9 @@ public:
 *****************************************************************************************/
 class vrDisplayToolEditLine : public vrDisplayToolEdit {
 private:
-    wxPoint m_PreviousPoint;
-    wxOverlay m_Overlay;
-    bool m_DoubleClicked;
+    wxPoint m_previousPoint;
+    wxOverlay m_overlay;
+    bool m_doubleClicked;
     
 public:
     vrDisplayToolEditLine(vrViewerDisplay * display, int toolid = wxID_EDIT);
@@ -302,11 +302,11 @@ public:
 *******************************************************************************/
 class vrDisplayToolModify : public vrDisplayTool {
 protected:
-    wxArrayInt m_PointsX;
-    wxArrayInt m_PointsY;
-    wxOverlay m_Overlay;
-    int m_ActiveVertex;
-    OGRwkbGeometryType m_GeometryType;
+    wxArrayInt m_pointsX;
+    wxArrayInt m_pointsY;
+    wxOverlay m_overlay;
+    int m_activeVertex;
+    OGRwkbGeometryType m_geometryType;
     
 public:
     vrDisplayToolModify(vrViewerDisplay * display);

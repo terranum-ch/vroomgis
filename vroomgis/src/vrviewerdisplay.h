@@ -30,16 +30,16 @@ class vrViewerLayerManager;
 
 class vrViewerDisplay : public wxPanel{
 private:
-    vrCoordinate * m_Coordinate;
+    vrCoordinate * m_coordinate;
 	wxBitmap * m_bmp;
-	vrDisplayTool * m_Tool;
-    vrDisplayTool * m_ToolSecondary;
-    vrViewerLayerManager * m_ViewerManager;
-	wxStatusBar * m_Status;
-	int m_StatusField;
-	wxString m_StatusErrText;
-    vrViewerOverlayArray m_OverlayArray;
-    wxString m_NoDataText;
+	vrDisplayTool * m_tool;
+    vrDisplayTool * m_toolSecondary;
+    vrViewerLayerManager * m_viewerManager;
+	wxStatusBar * m_status;
+	int m_statusField;
+	wxString m_statusErrText;
+    vrViewerOverlayArray m_overlayArray;
+    wxString m_noDataText;
 
 
 	bool _DrawRoundedMessage(const wxString & text, const wxColour & colour = *wxLIGHT_GREY);
@@ -62,11 +62,11 @@ public:
     virtual ~vrViewerDisplay();
 	void SetViewerLayerManager(vrViewerLayerManager * value);
 	vrViewerLayerManager * GetViewerLayerManager();
-    void SetNoDataText (const wxString & text){m_NoDataText = text;}
+    void SetNoDataText (const wxString & text){m_noDataText = text;}
 
 	void SetBitmap(wxBitmap * bmp);
     wxBitmap * GetBitmapRef(){return m_bmp;}
-	vrCoordinate * GetCoordinate() {return m_Coordinate;}
+	vrCoordinate * GetCoordinate() {return m_coordinate;}
 	void SetStatusCoordinates(wxStatusBar * status, int field = 0, const wxString & errmsg = wxEmptyString);
 
 	void SetToolDefault();
@@ -86,13 +86,13 @@ public:
 
 
 inline const vrDisplayTool * vrViewerDisplay::GetTool() const {
-	return m_Tool;
+	return m_tool;
 }
 
 
 
 inline vrViewerOverlayArray * vrViewerDisplay::GetOverlayArrayRef(){
-    return &m_OverlayArray;
+    return &m_overlayArray;
 }
 
 

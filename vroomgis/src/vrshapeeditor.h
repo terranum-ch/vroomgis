@@ -44,9 +44,9 @@ enum vrSHAPEEDITOR_TYPES {
 
 class vrShapeEditor {
 protected:
-    OGRGeometry * m_Geometry;
-    vrViewerDisplay * m_Display;
-    vrSHAPEEDITOR_TYPES m_Type;
+    OGRGeometry * m_geometry;
+    vrViewerDisplay * m_display;
+    vrSHAPEEDITOR_TYPES m_type;
 
 	
 public:
@@ -70,7 +70,7 @@ public:
 
 
 inline const vrSHAPEEDITOR_TYPES vrShapeEditor::GetType() const {
-    return m_Type;
+    return m_type;
 }
 
 
@@ -101,7 +101,7 @@ public:
 *****************************************************************************************/
 class vrShapeEditorLine : public vrShapeEditor {
 protected:
-    wxOverlay m_Overlay;
+    wxOverlay m_overlay;
     
 public:
     vrShapeEditorLine(vrViewerDisplay * display);

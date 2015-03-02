@@ -41,7 +41,7 @@ enum CT_LAYER_TYPE {
 //For dealing with GIS data stored into C2P projects.
 class vrLayerVectorC2P : public vrLayerVectorOGR {
 private:
-    int m_ActiveLayerIndex;
+    int m_activeLayerIndex;
     
 protected:
     virtual void _DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);

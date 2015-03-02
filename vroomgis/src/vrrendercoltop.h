@@ -31,11 +31,11 @@
 
 class vrRenderRasterColtop : public vrRenderRaster {
 protected:
-    int m_NorthAngle;
-	int m_ColorStretchMin;
-    int m_ColorStretchMax;
-	bool m_IsColorInverted;
-    bool m_IsLowerHemisphere;
+    int m_northAngle;
+	int m_colorStretchMin;
+    int m_colorStretchMax;
+	bool m_isColorInverted;
+    bool m_isLowerHemisphere;
 
 	
 public:

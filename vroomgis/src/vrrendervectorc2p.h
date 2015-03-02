@@ -33,9 +33,9 @@ public:
     vrDipColour(const wxColour & colour, long familyid, bool visible);
     ~vrDipColour();
 	
-    wxColour m_Colour;
-    long m_FamilyID;
-    bool m_Visible;
+    wxColour m_colour;
+    long m_familyID;
+    bool m_visible;
 	
 };
 WX_DECLARE_OBJARRAY(vrDipColour, vrArrayDipColours);
@@ -44,16 +44,16 @@ WX_DECLARE_OBJARRAY(vrDipColour, vrArrayDipColours);
 
 class vrRenderVectorC2PDips : public vrRenderVector {
 private:
-    vrArrayDipColours m_DipColours;
+    vrArrayDipColours m_dipColours;
 	
-    int m_DipWidth;
-    int m_Size;
-	bool m_UseDefaultColour;
-    bool m_UseOutline;
+    int m_dipWidth;
+    int m_size;
+	bool m_useDefaultColour;
+    bool m_useOutline;
     
 	
-	long m_MemoryFamilyID;
-	wxColour m_MemoryColour;
+	long m_memoryFamilyID;
+	wxColour m_memoryColour;
 	
 	
 public:
@@ -80,23 +80,23 @@ public:
 	int GetCountColor();
 	
 	inline const bool IsUsingDefaultColour() const;
-    void SetUsingDefaultColour(bool value){m_UseDefaultColour = value;}
+    void SetUsingDefaultColour(bool value){m_useDefaultColour = value;}
 	
     virtual bool Serialize(vrSerialize & serialobj);
 	
 };
 
 inline const int vrRenderVectorC2PDips::GetSize() const {
-	return m_Size;
+	return m_size;
 }
 
 
 inline const bool vrRenderVectorC2PDips::IsUsingDefaultColour() const {
-	return m_UseDefaultColour;
+	return m_useDefaultColour;
 }
 
 inline const bool vrRenderVectorC2PDips::GetOutline() const {
-    return m_UseOutline;
+    return m_useOutline;
 }
 
 
@@ -111,10 +111,10 @@ inline const bool vrRenderVectorC2PDips::GetOutline() const {
 *****************************************************************************************/
 class vrRenderVectorC2PPoly : public vrRenderVector {
 private:
-    bool m_UseDefaultBrush;
-    vrArrayDipColours m_PolyColours;
-    long m_MemoryFamilyID;
-	wxColour m_MemoryColour;
+    bool m_useDefaultBrush;
+    vrArrayDipColours m_polyColours;
+    long m_memoryFamilyID;
+	wxColour m_memoryColour;
 
     
 public:
@@ -134,7 +134,7 @@ public:
 
 
 inline const bool vrRenderVectorC2PPoly::IsUsingDefaultBrush() const {
-    return m_UseDefaultBrush;
+    return m_useDefaultBrush;
 }
 
 

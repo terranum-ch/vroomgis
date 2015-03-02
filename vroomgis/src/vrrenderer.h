@@ -33,11 +33,11 @@ const int vrRENDERER_VECTOR_POINT_DEFAULT_SIZE = 4;
 
 class vrRenderer {
 private:
-    vrLayer * m_Layer;
-    vrRender * m_Render;
-    vrLabel * m_Label;
-	bool m_Visible;
-    bool m_InEdition;
+    vrLayer * m_layer;
+    vrRender * m_render;
+    vrLabel * m_label;
+	bool m_visible;
+    bool m_inEdition;
 	
 	bool _IsCorrectRender();
 	
@@ -63,23 +63,23 @@ public:
 
 
 inline  vrLayer * vrRenderer::GetLayer() {
-	return m_Layer;
+	return m_layer;
 }
 
 inline  vrRender * vrRenderer::GetRender()  {
-	return m_Render;
+	return m_render;
 }
 
 inline  vrLabel * vrRenderer::GetLabel()  {
-	return m_Label;
+	return m_label;
 }
 
 inline const bool vrRenderer::GetVisible() const {
-	return m_Visible;
+	return m_visible;
 }
 
 inline const bool vrRenderer::IsInEdition() const {
-    return m_InEdition;
+    return m_inEdition;
 }
 
 WX_DECLARE_OBJARRAY(vrRenderer*, vrArrayRenderer);

@@ -21,14 +21,14 @@ vrLabel::vrLabel(const wxFont & font, const wxColour & color) {
 	
 	// create default font and color if required
 	if (font == wxNullFont){
-		m_Font = wxFont(12,wxFONTFAMILY_DEFAULT,
+		m_font = wxFont(12,wxFONTFAMILY_DEFAULT,
 						wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
 	}
 	else {
-		m_Font = font;
+		m_font = font;
 	}
 
-	m_Color = color;
+	m_color = color;
     SetActive(false);
     SetField(wxNOT_FOUND);
 }
@@ -41,24 +41,24 @@ vrLabel::~vrLabel() {
 
 
 void vrLabel::SetFont(wxFont value) {
-  m_Font = value;
+  m_font = value;
 }
 
 
 
 void vrLabel::SetColor(wxColor value) {
-  m_Color = value;
+  m_color = value;
 }
 
 
 void vrLabel::SetActive(bool value) {
-    m_Active = value;
+    m_active = value;
 }
 
 
 
 void vrLabel::SetField(int value) {
-    m_Field = value;
+    m_field = value;
 }
 
 
@@ -66,16 +66,16 @@ void vrLabel::SetField(int value) {
 bool vrLabel::Serialize(vrSerialize & serialobj) {
 	serialobj.EnterObject();
 	if (serialobj.IsStoring()) {
-		serialobj << m_Font;
-		serialobj << m_Color;
-        serialobj << m_Field;
-        serialobj << m_Active;
+		serialobj << m_font;
+		serialobj << m_color;
+        serialobj << m_field;
+        serialobj << m_active;
 	}
 	else {
-		serialobj >> m_Font;
-		serialobj >> m_Color;
-        serialobj >> m_Field;
-        serialobj >> m_Active;
+		serialobj >> m_font;
+		serialobj >> m_color;
+        serialobj >> m_field;
+        serialobj >> m_active;
 	}
 	serialobj.LeaveObject();
 	return serialobj.IsOk();

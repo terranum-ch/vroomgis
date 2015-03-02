@@ -29,16 +29,16 @@
 
 class vrLayerVector : public vrLayer {
 protected:
-    OGRDataSource * m_Dataset;
-	OGRLayer * m_Layer;
-	OGRwkbGeometryType m_GeometryType;
-	wxArrayLong m_SelectedIDs;
-    wxArrayLong m_HiddenObjectID;
+    OGRDataSource * m_dataset;
+	OGRLayer * m_layer;
+	OGRwkbGeometryType m_geometryType;
+	wxArrayLong m_selectedIDs;
+    wxArrayLong m_hiddenObjectID;
 
 
-	long m_ObjectDrawn;
-    long m_SkippedVertex;
-    long m_DrawnVertex;
+	long m_objectDrawn;
+    long m_skippedVertex;
+    long m_drawnVertex;
 
     bool _Intersects(const wxRect2DDouble & myPathRect, const wxRect2DDouble & myWndRect);
 
@@ -88,33 +88,33 @@ public:
 };
 
 inline wxArrayLong * vrLayerVector::GetSelectedIDs() {
-	return &m_SelectedIDs;
+	return &m_selectedIDs;
 }
 
 
 inline OGRLayer * vrLayerVector::GetLayerRef(){
-    wxASSERT(m_Layer);
-    return m_Layer;
+    wxASSERT(m_layer);
+    return m_layer;
 }
 
 
 inline wxArrayLong * vrLayerVector::GetHiddenObjectID() {
-    return &m_HiddenObjectID;
+    return &m_hiddenObjectID;
 }
 
 
 inline const long vrLayerVector::GetObjectDrawn() const {
-	return m_ObjectDrawn;
+	return m_objectDrawn;
 }
 
 
 inline const long vrLayerVector::GetVertexDrawn() const {
-	return m_DrawnVertex;
+	return m_drawnVertex;
 }
 
 
 inline const long vrLayerVector::GetVertexSkipped() const {
-	return m_SkippedVertex;
+	return m_skippedVertex;
 }
 
 
@@ -145,7 +145,7 @@ public:
     bool SetAttributeFilter(const wxString & query);
     
 private:
-    wxPoint m_PreviousPoint;
+    wxPoint m_previousPoint;
     
 };
 #endif

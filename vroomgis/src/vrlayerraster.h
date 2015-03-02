@@ -53,7 +53,7 @@ const wxString vrOVERVIEW_TYPE_NAME[] = {
 
 class vrLayerRaster : public vrLayer {
   protected:
-    GDALDataset * m_Dataset;
+    GDALDataset * m_dataset;
 
   public:
     vrLayerRaster();
@@ -70,7 +70,7 @@ class vrLayerRaster : public vrLayer {
 	virtual bool IsOK();
     virtual bool HasData ();
 
-    GDALDataset * GetDatasetRef() {return m_Dataset;}
+    GDALDataset * GetDatasetRef() {return m_dataset;}
 };
 
 
@@ -78,13 +78,13 @@ class vrLayerRaster : public vrLayer {
 
 class vrLayerRasterGDAL : public vrLayerRaster {
 protected:
-	vrRealRect m_ImgExtent;
-    wxSize m_ImgPxSize;
+	vrRealRect m_imgExtent;
+    wxSize m_imgPxSize;
 	
 	// stat for one band data (Greyscale, MNT, etc)
-	double m_OneBandMin;
-    double m_OneBandMax;
-    double m_OneBandNoData;
+	double m_oneBandMin;
+    double m_oneBandMax;
+    double m_oneBandNoData;
 	
     bool _Close();
 	bool _ComputeDisplayPosSize(const wxSize & pximgsize, const vrRealRect & imgextent,
