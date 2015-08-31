@@ -77,9 +77,3 @@ endif (WIN32)
 # copy libs to bundle if we are under mac...
 INCLUDE ("../../../vroomgis/build/cmake/installMacGISLIB.cmake")
 
-# USE THE MT VERSION FOR DEFAULT 
-# COMPATIBILITY WITH < WINXP
-IF (WIN32)
-	INCLUDE ("../../../vroomgis/build/cmake/Use_visualstudioMT.cmake")
-ENDIF (WIN32)
-
