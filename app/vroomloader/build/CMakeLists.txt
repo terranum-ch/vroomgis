@@ -72,10 +72,3 @@ endif (WIN32)
 # check is done internally.
 INCLUDE ("../../../vroomgis/build/cmake/installMacGISLIB.cmake")
 
-# SHOULD WE USE THE MT VERSION FOR DEFAULT 
-# COMPATIBILITY WITH < WINXP
-IF (WIN32)
-	INCLUDE ("../../../vroomgis/build/cmake/Use_visualstudioMT.cmake")
-ENDIF (WIN32)
-
-
