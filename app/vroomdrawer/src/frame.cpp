@@ -568,7 +568,7 @@ void vroomDrawerFrame::OnToolActionZoom (wxCommandEvent & event){
 	wxASSERT(myFittedRect.IsOk());
 	
 	// moving view
-	if (myMsg->m_EvtType == vrEVT_TOOL_ZOOM) {
+	if (myMsg->m_evtType == vrEVT_TOOL_ZOOM) {
 		m_ViewerLayerManager->Zoom(myFittedRect);
 	}
 	else {

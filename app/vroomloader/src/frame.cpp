@@ -119,14 +119,14 @@ void  vroomLoaderFrame::_CreateControls()
     wxBoxSizer* bSizer41;
 	bSizer41 = new wxBoxSizer( wxHORIZONTAL );
 	
-	wxString m_EditTypeCtrlChoices[] = { _("Points"), _("Lines"), _("Polygons") };
-	int m_EditTypeCtrlNChoices = sizeof( m_EditTypeCtrlChoices ) / sizeof( wxString );
-	m_EditTypeCtrl = new wxChoice( m_panel1, vlID_EDIT_CHOICE, wxDefaultPosition, wxDefaultSize, m_EditTypeCtrlNChoices, m_EditTypeCtrlChoices, 0 );
-	m_EditTypeCtrl->SetSelection( 0 );
-	bSizer41->Add( m_EditTypeCtrl, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	wxString m_editTypeCtrlChoices[] = { _("Points"), _("Lines"), _("Polygons") };
+	int m_editTypeCtrlNChoices = sizeof( m_editTypeCtrlChoices ) / sizeof( wxString );
+	m_editTypeCtrl = new wxChoice( m_panel1, vlID_EDIT_CHOICE, wxDefaultPosition, wxDefaultSize, m_editTypeCtrlNChoices, m_editTypeCtrlChoices, 0 );
+	m_editTypeCtrl->SetSelection( 0 );
+	bSizer41->Add( m_editTypeCtrl, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	
-	m_EditStartCtrl = new wxToggleButton( m_panel1, vlID_EDIT_BTN, _("Start editing"));
-	bSizer41->Add( m_EditStartCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
+	m_editStartCtrl = new wxToggleButton( m_panel1, vlID_EDIT_BTN, _("Start editing"));
+	bSizer41->Add( m_editStartCtrl, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5 );
 	bSizer4->Add( bSizer41, 0, wxEXPAND, 5 );
     
     
@@ -166,7 +166,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 	SetIcon(myVroomGISIcon);
 
 	m_DisplayValueDlg = NULL;
-    m_Editor = NULL;
+    m_editor = NULL;
 
 	// MENU
     wxMenu *fileMenu = new wxMenu;
@@ -525,7 +525,7 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
 	wxASSERT(myMsg);
 
-	if(myMsg->m_EvtType == vrEVT_TOOL_ZOOM || myMsg->m_EvtType == vrEVT_TOOL_ZOOMOUT){
+	if(myMsg->m_evtType == vrEVT_TOOL_ZOOM || myMsg->m_evtType == vrEVT_TOOL_ZOOMOUT){
 		// getting rectangle
 		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
@@ -540,14 +540,14 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 		wxASSERT(myFittedRect.IsOk());
 
 		// moving view
-		if (myMsg->m_EvtType == vrEVT_TOOL_ZOOM) {
+		if (myMsg->m_evtType == vrEVT_TOOL_ZOOM) {
 			m_ViewerLayerManager->Zoom(myFittedRect);
 		}
 		else {
 			m_ViewerLayerManager->ZoomOut(myFittedRect);
 		}
 	}
-	else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
+	else if (myMsg->m_evtType == vrEVT_TOOL_SELECT) {
 		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
 
@@ -562,7 +562,7 @@ void vroomLoaderFrame::OnToolAction (wxCommandEvent & event){
 		}
 
 	}
-	else if (myMsg->m_EvtType == vrEVT_TOOL_PAN) {
+	else if (myMsg->m_evtType == vrEVT_TOOL_PAN) {
 		vrCoordinate * myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
 
@@ -604,7 +604,7 @@ void vroomLoaderFrame::OnStartEditingButton( wxCommandEvent & event ){
 
 
 void vroomLoaderFrame::OnUpdateUIEditType ( wxUpdateUIEvent & event){
-    event.Enable(!m_EditStartCtrl->GetValue());
+    event.Enable(!m_editStartCtrl->GetValue());
 }
 
 
@@ -613,14 +613,14 @@ void vroomLoaderFrame::_StartEdition(){
     wxLogMessage("Edition Started!");
 
     // add a layer of selected type into memory
-    wxFileName myMemoryLayerName ("", m_EditTypeCtrl->GetString(m_EditTypeCtrl->GetSelection()), "memory");
+    wxFileName myMemoryLayerName ("", m_editTypeCtrl->GetString(m_editTypeCtrl->GetSelection()), "memory");
 	wxASSERT(myMemoryLayerName.GetExt() == "memory");
 	
 	m_ViewerLayerManager->FreezeBegin();
 	vrLayerVectorOGR * myLayer = new vrLayerVectorOGR();
     int mySpatialTypes [] = {wkbPoint, wkbLineString, wkbPolygon};
 	if(myLayer->Create(myMemoryLayerName, 
-                       mySpatialTypes[m_EditTypeCtrl->GetSelection()])==false){
+                       mySpatialTypes[m_editTypeCtrl->GetSelection()])==false){
 		wxFAIL;
 	}
 	m_LayerManager->Add(myLayer);
@@ -703,7 +703,7 @@ bool vroomLoaderFrame::_SaveEdition(vrLayer * memoryLayer){
 
 
 void vroomLoaderFrame::OnUpdateUIDrawMenu (wxUpdateUIEvent & event){
-    event.Enable(m_EditStartCtrl->GetValue());
+    event.Enable(m_editStartCtrl->GetValue());
 }
 
 
@@ -822,7 +822,7 @@ void vroomLoaderFrame::OnToolModifyUpdate (wxCommandEvent & event){
 
 void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
     wxLogMessage("setting edit tool");
-    switch (m_EditTypeCtrl->GetSelection()) {
+    switch (m_editTypeCtrl->GetSelection()) {
         case 1:
         case 2:
             m_DisplayCtrl->SetTool(new vrDisplayToolEditLine (m_DisplayCtrl));
@@ -833,10 +833,10 @@ void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
             break;
     }
     
-    if(m_Editor) {
+    if(m_editor) {
         // Editor exists, assume view has changed
-        m_Editor->ViewChanged();
-        m_Editor->DrawShapeEdit(_GetMemoryRenderer()->GetRender());
+        m_editor->ViewChanged();
+        m_editor->DrawShapeEdit(_GetMemoryRenderer()->GetRender());
     }
 }
 
@@ -844,18 +844,18 @@ void vroomLoaderFrame::OnToolDraw (wxCommandEvent & event){
 
 void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
     // create editor if not exists
-    if (m_Editor == NULL) {
-        switch (m_EditTypeCtrl->GetSelection()) {
+    if (m_editor == NULL) {
+        switch (m_editTypeCtrl->GetSelection()) {
             case 1:
-                m_Editor = new vrShapeEditorLine(m_DisplayCtrl);
+                m_editor = new vrShapeEditorLine(m_DisplayCtrl);
                 break;
             
             case 2:
-                m_Editor = new vrShapeEditorPolygon(m_DisplayCtrl);
+                m_editor = new vrShapeEditorPolygon(m_DisplayCtrl);
                 break;
                 
             default:
-                m_Editor = new vrShapeEditorPoint(m_DisplayCtrl);
+                m_editor = new vrShapeEditorPoint(m_DisplayCtrl);
                 break;
         }
     }
@@ -865,22 +865,22 @@ void vroomLoaderFrame::OnToolDrawAction (wxCommandEvent & event){
     
     wxPoint2DDouble myRealPt (0,0);
     m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_Position, myRealPt);
-    wxASSERT(m_Editor);
-    m_Editor->AddVertex(myRealPt);
+    wxASSERT(m_editor);
+    m_editor->AddVertex(myRealPt);
 
     vrRenderer * myMemoryRenderer = _GetMemoryRenderer();
     wxASSERT(myMemoryRenderer);
     
-    if (myMsg->m_EvtType == vrEVT_TOOL_EDIT) {
+    if (myMsg->m_evtType == vrEVT_TOOL_EDIT) {
         wxLogMessage("Clicked: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
-        m_Editor->DrawShapeEdit(myMemoryRenderer->GetRender());
+        m_editor->DrawShapeEdit(myMemoryRenderer->GetRender());
     }
-    else if (myMsg->m_EvtType == vrEVT_TOOL_EDIT_FINISHED){
+    else if (myMsg->m_evtType == vrEVT_TOOL_EDIT_FINISHED){
         wxLogMessage("Finished: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
         vrLayerVectorOGR * myMemoryLayer = (vrLayerVectorOGR*) myMemoryRenderer->GetLayer();
-        long myAddedId = myMemoryLayer->AddFeature(m_Editor->GetGeometryRef());
+        long myAddedId = myMemoryLayer->AddFeature(m_editor->GetGeometryRef());
         myMemoryLayer->SetSelectedID(myAddedId);
-        wxDELETE(m_Editor);
+        wxDELETE(m_editor);
         m_ViewerLayerManager->Reload();
     }
     wxDELETE(myMsg);      

@@ -423,7 +423,7 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 	vrDisplayToolMessage * myMsg = (vrDisplayToolMessage*)event.GetClientData();
 	wxASSERT(myMsg);
 	
-	if(myMsg->m_EvtType == vrEVT_TOOL_ZOOM){
+	if(myMsg->m_evtType == vrEVT_TOOL_ZOOM){
 		// getting rectangle
 		vrCoordinate * myCoord = myMsg->m_ParentManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
@@ -453,7 +453,7 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 	
 	
 	
-	else if (myMsg->m_EvtType == vrEVT_TOOL_PAN) {
+	else if (myMsg->m_evtType == vrEVT_TOOL_PAN) {
 		vrCoordinate * myCoord = myMsg->m_ParentManager->GetDisplay()->GetCoordinate();
 		wxASSERT(myCoord);
 		
@@ -480,7 +480,7 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 			m_ViewerLayerManager2->Reload();
 		}
 
-	} else if (myMsg->m_EvtType == vrEVT_TOOL_SIGHT) {
+	} else if (myMsg->m_evtType == vrEVT_TOOL_SIGHT) {
 		
 		vrViewerLayerManager * myInvertedMgr = m_ViewerLayerManager1;
 		if (myInvertedMgr == myMsg->m_ParentManager) {
@@ -504,7 +504,7 @@ void vroomTwinFrame::OnToolAction (wxCommandEvent & event){
 		
 	}
 
-	/* else if (myMsg->m_EvtType == vrEVT_TOOL_SELECT) {
+	/* else if (myMsg->m_evtType == vrEVT_TOOL_SELECT) {
 		vrCoordinate * myCoord = m_ViewerLayerManager->GetDispaly()->GetCoordinate();
 		wxASSERT(myCoord);
 		
