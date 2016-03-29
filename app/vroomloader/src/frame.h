@@ -80,8 +80,8 @@ private:
 	
 	vrDisplayValueDlg * m_DisplayValueDlg;
 	
-    wxChoice* m_EditTypeCtrl;
-    wxToggleButton* m_EditStartCtrl;
+    wxChoice* m_editTypeCtrl;
+    wxToggleButton* m_editStartCtrl;
     
 	// controls (vroomgis)
 	vrViewerTOCTree * m_TocCtrl;
@@ -95,7 +95,7 @@ private:
 	vrViewerDisplay * m_DisplayCtrl;
 	wxFileName m_PerfLogFile;
     
-    vrShapeEditor * m_Editor;
+    vrShapeEditor * m_editor;
 
 	void _CreateControls();
     void _StartEdition();

@@ -53,7 +53,7 @@ private:
 public:
     wxRect m_rect;
 	wxPoint m_position;
-    wxEventType m_EvtType;
+    wxEventType m_evtType;
     vrMOUSE_STATUS m_mouseStatus;
 	vrViewerLayerManager * m_parentManager;
     long m_longData;

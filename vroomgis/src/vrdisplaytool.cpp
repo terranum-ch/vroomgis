@@ -31,7 +31,7 @@
 @date 20 avril 2010
 *******************************************************************************/
 void vrDisplayToolMessage::_InitMembers() {
-	m_EvtType = wxEVT_NULL;
+	m_evtType = wxEVT_NULL;
 	m_rect = wxRect();
 	wxASSERT(m_rect.IsEmpty());
 	m_position = wxDefaultPosition;
@@ -44,7 +44,7 @@ vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
 										   vrViewerDisplay * parent, const wxRect & rect,
                                            vrMOUSE_STATUS mousestat) {
 	_InitMembers();
-	m_EvtType = eventtype;
+	m_evtType = eventtype;
 	m_rect = rect;
 	m_parentManager = parent->GetViewerLayerManager();
     m_mouseStatus = mousestat;
@@ -54,7 +54,7 @@ vrDisplayToolMessage::vrDisplayToolMessage(const wxEventType & eventtype,
 										   vrViewerDisplay * parent, const wxPoint & pos,
                                            vrMOUSE_STATUS mousestat) {
 	_InitMembers();
-	m_EvtType = eventtype;
+	m_evtType = eventtype;
 	m_position = pos;
 	m_parentManager = parent->GetViewerLayerManager();
     m_mouseStatus = mousestat;
@@ -146,9 +146,9 @@ bool vrDisplayTool::MouseDClickLeft(const wxMouseEvent & event) {
 void vrDisplayTool::SendMessage(vrDisplayToolMessage * message) {
 	wxASSERT(m_display);
 	wxASSERT(message);
-	wxASSERT(message->m_EvtType != wxEVT_NULL);
+	wxASSERT(message->m_evtType != wxEVT_NULL);
 
-	wxCommandEvent myEvt (message->m_EvtType);
+	wxCommandEvent myEvt (message->m_evtType);
 	myEvt.SetClientData(message);
 
 	// send message to the top level window if found
