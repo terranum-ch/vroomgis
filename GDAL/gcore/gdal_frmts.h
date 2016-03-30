@@ -33,8 +33,7 @@
 
 #include "cpl_port.h"
 
-CPL_C_START
-void CPL_DLL GDALRegister_GDB(void);
+CPL_C_START void CPL_DLL GDALRegister_GDB(void);
 void CPL_DLL GDALRegister_GTiff(void);
 void CPL_DLL GDALRegister_GXF(void);
 void CPL_DLL GDALRegister_OGDI(void);
@@ -178,7 +177,6 @@ void CPL_DLL GDALRegister_MBTiles(void);
 void CPL_DLL GDALRegister_ARG(void);
 void CPL_DLL GDALRegister_IRIS(void);
 void CPL_DLL GDALRegister_KRO(void);
-void CPL_DLL GDALRegister_C2D(void);
-CPL_C_END
+void CPL_DLL GDALRegister_C2D(void); CPL_C_END
 
 #endif /* ndef GDAL_FRMTS_H_INCLUDED */

@@ -18,16 +18,19 @@
 
 #include "fake_vrviewerdisplay.h"
 
-FakevrViewerDisplay::FakevrViewerDisplay(const wxSize & size) {
-	m_WndSize = size;
+FakevrViewerDisplay::FakevrViewerDisplay(const wxSize &size)
+{
+    m_WndSize = size;
 }
 
-FakevrViewerDisplay::~FakevrViewerDisplay() {
-	//int i = 0;
+FakevrViewerDisplay::~FakevrViewerDisplay()
+{
+    //int i = 0;
 }
 
-void FakevrViewerDisplay::DoGetSize(int * w, int *h) const{
-	* w = m_WndSize.GetWidth();
-	* h = m_WndSize.GetHeight();
+void FakevrViewerDisplay::DoGetSize(int *w, int *h) const
+{
+    *w = m_WndSize.GetWidth();
+    *h = m_WndSize.GetHeight();
 }
 

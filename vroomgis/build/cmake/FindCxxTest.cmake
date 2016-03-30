@@ -76,29 +76,29 @@
 #=============================================================
 MACRO(CXXTEST_ADD_TEST _cxxtest_testname _cxxtest_outfname)
     SET(_cxxtest_real_outfname ${CMAKE_CURRENT_BINARY_DIR}/${_cxxtest_outfname})
-    IF(CXXTEST_USE_PYTHON)
+    IF (CXXTEST_USE_PYTHON)
         SET(_cxxtest_executable ${CXXTEST_PYTHON_TESTGEN_EXECUTABLE})
-    ELSE()
+    ELSE ()
         SET(_cxxtest_executable ${CXXTEST_PERL_TESTGEN_EXECUTABLE})
-    ENDIF()
+    ENDIF ()
 
     ADD_CUSTOM_COMMAND(
-        OUTPUT  ${_cxxtest_real_outfname}
-        DEPENDS ${ARGN}
-        COMMAND ${_cxxtest_executable}
-        --error-printer -o ${_cxxtest_real_outfname} ${ARGN}
+            OUTPUT ${_cxxtest_real_outfname}
+            DEPENDS ${ARGN}
+            COMMAND ${_cxxtest_executable}
+            --error-printer -o ${_cxxtest_real_outfname} ${ARGN}
     )
 
     SET_SOURCE_FILES_PROPERTIES(${_cxxtest_real_outfname} PROPERTIES GENERATED true)
     ADD_EXECUTABLE(${_cxxtest_testname} ${_cxxtest_real_outfname})
 
-    IF(CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+    IF (CMAKE_RUNTIME_OUTPUT_DIRECTORY)
         ADD_TEST(${_cxxtest_testname} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${_cxxtest_testname})
-    ELSEIF(EXECUTABLE_OUTPUT_PATH)
+    ELSEIF (EXECUTABLE_OUTPUT_PATH)
         ADD_TEST(${_cxxtest_testname} ${EXECUTABLE_OUTPUT_PATH}/${_cxxtest_testname})
-    ELSE()
+    ELSE ()
         ADD_TEST(${_cxxtest_testname} ${CMAKE_CURRENT_BINARY_DIR}/${_cxxtest_testname})
-    ENDIF()
+    ENDIF ()
 
 ENDMACRO(CXXTEST_ADD_TEST)
 
@@ -107,19 +107,19 @@ ENDMACRO(CXXTEST_ADD_TEST)
 #=============================================================
 
 SET(CXXTEST_DIRECTORY CACHE PATH "Select where is the cxxtest directory if not in PATH")
-IF(CXXTEST_DIRECTORY)
-	FIND_PATH(CXXTEST_INCLUDE_DIR cxxtest/TestSuite.h ${CXXTEST_DIRECTORY})
-	FIND_PROGRAM(CXXTEST_PERL_TESTGEN_EXECUTABLE ${CXXTEST_DIRECTORY}/cxxtestgen.pl)
-	FIND_PROGRAM(CXXTEST_PYTHON_TESTGEN_EXECUTABLE cxxtestgen.py 
-		PATHS ${CXXTEST_DIRECTORY})
-	IF(NOT CXXTEST_PYTHON_TESTGEN_EXECUTABLE)
-		FIND_PROGRAM(CXXTEST_PYTHON_TESTGEN_EXECUTABLE cxxtestgen PATHS ${CXXTEST_DIRECTORY}/bin)
-	ENDIF(NOT CXXTEST_PYTHON_TESTGEN_EXECUTABLE)
+IF (CXXTEST_DIRECTORY)
+    FIND_PATH(CXXTEST_INCLUDE_DIR cxxtest/TestSuite.h ${CXXTEST_DIRECTORY})
+    FIND_PROGRAM(CXXTEST_PERL_TESTGEN_EXECUTABLE ${CXXTEST_DIRECTORY}/cxxtestgen.pl)
+    FIND_PROGRAM(CXXTEST_PYTHON_TESTGEN_EXECUTABLE cxxtestgen.py
+            PATHS ${CXXTEST_DIRECTORY})
+    IF (NOT CXXTEST_PYTHON_TESTGEN_EXECUTABLE)
+        FIND_PROGRAM(CXXTEST_PYTHON_TESTGEN_EXECUTABLE cxxtestgen PATHS ${CXXTEST_DIRECTORY}/bin)
+    ENDIF (NOT CXXTEST_PYTHON_TESTGEN_EXECUTABLE)
 ELSE (CXXTEST_DIRECTORY)
-	FIND_PATH(CXXTEST_INCLUDE_DIR cxxtest/TestSuite.h)
-	FIND_PROGRAM(CXXTEST_PERL_TESTGEN_EXECUTABLE cxxtestgen.pl)
-	FIND_PROGRAM(CXXTEST_PYTHON_TESTGEN_EXECUTABLE cxxtestgen.py)
-ENDIF(CXXTEST_DIRECTORY)
+    FIND_PATH(CXXTEST_INCLUDE_DIR cxxtest/TestSuite.h)
+    FIND_PROGRAM(CXXTEST_PERL_TESTGEN_EXECUTABLE cxxtestgen.pl)
+    FIND_PROGRAM(CXXTEST_PYTHON_TESTGEN_EXECUTABLE cxxtestgen.py)
+ENDIF (CXXTEST_DIRECTORY)
 MESSAGE("PROGRAM FOUND : ${CXXTEST_PYTHON_TESTGEN_EXECUTABLE}")
 
 INCLUDE(FindPackageHandleStandardArgs)

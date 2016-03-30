@@ -72,21 +72,20 @@ static char *szConfiguredFormats = "GDAL_FORMATS";
  */
 
 void CPL_STDCALL GDALAllRegister()
-
 {
     GetGDALDriverManager()->AutoLoadDrivers();
 
 #ifdef FRMT_vrt
     GDALRegister_VRT();
-#endif    
+#endif
 
-#ifdef FRMT_gdb    
+#ifdef FRMT_gdb
     GDALRegister_GDB();
-#endif    
+#endif
 
-#ifdef FRMT_gtiff    
+#ifdef FRMT_gtiff
     GDALRegister_GTiff();
-#endif    
+#endif
 
 #ifdef FRMT_nitf
     GDALRegister_NITF();
@@ -97,19 +96,19 @@ void CPL_STDCALL GDALAllRegister()
 #ifdef FRMT_hfa
     GDALRegister_HFA();
 #endif
-    
+
 #ifdef FRMT_ceos2
     GDALRegister_SAR_CEOS();
 #endif
-    
+
 #ifdef FRMT_ceos
     GDALRegister_CEOS();
 #endif
-    
+
 #ifdef FRMT_jaxapalsar
     GDALRegister_PALSARJaxa();
 #endif
-    
+
 #ifdef FRMT_gff
     GDALRegister_GFF();
 #endif
@@ -117,10 +116,10 @@ void CPL_STDCALL GDALAllRegister()
 #ifdef FRMT_elas
     GDALRegister_ELAS();
 #endif
-    
+
 #ifdef FRMT_aigrid
-//    GDALRegister_AIGrid2();
-    GDALRegister_AIGrid();
+    //    GDALRegister_AIGrid2();
+        GDALRegister_AIGrid();
 #endif
 
 #ifdef FRMT_aaigrid
@@ -147,7 +146,7 @@ void CPL_STDCALL GDALAllRegister()
 #ifdef FRMT_dds
     GDALRegister_DDS();
 #endif
-    
+
 #ifdef FRMT_gta
     GDALRegister_GTA();
 #endif
@@ -258,13 +257,13 @@ void CPL_STDCALL GDALAllRegister()
 #endif
 
 #ifdef FRMT_jp2kak
-// JPEG2000 support using Kakadu toolkit
-    GDALRegister_JP2KAK();
+    // JPEG2000 support using Kakadu toolkit
+        GDALRegister_JP2KAK();
 #endif
 
 #ifdef FRMT_jpipkak
-// JPEG2000 support using Kakadu toolkit
-    GDALRegister_JPIPKAK();
+    // JPEG2000 support using Kakadu toolkit
+        GDALRegister_JPIPKAK();
 #endif
 
 #ifdef FRMT_ecw
@@ -273,8 +272,8 @@ void CPL_STDCALL GDALAllRegister()
 #endif
 
 #ifdef FRMT_openjpeg
-// JPEG2000 support using OpenJPEG library
-    GDALRegister_JP2OpenJPEG();
+    // JPEG2000 support using OpenJPEG library
+        GDALRegister_JP2OpenJPEG();
 #endif
 
 #ifdef FRMT_l1b
@@ -294,10 +293,10 @@ void CPL_STDCALL GDALAllRegister()
 #endif
 
 #ifdef FRMT_jpeg2000
-// JPEG2000 support using JasPer toolkit
-// This one should always be placed after other JasPer supported formats,
-// such as BMP or PNM. In other case we will get bad side effects.
-    GDALRegister_JPEG2000();
+    // JPEG2000 support using JasPer toolkit
+    // This one should always be placed after other JasPer supported formats,
+    // such as BMP or PNM. In other case we will get bad side effects.
+        GDALRegister_JPEG2000();
 #endif
 
 #ifdef FRMT_mrsid_lidar
@@ -366,12 +365,12 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_MAP();
 #endif
 
-/* -------------------------------------------------------------------- */
-/*      Put raw formats at the end of the list. These drivers support   */
-/*      various ASCII-header labeled formats, so the driver could be    */
-/*      confused if you have files in some of above formats and such    */
-/*      ASCII-header in the same directory.                             */
-/* -------------------------------------------------------------------- */
+    /* -------------------------------------------------------------------- */
+    /*      Put raw formats at the end of the list. These drivers support   */
+    /*      various ASCII-header labeled formats, so the driver could be    */
+    /*      confused if you have files in some of above formats and such    */
+    /*      ASCII-header in the same directory.                             */
+    /* -------------------------------------------------------------------- */
 
 #ifdef FRMT_raw
     GDALRegister_PNM();
@@ -407,10 +406,10 @@ void CPL_STDCALL GDALAllRegister()
     GDALRegister_ARG();
 #endif
 
-/* -------------------------------------------------------------------- */
-/*      Our test for the following is weak or expensive so we try       */
-/*      them last.                                                      */
-/* -------------------------------------------------------------------- */
+    /* -------------------------------------------------------------------- */
+    /*      Our test for the following is weak or expensive so we try       */
+    /*      them last.                                                      */
+    /* -------------------------------------------------------------------- */
 
 #ifdef FRMT_rik
     GDALRegister_RIK();
@@ -422,7 +421,7 @@ void CPL_STDCALL GDALAllRegister()
 
 #ifdef FRMT_gxf
     GDALRegister_GXF();
-#endif    
+#endif
 
 #ifdef FRMT_grass
     GDALRegister_GRASS();
@@ -535,9 +534,9 @@ void CPL_STDCALL GDALAllRegister()
 #ifdef FRMT_c2d
     GDALRegister_C2D();
 #endif
-/* -------------------------------------------------------------------- */
-/*      Deregister any drivers explicitly marked as supressed by the    */
-/*      GDAL_SKIP environment variable.                                 */
-/* -------------------------------------------------------------------- */
+    /* -------------------------------------------------------------------- */
+    /*      Deregister any drivers explicitly marked as supressed by the    */
+    /*      GDAL_SKIP environment variable.                                 */
+    /* -------------------------------------------------------------------- */
     GetGDALDriverManager()->AutoSkipDrivers();
 }

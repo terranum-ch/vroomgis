@@ -22,7 +22,9 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
 
 #include <wx/image.h>
@@ -30,24 +32,29 @@
 
 
 class vrRealRect;
+
 class vrRender;
+
 class vrLabel;
 
-class vrLayerRasterC2D : public vrLayerRasterGDAL {
+class vrLayerRasterC2D
+        : public vrLayerRasterGDAL
+{
 private:
-	void _HSVtoRGB (int *r,int *g,int *b, int h, int s, int v);
-	
+    void _HSVtoRGB(int *r, int *g, int *b, int h, int s, int v);
+
 protected:
-    virtual bool _GetRasterData(unsigned char ** imgdata,
-								const wxSize & outimgpxsize,
-								const wxRect & readimgpxinfo, 
-								const vrRender * render);
-	
+    virtual bool _GetRasterData(unsigned char **imgdata, const wxSize &outimgpxsize, const wxRect &readimgpxinfo,
+                                const vrRender *render);
+
 public:
     vrLayerRasterC2D();
+
     virtual ~vrLayerRasterC2D();
-	virtual bool GetRasterData(unsigned char ** imgdata, const wxSize & outimgpxsize,
-							   const wxRect & readimgpxinfo, const vrRender * render);
+
+    virtual bool GetRasterData(unsigned char **imgdata, const wxSize &outimgpxsize, const wxRect &readimgpxinfo,
+                               const vrRender *render);
 
 };
+
 #endif

@@ -18,32 +18,34 @@
 
 #include "vrlayer.h"
 
-vrLayer::vrLayer() {
-	m_driverType = vrDRIVER_UNKNOWN;
-	m_fileName.Clear();
+vrLayer::vrLayer()
+{
+    m_driverType = vrDRIVER_UNKNOWN;
+    m_fileName.Clear();
 }
 
 
-
-vrLayer::~vrLayer() {
+vrLayer::~vrLayer()
+{
 }
 
 
-
-wxFileName vrLayer::GetFileName() {
-	return m_fileName;
+wxFileName vrLayer::GetFileName()
+{
+    return m_fileName;
 }
 
 
-wxFileName vrLayer::GetDisplayName() {
-	return m_fileName;
+wxFileName vrLayer::GetDisplayName()
+{
+    return m_fileName;
 }
 
 
-vrDRIVERS_TYPE vrLayer::GetType() {
-	return m_driverType;
+vrDRIVERS_TYPE vrLayer::GetType()
+{
+    return m_driverType;
 }
-
 
 
 #include <wx/arrimpl.cpp>

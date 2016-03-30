@@ -20,20 +20,21 @@
 #include "vrrender.h"
 
 
+void vrLayerVectorStar::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *geometry, const wxRect2DDouble &coord,
+                                   const vrRender *render, vrLabel *label, double pxsize)
+{
 
-void vrLayerVectorStar::_DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize) {
-	
     wxASSERT(render->GetType() == vrRENDER_VECTOR);
-    vrRenderVector * myRender = (vrRenderVector*) render;
-    wxPen myPen (myRender->GetColorPen(), myRender->GetSize());
-    wxPen mySelPen (myRender->GetSelectionColour(), myRender->GetSize());
+    vrRenderVector *myRender = (vrRenderVector *) render;
+    wxPen myPen(myRender->GetColorPen(), myRender->GetSize());
+    wxPen mySelPen(myRender->GetSelectionColour(), myRender->GetSize());
     dc->SetPen(myPen);
-    if (IsFeatureSelected(feature->GetFID())==true) {
+    if (IsFeatureSelected(feature->GetFID()) == true) {
         dc->SetPen(mySelPen);
     }
 
-    OGRPoint * myGeom = (OGRPoint*) geometry;
-    wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(),myGeom->getY()),coord.GetLeftTop(),pxsize);
+    OGRPoint *myGeom = (OGRPoint *) geometry;
+    wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(), myGeom->getY()), coord.GetLeftTop(), pxsize);
     int myStarSize = feature->GetFieldAsInteger(0);
 
     // Create star
@@ -44,78 +45,78 @@ void vrLayerVectorStar::_DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry 
     }
     dc->DrawLines(&myPtx);
     myPtx.DeleteContents(true);
-    return; 
+    return;
 }
 
 
+void vrLayerVectorStar::_CreateStarPath(wxPointList &starpoints, const wxPoint &center, int radius)
+{
+    const int myAngle = 72;
+    const int myNumberPeak = 5;
 
-void vrLayerVectorStar::_CreateStarPath(wxPointList & starpoints, const wxPoint & center, int radius){
-	const int myAngle = 72;
-	const int myNumberPeak = 5;
+    wxArrayInt myX;
+    wxArrayInt myY;
 
-	wxArrayInt myX;
-	wxArrayInt myY;
+    // computing peak coordinates
+    int myActualAngle = 0;
+    for (int i = 0; i < myNumberPeak; i++) {
+        if (myActualAngle >= 360) {
+            myActualAngle = 0;
+        }
+        double x = cos(_DegToRad(myActualAngle));
+        double y = sin(_DegToRad(myActualAngle));
+        myX.Add(wxRound(x * radius + center.x));
+        myY.Add(wxRound(y * radius + center.y));
+        myActualAngle = myActualAngle + myAngle;
+    }
 
-	// computing peak coordinates
-	int myActualAngle = 0;
-	for (int i = 0; i < myNumberPeak; i++) {
-		if (myActualAngle >= 360) {
-			myActualAngle = 0;
-		}
-		double x = cos(_DegToRad(myActualAngle));
-		double y = sin(_DegToRad(myActualAngle));
-		myX.Add(wxRound(x * radius + center.x));
-		myY.Add(wxRound(y * radius + center.y));
-		myActualAngle = myActualAngle + myAngle;
-	}
-
-	// drawing star
-	starpoints.push_back(new wxPoint(myX[0], myY[0]));
-	int myPoint = 2;
-	for (unsigned int i = 0; i<myX.GetCount(); i++) {
-		starpoints.push_back(new wxPoint(myX[myPoint], myY[myPoint]));
-		myPoint = myPoint + 2;
-		if (myPoint >= myNumberPeak) {
-			myPoint = myPoint - myNumberPeak;
-		}
-	}
+    // drawing star
+    starpoints.push_back(new wxPoint(myX[0], myY[0]));
+    int myPoint = 2;
+    for (unsigned int i = 0; i < myX.GetCount(); i++) {
+        starpoints.push_back(new wxPoint(myX[myPoint], myY[myPoint]));
+        myPoint = myPoint + 2;
+        if (myPoint >= myNumberPeak) {
+            myPoint = myPoint - myNumberPeak;
+        }
+    }
 }
 
 
-
-
-vrLayerVectorStar::vrLayerVectorStar() {
-	wxASSERT(m_Dataset==NULL);
-	wxASSERT(m_Layer==NULL);
-	m_DriverType = vrDRIVER_VECTOR_MEMORY;
+vrLayerVectorStar::vrLayerVectorStar()
+{
+    wxASSERT(m_Dataset == NULL);
+    wxASSERT(m_Layer == NULL);
+    m_DriverType = vrDRIVER_VECTOR_MEMORY;
 }
 
 
-vrLayerVectorStar::~vrLayerVectorStar() {
+vrLayerVectorStar::~vrLayerVectorStar()
+{
 }
 
 
+long vrLayerVectorStar::AddFeature(OGRGeometry *geometry, void *data)
+{
+    wxASSERT(m_Layer);
+    OGRFeature *myFeature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
+    wxASSERT(m_Layer);
+    myFeature->SetGeometry(geometry);
 
-long vrLayerVectorStar::AddFeature(OGRGeometry * geometry, void * data) {
-	wxASSERT(m_Layer);
-	OGRFeature * myFeature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
-	wxASSERT(m_Layer);
-	myFeature->SetGeometry(geometry);
+    if (data != NULL) {
+        int *mySize = (int *) data;
+        myFeature->SetField(0, *mySize);
+    }
 
-	if (data != NULL) {
-		int * mySize = (int*) data;
-		myFeature->SetField(0, *mySize);
-	}
-
-	if(m_Layer->CreateFeature(myFeature) != OGRERR_NONE){
-		wxLogError(_("Error creating feature"));
-		OGRFeature::DestroyFeature(myFeature);
-		return wxNOT_FOUND;
-	}
-	long myFeatureID = myFeature->GetFID();
-	wxASSERT(myFeatureID != OGRNullFID);
-	OGRFeature::DestroyFeature(myFeature);
-	return myFeatureID;
+    if (m_Layer->CreateFeature(myFeature) != OGRERR_NONE) {
+        wxLogError(_("Error creating feature"));
+        OGRFeature::DestroyFeature(myFeature);
+        return wxNOT_FOUND;
+    }
+    long myFeatureID = myFeature->GetFID();
+    wxASSERT(myFeatureID != OGRNullFID);
+    OGRFeature::DestroyFeature(myFeature);
+    return myFeatureID;
 }
 
 

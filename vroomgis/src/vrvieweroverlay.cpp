@@ -22,17 +22,21 @@
 /*****************************************************************************
 Overlay abstract base class
 *****************************************************************************/
-vrViewerOverlay::vrViewerOverlay(wxString name) {
+vrViewerOverlay::vrViewerOverlay(wxString name)
+{
     m_name = name;
     m_visible = true;
 }
 
-vrViewerOverlay::~vrViewerOverlay() {
+vrViewerOverlay::~vrViewerOverlay()
+{
 }
 
-void vrViewerOverlay::SetVisible(bool value) {
-  m_visible = value;
+void vrViewerOverlay::SetVisible(bool value)
+{
+    m_visible = value;
 }
+
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY (vrViewerOverlayArray);
 
@@ -45,23 +49,24 @@ WX_DEFINE_OBJARRAY (vrViewerOverlayArray);
 /***************************************************************************//**
 Overlay simple text class
 *******************************************************************************/
-vrViewerOverlayText::vrViewerOverlayText(wxString name, wxString text) :
- vrViewerOverlay(name){
-     SetText(text);
-     SetPosition(wxPoint(10,10));
-     m_font = *wxNORMAL_FONT;
-     m_font.SetPointSize(m_font.GetPointSize() + 5);
-     SetTextColour(*wxBLACK);
+vrViewerOverlayText::vrViewerOverlayText(wxString name, wxString text)
+        : vrViewerOverlay(name)
+{
+    SetText(text);
+    SetPosition(wxPoint(10, 10));
+    m_font = *wxNORMAL_FONT;
+    m_font.SetPointSize(m_font.GetPointSize() + 5);
+    SetTextColour(*wxBLACK);
 }
 
 
-
-vrViewerOverlayText::~vrViewerOverlayText() {
+vrViewerOverlayText::~vrViewerOverlayText()
+{
 }
 
 
-
-bool vrViewerOverlayText::DrawOverlay(wxPaintDC * dc) {
+bool vrViewerOverlayText::DrawOverlay(wxPaintDC *dc)
+{
     dc->SetTextForeground(GetTextColour());
     dc->SetFont(GetFont());
     dc->DrawText(GetText(), GetPosition());
@@ -69,23 +74,25 @@ bool vrViewerOverlayText::DrawOverlay(wxPaintDC * dc) {
 }
 
 
-
-void vrViewerOverlayText::SetFont(wxFont value) {
-  m_font = value;
+void vrViewerOverlayText::SetFont(wxFont value)
+{
+    m_font = value;
 }
 
 
-
-void vrViewerOverlayText::SetText(wxString value) {
-  m_text = value;
+void vrViewerOverlayText::SetText(wxString value)
+{
+    m_text = value;
 }
 
-void vrViewerOverlayText::SetPosition(wxPoint value) {
-  m_pos = value;
+void vrViewerOverlayText::SetPosition(wxPoint value)
+{
+    m_pos = value;
 }
 
 
-void vrViewerOverlayText::SetTextColour(wxColour value) {
+void vrViewerOverlayText::SetTextColour(wxColour value)
+{
     m_textColour = value;
 }
 
@@ -126,10 +133,10 @@ bool vrViewerOverlayGeomPolygon::DrawOverlay(wxPaintDC * dc) {
         return false;
     }
     
-	wxPen myPen (m_renderPolygon.GetSelectionColour(),m_renderPolygon.GetSize());
+    wxPen myPen (m_renderPolygon.GetSelectionColour(),m_renderPolygon.GetSize());
     wxBrush myBrush (m_renderPolygon.GetColorBrush(),m_renderPolygon.GetBrushStyle());
-    
-	dc->SetPen(myPen);
+
+    dc->SetPen(myPen);
     dc->SetBrush(myBrush);
     
     OGRLineString * myLine = (OGRLineString*) m_polygon->getExteriorRing();

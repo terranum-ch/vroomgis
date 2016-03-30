@@ -2,17 +2,17 @@
 # (c) LUCIEN SCHREIBER CREALP 2013
 cmake_minimum_required(VERSION 2.6)
 
-PROJECT ("drawSpeedTest")
+PROJECT("drawSpeedTest")
 
 #search all source files
-FILE (GLOB_RECURSE SRC_FILES "../src/*.cpp")
-FILE (GLOB_RECURSE HEAD_FILES "../src/*.h")
-SOURCE_GROUP (source FILES ${SRC_FILES})
-SOURCE_GROUP (header FILES ${HEAD_FILES})
+FILE(GLOB_RECURSE SRC_FILES "../src/*.cpp")
+FILE(GLOB_RECURSE HEAD_FILES "../src/*.h")
+SOURCE_GROUP(source FILES ${SRC_FILES})
+SOURCE_GROUP(header FILES ${HEAD_FILES})
 
 # WXWIDGETS
 SET(WXWINDOWS_USE_GL 0)
-INCLUDE ("../../../vroomgis/build/cmake/FindwxWidgets.cmake")
+INCLUDE("../../../vroomgis/build/cmake/FindwxWidgets.cmake")
 
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} ${HEAD_FILES} ${SRC_FILES})
 

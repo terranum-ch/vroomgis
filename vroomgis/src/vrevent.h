@@ -23,7 +23,9 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
+
 #include <wx/wx.h>
+
 #endif
 
 // Event definition.

@@ -22,37 +22,49 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
+
 #include <wx/wx.h>
+
 #endif
+
 #include <wx/image.h>
 
 
 #include "vrrender.h"
 
-class vrRenderRasterColtop : public vrRenderRaster {
+class vrRenderRasterColtop
+        : public vrRenderRaster
+{
 protected:
     int m_northAngle;
-	int m_colorStretchMin;
+    int m_colorStretchMin;
     int m_colorStretchMax;
-	bool m_isColorInverted;
+    bool m_isColorInverted;
     bool m_isLowerHemisphere;
 
-	
+
 public:
     vrRenderRasterColtop();
+
     virtual ~vrRenderRasterColtop();
-	
+
     virtual wxImage::RGBValue GetColorFromDipDir(double dip, double dipdir);
-    virtual wxImage::RGBValue GetColorFromCircleCoord(const wxPoint & coord, int radius);
-	
+
+    virtual wxImage::RGBValue GetColorFromCircleCoord(const wxPoint &coord, int radius);
+
     void SetNorthAngle(int value);
+
     void SetColorInverted(bool value);
+
     void SetLowerHemisphere(bool value);
-	void SetColorStretchMin(int value);
+
+    void SetColorStretchMin(int value);
+
     void SetColorStretchMax(int value);
-	
-	
-    virtual bool Serialize(vrSerialize & serialobj);	
+
+
+    virtual bool Serialize(vrSerialize &serialobj);
 };
+
 #endif
 

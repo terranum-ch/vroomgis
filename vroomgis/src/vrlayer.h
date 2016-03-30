@@ -22,8 +22,11 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
+
 #include <wx/filename.h>
 #include "vrrealrect.h"
 
@@ -35,32 +38,66 @@
 
 
 class vrRender;
+
 class vrLabel;
 
 //Abstact base class for layers
-class vrLayer { 
+class vrLayer
+{
 protected:
     vrDRIVERS_TYPE m_driverType;
-	wxFileName m_fileName;
-		
+    wxFileName m_fileName;
+
 public:
-	vrLayer();
-	virtual ~vrLayer();
-	virtual bool Create(const wxFileName & filename){return false;}
-    virtual bool Open(const wxFileName & filename, bool readwrite = false){return false;}
+    vrLayer();
+
+    virtual ~vrLayer();
+
+    virtual bool Create(const wxFileName &filename)
+    {
+        return false;
+    }
+
+    virtual bool Open(const wxFileName &filename, bool readwrite = false)
+    {
+        return false;
+    }
 
     wxFileName GetFileName();
-	virtual wxFileName GetDisplayName();
+
+    virtual wxFileName GetDisplayName();
+
     virtual vrDRIVERS_TYPE GetType();
-	virtual bool GetExtent(vrRealRect & rect){return false;}
-	virtual bool GetDataThread(wxImage * bmp, const vrRealRect & coord,  double pxsize,
-						 const vrRender * render = NULL, vrLabel * label = NULL){return false;}
-    virtual bool GetData(wxBitmap * bmp, const vrRealRect & coord, double pxsize, 
-						 const vrRender * render = NULL, vrLabel * label = NULL){return false;}
-	virtual bool IsOK(){return false;}
-    virtual bool HasData () {return false;}
-	
+
+    virtual bool GetExtent(vrRealRect &rect)
+    {
+        return false;
+    }
+
+    virtual bool GetDataThread(wxImage *bmp, const vrRealRect &coord, double pxsize, const vrRender *render = NULL,
+                               vrLabel *label = NULL)
+    {
+        return false;
+    }
+
+    virtual bool GetData(wxBitmap *bmp, const vrRealRect &coord, double pxsize, const vrRender *render = NULL,
+                         vrLabel *label = NULL)
+    {
+        return false;
+    }
+
+    virtual bool IsOK()
+    {
+        return false;
+    }
+
+    virtual bool HasData()
+    {
+        return false;
+    }
+
 };
+
 WX_DECLARE_OBJARRAY(vrLayer*, vrArrayLayer);
 
 #endif

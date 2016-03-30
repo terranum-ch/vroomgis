@@ -20,8 +20,11 @@
 
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
 
 
@@ -29,44 +32,41 @@
 #include "vrdriver.h"
 
 
-class TEST_vrDrivers : public CxxTest::TestSuite
+class TEST_vrDrivers
+        : public CxxTest::TestSuite
 {
 private:
-	vrDrivers m_Driver;
+    vrDrivers m_Driver;
 public:
 
-   	void testDriverGetWildcards()
-	{
+    void testDriverGetWildcards()
+    {
 
-		TS_ASSERT(m_Driver.GetWildcards().IsEmpty()==false);
-		wxLogDebug(m_Driver.GetWildcards());
-	}
+        TS_ASSERT(m_Driver.GetWildcards().IsEmpty() == false);
+        wxLogDebug(m_Driver.GetWildcards());
+    }
 
-	void testDriverIsSupported(){
-		TS_ASSERT(m_Driver.IsSupported(wxEmptyString)==false);
-		TS_ASSERT(m_Driver.IsSupported("shp")==true);
-		TS_ASSERT(m_Driver.IsSupported("sh")==false);
-		TS_ASSERT_EQUALS(m_Driver.IsSupported("shpp"),false);
-	}
+    void testDriverIsSupported()
+    {
+        TS_ASSERT(m_Driver.IsSupported(wxEmptyString) == false);
+        TS_ASSERT(m_Driver.IsSupported("shp") == true);
+        TS_ASSERT(m_Driver.IsSupported("sh") == false);
+        TS_ASSERT_EQUALS(m_Driver.IsSupported("shpp"), false);
+    }
 
-	void testDriverGetType()
-	{
-		TS_ASSERT_EQUALS(m_Driver.GetType("shp"), vrDRIVER_VECTOR_SHP);
-		TS_ASSERT_EQUALS(m_Driver.GetType("tiff"), vrDRIVER_RASTER_TIFF);
-		TS_ASSERT_EQUALS(m_Driver.GetType(""), vrDRIVER_UNKNOWN);
-		TS_ASSERT_EQUALS(m_Driver.GetType("jpg"), vrDRIVER_RASTER_JPEG);
-		TS_ASSERT_EQUALS(m_Driver.GetType("JPEG"), vrDRIVER_RASTER_JPEG);
-		TS_ASSERT_EQUALS(m_Driver.GetType("c2d"), vrDRIVER_RASTER_C2D);
-		TS_ASSERT_EQUALS(m_Driver.GetType("adf"), vrDRIVER_RASTER_ESRIGRID);
-	}
+    void testDriverGetType()
+    {
+        TS_ASSERT_EQUALS(m_Driver.GetType("shp"), vrDRIVER_VECTOR_SHP);
+        TS_ASSERT_EQUALS(m_Driver.GetType("tiff"), vrDRIVER_RASTER_TIFF);
+        TS_ASSERT_EQUALS(m_Driver.GetType(""), vrDRIVER_UNKNOWN);
+        TS_ASSERT_EQUALS(m_Driver.GetType("jpg"), vrDRIVER_RASTER_JPEG);
+        TS_ASSERT_EQUALS(m_Driver.GetType("JPEG"), vrDRIVER_RASTER_JPEG);
+        TS_ASSERT_EQUALS(m_Driver.GetType("c2d"), vrDRIVER_RASTER_C2D);
+        TS_ASSERT_EQUALS(m_Driver.GetType("adf"), vrDRIVER_RASTER_ESRIGRID);
+    }
 
 
 };
-
-
-
-
-
 
 
 #endif

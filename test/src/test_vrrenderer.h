@@ -20,8 +20,11 @@
 
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
 
 
@@ -30,62 +33,58 @@
 #include "vrrender.h"
 
 
-class TEST_vrRenderer : public CxxTest::TestSuite
+class TEST_vrRenderer
+        : public CxxTest::TestSuite
 {
 public:
-	vrLayerManager * m_Manager;
-	vrLayer * m_LayerShp;
+    vrLayerManager *m_Manager;
+    vrLayer *m_LayerShp;
 
 
-	void setUp()
-	{
-		m_LayerShp = NULL;
-		m_Manager = new vrLayerManager;
-		TS_ASSERT(m_Manager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
-		m_LayerShp = m_Manager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
-		TS_ASSERT(m_LayerShp != NULL);
-	}
+    void setUp()
+    {
+        m_LayerShp = NULL;
+        m_Manager = new vrLayerManager;
+        TS_ASSERT(m_Manager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
+        m_LayerShp = m_Manager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
+        TS_ASSERT(m_LayerShp != NULL);
+    }
 
-	void tearDown()
-	{
-		delete m_Manager;
-	}
+    void tearDown()
+    {
+        delete m_Manager;
+    }
 
 
-	void testRendererCreate()
-	{
-		TS_ASSERT(m_Manager != NULL);
-		TS_ASSERT(m_LayerShp != NULL);
+    void testRendererCreate()
+    {
+        TS_ASSERT(m_Manager != NULL);
+        TS_ASSERT(m_LayerShp != NULL);
 
-		vrRenderer myRenderer(m_LayerShp);
-		TS_ASSERT_EQUALS(myRenderer.GetLayer()->GetType(), vrDRIVER_VECTOR_SHP);
+        vrRenderer myRenderer(m_LayerShp);
+        TS_ASSERT_EQUALS(myRenderer.GetLayer()->GetType(), vrDRIVER_VECTOR_SHP);
 
-		TS_ASSERT_EQUALS(myRenderer.GetRender()->GetType(), vrRENDER_VECTOR);
-		TS_ASSERT_EQUALS(myRenderer.GetLabel()->GetColor(), *wxBLACK);
+        TS_ASSERT_EQUALS(myRenderer.GetRender()->GetType(), vrRENDER_VECTOR);
+        TS_ASSERT_EQUALS(myRenderer.GetLabel()->GetColor(), *wxBLACK);
 
-	}
+    }
 
-	void testRenderCreate()
-	{
+    void testRenderCreate()
+    {
 
-		//vrRenderRaster * myRenderRaster = new vrRenderRaster();
-		vrRenderVector * myRenderVector = new vrRenderVector();
+        //vrRenderRaster * myRenderRaster = new vrRenderRaster();
+        vrRenderVector *myRenderVector = new vrRenderVector();
 
-		// crash
-		//vrRenderer myRenderer(m_LayerShp, myRenderRaster);
+        // crash
+        //vrRenderer myRenderer(m_LayerShp, myRenderRaster);
 
-		// ok
-		vrRenderer myRenderer (m_LayerShp, myRenderVector);
+        // ok
+        vrRenderer myRenderer(m_LayerShp, myRenderVector);
 
-	}
+    }
 
 
 };
-
-
-
-
-
 
 
 #endif
