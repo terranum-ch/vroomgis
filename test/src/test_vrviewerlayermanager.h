@@ -59,11 +59,11 @@ public:
     void testAddViewerLayerManager()
     {
         // adding two times the same viewermanager is not permitted
-        TS_ASSERT(m_LayerManager->AddViewerLayerManager(m_ViewManager) == false);
+        TS_ASSERT(!m_LayerManager->AddViewerLayerManager(m_ViewManager));
         vrViewerLayerManager *myManager2 = new vrViewerLayerManager(m_LayerManager, NULL, NULL);
 
         // allready added by ctor
-        TS_ASSERT(m_LayerManager->AddViewerLayerManager(myManager2) == false);
+        TS_ASSERT(!m_LayerManager->AddViewerLayerManager(myManager2));
     }
 
     void testOpenGISDataViewerManager()
@@ -86,8 +86,8 @@ public:
 
 
         // add data to the viewermanager
-        TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer) == true);
-        TS_ASSERT(m_ViewManager->Add(0, myTestJpegLayer) == true);
+        TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer));
+        TS_ASSERT(m_ViewManager->Add(0, myTestJpegLayer));
 
     }
 
@@ -103,7 +103,7 @@ public:
         TS_ASSERT_EQUALS(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
 
         // add data to the viewermanager
-        TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer) == true);
+        TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer));
 
         // renderer should be accessible
         vrRenderer *myRenderer = m_ViewManager->GetRenderer(0);
@@ -131,7 +131,7 @@ public:
         TS_ASSERT_EQUALS(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
 
         // add data to the viewermanager
-        TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer) == true);
+        TS_ASSERT(m_ViewManager->Add(-1, myTestSHPLayer));
 
         // renderer should be accessible
         vrRenderer *myRenderer = m_ViewManager->GetRenderer(0);
@@ -156,9 +156,9 @@ public:
         vrLayer *myLayer2 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileTIF));
         vrLayer *myLayer3 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
 
-        TS_ASSERT(m_ViewManager->Add(-1, myLayer3) == true);
-        TS_ASSERT(m_ViewManager->Add(-1, myLayer2) == true);
-        TS_ASSERT(m_ViewManager->Add(-1, myLayer1) == true);
+        TS_ASSERT(m_ViewManager->Add(-1, myLayer3));
+        TS_ASSERT(m_ViewManager->Add(-1, myLayer2));
+        TS_ASSERT(m_ViewManager->Add(-1, myLayer1));
 
 
 
@@ -167,9 +167,9 @@ public:
         wxString myJpegName = m_ViewManager->GetRenderer(0)->GetLayer()->GetDisplayName().GetFullName();
         //wxLogMessage (myJpegName + " - " + g_TestFileJPEG);
         TS_ASSERT(myJpegName == g_TestFileJPEG);
-        TS_ASSERT(m_ViewManager->Move(2, 0) == true);
+        TS_ASSERT(m_ViewManager->Move(2, 0));
         TS_ASSERT(m_ViewManager->GetRenderer(0)->GetLayer()->GetDisplayName().GetFullName() == g_TestFileSHP);
-        TS_ASSERT(m_ViewManager->Move(0, 2) == true);
+        TS_ASSERT(m_ViewManager->Move(0, 2));
         TS_ASSERT(m_ViewManager->GetRenderer(0)->GetLayer()->GetDisplayName().GetFullName() == g_TestFileJPEG);
     }
 

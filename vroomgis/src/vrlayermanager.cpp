@@ -57,7 +57,7 @@ vrLayerManager::~vrLayerManager()
 bool vrLayerManager::Open(const wxFileName &filename, bool readwrite)
 {
 
-    if (filename.IsOk() == false) {
+    if (!filename.IsOk()) {
         wxLogError("Filename not initialised");
         return false;
     }
@@ -109,11 +109,10 @@ bool vrLayerManager::Open(const wxFileName &filename, bool readwrite)
         default:
             wxLogError("Extension \"%s\" not supported", filename.GetExt());
             return false;
-            break;
     }
 
     wxASSERT(myLayer);
-    if (myLayer->Open(filename, readwrite) == false) {
+    if (!myLayer->Open(filename, readwrite)) {
         return false;
     }
 
@@ -223,12 +222,10 @@ bool vrLayerManager::Erase(const wxFileName &filename)
         case vrDRIVER_VECTOR_C2P:
             wxLogError(_("Unable to delete C2P file!"));
             return false;
-            break;
 
         default:
             wxLogError("Extension \"%s\" not supported", filename.GetExt());
             return false;
-            break;
     }
     return true;
 }

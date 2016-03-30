@@ -103,10 +103,7 @@ bool vrRubberBand::IsPositive()
 
     wxRect myRect = _CreateRect();
 
-    if (myRect.GetWidth() < 0 || myRect.GetHeight() < 0) {
-        return false;
-    }
-    return true;
+    return !(myRect.GetWidth() < 0 || myRect.GetHeight() < 0);
 }
 
 
@@ -117,11 +114,7 @@ bool vrRubberBand::IsValid()
         return false;
     }
 
-    if (m_pointStart.x == m_pointEnd.x || m_pointStart.y == m_pointEnd.y) {
-        return false;
-    }
-
-    return true;
+    return !(m_pointStart.x == m_pointEnd.x || m_pointStart.y == m_pointEnd.y);
 }
 
 

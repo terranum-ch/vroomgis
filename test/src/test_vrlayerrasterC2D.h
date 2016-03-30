@@ -48,7 +48,7 @@ public:
         vrLayerManager myManager;
 
         vrLayerRasterGDAL myLayer;
-        TS_ASSERT(myLayer.IsOK() == false);
+        TS_ASSERT(!myLayer.IsOK());
         TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileC2D), true), true);
         TS_ASSERT_EQUALS(myLayer.GetType(), vrDRIVER_RASTER_C2D);
         TS_ASSERT(myLayer.IsOK());
@@ -59,18 +59,18 @@ public:
     {
         wxLogMessage("Testing getting pixel value for C2D raster");
         vrRealRect myExtent;
-        TS_ASSERT(myExtent.IsEmpty() == true);
+        TS_ASSERT(myExtent.IsEmpty());
 
         // extent failed, layer not opened
         vrLayerRasterGDAL myLayer;
-        TS_ASSERT(myLayer.GetExtent(myExtent) == false);
+        TS_ASSERT(!myLayer.GetExtent(myExtent));
 
         // extent ok for layer GDAL
         TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileC2D), false), true);
         TS_ASSERT_EQUALS(myLayer.IsOK(), true);
         wxArrayDouble myValues;
         TS_ASSERT(myLayer.GetPixelValue(598100, 115000, myValues));
-        TS_ASSERT(myValues.GetCount() == 3)
+        TS_ASSERT(myValues.GetCount() == 3);
 
         wxString myTxtValues = "Value of px 598100 - 115000 = ";
         for (unsigned int i = 0; i < myValues.GetCount(); i++) {

@@ -38,7 +38,7 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
     double myDir = dipdir;
     double myDip = dip;
 
-    if (m_isLowerHemisphere == false) {
+    if (!m_isLowerHemisphere) {
         myDir = myDir + 180.0;
     }
 
@@ -63,7 +63,7 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
     }
 
     double myNDir = myDir / 360.0;
-    if (m_isColorInverted == true) {
+    if (m_isColorInverted) {
         myNDir = 1.0 - myNDir;
     }
 
@@ -98,7 +98,7 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint &c
 
     // HUE (Color rotation)
     double myHue = 0;
-    if (m_isColorInverted == false) {
+    if (!m_isColorInverted) {
         myHue = 180.0 * (1.0 + atan2(wxDouble(coord.x), wxDouble(coord.y)) * (1 / M_PI));
         myHue = myHue + m_northAngle;
     } else {

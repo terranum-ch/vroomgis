@@ -228,7 +228,7 @@ double vroomDrawerFrame::_GetRandomNumber(double min, double max)
 vrLayer *vroomDrawerFrame::_GetMemoryLayerPoints(const wxFileName &name, int number, const vrRealRect &extent)
 {
     vrLayerVectorOGR *myLayer = new vrLayerVectorOGR();
-    if (myLayer->Create(name, wkbPoint) == false) {
+    if (!myLayer->Create(name, wkbPoint)) {
         wxFAIL;
         return NULL;
     }
@@ -247,7 +247,7 @@ vrLayer *vroomDrawerFrame::_GetMemoryLayerPoints(const wxFileName &name, int num
 vrLayer *vroomDrawerFrame::_GetMemoryLayerLine(const wxFileName &name, int number, const vrRealRect &extent)
 {
     vrLayerVectorOGR *myLayer = new vrLayerVectorOGR();
-    if (myLayer->Create(name, wkbLineString) == false) {
+    if (!myLayer->Create(name, wkbLineString)) {
         wxFAIL;
         return NULL;
     }
@@ -274,7 +274,7 @@ vrLayer *vroomDrawerFrame::_GetMemoryLayerLine(const wxFileName &name, int numbe
 vrLayer *vroomDrawerFrame::_GetMemoryLayerStar(const wxFileName &name, int number, const vrRealRect &extent)
 {
     vrLayerVectorStar *myLayer = new vrLayerVectorStar();
-    if (myLayer->Create(name, wkbPoint) == false) {
+    if (!myLayer->Create(name, wkbPoint)) {
         wxFAIL;
         return NULL;
     }
@@ -560,7 +560,7 @@ void vroomDrawerFrame::OnToolActionZoom(wxCommandEvent &event)
     // get real rectangle
     vrRealRect myRealRect;
     bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_Rect, myRealRect);
-    wxASSERT(bSuccess == true);
+    wxASSERT(bSuccess);
 
     // get fitted rectangle
     vrRealRect myFittedRect = myCoord->GetRectFitted(myRealRect);
@@ -606,7 +606,7 @@ void vroomDrawerFrame::OnToolActionPan(wxCommandEvent &event)
 
     wxPoint myMovedPos = myMsg->m_Position;
     wxPoint2DDouble myMovedRealPt;
-    if (myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt) == false) {
+    if (!myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)) {
         wxLogError("Error converting point : %d, %d to real coordinate", myMovedPos.x, myMovedPos.y);
         wxDELETE(myMsg);
         return;
@@ -642,7 +642,7 @@ void vroomDrawerFrame::OnStarLayerAdd(wxCommandEvent &event)
 
     // if extent not specified, init extent with window size
     vrRealRect myExtent = m_DisplayCtrl->GetCoordinate()->GetExtent();
-    if (myExtent.IsOk() == false) {
+    if (!myExtent.IsOk()) {
         m_ViewerLayerManager->InitializeExtent(
                 vrRealRect(0, m_DisplayCtrl->GetSize().GetHeight(), m_DisplayCtrl->GetSize().GetWidth(),
                            m_DisplayCtrl->GetSize().GetHeight() * -1.0));

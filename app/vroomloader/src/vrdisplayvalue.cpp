@@ -116,7 +116,7 @@ void vrDisplayValueDlg::UpdateValues(const wxPoint &pos)
     wxASSERT(myRasterLayer);
 
     wxPoint2DDouble myCoord;
-    if (m_LayerViewerManager->GetDisplay()->GetCoordinate()->ConvertFromPixels(pos, myCoord) == false) {
+    if (!m_LayerViewerManager->GetDisplay()->GetCoordinate()->ConvertFromPixels(pos, myCoord)) {
         wxLogError("Converting position %d, %d to real coordinates failed", pos.x, pos.y);
         return;
     }
@@ -154,7 +154,7 @@ bool vrDisplayValueTool::MouseMove(const wxMouseEvent &event)
         return false;
     }
 
-    if (m_Dlg->IsShown() == false) {
+    if (!m_Dlg->IsShown()) {
         return false;
     }
 

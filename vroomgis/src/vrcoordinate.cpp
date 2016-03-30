@@ -72,7 +72,7 @@ vrRealRect vrCoordinate::GetExtent()
 
 void vrCoordinate::SetExtent(const vrRealRect &extent)
 {
-    if (extent.IsOk() == false) {
+    if (!extent.IsOk()) {
         wxLogError("specified extent isn't valid");
         return;
     }
@@ -84,7 +84,7 @@ void vrCoordinate::SetExtent(const vrRealRect &extent)
 bool vrCoordinate::UpdateExtent()
 {
     wxASSERT(m_viewer);
-    if (m_wndExtent.IsOk() == false) {
+    if (!m_wndExtent.IsOk()) {
         wxLogError("Window real extent isn't defined, updating not possible");
         return false;
     }
@@ -111,11 +111,11 @@ bool vrCoordinate::UpdateExtent()
 vrRealRect vrCoordinate::GetRectFitted(const vrRealRect &originalrect)
 {
 
-    if (originalrect.IsOk() == false) {
+    if (!originalrect.IsOk()) {
         wxLogError("Specified extent isn't Correct, unable to compute fitted rectangle");
         return originalrect;
     }
-    wxASSERT(m_wndExtent.IsOk() == true);
+    wxASSERT(m_wndExtent.IsOk());
 
     double xfactor = fabs(m_wndExtent.m_width / originalrect.m_width);
     double yfactor = fabs(m_wndExtent.m_height / originalrect.m_height);
@@ -157,14 +157,14 @@ void vrCoordinate::ClearPixelSize()
 void vrCoordinate::AddLayersExtent(const vrRealRect &rect)
 {
 
-    if (m_layersExtent.IsOk() == false) {
+    if (!m_layersExtent.IsOk()) {
         m_layersExtent = rect;
         return;
     }
 
     //vrRealRect myTempRect (m_layersExtent);
     vrRealRect myResult = m_layersExtent.Union(rect);
-    if (myResult.IsOk() == false) {
+    if (!myResult.IsOk()) {
         wxLogError("Computing rectangle union failed, result invalid");
         return;
     }
@@ -192,7 +192,7 @@ bool vrCoordinate::ComputeFullExtent()
     // compute shape
     double dpixelx = myLayerExtent.m_width / dWndwidth;
     double dpixely = myLayerExtent.m_height / dWndheight;
-    double myDivFactor = 0.0;
+    double myDivFactor;
 
     if (fabs(dpixelx) >= fabs(dpixely)) {
         myDivFactor = dpixelx;
@@ -234,7 +234,7 @@ double vrCoordinate::GetPixelSize()
 {
 
     if (m_pxSize == wxNOT_FOUND) {
-        if (_ComputePixelSize() == false) {
+        if (!_ComputePixelSize()) {
             wxLogError("Error computing pixel size");
             return wxNOT_FOUND;
         }
@@ -252,17 +252,17 @@ bool vrCoordinate::ConvertFromPixels(wxRect in, vrRealRect &out)
         return false;
     }
 
-    if (in.IsEmpty() == true) {
+    if (in.IsEmpty()) {
         in.width = 1;
         in.height = 1;
     }
 
     wxPoint2DDouble myTopLeft, myRightBottom;
-    if (ConvertFromPixels(in.GetLeftTop(), myTopLeft) == false) {
+    if (!ConvertFromPixels(in.GetLeftTop(), myTopLeft)) {
         return false;
     }
 
-    if (ConvertFromPixels(in.GetBottomRight(), myRightBottom) == false) {
+    if (!ConvertFromPixels(in.GetBottomRight(), myRightBottom)) {
         return false;
     }
 

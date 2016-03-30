@@ -46,7 +46,7 @@ public:
     void testCreateRealRect()
     {
         vrRealRect myRect;
-        TS_ASSERT(myRect.IsOk() == false);
+        TS_ASSERT(!myRect.IsOk());
     }
 
 
@@ -55,8 +55,8 @@ public:
         vrRealRect myRectWnd(0, 1000, 4000, -1000);
         vrRealRect myRectImg(1000, 800, 2000, -600);
 
-        TS_ASSERT(myRectWnd.IsOk() == true);
-        TS_ASSERT(myRectImg.IsOk() == true);
+        TS_ASSERT(myRectWnd.IsOk());
+        TS_ASSERT(myRectImg.IsOk());
 
         vrRealRect myIntersect = myRectWnd.Intersect(myRectImg);
         wxLogMessage("Intersection computed : %.2f / %.2f / %.2f / %.2f", myIntersect.GetLeft(), myIntersect.GetTop(),
@@ -72,8 +72,8 @@ public:
 
         vrRealRect myResult(2000, 1000, 2000, -500);
 
-        TS_ASSERT(myRectWnd.IsOk() == true);
-        TS_ASSERT(myRectImg.IsOk() == true);
+        TS_ASSERT(myRectWnd.IsOk());
+        TS_ASSERT(myRectImg.IsOk());
 
         vrRealRect myIntersect = myRectWnd.Intersect(myRectImg);
         wxLogMessage("Intersection computed : %.2f / %.2f / %.2f / %.2f", myIntersect.GetLeft(), myIntersect.GetTop(),
@@ -91,8 +91,8 @@ public:
 
         vrRealRect myResult(1000, 500, 1000, -500);
 
-        TS_ASSERT(myRectWnd.IsOk() == true);
-        TS_ASSERT(myRectImg.IsOk() == true);
+        TS_ASSERT(myRectWnd.IsOk());
+        TS_ASSERT(myRectImg.IsOk());
 
         vrRealRect myIntersect = myRectWnd.Intersect(myRectImg);
         wxLogMessage("Intersection computed : %.2f / %.2f / %.2f / %.2f", myIntersect.GetLeft(), myIntersect.GetTop(),
@@ -107,10 +107,10 @@ public:
     {
         vrRealRect myRect(10, 10, 10, 10);
         vrRealRect myRect2;
-        TS_ASSERT(myRect2.IsOk() == false);
+        TS_ASSERT(!myRect2.IsOk());
 
         myRect2 = myRect;
-        TS_ASSERT(myRect2.IsOk() == true);
+        TS_ASSERT(myRect2.IsOk());
         TS_ASSERT(myRect2 == myRect);
 
         vrRealRect myRect3 = myRect;
@@ -125,7 +125,7 @@ public:
         vrRealRect myRectImg(11, 10, 10, -10);
 
         vrRealRect myResult = myRectWnd.Intersect(myRectImg);
-        TS_ASSERT(myResult.IsOk() == false);
+        TS_ASSERT(!myResult.IsOk());
     }
 
     void testOutsideIntersectTop()
@@ -134,7 +134,7 @@ public:
         vrRealRect myRectImg(5, 20, 20, -9);
 
         vrRealRect myResult = myRectWnd.Intersect(myRectImg);
-        TS_ASSERT(myResult.IsOk() == false);
+        TS_ASSERT(!myResult.IsOk());
     }
 
     void testOutsideIntersectLeft()
@@ -143,7 +143,7 @@ public:
         vrRealRect myRectImg(0, 10, 5, -10);
 
         vrRealRect myResult = myRectWnd.Intersect(myRectImg);
-        TS_ASSERT(myResult.IsOk() == false);
+        TS_ASSERT(!myResult.IsOk());
     }
 
     void testOutsideIntersectBottom()
@@ -152,7 +152,7 @@ public:
         vrRealRect myRectImg(0, 9, 9, -9);
 
         vrRealRect myResult = myRectWnd.Intersect(myRectImg);
-        TS_ASSERT(myResult.IsOk() == false);
+        TS_ASSERT(!myResult.IsOk());
     }
 
 

@@ -142,9 +142,6 @@ bool vrRealRect::Contains(const wxPoint2DDouble &pt)
 
 bool vrRealRect::IsOk() const
 {
-    if (m_width != 0 && m_width != 0) {
-        return true;
-    }
-    return false;
+    return m_width != 0;
 }
 

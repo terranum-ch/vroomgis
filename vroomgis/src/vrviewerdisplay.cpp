@@ -84,7 +84,7 @@ void vrViewerDisplay::OnPaint(wxPaintEvent &event)
     // draw overlay
     for (unsigned int i = 0; i < m_overlayArray.GetCount(); i++) {
         vrViewerOverlay *myOverlay = m_overlayArray[i];
-        if (myOverlay == NULL || myOverlay->IsVisible() == false) {
+        if (myOverlay == NULL || !myOverlay->IsVisible()) {
             continue;
         }
         myOverlay->DrawOverlay(&dc);
@@ -105,7 +105,7 @@ void vrViewerDisplay::OnSizeChange(wxSizeEvent &event)
     }
 
     wxASSERT(m_coordinate);
-    if (m_coordinate->IsOk() == true) {
+    if (m_coordinate->IsOk()) {
         m_coordinate->UpdateExtent();
     }
 
@@ -134,7 +134,7 @@ void vrViewerDisplay::OnMouseDown(wxMouseEvent &event)
 
 void vrViewerDisplay::OnMouseUp(wxMouseEvent &event)
 {
-    if (HasCapture() == true) {
+    if (HasCapture()) {
         ReleaseMouse();
     }
 
@@ -156,7 +156,7 @@ void vrViewerDisplay::OnMouseMove(wxMouseEvent &event)
 
     if (m_status != NULL) {
         wxPoint2DDouble myCoord;
-        if (GetCoordinate()->GetExtent().IsOk() == false || m_bmp == NULL) {
+        if (!GetCoordinate()->GetExtent().IsOk() || m_bmp == NULL) {
             m_status->SetStatusText(m_statusErrText, m_statusField);
             return;
         }
@@ -178,7 +178,7 @@ void vrViewerDisplay::OnMouseDClickLeft(wxMouseEvent &event)
 void vrViewerDisplay::OnMouseCaptureLost(wxMouseEvent &event)
 {
     // Only used under Windows. Mouse capture is lost when a dialog is displayed.
-    if (HasCapture() == true) {
+    if (HasCapture()) {
         ReleaseMouse();
     }
 }

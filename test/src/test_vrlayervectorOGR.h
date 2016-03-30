@@ -61,16 +61,16 @@ public:
     {
 
         vrRealRect myExtent;
-        TS_ASSERT(myExtent.IsEmpty() == true);
+        TS_ASSERT(myExtent.IsEmpty());
 
         // extent failed, layer not opened
         vrLayerVectorOGR myLayer;
-        TS_ASSERT(myLayer.GetExtent(myExtent) == false);
+        TS_ASSERT(!myLayer.GetExtent(myExtent));
 
         // extent ok for layer ogr
         TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false), true);
         TS_ASSERT_EQUALS(myLayer.IsOK(), true);
-        TS_ASSERT(myLayer.GetExtent(myExtent) == true);
+        TS_ASSERT(myLayer.GetExtent(myExtent));
         TS_ASSERT_EQUALS((int) myExtent.GetLeft(), 598000);
         TS_ASSERT_EQUALS((int) myExtent.GetTop(), 117200);
         TS_ASSERT_EQUALS((int) myExtent.GetRight(), 598662);

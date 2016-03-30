@@ -42,15 +42,15 @@ public:
     void testDriverGetWildcards()
     {
 
-        TS_ASSERT(m_Driver.GetWildcards().IsEmpty() == false);
+        TS_ASSERT(!m_Driver.GetWildcards().IsEmpty());
         wxLogDebug(m_Driver.GetWildcards());
     }
 
     void testDriverIsSupported()
     {
-        TS_ASSERT(m_Driver.IsSupported(wxEmptyString) == false);
-        TS_ASSERT(m_Driver.IsSupported("shp") == true);
-        TS_ASSERT(m_Driver.IsSupported("sh") == false);
+        TS_ASSERT(!m_Driver.IsSupported(wxEmptyString));
+        TS_ASSERT(m_Driver.IsSupported("shp"));
+        TS_ASSERT(!m_Driver.IsSupported("sh"));
         TS_ASSERT_EQUALS(m_Driver.IsSupported("shpp"), false);
     }
 

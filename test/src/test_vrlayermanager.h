@@ -54,11 +54,11 @@ public:
 
 
         vrLayerManager myLayerManager;
-        TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc)) == false);
-        TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP)) == true);
+        TS_ASSERT(!myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc)));
+        TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP)));
         TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
         // opening two times the same file
-        TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP)) == true);
+        TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP)));
         TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
     }
 
@@ -66,17 +66,17 @@ public:
     {
         vrLayerManager myLayerManager;
 
-        TS_ASSERT(myLayerManager.Open(m_JpegName) == true);
+        TS_ASSERT(myLayerManager.Open(m_JpegName));
         TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
 
 
-        TS_ASSERT(myLayerManager.Open(m_TiffName) == true);
+        TS_ASSERT(myLayerManager.Open(m_TiffName));
         TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
 
         // opening two times the same file
-        TS_ASSERT(myLayerManager.Open(m_JpegName) == true);
+        TS_ASSERT(myLayerManager.Open(m_JpegName));
         TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
-        TS_ASSERT(myLayerManager.Open(m_TiffName) == true);
+        TS_ASSERT(myLayerManager.Open(m_TiffName));
         TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
 
 
@@ -85,8 +85,8 @@ public:
     void testGetType()
     {
         vrLayerManager myLayerManager;
-        TS_ASSERT(myLayerManager.Open(m_JpegName) == true);
-        TS_ASSERT(myLayerManager.Open(m_TiffName) == true);
+        TS_ASSERT(myLayerManager.Open(m_JpegName));
+        TS_ASSERT(myLayerManager.Open(m_TiffName));
         TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
 
         // testing type
@@ -97,8 +97,8 @@ public:
     void testRemoveLayer1()
     {
         vrLayerManager myLayerManager;
-        TS_ASSERT(myLayerManager.Open(m_JpegName) == true);
-        TS_ASSERT(myLayerManager.Open(m_TiffName) == true);
+        TS_ASSERT(myLayerManager.Open(m_JpegName));
+        TS_ASSERT(myLayerManager.Open(m_TiffName));
         TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
 
         // removing layer

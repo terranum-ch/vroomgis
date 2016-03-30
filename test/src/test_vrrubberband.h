@@ -78,12 +78,12 @@ public:
         vrRubberBand myRubber(NULL);
         myRubber.SetPointFirst(p2);
         myRubber.SetPointLast(p3);
-        TS_ASSERT(myRubber.IsPositive() == true);
+        TS_ASSERT(myRubber.IsPositive());
         myRubber.SetPointLast(p1);
-        TS_ASSERT(myRubber.IsPositive() == false);
-        TS_ASSERT(myRubber.IsPositive() == false);
+        TS_ASSERT(!myRubber.IsPositive());
+        TS_ASSERT(!myRubber.IsPositive());
         myRubber.SetPointLast(p2);
-        TS_ASSERT(myRubber.IsPositive() == true);
+        TS_ASSERT(myRubber.IsPositive());
     }
 
 
@@ -94,7 +94,7 @@ public:
         vrRubberBand myRubber(NULL);
         myRubber.SetPointFirst(p1);
         myRubber.SetPointLast(p1);
-        TS_ASSERT(myRubber.IsPositive() == true);
+        TS_ASSERT(myRubber.IsPositive());
 
         wxRect myRect = myRubber.GetRect();
         TS_ASSERT(myRect.GetLeft() == myRect.GetRight());
@@ -110,16 +110,16 @@ public:
 
         vrRubberBand myRubber(NULL);
         myRubber.SetPointFirst(p1);
-        TS_ASSERT(myRubber.IsValid() == false);// not fully inited
+        TS_ASSERT(!myRubber.IsValid());// not fully inited
 
         myRubber.SetPointLast(p1);
-        TS_ASSERT(myRubber.IsValid() == false); // two same points
+        TS_ASSERT(!myRubber.IsValid()); // two same points
 
         myRubber.SetPointLast(p2);
-        TS_ASSERT(myRubber.IsValid() == false); // no height
+        TS_ASSERT(!myRubber.IsValid()); // no height
 
         myRubber.SetPointLast(p3);
-        TS_ASSERT(myRubber.IsValid() == true); // valid
+        TS_ASSERT(myRubber.IsValid()); // valid
     }
 
 

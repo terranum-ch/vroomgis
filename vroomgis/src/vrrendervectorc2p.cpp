@@ -43,7 +43,7 @@ vrRenderVectorC2PDips::vrRenderVectorC2PDips(const wxColour &defaultcolour, int 
     AddDipColour(defaultcolour, 0, true);
     m_memoryFamilyID = wxNOT_FOUND;
     m_memoryColour = wxColour();
-    wxASSERT(m_memoryColour.IsOk() == false);
+    wxASSERT(!m_memoryColour.IsOk());
 }
 
 
@@ -238,7 +238,7 @@ vrRenderVectorC2PPoly::vrRenderVectorC2PPoly(const wxColour &defaultcolour)
     AddPolyColour(defaultcolour, 0);
     m_memoryFamilyID = wxNOT_FOUND;
     m_memoryColour = wxColour();
-    wxASSERT(m_memoryColour.IsOk() == false);
+    wxASSERT(!m_memoryColour.IsOk());
 }
 
 

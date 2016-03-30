@@ -94,7 +94,7 @@ vrDisplayTool::vrDisplayTool(vrViewerDisplay *display, int id, wxString name, wx
 void vrDisplayTool::Create(vrViewerDisplay *display, int id, wxString name, wxCursor cursor)
 {
     wxASSERT(id != wxNOT_FOUND);
-    wxASSERT(name.IsEmpty() == false);
+    wxASSERT(!name.IsEmpty());
     wxASSERT(display != NULL);
 
     m_iD = id;
@@ -196,7 +196,7 @@ bool vrDisplayToolDefault::MouseUp(const wxMouseEvent &event)
 
 bool vrDisplayToolDefault::MouseMove(const wxMouseEvent &event)
 {
-    if (event.Dragging() == true) {
+    if (event.Dragging()) {
         //wxLogMessage("Dragging with selection");
     }
     return true;
@@ -235,7 +235,7 @@ bool vrDisplayToolSelect::MouseUp(const wxMouseEvent &event)
     wxRect myRect;
     myRect.SetLeftTop(event.GetPosition());
     myRect.SetRightBottom(event.GetPosition());
-    if (m_rubber->IsValid() == true) {
+    if (m_rubber->IsValid()) {
         myRect = m_rubber->GetRect();
     }
     wxDELETE(m_rubber);
@@ -255,7 +255,7 @@ bool vrDisplayToolSelect::MouseUp(const wxMouseEvent &event)
 
 bool vrDisplayToolSelect::MouseMove(const wxMouseEvent &event)
 {
-    if (event.Dragging() == true && m_rubber != NULL) {
+    if (event.Dragging() && m_rubber != NULL) {
         m_rubber->SetPointLast(event.GetPosition());
         m_rubber->Update();
     }
@@ -293,7 +293,7 @@ bool vrDisplayToolZoom::MouseUp(const wxMouseEvent &event)
     }
 
     m_rubber->SetPointLast(event.GetPosition());
-    if (m_rubber->IsValid() == false) { // e.g. if user only clicks
+    if (!m_rubber->IsValid()) { // e.g. if user only clicks
         wxDELETE(m_rubber);
 
         // Set a rectangle centered with a size 1.5 times smaller
@@ -331,7 +331,7 @@ bool vrDisplayToolZoom::MouseMove(const wxMouseEvent &event)
         return false;
     }
 
-    if (event.Dragging() == true) {
+    if (event.Dragging()) {
         m_rubber->SetPointLast(event.GetPosition());
         m_rubber->Update();
     }
@@ -361,7 +361,7 @@ bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent &event)
     }
 
     m_rubber->SetPointLast(event.GetPosition());
-    if (m_rubber->IsValid() == false) { // e.g. if user only clicks
+    if (!m_rubber->IsValid()) { // e.g. if user only clicks
         wxDELETE(m_rubber);
 
         // Set a rectangle centered with a size 1.5 times smaller
@@ -451,7 +451,7 @@ bool vrDisplayToolPan::MouseUp(const wxMouseEvent &event)
 
 bool vrDisplayToolPan::MouseMove(const wxMouseEvent &event)
 {
-    if (event.Dragging() == false || m_panBitmap == NULL) {
+    if (!event.Dragging() || m_panBitmap == NULL) {
         return false;
     }
 
@@ -482,7 +482,7 @@ bool vrDisplayToolPan::MouseDClickLeft(const wxMouseEvent &event)
 {
     // compute middle pixel
     wxSize myDisplaySize = GetDisplay()->GetSize();
-    if (myDisplaySize.IsFullySpecified() == false || myDisplaySize == wxSize(0, 0)) {
+    if (!myDisplaySize.IsFullySpecified() || myDisplaySize == wxSize(0, 0)) {
         wxLogError("Error getting display size!");
         return false;
     }
@@ -546,7 +546,7 @@ bool vrDisplayToolSight::MouseUp(const wxMouseEvent &event)
 
 bool vrDisplayToolSight::MouseMove(const wxMouseEvent &event)
 {
-    if (event.Dragging() == false) {
+    if (!event.Dragging()) {
         return false;
     }
 
@@ -641,7 +641,7 @@ bool vrDisplayToolEditLine::MouseUp(const wxMouseEvent &event)
     m_overlay.Reset();
     m_previousPoint = event.GetPosition();
 
-    if (m_doubleClicked == true) {
+    if (m_doubleClicked) {
         m_previousPoint = wxDefaultPosition;
         m_doubleClicked = false;
         vrDisplayToolMessage *myMessage = new vrDisplayToolMessage(vrEVT_TOOL_EDIT_FINISHED, GetDisplay(),
@@ -795,7 +795,7 @@ bool vrDisplayToolModify::MouseDown(const wxMouseEvent &event)
     wxRect myClickedRect(myClickedPt.x - 2, myClickedPt.y - 2, 5, 5);
     for (unsigned int i = 0; i < m_pointsX.GetCount(); i++) {
         wxPoint myPt(m_pointsX[i], m_pointsY[i]);
-        if (myClickedRect.Contains(myPt) == true) {
+        if (myClickedRect.Contains(myPt)) {
             m_activeVertex = i;
             break;
         }

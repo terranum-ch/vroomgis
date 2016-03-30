@@ -46,16 +46,13 @@ bool vrOperationVectorProfiler::IsOk()
         return false;
     }
 
-    if (m_rasterLayer == NULL) {
-        return false;
-    }
-    return true;
+    return m_rasterLayer != NULL;
 }
 
 
 bool vrOperationVectorProfiler::DoProfile(int bandindex)
 {
-    if (IsOk() == false) {
+    if (!IsOk()) {
         return false;
     }
 
@@ -120,7 +117,7 @@ bool vrOperationVectorProfiler::DoProfile(int bandindex)
 
 bool vrOperationVectorProfiler::GetResultPoint(int index, OGRPoint *point)
 {
-    if (IsOk() == false) {
+    if (!IsOk()) {
         return false;
     }
 
@@ -147,7 +144,7 @@ bool vrOperationVectorProfiler::GetResultPoint(int index, OGRPoint *point)
 
 bool vrOperationVectorProfiler::GetResultLine(OGRGeometry *line)
 {
-    if (IsOk() == false) {
+    if (!IsOk()) {
         return false;
     }
 
@@ -163,7 +160,7 @@ bool vrOperationVectorProfiler::GetResultLine(OGRGeometry *line)
     OGRLineString *myLine = static_cast<OGRLineString *>(line);
     for (unsigned int i = 0; i < m_zResults.GetCount(); i++) {
         OGRPoint *myPt = static_cast<OGRPoint *>(OGRGeometryFactory::createGeometry(wkbPoint));
-        if (GetResultPoint(i, myPt) == false) {
+        if (!GetResultPoint(i, myPt)) {
             wxLogError(_("Error getting point: %ld"), i);
             OGRGeometryFactory::destroyGeometry(myPt);
             continue;

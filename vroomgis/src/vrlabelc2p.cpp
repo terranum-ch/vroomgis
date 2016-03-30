@@ -50,7 +50,7 @@ bool vrLabelC2P::Draw(wxGraphicsContext *gdc, const wxRect2DDouble &coord, const
 {
     wxASSERT(gdc);
     vrRenderVectorC2PDips *myRender = (vrRenderVectorC2PDips *) render;
-    if (m_actualSelected == true) {
+    if (m_actualSelected) {
         gdc->SetFont(GetFont(), myRender->GetSelectionColour());
     } else {
         gdc->SetFont(GetFont(), GetColor());
