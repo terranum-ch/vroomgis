@@ -141,7 +141,7 @@ bool vrViewerLayerManager::Add(long pos, vrLayer *layer, vrRender *render, vrLab
 
     // compute coordinate if layer added is visible and
     // there is no other visible layers
-    if (visible == true && m_computeExtentStatus == false && m_userDefinedExtent == false) {
+    if (visible && !m_computeExtentStatus && !m_userDefinedExtent) {
         m_computeExtentStatus = true;
         for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
             if (m_renderers.Item(i)->GetVisible()) {
