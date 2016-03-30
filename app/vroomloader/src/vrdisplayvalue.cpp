@@ -19,7 +19,9 @@
 #include "vroomgis.h"
 #include "vrlayerraster.h"
 
-BEGIN_EVENT_TABLE(vrDisplayValueDlg, wxDialog)EVT_CLOSE(vrDisplayValueDlg::OnCloseDlg) END_EVENT_TABLE();
+BEGIN_EVENT_TABLE(vrDisplayValueDlg, wxDialog)
+    EVT_CLOSE(vrDisplayValueDlg::OnCloseDlg)
+END_EVENT_TABLE();
 
 
 vrDisplayValueDlg::vrDisplayValueDlg(wxWindow *parent, vrViewerLayerManager *viewerlayermanager, wxWindowID id,

@@ -39,7 +39,8 @@ wxDEFINE_EVENT(vrEVT_TOOL_MODIFY, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_MODIFY_FINISHED, wxCommandEvent);
 
 BEGIN_EVENT_TABLE(vrViewerLayerManager, wxEvtHandler)
-                EVT_COMMAND(wxID_ANY, vrEVT_VLM_RELOAD, vrViewerLayerManager::OnReload) END_EVENT_TABLE()
+    EVT_COMMAND(wxID_ANY, vrEVT_VLM_RELOAD, vrViewerLayerManager::OnReload)
+END_EVENT_TABLE()
 
 
 vrViewerLayerManager::vrViewerLayerManager(vrLayerManager *parent, wxWindow *window, vrViewerDisplay *viewer,
