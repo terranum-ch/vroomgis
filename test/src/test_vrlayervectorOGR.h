@@ -20,8 +20,11 @@
 
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
 
 
@@ -30,132 +33,127 @@
 #include "vrlayermanager.h"
 
 
-
-class TEST_vrLayerVectorOGR : public CxxTest::TestSuite
+class TEST_vrLayerVectorOGR
+        : public CxxTest::TestSuite
 {
 public:
-   	void testOpenLayerVectorOGR()
-	{
-		//init lib.
-		vrLayerManager myManager;
+    void testOpenLayerVectorOGR()
+    {
+        //init lib.
+        vrLayerManager myManager;
 
-		vrLayerVectorOGR myLayer;
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), true),true);
-		TS_ASSERT_EQUALS(myLayer.GetType(), vrDRIVER_VECTOR_SHP);
-		TS_ASSERT(myLayer.IsOK());
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), true),true);
-	}
+        vrLayerVectorOGR myLayer;
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), true), true);
+        TS_ASSERT_EQUALS(myLayer.GetType(), vrDRIVER_VECTOR_SHP);
+        TS_ASSERT(myLayer.IsOK());
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), true), true);
+    }
 
-	void testOpenLayerVectorOGRFailled()
-	{
-		vrLayerVectorOGR myLayer;
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileMisc), false),false);
-		TS_ASSERT_EQUALS(myLayer.IsOK(), false);
+    void testOpenLayerVectorOGRFailled()
+    {
+        vrLayerVectorOGR myLayer;
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileMisc), false), false);
+        TS_ASSERT_EQUALS(myLayer.IsOK(), false);
 
-	}
+    }
 
-	void testGetExtentVectorOGR(){
+    void testGetExtentVectorOGR()
+    {
 
-		vrRealRect myExtent;
-		TS_ASSERT(myExtent.IsEmpty()==true);
+        vrRealRect myExtent;
+        TS_ASSERT(myExtent.IsEmpty() == true);
 
-		// extent failed, layer not opened
-		vrLayerVectorOGR myLayer;
-		TS_ASSERT(myLayer.GetExtent(myExtent)==false);
+        // extent failed, layer not opened
+        vrLayerVectorOGR myLayer;
+        TS_ASSERT(myLayer.GetExtent(myExtent) == false);
 
-		// extent ok for layer ogr
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false),true);
-		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
-		TS_ASSERT(myLayer.GetExtent(myExtent)==true);
-		TS_ASSERT_EQUALS((int) myExtent.GetLeft(), 598000);
-		TS_ASSERT_EQUALS((int) myExtent.GetTop(), 117200);
-		TS_ASSERT_EQUALS((int) myExtent.GetRight(), 598662);
-		TS_ASSERT_EQUALS((int) myExtent.GetBottom(), 114173);
-	}
-
-
-	void testGettingGeometry(){
-			vrLayerVectorOGR myLayer;
-
-		// layer not opened
-		OGRFeature * myFeat = myLayer.GetFeature(0);
-		TS_ASSERT(myFeat == NULL);
+        // extent ok for layer ogr
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false), true);
+        TS_ASSERT_EQUALS(myLayer.IsOK(), true);
+        TS_ASSERT(myLayer.GetExtent(myExtent) == true);
+        TS_ASSERT_EQUALS((int) myExtent.GetLeft(), 598000);
+        TS_ASSERT_EQUALS((int) myExtent.GetTop(), 117200);
+        TS_ASSERT_EQUALS((int) myExtent.GetRight(), 598662);
+        TS_ASSERT_EQUALS((int) myExtent.GetBottom(), 114173);
+    }
 
 
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false),true);
-		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
+    void testGettingGeometry()
+    {
+        vrLayerVectorOGR myLayer;
 
-		OGRFeature * myGeom = NULL;
-		myGeom = myLayer.GetFeature(0);
-		TS_ASSERT(myGeom != NULL);
-		
-		OGRLineString * myLine = (OGRLineString*) myGeom->GetGeometryRef();
-		wxLogMessage("line returned start here : %.4f | %.4f and contain %d vertex",
-					 myLine->getX(0),
-					 myLine->getY(0),
-					 myLine->getNumPoints());
-		
-		OGRFeature::DestroyFeature(myGeom);
-
-	}
+        // layer not opened
+        OGRFeature *myFeat = myLayer.GetFeature(0);
+        TS_ASSERT(myFeat == NULL);
 
 
-	void testGettingGeometryType(){
-			vrLayerVectorOGR myLayer;
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false), true);
+        TS_ASSERT_EQUALS(myLayer.IsOK(), true);
 
-		// layer not opened
-		TS_ASSERT(myLayer.GetGeometryType() == wkbUnknown);
+        OGRFeature *myGeom = NULL;
+        myGeom = myLayer.GetFeature(0);
+        TS_ASSERT(myGeom != NULL);
 
+        OGRLineString *myLine = (OGRLineString *) myGeom->GetGeometryRef();
+        wxLogMessage("line returned start here : %.4f | %.4f and contain %d vertex", myLine->getX(0), myLine->getY(0),
+                     myLine->getNumPoints());
 
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false),true);
-		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
-		TS_ASSERT_EQUALS(myLayer.GetGeometryType(), wkbLineString);
+        OGRFeature::DestroyFeature(myGeom);
 
-
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false),true);
-		TS_ASSERT_EQUALS(myLayer.GetGeometryType(), wkbPolygon);
-	}
-
-
-	void testGettingNextGeometry(){
-		wxLogMessage("Testing getting next data for layer");
-
-		vrLayerVectorOGR myLayer;
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false),true);
-		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
-
-		bool restart = true;
-		OGRFeature * myFeat = NULL;
-		int iCount = 0;
-
-		while (1) {
-			myFeat = myLayer.GetNextFeature(restart);
-			restart = false;
-			if (myFeat == NULL) {
-				break;
-			}
-
-			wxLogMessage("oid : %ld contain %d vertex",
-						 myFeat->GetFID(),
-						 (((OGRLineString*) myFeat->GetGeometryRef())->getNumPoints()));
-			iCount++;
-			OGRFeature::DestroyFeature(myFeat);
-
-		}
-		wxLogMessage("%d feature readed", iCount);
-		TS_ASSERT_EQUALS(iCount, 45);
+    }
 
 
-	}
+    void testGettingGeometryType()
+    {
+        vrLayerVectorOGR myLayer;
 
+        // layer not opened
+        TS_ASSERT(myLayer.GetGeometryType() == wkbUnknown);
+
+
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false), true);
+        TS_ASSERT_EQUALS(myLayer.IsOK(), true);
+        TS_ASSERT_EQUALS(myLayer.GetGeometryType(), wkbLineString);
+
+
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false), true);
+        TS_ASSERT_EQUALS(myLayer.GetGeometryType(), wkbPolygon);
+    }
+
+
+    void testGettingNextGeometry()
+    {
+        wxLogMessage("Testing getting next data for layer");
+
+        vrLayerVectorOGR myLayer;
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false), true);
+        TS_ASSERT_EQUALS(myLayer.IsOK(), true);
+
+        bool restart = true;
+        OGRFeature *myFeat = NULL;
+        int iCount = 0;
+
+        while (1) {
+            myFeat = myLayer.GetNextFeature(restart);
+            restart = false;
+            if (myFeat == NULL) {
+                break;
+            }
+
+            wxLogMessage("oid : %ld contain %d vertex", myFeat->GetFID(),
+                         (((OGRLineString *) myFeat->GetGeometryRef())->getNumPoints()));
+            iCount++;
+            OGRFeature::DestroyFeature(myFeat);
+
+        }
+        wxLogMessage("%d feature readed", iCount);
+        TS_ASSERT_EQUALS(iCount, 45);
+
+
+    }
 
 
 };
-
-
-
-
-
 
 
 #endif

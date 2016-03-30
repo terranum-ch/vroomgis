@@ -8,7 +8,8 @@
 
 #include "vrperformance.h"
 
-size_t vrPerformance::_GetUsedMemory (bool resident){
+size_t vrPerformance::_GetUsedMemory(bool resident)
+{
 #if defined(__LINUX__)
     // Ugh, getrusage doesn't work well on Linux.  Try grabbing info
     // directly from the /proc pseudo-filesystem.  Reading from
@@ -20,9 +21,9 @@ size_t vrPerformance::_GetUsedMemory (bool resident){
     FILE *file = fopen("/proc/self/statm", "r");
     if (file) {
         unsigned long vm = 0;
-        fscanf (file, "%lu", &vm);  // Just need the first num: vm size
-        fclose (file);
-		size = (size_t)vm * getpagesize();
+        fscanf(file, "%lu", &vm);  // Just need the first num: vm size
+        fclose(file);
+        size = (size_t) vm * getpagesize();
     }
     return size;
 
@@ -49,39 +50,35 @@ size_t vrPerformance::_GetUsedMemory (bool resident){
 }
 
 
-
-vrPerformance::vrPerformance(wxString file, wxString header) {
-	wxASSERT(file != wxEmptyString);
-	m_filePath = wxFileName(file);
-	m_stopWatch.Start(0);
-	m_file.Open(m_filePath.GetFullPath(), wxFile::write_append);
-	if (m_file.Length() < 10) {
-		m_file.Write(_("Date\tPlateform\tDebug\tElapsed time\tUsed Memory\t") + header + _T("\n"));
-	}
+vrPerformance::vrPerformance(wxString file, wxString header)
+{
+    wxASSERT(file != wxEmptyString);
+    m_filePath = wxFileName(file);
+    m_stopWatch.Start(0);
+    m_file.Open(m_filePath.GetFullPath(), wxFile::write_append);
+    if (m_file.Length() < 10) {
+        m_file.Write(_("Date\tPlateform\tDebug\tElapsed time\tUsed Memory\t") + header + _T("\n"));
+    }
 }
 
 
-
-vrPerformance::~vrPerformance() {
+vrPerformance::~vrPerformance()
+{
 }
 
 
-
-void vrPerformance::StopWork(wxString text) {
-	long myUsedMem = _GetUsedMemory(true);
-	wxString myDebug = _T("Undefined");
+void vrPerformance::StopWork(wxString text)
+{
+    long myUsedMem = _GetUsedMemory(true);
+    wxString myDebug = _T("Undefined");
 #ifndef NDEBUG
-	myDebug = _("Yes");
+    myDebug = _("Yes");
 #else
-	myDebug = _("No");
+    myDebug = _("No");
 #endif
 
-	m_file.Write(wxString::Format(_T("%s\t%s\t%s\t%ld\t%ld\t"),
-								  wxDateTime::Now().FormatISOCombined(),
-								  wxGetOsDescription(),
-								  myDebug,
-								  m_stopWatch.Time(),
-								  myUsedMem)
-				 + text + _T("\n"));
+    m_file.Write(
+            wxString::Format(_T("%s\t%s\t%s\t%ld\t%ld\t"), wxDateTime::Now().FormatISOCombined(), wxGetOsDescription(),
+                             myDebug, m_stopWatch.Time(), myUsedMem) + text + _T("\n"));
 }
 

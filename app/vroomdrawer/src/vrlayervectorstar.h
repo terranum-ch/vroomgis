@@ -22,27 +22,39 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
+
 #include "vrlayervector.h"
 
 class vrRender;
+
 class vrLabel;
 
 
+class vrLayerVectorStar
+        : public vrLayerVectorOGR
+{
+protected:
+    virtual void _DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *geometry, const wxRect2DDouble &coord,
+                            const vrRender *render, vrLabel *label, double pxsize);
 
-class vrLayerVectorStar : public vrLayerVectorOGR {
-  protected:
-    virtual void _DrawPoint(wxDC * dc, OGRFeature * feature, OGRGeometry * geometry, const wxRect2DDouble & coord, const vrRender * render,  vrLabel * label, double pxsize);
+    void _CreateStarPath(wxPointList &starpoints, const wxPoint &center, int radius);
 
-	void _CreateStarPath(wxPointList & starpoints,const wxPoint & center, int radius);
-	inline double _DegToRad(double deg){return (deg * M_PI) / 180.0;}
+    inline double _DegToRad(double deg)
+    {
+        return (deg * M_PI) / 180.0;
+    }
 
-  public:
+public:
     vrLayerVectorStar();
+
     virtual ~vrLayerVectorStar();
 
-	virtual long AddFeature(OGRGeometry * geometry, void * data = NULL);
+    virtual long AddFeature(OGRGeometry *geometry, void *data = NULL);
 };
+
 #endif
 

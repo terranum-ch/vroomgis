@@ -22,43 +22,56 @@
 #include "wx/wxprec.h"
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
+
 #include <wx/progdlg.h>
 #include "tmpercent.h"
 #include "gdal_priv.h"
 
 
-class vrProgress {
+class vrProgress
+{
 public:
     vrProgress();
+
     virtual ~vrProgress();
-	
+
 };
 
-int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char * pszMessage, void * pProgressArg);
+int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char *pszMessage, void *pProgressArg);
 
-class vrProgressSimple : public vrProgress {
+class vrProgressSimple
+        : public vrProgress
+{
 private:
-    wxProgressDialog * m_progressWnd;
-	tmPercent m_percent;
-	bool m_continue;
+    wxProgressDialog *m_progressWnd;
+    tmPercent m_percent;
+    bool m_continue;
 
 
 public:
-    vrProgressSimple(wxWindow * parent, wxString title, wxString message);
+    vrProgressSimple(wxWindow *parent, wxString title, wxString message);
+
     virtual ~vrProgressSimple();
-	inline tmPercent * GetPercent();
+
+    inline tmPercent *GetPercent();
+
     inline const bool GetContinue() const;
-	void UpdateProgress();
+
+    void UpdateProgress();
 };
 
-inline tmPercent * vrProgressSimple::GetPercent() {
-	return &m_percent;
+inline tmPercent *vrProgressSimple::GetPercent()
+{
+    return &m_percent;
 }
 
-inline const bool vrProgressSimple::GetContinue() const {
-	return m_continue;
+inline const bool vrProgressSimple::GetContinue() const
+{
+    return m_continue;
 }
 
 #endif

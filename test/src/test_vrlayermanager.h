@@ -20,8 +20,11 @@
 
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
 
 
@@ -29,91 +32,87 @@
 #include "vrlayermanager.h"
 
 
-
-class TEST_vrLayerManager : public CxxTest::TestSuite
+class TEST_vrLayerManager
+        : public CxxTest::TestSuite
 {
 private:
-	wxFileName m_JpegName;
-	wxFileName m_TiffName;
+    wxFileName m_JpegName;
+    wxFileName m_TiffName;
 
 public:
-	void setUp()
-	{
-		m_JpegName = wxFileName(g_TestPath, g_TestFileJPEG);
-		m_TiffName = wxFileName(g_TestPath, g_TestFileTIF);
-	}
+    void setUp()
+    {
+        m_JpegName = wxFileName(g_TestPath, g_TestFileJPEG);
+        m_TiffName = wxFileName(g_TestPath, g_TestFileTIF);
+    }
 
-   	void testCreateLayerManager()
-	{
-		wxLogMessage("*************************");
-		wxLogMessage("  VRLAYER MANAGER TESTS  ");
-		wxLogMessage("*************************");
-		
-		
-		vrLayerManager myLayerManager;
-		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc))==false);
-		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP))==true);
-		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
-		// opening two times the same file
-		TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP))==true);
-		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
-	}
-
-	void testAddingRaster()
-	{
-		vrLayerManager myLayerManager;
-
-		TS_ASSERT(myLayerManager.Open(m_JpegName) ==true);
-		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
+    void testCreateLayerManager()
+    {
+        wxLogMessage("*************************");
+        wxLogMessage("  VRLAYER MANAGER TESTS  ");
+        wxLogMessage("*************************");
 
 
-		TS_ASSERT(myLayerManager.Open(m_TiffName)==true);
-		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
+        vrLayerManager myLayerManager;
+        TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc)) == false);
+        TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP)) == true);
+        TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
+        // opening two times the same file
+        TS_ASSERT(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP)) == true);
+        TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
+    }
 
-		// opening two times the same file
-		TS_ASSERT(myLayerManager.Open(m_JpegName)==true);
-		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
-		TS_ASSERT(myLayerManager.Open(m_TiffName)==true);
-		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
+    void testAddingRaster()
+    {
+        vrLayerManager myLayerManager;
+
+        TS_ASSERT(myLayerManager.Open(m_JpegName) == true);
+        TS_ASSERT_EQUALS(myLayerManager.GetCount(), 1);
 
 
-	}
+        TS_ASSERT(myLayerManager.Open(m_TiffName) == true);
+        TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
 
-	void testGetType()
-	{
-		vrLayerManager myLayerManager;
-		TS_ASSERT(myLayerManager.Open(m_JpegName) ==true);
-		TS_ASSERT(myLayerManager.Open(m_TiffName)==true);
-		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
+        // opening two times the same file
+        TS_ASSERT(myLayerManager.Open(m_JpegName) == true);
+        TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
+        TS_ASSERT(myLayerManager.Open(m_TiffName) == true);
+        TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
 
-		// testing type
-		TS_ASSERT_EQUALS(myLayerManager.GetLayer(m_JpegName)->GetType(),vrDRIVER_RASTER_JPEG);
-		TS_ASSERT_EQUALS(myLayerManager.GetLayer(m_TiffName)->GetType(),vrDRIVER_RASTER_TIFF);
-	}
-	
-	void testRemoveLayer1(){
-		vrLayerManager myLayerManager;
-		TS_ASSERT(myLayerManager.Open(m_JpegName) ==true);
-		TS_ASSERT(myLayerManager.Open(m_TiffName)==true);
-		TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
-		
-		// removing layer
-		vrLayer * myLayer = myLayerManager.GetLayer(m_JpegName);
-		TS_ASSERT(myLayer != NULL);
-		
-		TS_ASSERT(myLayerManager.Close(myLayer));
 
-		// myLayer isn't valid anymore dont test again !
-		//TS_ASSERT(myLayerManager.Close(myLayer)==false);
-	}
-	
+    }
+
+    void testGetType()
+    {
+        vrLayerManager myLayerManager;
+        TS_ASSERT(myLayerManager.Open(m_JpegName) == true);
+        TS_ASSERT(myLayerManager.Open(m_TiffName) == true);
+        TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
+
+        // testing type
+        TS_ASSERT_EQUALS(myLayerManager.GetLayer(m_JpegName)->GetType(), vrDRIVER_RASTER_JPEG);
+        TS_ASSERT_EQUALS(myLayerManager.GetLayer(m_TiffName)->GetType(), vrDRIVER_RASTER_TIFF);
+    }
+
+    void testRemoveLayer1()
+    {
+        vrLayerManager myLayerManager;
+        TS_ASSERT(myLayerManager.Open(m_JpegName) == true);
+        TS_ASSERT(myLayerManager.Open(m_TiffName) == true);
+        TS_ASSERT_EQUALS(myLayerManager.GetCount(), 2);
+
+        // removing layer
+        vrLayer *myLayer = myLayerManager.GetLayer(m_JpegName);
+        TS_ASSERT(myLayer != NULL);
+
+        TS_ASSERT(myLayerManager.Close(myLayer));
+
+        // myLayer isn't valid anymore dont test again !
+        //TS_ASSERT(myLayerManager.Close(myLayer)==false);
+    }
+
 
 };
-
-
-
-
-
 
 
 #endif

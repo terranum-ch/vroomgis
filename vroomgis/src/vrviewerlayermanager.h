@@ -18,17 +18,25 @@
 #define _VRVIEWERLAYERMANAGER_H
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
+
 #include <wx/wx.h>
+
 #endif
+
 #include <wx/filename.h>
 #include "vrrenderer.h"
 
 
 class vrLayerManager;
+
 class vrLayer;
+
 class vrViewerDisplay;
+
 class vrViewerTOC;
+
 class vrViewerDisplay;
 
 
@@ -37,91 +45,110 @@ class vrViewerDisplay;
 WX_DECLARE_OBJARRAY(wxImage*, wxArrayImage);
 
 
-
-class vrViewerLayerManager : public wxEvtHandler {
-  private:
-    vrLayerManager * m_layerManager;
+class vrViewerLayerManager
+        : public wxEvtHandler
+{
+private:
+    vrLayerManager *m_layerManager;
     vrArrayRenderer m_renderers;
-    vrViewerDisplay * m_display;
-    vrViewerTOC * m_toc;
-	wxWindow * m_windowParent;
-	wxFileName m_perfMonitorFile;
+    vrViewerDisplay *m_display;
+    vrViewerTOC *m_toc;
+    wxWindow *m_windowParent;
+    wxFileName m_perfMonitorFile;
     bool m_reloadThread;
 
 
+    // using array of wxImages instead of array of wxBitmap because bitmap are
+    // limited ressources on some systems
+    wxArrayImage m_images;
 
-	// using array of wxImages instead of array of wxBitmap because bitmap are
-	// limited ressources on some systems
-	wxArrayImage m_images;
-
-	bool m_freezeStatus;
-	bool m_computeExtentStatus;
-	bool m_userDefinedExtent;
-
+    bool m_freezeStatus;
+    bool m_computeExtentStatus;
+    bool m_userDefinedExtent;
 
 
-	// Member function for loading data
-	bool _BitmapArrayInit();
+    // Member function for loading data
+    bool _BitmapArrayInit();
+
     void _BitmapArrayDelete();
-    bool _GetLayersData(long & vectorcount);
-	bool _GetLayersExtent(bool onlyvisible);
-    wxBitmap * _MergeBitmapData();
-	int _ReloadThread(long & vectorcount);
-    int _Reload(long & vectorcount, long & drawnvertex, long & skippedvertex);
+
+    bool _GetLayersData(long &vectorcount);
+
+    bool _GetLayersExtent(bool onlyvisible);
+
+    wxBitmap *_MergeBitmapData();
+
+    int _ReloadThread(long &vectorcount);
+
+    int _Reload(long &vectorcount, long &drawnvertex, long &skippedvertex);
 
 
-	// event function
-    void OnReload(wxCommandEvent & event);
+    // event function
+    void OnReload(wxCommandEvent &event);
 
-	DECLARE_EVENT_TABLE();
+DECLARE_EVENT_TABLE();
 
-  public:
+public:
     //if wxWindow is null we cannot link to event handling
-	vrViewerLayerManager(vrLayerManager * parent,wxWindow * window,
-						 vrViewerDisplay * viewer, vrViewerTOC * toc = NULL);
+    vrViewerLayerManager(vrLayerManager *parent, wxWindow *window, vrViewerDisplay *viewer, vrViewerTOC *toc = NULL);
 
     virtual ~vrViewerLayerManager();
 
-    void InitializeExtent(const vrRealRect & extent);
-    bool Add(long pos, vrLayer * layer, vrRender * render = NULL, vrLabel * label = NULL, bool visible = true);
-	bool Move(long oldpos, long newpos);
-	bool Remove(vrRenderer * renderer);
-    bool Zoom(const vrRealRect & extent);
-	bool ZoomOut(const vrRealRect & extent);
+    void InitializeExtent(const vrRealRect &extent);
+
+    bool Add(long pos, vrLayer *layer, vrRender *render = NULL, vrLabel *label = NULL, bool visible = true);
+
+    bool Move(long oldpos, long newpos);
+
+    bool Remove(vrRenderer *renderer);
+
+    bool Zoom(const vrRealRect &extent);
+
+    bool ZoomOut(const vrRealRect &extent);
+
     void ZoomToFit(bool onlyvisible = false);
-	long Select(const wxRect & extent, vrRenderer * selectlayer=NULL);
+
+    long Select(const wxRect &extent, vrRenderer *selectlayer = NULL);
+
     void ClearSelection();
-	int GetSelectionCount(int * sellayers = NULL);
+
+    int GetSelectionCount(int *sellayers = NULL);
 
 
-	vrRenderer * GetRenderer(const unsigned int & index);
-    vrRenderer * GetRenderer(const wxString & layername);
+    vrRenderer *GetRenderer(const unsigned int &index);
 
-	inline vrViewerDisplay * GetDisplay() const;
-	int GetCount();
+    vrRenderer *GetRenderer(const wxString &layername);
+
+    inline vrViewerDisplay *GetDisplay() const;
+
+    int GetCount();
 
     void FreezeBegin();
-    void FreezeEnd();
-	void Reload();
-    
-    bool StartEdition(vrRenderer * renderer);
-    void StopEdition();
-    vrRenderer * GetEditionRenderer();
 
-	void StartPerfMonitor(const wxFileName & filename);
+    void FreezeEnd();
+
+    void Reload();
+
+    bool StartEdition(vrRenderer *renderer);
+
+    void StopEdition();
+
+    vrRenderer *GetEditionRenderer();
+
+    void StartPerfMonitor(const wxFileName &filename);
+
     void StopPerfMonitor();
-	void SetEngineThreaded(bool enable);
+
+    void SetEngineThreaded(bool enable);
 };
 
-inline vrViewerDisplay * vrViewerLayerManager::GetDisplay() const {
-	return m_display;
+inline vrViewerDisplay *vrViewerLayerManager::GetDisplay() const
+{
+    return m_display;
 }
 
 
 WX_DECLARE_OBJARRAY(vrViewerLayerManager*, vrArrayViewerLayerManager);
-
-
-
 
 
 #endif

@@ -10,9 +10,13 @@
 
 // wxWidgets include
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
+
 #include <wx/wx.h>
+
 #endif
+
 #include <wx/filename.h>
 
 #ifdef __WXMAC__
@@ -22,7 +26,9 @@
 
 
 #ifdef __LINUX__
+
 # include <sys/sysinfo.h>
+
 #endif
 
 
@@ -30,24 +36,29 @@
 # include <windows.h>
 #include <psapi.h>
 #else
+
 # include <sys/resource.h>
+
 #endif
 
-class vrPerformance {
-  private:
+class vrPerformance
+{
+private:
     wxStopWatch m_stopWatch;
     wxFileName m_filePath;
-	wxFile m_file;
-
-	
-	size_t _GetUsedMemory (bool resident=false);
+    wxFile m_file;
 
 
-  public:
+    size_t _GetUsedMemory(bool resident = false);
+
+
+public:
     vrPerformance(wxString file, wxString header = _T(""));
+
     virtual ~vrPerformance();
 
     void StopWork(wxString text = wxEmptyString);
 
 };
+
 #endif

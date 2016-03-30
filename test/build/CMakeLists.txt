@@ -6,40 +6,38 @@ cmake_minimum_required(VERSION 2.6)
 
 
 ## POLICY FOR WINDOWS ONLY ???
-if(COMMAND cmake_policy)
+if (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+endif (COMMAND cmake_policy)
 
 # REMOVE THIS LINE IF CALLED FROM ANOTHER CMAKE FILE
 PROJECT("vroomgis_test")
 
 
 #search all source files
-FILE (GLOB SRC_FILES ../src/*.cpp)
+FILE(GLOB SRC_FILES ../src/*.cpp)
 SOURCE_GROUP(source FILES ${SRC_FILES})
 
 # search all headers files
-FILE (GLOB HEAD_FILES "../src/*.h")
+FILE(GLOB HEAD_FILES "../src/*.h")
 SOURCE_GROUP(header FILES ${HEAD_FILES})
 
-MESSAGE ("Build type is : " ${CMAKE_BUILD_TYPE})
+MESSAGE("Build type is : " ${CMAKE_BUILD_TYPE})
 
 #ONLY USED FOR ADDING HEADERS TO PROJECT 
-IF(APPLE)
-	ADD_EXECUTABLE("${CMAKE_PROJECT_NAME}-not_build" EXCLUDE_FROM_ALL main.cpp ${HEAD_FILES})
-ENDIF(APPLE)
+IF (APPLE)
+    ADD_EXECUTABLE("${CMAKE_PROJECT_NAME}-not_build" EXCLUDE_FROM_ALL main.cpp ${HEAD_FILES})
+ENDIF (APPLE)
 
 
-
-
- # GTK LIB IF LINUX
+# GTK LIB IF LINUX
 MESSAGE("System name is : " ${CMAKE_SYSTEM_NAME})
- IF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
- 	MESSAGE("Systeme linux detecte")
- 	INCLUDE ("../../vroomgis/build/cmake/FindGTK2.cmake")
- 	INCLUDE_DIRECTORIES(${GTK2_INCLUDE_DIRS})
- 	MESSAGE("Gtk include is " ${GTK2_INCLUDE_DIRS})
- ENDIF(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+IF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    MESSAGE("Systeme linux detecte")
+    INCLUDE("../../vroomgis/build/cmake/FindGTK2.cmake")
+    INCLUDE_DIRECTORIES(${GTK2_INCLUDE_DIRS})
+    MESSAGE("Gtk include is " ${GTK2_INCLUDE_DIRS})
+ENDIF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 
 #CREATE VROOMGIS LIBRARY
@@ -48,13 +46,13 @@ INCLUDE("../../vroomgis/build/cmake/Use_vroomGISlib.cmake")
 
 #PARAMETERS FOR TEST
 SET(UNIT_TESTING_PATH CACHE PATH "Location of unit testing files and projects")
-IF(NOT UNIT_TESTING_PATH)
-	MESSAGE(FATAL_ERROR "Unit testing path not specified, tests are going to fail")
-ENDIF(NOT UNIT_TESTING_PATH)
+IF (NOT UNIT_TESTING_PATH)
+    MESSAGE(FATAL_ERROR "Unit testing path not specified, tests are going to fail")
+ENDIF (NOT UNIT_TESTING_PATH)
 CONFIGURE_FILE("../src/test_param.h.in" "${PROJECT_BINARY_DIR}/test_param.h")
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
 
- 
+
 ## CXXTEST LIBRARY STUFF
 # Use Python interpreter
 FIND_PACKAGE(PythonInterp)

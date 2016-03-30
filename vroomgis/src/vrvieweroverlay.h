@@ -21,10 +21,14 @@
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
+
 #include <wx/wx.h>
+
 #endif
+
 #include "vrrender.h"
 #include <ogrsf_frmts.h>
+
 class vrViewerDisplay;
 
 /***************************************************************************//**
@@ -32,31 +36,38 @@ class vrViewerDisplay;
 @author Lucien Schreiber (c) CREALP 2012
 @date 18 september 2012
 *******************************************************************************/
-class vrViewerOverlay {
+class vrViewerOverlay
+{
 private:
     wxString m_name;
     bool m_visible;
-    
-    
+
+
 public:
     vrViewerOverlay(wxString name);
+
     virtual ~vrViewerOverlay();
-    
+
     inline const wxString GetName() const;
+
     inline const bool IsVisible() const;
-    
+
     void SetVisible(bool value);
-    virtual bool DrawOverlay(wxPaintDC * dc) = 0;
+
+    virtual bool DrawOverlay(wxPaintDC *dc) = 0;
 };
 
-inline const wxString vrViewerOverlay::GetName() const {
+inline const wxString vrViewerOverlay::GetName() const
+{
     return m_name;
 }
 
 
-inline const bool vrViewerOverlay::IsVisible() const {
+inline const bool vrViewerOverlay::IsVisible() const
+{
     return m_visible;
 }
+
 WX_DECLARE_OBJARRAY(vrViewerOverlay*, vrViewerOverlayArray);
 
 
@@ -68,7 +79,9 @@ WX_DECLARE_OBJARRAY(vrViewerOverlay*, vrViewerOverlayArray);
 @author Lucien Schreiber (c) CREALP 2012
 @date 18 septembre 2012
 *******************************************************************************/
-class vrViewerOverlayText : public vrViewerOverlay {
+class vrViewerOverlayText
+        : public vrViewerOverlay
+{
 private:
     wxFont m_font;
     wxString m_text;
@@ -77,34 +90,46 @@ private:
 
 public:
     vrViewerOverlayText(wxString name, wxString text);
+
     virtual ~vrViewerOverlayText();
-    
-    virtual bool DrawOverlay(wxPaintDC * dc);
+
+    virtual bool DrawOverlay(wxPaintDC *dc);
 
     inline const wxFont GetFont() const;
+
     void SetFont(wxFont value);
+
     inline const wxString GetText() const;
+
     void SetText(wxString value);
+
     inline const wxPoint GetPosition() const;
+
     void SetPosition(wxPoint value);
+
     inline const wxColour GetTextColour() const;
+
     void SetTextColour(wxColour value);
 };
 
 
-inline const wxFont vrViewerOverlayText::GetFont() const {
+inline const wxFont vrViewerOverlayText::GetFont() const
+{
     return m_font;
 }
 
-inline const wxString vrViewerOverlayText::GetText() const {
+inline const wxString vrViewerOverlayText::GetText() const
+{
     return m_text;
 }
 
-inline const wxPoint vrViewerOverlayText::GetPosition() const {
+inline const wxPoint vrViewerOverlayText::GetPosition() const
+{
     return m_pos;
 }
 
-inline const wxColour vrViewerOverlayText::GetTextColour() const {
+inline const wxColour vrViewerOverlayText::GetTextColour() const
+{
     return m_textColour;
 }
 
@@ -131,7 +156,6 @@ public:
     virtual bool DrawOverlay(wxPaintDC * dc);
 };
 #endif
-
 
 
 #endif

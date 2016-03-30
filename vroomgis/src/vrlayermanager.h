@@ -20,9 +20,12 @@
 
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-	#include <wx/wx.h>
-	#include <wx/filename.h>
+
+#include <wx/wx.h>
+#include <wx/filename.h>
+
 #endif
 
 
@@ -30,34 +33,35 @@
 #include "vrviewerlayermanager.h"
 
 
-class vrLayerManager 
+class vrLayerManager
 {
-	
+
 protected:
-	vrArrayViewerLayerManager m_viewerManagers;
-	vrArrayLayer m_layers;
-	
+    vrArrayViewerLayerManager m_viewerManagers;
+    vrArrayLayer m_layers;
+
 public:
-	vrLayerManager();
+    vrLayerManager();
+
     virtual ~vrLayerManager();
-	
-    bool Open(const wxFileName & filename, bool readwrite = false);
-	bool Add(vrLayer * layer);
-	bool Close(vrLayer * layer);
-    bool Erase(const wxFileName & filename);
 
-	int GetCount();
-	vrLayer * GetLayer(const wxFileName & filename);
-	
-	bool AddViewerLayerManager(vrViewerLayerManager * manager);//, vrViewerTOC * toc);
-	bool RemoveViewerLayerManager (vrViewerLayerManager * manager);
+    bool Open(const wxFileName &filename, bool readwrite = false);
+
+    bool Add(vrLayer *layer);
+
+    bool Close(vrLayer *layer);
+
+    bool Erase(const wxFileName &filename);
+
+    int GetCount();
+
+    vrLayer *GetLayer(const wxFileName &filename);
+
+    bool AddViewerLayerManager(vrViewerLayerManager *manager);
+
+    //, vrViewerTOC * toc);
+    bool RemoveViewerLayerManager(vrViewerLayerManager *manager);
 };
-
-
-
-
-
-
 
 
 #endif

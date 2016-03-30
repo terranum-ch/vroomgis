@@ -20,77 +20,76 @@
 
 #include <cxxtest/TestSuite.h>
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
 
 #include "vrlabel.h"
 
 
-
-class TEST_vrLabel : public CxxTest::TestSuite
+class TEST_vrLabel
+        : public CxxTest::TestSuite
 {
 public:
-	wxFont m_Fontt;
+    wxFont m_Fontt;
 
-	void setUp()
-	{
-		m_Fontt = wxFont(12,wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL);
-	}
+    void setUp()
+    {
+        m_Fontt = wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
+    }
 
-	void testLabelCreate()
-	{
-		// using *wxNORMAL_FONT crash !!!
-		vrLabel myLabel;
+    void testLabelCreate()
+    {
+        // using *wxNORMAL_FONT crash !!!
+        vrLabel myLabel;
 
-		// getting font is strange...
-		// lot of mac alert ???, to be tested on windows
+        // getting font is strange...
+        // lot of mac alert ???, to be tested on windows
 #ifndef __WXMAC__
-		TS_ASSERT_EQUALS(myLabel.GetFont(), m_Fontt);
+        TS_ASSERT_EQUALS(myLabel.GetFont(), m_Fontt);
 #endif
-		TS_ASSERT_EQUALS(myLabel.GetColor(), *wxBLACK);
-	}
+        TS_ASSERT_EQUALS(myLabel.GetColor(), *wxBLACK);
+    }
 
-	void testLabelCreate2()
-	{
-		wxFont myFont2 = m_Fontt;
-		myFont2.SetUnderlined(true);
+    void testLabelCreate2()
+    {
+        wxFont myFont2 = m_Fontt;
+        myFont2.SetUnderlined(true);
 
-		vrLabel myLabel(myFont2, wxColour(255,0,0));
-		TS_ASSERT_EQUALS(myLabel.GetColor(), *wxRED);
+        vrLabel myLabel(myFont2, wxColour(255, 0, 0));
+        TS_ASSERT_EQUALS(myLabel.GetColor(), *wxRED);
 #ifndef __WXMAC__
-		TS_ASSERT(myLabel.GetFont() != m_Fontt);
-		TS_ASSERT_EQUALS(myLabel.GetFont(), myFont2);
+        TS_ASSERT(myLabel.GetFont() != m_Fontt);
+        TS_ASSERT_EQUALS(myLabel.GetFont(), myFont2);
 #endif
-	}
+    }
 
-	void testSerializeLabel(){
-		
-		// save label
-		vrLabel myLabel;
-		vrSerialize mySerialize;
-		TS_ASSERT(myLabel.Serialize(mySerialize));
-		TS_ASSERT(mySerialize.GetString() != wxEmptyString);
-		wxLogMessage(mySerialize.GetString());
-		
-		//change label colour
-		wxColour myColour (255, 0 ,0);
-		myLabel.SetColor(myColour);
-		
-		
-		// deserialize
-		vrSerialize mySerialize2 (mySerialize.GetString());
-		TS_ASSERT(myLabel.Serialize(mySerialize2));
-		TS_ASSERT(myLabel.GetColor() != myColour);
-	}
-	
-	
+    void testSerializeLabel()
+    {
+
+        // save label
+        vrLabel myLabel;
+        vrSerialize mySerialize;
+        TS_ASSERT(myLabel.Serialize(mySerialize));
+        TS_ASSERT(mySerialize.GetString() != wxEmptyString);
+        wxLogMessage(mySerialize.GetString());
+
+        //change label colour
+        wxColour myColour(255, 0, 0);
+        myLabel.SetColor(myColour);
+
+
+        // deserialize
+        vrSerialize mySerialize2(mySerialize.GetString());
+        TS_ASSERT(myLabel.Serialize(mySerialize2));
+        TS_ASSERT(myLabel.GetColor() != myColour);
+    }
+
+
 };
-
-
-
-
-
 
 
 #endif

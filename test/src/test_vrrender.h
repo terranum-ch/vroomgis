@@ -19,8 +19,11 @@
 #define _TEST_VR_RENDER_H_
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
 
 
@@ -29,74 +32,69 @@
 #include "vrrendercoltop.h"
 
 
-
-class TEST_vrRender : public CxxTest::TestSuite
+class TEST_vrRender
+        : public CxxTest::TestSuite
 {
 private:
 
 public:
-	void testRenderBasic()
-	{
-		vrRender myRender;
-		vrRenderVector myRenderVect;
-		vrRenderRaster myRenderRast;
-		vrRenderRasterColtop myRenderRastc2d;
-		TS_ASSERT_EQUALS(myRender.GetType(), vrRENDER_UNKNOWN);
-		TS_ASSERT_EQUALS(myRenderVect.GetType(), vrRENDER_VECTOR);
-		TS_ASSERT_EQUALS(myRenderRast.GetType(), vrRENDER_RASTER);
-		TS_ASSERT_EQUALS(myRenderRastc2d.GetType(), vrRENDER_RASTER_C2D);
+    void testRenderBasic()
+    {
+        vrRender myRender;
+        vrRenderVector myRenderVect;
+        vrRenderRaster myRenderRast;
+        vrRenderRasterColtop myRenderRastc2d;
+        TS_ASSERT_EQUALS(myRender.GetType(), vrRENDER_UNKNOWN);
+        TS_ASSERT_EQUALS(myRenderVect.GetType(), vrRENDER_VECTOR);
+        TS_ASSERT_EQUALS(myRenderRast.GetType(), vrRENDER_RASTER);
+        TS_ASSERT_EQUALS(myRenderRastc2d.GetType(), vrRENDER_RASTER_C2D);
 
-	}
+    }
 
-	void testRenderPointer()
-	{
-		vrRender * mypRender = NULL;
-		vrRenderVector myRenderVect;
-		vrRenderRaster myRenderRast;
-		vrRenderRasterColtop myRenderRastc2d;
+    void testRenderPointer()
+    {
+        vrRender *mypRender = NULL;
+        vrRenderVector myRenderVect;
+        vrRenderRaster myRenderRast;
+        vrRenderRasterColtop myRenderRastc2d;
 
-		mypRender = & myRenderVect;
-		TS_ASSERT_EQUALS(mypRender->GetType(), vrRENDER_VECTOR);
+        mypRender = &myRenderVect;
+        TS_ASSERT_EQUALS(mypRender->GetType(), vrRENDER_VECTOR);
 
-		mypRender = &myRenderRast;
-		TS_ASSERT_EQUALS(mypRender->GetType(), vrRENDER_RASTER);
+        mypRender = &myRenderRast;
+        TS_ASSERT_EQUALS(mypRender->GetType(), vrRENDER_RASTER);
 
-		mypRender = &myRenderRastc2d;
-		TS_ASSERT_EQUALS(mypRender->GetType(), vrRENDER_RASTER_C2D);
+        mypRender = &myRenderRastc2d;
+        TS_ASSERT_EQUALS(mypRender->GetType(), vrRENDER_RASTER_C2D);
 
-	}
+    }
 
-	void testRenderGetTransparencyChar(){
-		
+    void testRenderGetTransparencyChar()
+    {
+
 #ifndef __WXMSW__
-		vrRender * mypRender = NULL;
-		vrRenderVector myRenderVect;
+        vrRender *mypRender = NULL;
+        vrRenderVector myRenderVect;
 
-		mypRender = & myRenderVect;
+        mypRender = &myRenderVect;
 
-		mypRender->SetTransparency(0); // opaque
-		TS_ASSERT_EQUALS(mypRender->GetTransparency(), 0);
-		TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 255);
+        mypRender->SetTransparency(0); // opaque
+        TS_ASSERT_EQUALS(mypRender->GetTransparency(), 0);
+        TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 255);
 
-		mypRender->SetTransparency(100); // transparent
-		TS_ASSERT_EQUALS(mypRender->GetTransparency(), 100);
-		TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 0);
+        mypRender->SetTransparency(100); // transparent
+        TS_ASSERT_EQUALS(mypRender->GetTransparency(), 100);
+        TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 0);
 
-		mypRender->SetTransparency(50); // medium tranparency
-		TS_ASSERT_EQUALS(mypRender->GetTransparency(), 50);
-		TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 128);
+        mypRender->SetTransparency(50); // medium tranparency
+        TS_ASSERT_EQUALS(mypRender->GetTransparency(), 50);
+        TS_ASSERT_EQUALS(mypRender->GetTransparencyChar(), 128);
 #endif
 
 
-
-	}
+    }
 
 };
-
-
-
-
-
 
 
 #endif

@@ -20,8 +20,11 @@
 
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
 
 
@@ -33,57 +36,53 @@
 #include "vrlayermanager.h"
 
 
-class TEST_vrLayerRasterC2D : public CxxTest::TestSuite
+class TEST_vrLayerRasterC2D
+        : public CxxTest::TestSuite
 {
     friend class vrLayerRasterC2D;
+
 public:
-   	void testOpenLayerRasterC2D()
-	{
-		//init lib.
-		vrLayerManager myManager;
+    void testOpenLayerRasterC2D()
+    {
+        //init lib.
+        vrLayerManager myManager;
 
-		vrLayerRasterGDAL myLayer;
-		TS_ASSERT(myLayer.IsOK()==false);
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileC2D), true),true);
-		TS_ASSERT_EQUALS(myLayer.GetType(), vrDRIVER_RASTER_C2D);
-		TS_ASSERT(myLayer.IsOK());
-	}
+        vrLayerRasterGDAL myLayer;
+        TS_ASSERT(myLayer.IsOK() == false);
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileC2D), true), true);
+        TS_ASSERT_EQUALS(myLayer.GetType(), vrDRIVER_RASTER_C2D);
+        TS_ASSERT(myLayer.IsOK());
+    }
 
 
-		
-	void testGetPixelValueC2D(){
-		wxLogMessage("Testing getting pixel value for C2D raster");
-		vrRealRect myExtent;
-		TS_ASSERT(myExtent.IsEmpty()==true);
-		
-		// extent failed, layer not opened
-		vrLayerRasterGDAL myLayer;
-		TS_ASSERT(myLayer.GetExtent(myExtent)==false);
-		
-		// extent ok for layer GDAL
-		TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileC2D), false),true);
-		TS_ASSERT_EQUALS(myLayer.IsOK(),true);
-		wxArrayDouble myValues;
-		TS_ASSERT(myLayer.GetPixelValue(598100, 115000, myValues));
-		TS_ASSERT(myValues.GetCount() == 3)
-		
-		wxString myTxtValues = "Value of px 598100 - 115000 = ";
-		for (unsigned int i = 0; i<myValues.GetCount(); i++) {
-			myTxtValues.Append(wxString::Format(" %.2f -", myValues.Item(i)));
-		}
-		myTxtValues.RemoveLast(1);
-		wxLogMessage(myTxtValues);
+    void testGetPixelValueC2D()
+    {
+        wxLogMessage("Testing getting pixel value for C2D raster");
+        vrRealRect myExtent;
+        TS_ASSERT(myExtent.IsEmpty() == true);
 
-	}
-	
+        // extent failed, layer not opened
+        vrLayerRasterGDAL myLayer;
+        TS_ASSERT(myLayer.GetExtent(myExtent) == false);
+
+        // extent ok for layer GDAL
+        TS_ASSERT_EQUALS(myLayer.Open(wxFileName(g_TestPath, g_TestFileC2D), false), true);
+        TS_ASSERT_EQUALS(myLayer.IsOK(), true);
+        wxArrayDouble myValues;
+        TS_ASSERT(myLayer.GetPixelValue(598100, 115000, myValues));
+        TS_ASSERT(myValues.GetCount() == 3)
+
+        wxString myTxtValues = "Value of px 598100 - 115000 = ";
+        for (unsigned int i = 0; i < myValues.GetCount(); i++) {
+            myTxtValues.Append(wxString::Format(" %.2f -", myValues.Item(i)));
+        }
+        myTxtValues.RemoveLast(1);
+        wxLogMessage(myTxtValues);
+
+    }
 
 
 };
-
-
-
-
-
 
 
 #endif

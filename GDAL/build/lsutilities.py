@@ -13,40 +13,38 @@ import shutil
 import subprocess
 
 
-def askUserWithCheck (msg, allowedval=['Y', 'y', 'N', 'n'], errormsg = "Unsupported value"):
-	"Ask user for entering a value with validy check, looping until correct value is entered"
-	while(1):
-		myValue = input(msg)
-		if (myValue.isdigit()):
-			myValue = int(myValue)
-		if (myValue in allowedval):
-			if(type(myValue) != type(int())):
-				return myValue.upper()
-			return myValue
-		print (errormsg)
+def askUserWithCheck(msg, allowedval=['Y', 'y', 'N', 'n'], errormsg="Unsupported value"):
+    "Ask user for entering a value with validy check, looping until correct value is entered"
+    while (1):
+        myValue = input(msg)
+        if (myValue.isdigit()):
+            myValue = int(myValue)
+        if (myValue in allowedval):
+            if (type(myValue) != type(int())):
+                return myValue.upper()
+            return myValue
+        print (errormsg)
 
 
 def createEmptyDirs(bindir):
-	"""Creating dir if not exists"""
-	if not os.path.exists(bindir):
-		os.makedirs(bindir)
+    """Creating dir if not exists"""
+    if not os.path.exists(bindir):
+        os.makedirs(bindir)
 
 
 def CountProcessor():
-	"Return the number of processor"
-	import multiprocessing
-	myNumberofProc = multiprocessing.cpu_count()
-	return myNumberofProc
-	
-	
+    "Return the number of processor"
+    import multiprocessing
+    myNumberofProc = multiprocessing.cpu_count()
+    return myNumberofProc
+
+
 def runProcess(command, directory, name, shell=True):
-	"""Running command in directory of specified name"""
-	myProcess = subprocess.Popen(command, cwd=directory, shell=shell)
-	if (myProcess.wait() != 0):
-		print("{0} FAILED!".format(name))
-		return False
-	print ("{0} DONE!".format(name))
-	print ("----------------------------------------------------------\n")
-	return True
-
-
+    """Running command in directory of specified name"""
+    myProcess = subprocess.Popen(command, cwd=directory, shell=shell)
+    if (myProcess.wait() != 0):
+        print("{0} FAILED!".format(name))
+        return False
+    print ("{0} DONE!".format(name))
+    print ("----------------------------------------------------------\n")
+    return True

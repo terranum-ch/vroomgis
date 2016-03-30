@@ -19,12 +19,16 @@
 #define _TM_PERCENT_H_
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
+
 #include <wx/wx.h>
+
 #endif
 
 
-class tmPercent : public wxObject
+class tmPercent
+        : public wxObject
 {
 private:
     bool m_inited;
@@ -32,21 +36,29 @@ private:
     double m_increment;
     int m_previousPercent;
     long m_actualValue;
-    
+
     void InitMemberValue();
-    
+
 protected:
 public:
     // ctor - dtor
     tmPercent();
+
     tmPercent(long value);
+
     void Create(long value);
+
     ~tmPercent();
-    
-    void SetValue (long actualvalue);
-    long GetValue () {return m_actualValue;}
-    
+
+    void SetValue(long actualvalue);
+
+    long GetValue()
+    {
+        return m_actualValue;
+    }
+
     bool IsNewStep();
+
     int GetPercent();
 };
 

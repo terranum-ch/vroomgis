@@ -18,27 +18,40 @@
 #define _FAKE_VRVIEWERDISPLAY_H
 
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
+
 #include <wx/wx.h>
+
 #endif
 
 
 #include "vrviewerdisplay.h"
 
-class FakevrViewerDisplay : public vrViewerDisplay {
-	wxSize m_WndSize;
-	
-  public:
-    FakevrViewerDisplay(const wxSize & size = wxSize(600,400));
-    virtual ~FakevrViewerDisplay();
-	
-	void SetFakeSize(const wxSize & size){m_WndSize = size;}
+class FakevrViewerDisplay
+        : public vrViewerDisplay
+{
+    wxSize m_WndSize;
 
-    virtual  void DoGetSize(int * w, int *h) const;
-	virtual wxSize GetSize(){
-		int w, h;
-		DoGetSize(&w, &h);
-		return wxSize(w,h);}
+public:
+    FakevrViewerDisplay(const wxSize &size = wxSize(600, 400));
+
+    virtual ~FakevrViewerDisplay();
+
+    void SetFakeSize(const wxSize &size)
+    {
+        m_WndSize = size;
+    }
+
+    virtual void DoGetSize(int *w, int *h) const;
+
+    virtual wxSize GetSize()
+    {
+        int w, h;
+        DoGetSize(&w, &h);
+        return wxSize(w, h);
+    }
 
 };
+
 #endif
