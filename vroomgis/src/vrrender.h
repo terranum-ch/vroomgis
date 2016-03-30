@@ -104,9 +104,9 @@ public:
 
     void SetBrushStyle(wxBrushStyle brushstyle);
 
-    inline const int GetSize() const;
+    inline virtual const int GetSize() const;
 
-    void SetSize(int value);
+    virtual void SetSize(int value);
 
     inline const bool IsUsingFastAndUglyDC() const;
 

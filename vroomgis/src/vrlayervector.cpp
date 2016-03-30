@@ -38,10 +38,7 @@ bool vrLayerVector::_Intersects(const wxRect2DDouble &myPathRect, const wxRect2D
     bottom = wxMin(myPathRect.m_y + myPathRect.m_height, myWndRect.m_y + myWndRect.m_height);
 
     // Modification of the conditions from wxRect2DDouble::Intersects to allow horizontal and vertical lines.
-    if ((left < right && top <= bottom) || (left <= right && top < bottom)) {
-        return true;
-    }
-    return false;
+    return (left < right && top <= bottom) || (left <= right && top < bottom);
 }
 
 vrLayerVector::vrLayerVector()
@@ -75,10 +72,7 @@ bool vrLayerVector::IsOK()
 
 bool vrLayerVector::HasData()
 {
-    if (GetFeatureCount(false) > 0) {
-        return true;
-    }
-    return false;
+    return GetFeatureCount(false) > 0;
 }
 
 
@@ -97,7 +91,7 @@ wxFileName vrLayerVector::GetDisplayName()
 OGRFeature *vrLayerVector::GetFeature(long fid)
 {
 
-    if (IsOK() == false) {
+    if (!IsOK()) {
         return NULL;
     }
 
@@ -115,7 +109,7 @@ OGRFeature *vrLayerVector::GetFeature(long fid)
 long vrLayerVector::GetFeatureCount(bool onlyvisible)
 {
     wxASSERT(m_layer);
-    if (onlyvisible == false) {
+    if (!onlyvisible) {
         ClearSpatialFilter();
     }
     return m_layer->GetFeatureCount();
@@ -124,11 +118,11 @@ long vrLayerVector::GetFeatureCount(bool onlyvisible)
 
 OGRFeature *vrLayerVector::GetNextFeature(bool restart)
 {
-    if (IsOK() == false) {
+    if (!IsOK()) {
         return NULL;
     }
 
-    if (restart == true) {
+    if (restart) {
         m_layer->ResetReading();
     }
 
@@ -144,7 +138,7 @@ OGRFeature *vrLayerVector::GetNextFeature(bool restart)
 
 bool vrLayerVector::MoveToFeatureIndex(long index)
 {
-    if (IsOK() == false) {
+    if (!IsOK()) {
         return false;
     }
 
@@ -189,7 +183,7 @@ OGRwkbGeometryType  vrLayerVector::GetGeometryType()
 
 void vrLayerVector::ClearSpatialFilter()
 {
-    if (IsOK() == false) {
+    if (!IsOK()) {
         return;
     }
 
@@ -249,10 +243,7 @@ bool vrLayerVector::SetFeature(OGRFeature *feature)
         return false;
     }
 
-    if (m_layer->SetFeature(feature) != OGRERR_NONE) {
-        return false;
-    }
-    return true;
+    return m_layer->SetFeature(feature) == OGRERR_NONE;
 }
 
 
@@ -492,7 +483,7 @@ void vrLayerVectorOGR::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *ge
     int myHeight = 0;
     dc->GetSize(&myWidth, &myHeight);
     wxRect myWndRect(0, 0, myWidth, myHeight);
-    if (myWndRect.Contains(myPt) == false) {
+    if (!myWndRect.Contains(myPt)) {
         return;
     }
 
@@ -501,7 +492,7 @@ void vrLayerVectorOGR::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *ge
     wxPen myPen(myRender->GetColorPen(), myRender->GetSize());
     wxPen mySelPen(myRender->GetSelectionColour(), myRender->GetSize());
     dc->SetPen(myPen);
-    if (IsFeatureSelected(feature->GetFID()) == true) {
+    if (IsFeatureSelected(feature->GetFID())) {
         dc->SetPen(mySelPen);
     }
 
@@ -564,7 +555,7 @@ void vrLayerVectorOGR::_DrawLine(wxDC *dc, OGRFeature *feature, OGRGeometry *geo
     wxPen myPen(myRender->GetColorPen(), myRender->GetSize());
     wxPen mySelPen(myRender->GetSelectionColour(), myRender->GetSize());
     dc->SetPen(myPen);
-    if (IsFeatureSelected(feature->GetFID()) == true) {
+    if (IsFeatureSelected(feature->GetFID())) {
         dc->SetPen(mySelPen);
     }
     dc->DrawLines(&myPtx);
@@ -613,7 +604,7 @@ void vrLayerVectorOGR::_DrawPolygon(wxDC *dc, OGRFeature *feature, OGRGeometry *
     dc->GetSize(&myWidth, &myHeight);
     wxRect2DDouble myWndRect(0, 0, myWidth, myHeight);
     wxRect2DDouble myPathRect = myPath.GetBox();
-    if (_Intersects(myPathRect, myWndRect) == false) {
+    if (!_Intersects(myPathRect, myWndRect)) {
         return;
     }
 
@@ -629,7 +620,7 @@ void vrLayerVectorOGR::_DrawPolygon(wxDC *dc, OGRFeature *feature, OGRGeometry *
     wxPen mySelPen(myRender->GetSelectionColour(), myRender->GetSize());
     dc->SetBrush(myBrush);
     dc->SetPen(myPen);
-    if (IsFeatureSelected(feature->GetFID()) == true) {
+    if (IsFeatureSelected(feature->GetFID())) {
         dc->SetPen(mySelPen);
     }
     mygdc->GetGraphicsContext()->DrawPath(myPath);
@@ -682,7 +673,7 @@ bool vrLayerVectorOGR::GetData(wxBitmap *bmp, const vrRealRect &coord, double px
     // wxDC is way faster under Windows but didn't support transparancy nor antialiasing
     // default is to use wxGCDC. To use faster, uglier wxDC set parameter in Render.
     wxDC *pDC = &myGCDC;
-    if (render->GetTransparency() == 0 && static_cast<const vrRenderVector *>(render)->IsUsingFastAndUglyDC() == true) {
+    if (render->GetTransparency() == 0 && static_cast<const vrRenderVector *>(render)->IsUsingFastAndUglyDC()) {
         pDC = &dc;
     }
 
@@ -697,7 +688,7 @@ bool vrLayerVectorOGR::GetData(wxBitmap *bmp, const vrRealRect &coord, double px
             break;
         }
 
-        if (IsFeatureHidden(myFeat->GetFID()) == true) {
+        if (IsFeatureHidden(myFeat->GetFID())) {
             OGRFeature::DestroyFeature(myFeat);
             myFeat = NULL;
             continue;
@@ -758,10 +749,7 @@ bool vrLayerVectorOGR::GetData(wxBitmap *bmp, const vrRealRect &coord, double px
         OGRFeature::DestroyFeature(myFeat);
     }
 
-    if (bReturn == false) {
-        return false;
-    }
-    return true;
+    return bReturn;
 }
 
 

@@ -91,7 +91,7 @@ long DrawRandomLineswxGraphicsContext(int numberlines, int maxvertexbeforecut, w
     dc.SelectObject(wxNullBitmap);
 
     // saving bitmap
-    if (keepbitmap == true) {
+    if (keepbitmap) {
         wxString myFileNameTxt = bitmapname;
         if (bitmapname == wxEmptyString) {
             wxFileName myTempFileName(wxFileName::CreateTempFileName(_T("bmp")));
@@ -145,7 +145,7 @@ long DrawRandomLineswxDC(int numberlines, int maxvertexbeforecut, wxSize bitmaps
     dc.SelectObject(wxNullBitmap);
 
     // saving bitmap
-    if (keepbitmap == true) {
+    if (keepbitmap) {
         wxString myFileNameTxt = bitmapname;
         if (bitmapname == wxEmptyString) {
             wxFileName myTempFileName(wxFileName::CreateTempFileName(_T("bmp")));
@@ -201,7 +201,7 @@ long DrawRandomLineswxGCDC(int numberlines, int maxvertexbeforecut, wxSize bitma
     dc.SelectObject(wxNullBitmap);
 
     // saving bitmap
-    if (keepbitmap == true) {
+    if (keepbitmap) {
         wxString myFileNameTxt = bitmapname;
         if (bitmapname == wxEmptyString) {
             wxFileName myTempFileName(wxFileName::CreateTempFileName(_T("bmp")));

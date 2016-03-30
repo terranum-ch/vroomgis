@@ -226,9 +226,7 @@ vrSerialize &vrSerialize::operator>>(wxBrushStyle &value)
 
 bool vrSerialize::IsStoring()
 {
-    if (m_outdirection)
-        return true;
-    return false;
+    return m_outdirection;
 }
 
 

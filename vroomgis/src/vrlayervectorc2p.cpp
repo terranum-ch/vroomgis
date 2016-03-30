@@ -65,7 +65,7 @@ void vrLayerVectorC2P::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *ge
     // ensure intersecting display
     wxRect2DDouble myPathRect = myVPath.GetBox();
     myPathRect.Union(myHPath.GetBox());
-    if (myPathRect.Intersects(myWndRect) == false) {
+    if (!myPathRect.Intersects(myWndRect)) {
         return;
     }
 
@@ -74,9 +74,9 @@ void vrLayerVectorC2P::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *ge
     }
 
     // create family pen if needed
-    if (myRender->IsUsingDefaultColour() == false) {
+    if (!myRender->IsUsingDefaultColour()) {
         int myFamily = feature->GetFieldAsInteger(3);
-        if (myRender->IsFamilyVisible(myFamily) == false) {
+        if (!myRender->IsFamilyVisible(myFamily)) {
             return;
         }
 
@@ -85,13 +85,13 @@ void vrLayerVectorC2P::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *ge
     }
     wxPen myActualPen = myDefaultPen;
     int bselected = 0;
-    if (IsFeatureSelected(feature->GetFID()) == true) {
+    if (IsFeatureSelected(feature->GetFID())) {
         myActualPen = mySelPen;
         bselected = 1;
     }
 
     // draw outline if asked
-    if (myRender->GetOutline() == true) {
+    if (myRender->GetOutline()) {
         wxPen myOutlinePen(*wxBLACK, myRender->GetSize() + 2);
         myOutlinePen.SetColour(myRender->GetOutlineColour(myActualPen.GetColour()));
         gdc->SetPen(myOutlinePen);
@@ -106,7 +106,7 @@ void vrLayerVectorC2P::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *ge
     ++m_drawnVertex;
 
     // label feature
-    if (label != NULL && label->IsActive() == true) {
+    if (label != NULL && label->IsActive()) {
         OGRPoint myImgPt;
         myImgPt.setX(myPt.x);
         myImgPt.setY(myPt.y);
@@ -157,7 +157,7 @@ void vrLayerVectorC2P::_DrawPolygon(wxDC *dc, OGRFeature *feature, OGRGeometry *
     gdc->GetSize(&myWidth, &myHeight);
     wxRect2DDouble myWndRect(0, 0, myWidth, myHeight);
     wxRect2DDouble myPathRect = myPath.GetBox();
-    if (_Intersects(myPathRect, myWndRect) == false) {
+    if (!_Intersects(myPathRect, myWndRect)) {
         return;
     }
 
@@ -174,7 +174,7 @@ void vrLayerVectorC2P::_DrawPolygon(wxDC *dc, OGRFeature *feature, OGRGeometry *
 
     // family based brush
     gdc->SetBrush(myBrush);
-    if (myRender->IsUsingDefaultBrush() == false) {
+    if (!myRender->IsUsingDefaultBrush()) {
         int myFamily = feature->GetFieldAsInteger(1);
         myBrush.SetStyle(wxBRUSHSTYLE_SOLID);
         myBrush.SetColour(myRender->GetPolyColour(myFamily));
@@ -182,7 +182,7 @@ void vrLayerVectorC2P::_DrawPolygon(wxDC *dc, OGRFeature *feature, OGRGeometry *
     }
 
     gdc->SetPen(myPen);
-    if (IsFeatureSelected(feature->GetFID()) == true) {
+    if (IsFeatureSelected(feature->GetFID())) {
         gdc->SetPen(mySelPen);
     }
     gdc->DrawPath(myPath);
@@ -209,7 +209,7 @@ bool vrLayerVectorC2P::Open(const wxFileName &filename, bool readwrite)
     // Support layer number to open in extension (.c2p 1) open layer 1
     m_activeLayerIndex = 0;
     wxRegEx reLayer(_T("(c2p) ([0-9]+)"), wxRE_ADVANCED);
-    if (reLayer.Matches(myFileName.GetExt()) == true) {
+    if (reLayer.Matches(myFileName.GetExt())) {
         wxASSERT(reLayer.GetMatchCount() == 2 + 1);
         wxString myLayerNumTxt = reLayer.GetMatch(myFileName.GetExt(), 2);
         m_activeLayerIndex = wxAtoi(myLayerNumTxt);
@@ -306,10 +306,7 @@ long vrLayerVectorC2P::AddFeature(OGRGeometry *geometry, void *data)
 
 bool vrLayerVectorC2P::DeleteFeature(long fid)
 {
-    if (m_layer->DeleteFeature(fid) != OGRERR_NONE) {
-        return false;
-    }
-    return true;
+    return m_layer->DeleteFeature(fid) == OGRERR_NONE;
 }
 
 

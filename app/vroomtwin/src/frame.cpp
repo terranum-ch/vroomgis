@@ -424,14 +424,14 @@ void vroomTwinFrame::OnToolAction(wxCommandEvent &event)
         // get real rectangle
         vrRealRect myRealRect;
         bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_Rect, myRealRect);
-        wxASSERT(bSuccess == true);
+        wxASSERT(bSuccess);
 
         // get fitted rectangle
         vrRealRect myFittedRect = myCoord->GetRectFitted(myRealRect);
         wxASSERT(myFittedRect.IsOk());
 
 
-        if (m_SyncroTool == false) {
+        if (!m_SyncroTool) {
             myMsg->m_ParentManager->Zoom(myFittedRect);
             myMsg->m_ParentManager->Reload();
         } else {
@@ -449,7 +449,7 @@ void vroomTwinFrame::OnToolAction(wxCommandEvent &event)
 
         wxPoint myMovedPos = myMsg->m_Position;
         wxPoint2DDouble myMovedRealPt;
-        if (myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt) == false) {
+        if (!myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)) {
             wxLogError("Error converting point : %d, %d to real coordinate", myMovedPos.x, myMovedPos.y);
             wxDELETE(myMsg);
             return;
@@ -458,7 +458,7 @@ void vroomTwinFrame::OnToolAction(wxCommandEvent &event)
         vrRealRect myActExtent = myCoord->GetExtent();
         myActExtent.MoveLeftTopTo(myMovedRealPt);
 
-        if (m_SyncroTool == false) {
+        if (!m_SyncroTool) {
             myCoord->SetExtent(myActExtent);
             myMsg->m_ParentManager->Reload();
         } else {

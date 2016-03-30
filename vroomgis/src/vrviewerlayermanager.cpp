@@ -123,7 +123,7 @@ void vrViewerLayerManager::InitializeExtent(const vrRealRect &extent)
     coord->ClearPixelSize();
     coord->AddLayersExtent(myExtent);
 
-    if (coord->ComputeFullExtent() == false) {
+    if (!coord->ComputeFullExtent()) {
         wxLogError(_("Couldn't apply the desired extent."));
         m_userDefinedExtent = false;
         m_computeExtentStatus = true;
@@ -144,14 +144,14 @@ bool vrViewerLayerManager::Add(long pos, vrLayer *layer, vrRender *render, vrLab
     if (visible == true && m_computeExtentStatus == false && m_userDefinedExtent == false) {
         m_computeExtentStatus = true;
         for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
-            if (m_renderers.Item(i)->GetVisible() == true) {
+            if (m_renderers.Item(i)->GetVisible()) {
                 m_computeExtentStatus = false;
                 break;
             }
         }
     }
 
-    if (m_computeExtentStatus == true) {
+    if (m_computeExtentStatus) {
         //wxLogMessage("Computing extent required");
     }
 
@@ -171,9 +171,9 @@ bool vrViewerLayerManager::Add(long pos, vrLayer *layer, vrRender *render, vrLab
     }
 
     // if not freezed, refresh imediatelly.
-    if (m_freezeStatus == false) {
+    if (!m_freezeStatus) {
         if (m_windowParent) {
-            if (m_computeExtentStatus == true) {
+            if (m_computeExtentStatus) {
                 _GetLayersExtent(true);
                 m_computeExtentStatus = false;
             }
@@ -204,13 +204,13 @@ bool vrViewerLayerManager::Move(long oldpos, long newpos)
     m_renderers.Insert(myRenderer, myNewPos);
 
 
-    if (m_toc && m_toc->Move(oldpos, newpos) == false) {
+    if (m_toc && !m_toc->Move(oldpos, newpos)) {
         wxLogError("Moving layer '%s' from position %ld to %ld failed",
                    myRenderer->GetLayer()->GetDisplayName().GetFullName(), oldpos, newpos);
         return false;
     }
 
-    if (m_freezeStatus == false && m_windowParent) {
+    if (!m_freezeStatus && m_windowParent) {
         Reload();
     }
 
@@ -249,7 +249,7 @@ bool vrViewerLayerManager::Remove(vrRenderer *renderer)
     m_renderers.RemoveAt(myRemoveIndex);
 
     // if not freezed, refresh imediatelly.
-    if (m_freezeStatus == false) {
+    if (!m_freezeStatus) {
         if (m_windowParent) {
             Reload();
         }
@@ -260,7 +260,7 @@ bool vrViewerLayerManager::Remove(vrRenderer *renderer)
 
 bool vrViewerLayerManager::ZoomOut(const vrRealRect &extent)
 {
-    if (extent.IsOk() == false) {
+    if (!extent.IsOk()) {
         wxLogError("Specified extent (%f, %f, %f, %f) isn't supported", extent.GetLeft(), extent.GetTop(),
                    extent.GetRight(), extent.GetBottom());
         return false;
@@ -283,7 +283,7 @@ bool vrViewerLayerManager::ZoomOut(const vrRealRect &extent)
 
 bool vrViewerLayerManager::Zoom(const vrRealRect &extent)
 {
-    if (extent.IsOk() == false) {
+    if (!extent.IsOk()) {
         wxLogError("Specified extent (%f, %f, %f, %f) isn't supported", extent.GetLeft(), extent.GetTop(),
                    extent.GetRight(), extent.GetBottom());
         return false;
@@ -295,7 +295,7 @@ bool vrViewerLayerManager::Zoom(const vrRealRect &extent)
     vrCoordinate *myCoord = m_display->GetCoordinate();
     wxASSERT(myCoord);
     vrRealRect myFittedRect = myCoord->GetRectFitted(extent);
-    if (myFittedRect.IsOk() == false) {
+    if (!myFittedRect.IsOk()) {
         wxLogError("Wasn't able to zoom");
         return false;
     }
@@ -426,7 +426,7 @@ int vrViewerLayerManager::GetCount()
 void vrViewerLayerManager::FreezeBegin()
 {
     wxASSERT(m_toc);
-    wxASSERT(m_freezeStatus == false);
+    wxASSERT(!m_freezeStatus);
     m_freezeStatus = true;
     m_toc->FreezeBegin();
 }
@@ -434,12 +434,12 @@ void vrViewerLayerManager::FreezeBegin()
 void vrViewerLayerManager::FreezeEnd()
 {
     wxASSERT(m_toc);
-    wxASSERT(m_freezeStatus == true);
+    wxASSERT(m_freezeStatus);
     m_freezeStatus = false;
     m_toc->FreezeEnd();
 
     // compute layers extent
-    if (m_computeExtentStatus == true) {
+    if (m_computeExtentStatus) {
         _GetLayersExtent(true);
         m_computeExtentStatus = false;
     }
@@ -454,7 +454,7 @@ void vrViewerLayerManager::FreezeEnd()
 void vrViewerLayerManager::Reload()
 {
     vrPerformance *myPerf = NULL;
-    if (m_perfMonitorFile.IsOk() == true) {
+    if (m_perfMonitorFile.IsOk()) {
         myPerf = new vrPerformance(m_perfMonitorFile.GetFullPath(),
                                    "Number of layers\tTotal Vector Objects\tDrawn Vertex\tSkipped Vertex\tWindow Resolution(x)\tWindow Resolution(y)\t");
     }
@@ -463,7 +463,7 @@ void vrViewerLayerManager::Reload()
     long myVectorCount = 0;
     long myVertexDrawn = 0;
     long myVertexSkipped = 0;
-    if (m_reloadThread == true) {
+    if (m_reloadThread) {
         myCountLayer = _ReloadThread(myVectorCount);
     } else {
         myCountLayer = _Reload(myVectorCount, myVertexDrawn, myVertexSkipped);
@@ -525,7 +525,7 @@ vrRenderer *vrViewerLayerManager::GetEditionRenderer()
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
         vrRenderer *myRenderer = m_renderers.Item(i);
         wxASSERT(myRenderer);
-        if (myRenderer->IsInEdition() == true) {
+        if (myRenderer->IsInEdition()) {
             return myRenderer;
         }
     }
@@ -548,7 +548,7 @@ void vrViewerLayerManager::StopPerfMonitor()
 void vrViewerLayerManager::SetEngineThreaded(bool enable)
 {
 #ifdef __LINUX__
-    if (enable == true) {
+    if (enable) {
         if (wxMessageBox(_("Engine not fully compatible with Linux, vector layers will not be rendered! Continue ?"),
                          _("Linux Problem"), wxYES_NO) == wxNO) {
             return;
@@ -625,10 +625,10 @@ bool vrViewerLayerManager::_GetLayersData(long &vectorcount)
     wxArrayInt myInvalidRaster;
     int iTotLayers = m_renderers.GetCount();
     for (int i = iTotLayers - 1; i >= 0; i--) {
-        if (m_renderers.Item(i)->GetVisible() == true) {
+        if (m_renderers.Item(i)->GetVisible()) {
             long myVectorCount = 0;
-            if (m_renderers.Item(i)->GetBitmapDataThread(m_images.Item(iImageIndex), myCoordinate->GetExtent(),
-                                                         myCoordinate->GetPixelSize(), myVectorCount) == false) {
+            if (!m_renderers.Item(i)->GetBitmapDataThread(m_images.Item(iImageIndex), myCoordinate->GetExtent(),
+                                                          myCoordinate->GetPixelSize(), myVectorCount)) {
                 wxLogMessage("No data to display for '%s' !",
                              m_renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
                 bReturn = false;
@@ -669,11 +669,11 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible)
         if (myRenderer == NULL) {
             continue;
         }
-        if (myRenderer->GetVisible() == false) {
+        if (!myRenderer->GetVisible()) {
             continue;
         }
 
-        if (myRenderer->GetLayer()->HasData() == true) {
+        if (myRenderer->GetLayer()->HasData()) {
             bHasRealCoordinates = true;
             break;
         }
@@ -687,32 +687,22 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible)
             continue;
         }
 
-        if (myRenderer->GetLayer()->GetExtent(myLayerExtent) == false) {
+        if (!myRenderer->GetLayer()->GetExtent(myLayerExtent)) {
             continue;
         }
 
-        if (myRenderer->GetVisible() == false && onlyvisible == true) {
+        if (!myRenderer->GetVisible() && onlyvisible) {
             continue;
         }
 
-        if (bHasRealCoordinates == true && myRenderer->GetLayer()->HasData() == false) {
+        if (bHasRealCoordinates && !myRenderer->GetLayer()->HasData()) {
             continue;
         }
         myCoordinate->AddLayersExtent(myLayerExtent);
     }
 
-    if (myCoordinate->ComputeFullExtent() == false) {
-        return false;
-    }
+    return myCoordinate->ComputeFullExtent();
 
-    /*myLayerExtent = myCoordinate->GetExtent();
-    wxLogMessage("Windows extent is :\n left : %.3f\nright : %.3f\ntop : %.3f\nbottom : %.3f",
-                 myLayerExtent.GetLeft(),
-                 myLayerExtent.GetRight(),
-                 myLayerExtent.GetTop(),
-                 myLayerExtent.GetBottom());*/
-
-    return true;
 }
 
 
@@ -794,12 +784,12 @@ int vrViewerLayerManager::_Reload(long &vectorcount, long &drawnvertex, long &sk
     int iShownLayer = 0;
     int iTotLayers = m_renderers.GetCount();
     for (int i = iTotLayers - 1; i >= 0; i--) {
-        if (m_renderers.Item(i)->GetVisible() == true) {
+        if (m_renderers.Item(i)->GetVisible()) {
             long myVectorCount = 0;
             long myVertexDrawn = 0;
             long myVertexSkipped = 0;
-            if (m_renderers.Item(i)->GetBitmapData(myBmp, myCoordinate->GetExtent(), myCoordinate->GetPixelSize(),
-                                                   myVectorCount, myVertexDrawn, myVertexSkipped) == false) {
+            if (!m_renderers.Item(i)->GetBitmapData(myBmp, myCoordinate->GetExtent(), myCoordinate->GetPixelSize(),
+                                                    myVectorCount, myVertexDrawn, myVertexSkipped)) {
                 wxLogMessage("No data to display for '%s' !",
                              m_renderers.Item(i)->GetLayer()->GetDisplayName().GetFullName());
             } else {
@@ -813,7 +803,7 @@ int vrViewerLayerManager::_Reload(long &vectorcount, long &drawnvertex, long &sk
     }
 
     // no visible raster!
-    if (bIsAtLeastOneVisible == false) {
+    if (!bIsAtLeastOneVisible) {
         m_display->SetBitmap(NULL);
         wxDELETE(myBmp);
         return 0;

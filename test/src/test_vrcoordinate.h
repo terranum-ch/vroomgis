@@ -70,13 +70,13 @@ public:
         vrCoordinate myCoord(&myNewDisplay);
 
         // computing full extent without adding extent return false
-        TS_ASSERT(myCoord.ComputeFullExtent() == false);
+        TS_ASSERT(!myCoord.ComputeFullExtent());
 
 
         // creating false extent
         vrRealRect myTestExtent(598000, 116000, 1000, -2000);
         myCoord.AddLayersExtent(myTestExtent);
-        TS_ASSERT(myCoord.ComputeFullExtent() == true);
+        TS_ASSERT(myCoord.ComputeFullExtent());
 
         wxLogMessage("Extent is %.2f %.2f, %.2f, %.2f", myCoord.GetExtent().GetLeft(), myCoord.GetExtent().GetTop(),
                      myCoord.GetExtent().GetRight(), myCoord.GetExtent().GetBottom());
@@ -91,7 +91,7 @@ public:
 
         vrRealRect myTestExtent(0, 4000, 6000, -4000);
         myCoord.AddLayersExtent(myTestExtent);
-        TS_ASSERT(myCoord.ComputeFullExtent() == true);
+        TS_ASSERT(myCoord.ComputeFullExtent());
         TS_ASSERT_DELTA(myCoord.GetExtent().GetLeft(), -50, 0.0001);
         TS_ASSERT_DELTA(myCoord.GetExtent().GetTop(), 4050, 0.0001);
         TS_ASSERT_DELTA(myCoord.GetExtent().GetRight(), 6050, 0.0001);
@@ -107,22 +107,22 @@ public:
         FakevrViewerDisplay myNewDisplay(wxSize(610, 410));
         vrCoordinate myCoord(&myNewDisplay);
 
-        TS_ASSERT(myCoord.UpdateExtent() == false);
+        TS_ASSERT(!myCoord.UpdateExtent());
 
         vrRealRect myTestExtent(0, 4000, 6000, -4000);
         myCoord.AddLayersExtent(myTestExtent);
-        TS_ASSERT(myCoord.ComputeFullExtent() == true);
+        TS_ASSERT(myCoord.ComputeFullExtent());
         TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10, 0.00000001);
 
 
         // this is the real test, before was just initialisation
-        TS_ASSERT(myCoord.UpdateExtent() == true);
+        TS_ASSERT(myCoord.UpdateExtent());
         TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10, 0.00000001);
 
 
         // viewer size increase but px size doesn't change
         myNewDisplay.SetFakeSize(wxSize(1220, 820));
-        TS_ASSERT(myCoord.UpdateExtent() == true);
+        TS_ASSERT(myCoord.UpdateExtent());
         TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10, 0.00000001);
         wxLogMessage("---- pixel size is %.f", myCoord.GetPixelSize());
 
@@ -142,14 +142,14 @@ public:
         FakevrViewerDisplay myNewDisplay(wxSize(610, 410));
         vrCoordinate myCoord(&myNewDisplay);
 
-        TS_ASSERT(myCoord.IsOk() == false);
+        TS_ASSERT(!myCoord.IsOk());
 
         vrRealRect myTestExtent(0, 4000, 6000, -4000);
         myCoord.AddLayersExtent(myTestExtent);
-        TS_ASSERT(myCoord.ComputeFullExtent() == true);
+        TS_ASSERT(myCoord.ComputeFullExtent());
         TS_ASSERT_DELTA(myCoord.GetPixelSize(), 10, 0.00000001);
 
-        TS_ASSERT(myCoord.IsOk() == true);
+        TS_ASSERT(myCoord.IsOk());
     }
 
 
@@ -164,7 +164,7 @@ public:
 
         // not valid rectangle
         vrRealRect mySelRect1(0, 10, 0, 0);
-        TS_ASSERT(myCoord.GetRectFitted(mySelRect1).IsOk() == false);
+        TS_ASSERT(!myCoord.GetRectFitted(mySelRect1).IsOk());
 
         // perfect ratio (smaller)
         vrRealRect mySelRect(0, 200, 100, -100);
@@ -213,13 +213,13 @@ public:
 
         // test
         wxPoint2DDouble myConvertedPt;
-        TS_ASSERT(myCoord.ConvertFromPixels(wxPoint(100, 50), myConvertedPt) == true);
+        TS_ASSERT(myCoord.ConvertFromPixels(wxPoint(100, 50), myConvertedPt));
         TS_ASSERT(myConvertedPt == wxPoint2DDouble(500, 1750));
 
-        TS_ASSERT(myCoord.ConvertFromPixels(wxPoint(10, 0), myConvertedPt) == true);
+        TS_ASSERT(myCoord.ConvertFromPixels(wxPoint(10, 0), myConvertedPt));
         TS_ASSERT(myConvertedPt == wxPoint2DDouble(50, 2000));
 
-        TS_ASSERT(myCoord.ConvertFromPixels(wxPoint(0, 0), myConvertedPt) == true);
+        TS_ASSERT(myCoord.ConvertFromPixels(wxPoint(0, 0), myConvertedPt));
         TS_ASSERT(myConvertedPt == wxPoint2DDouble(0, 2000));
 
     }
@@ -237,7 +237,7 @@ public:
 
         // test
         vrRealRect myConvertedRect;
-        TS_ASSERT(myCoord.ConvertFromPixels(wxRect(0, 0, 50, 100), myConvertedRect) == true);
+        TS_ASSERT(myCoord.ConvertFromPixels(wxRect(0, 0, 50, 100), myConvertedRect));
         TS_ASSERT(myConvertedRect == vrRealRect(0, 2000, 245, -495));
 
     }

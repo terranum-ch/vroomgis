@@ -83,7 +83,7 @@ vrDRIVERS_TYPE vrDrivers::GetType(const wxString &extension)
 
     for (unsigned int i = 0; i < sizeof(vrDRIVERS_EXTENSION) / sizeof(wxString); i++) {
 
-        if (vrDRIVERS_EXTENSION[i].IsEmpty() == false) {
+        if (!vrDRIVERS_EXTENSION[i].IsEmpty()) {
             if (vrDRIVERS_EXTENSION[i].Find(myExtension.Lower()) != wxNOT_FOUND) {
                 return (vrDRIVERS_TYPE) i;
             }
@@ -116,11 +116,8 @@ wxString vrDrivers::GetWildcardsVector()
 
 bool vrDrivers::IsSupported(const wxString &extension)
 {
-    if (GetType(extension) == vrDRIVER_UNKNOWN) {
-        return false;
-    }
+    return GetType(extension) != vrDRIVER_UNKNOWN;
 
-    return true;
 }
 
 

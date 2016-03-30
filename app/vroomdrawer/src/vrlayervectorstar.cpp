@@ -29,7 +29,7 @@ void vrLayerVectorStar::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *g
     wxPen myPen(myRender->GetColorPen(), myRender->GetSize());
     wxPen mySelPen(myRender->GetSelectionColour(), myRender->GetSize());
     dc->SetPen(myPen);
-    if (IsFeatureSelected(feature->GetFID()) == true) {
+    if (IsFeatureSelected(feature->GetFID())) {
         dc->SetPen(mySelPen);
     }
 

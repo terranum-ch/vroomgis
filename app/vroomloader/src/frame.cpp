@@ -495,7 +495,7 @@ void vroomLoaderFrame::OnToolDisplayValue(wxCommandEvent &event)
 
 void vroomLoaderFrame::OnLogPerformance(wxCommandEvent &event)
 {
-    if (event.IsChecked() == true) {
+    if (event.IsChecked()) {
         m_ViewerLayerManager->StartPerfMonitor(m_PerfLogFile);
     } else {
         m_ViewerLayerManager->StopPerfMonitor();
@@ -522,7 +522,7 @@ void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
         // get real rectangle
         vrRealRect myRealRect;
         bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_Rect, myRealRect);
-        wxASSERT(bSuccess == true);
+        wxASSERT(bSuccess);
 
         // get fitted rectangle
         vrRealRect myFittedRect = myCoord->GetRectFitted(myRealRect);
@@ -552,7 +552,7 @@ void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
 
         wxPoint myMovedPos = myMsg->m_Position;
         wxPoint2DDouble myMovedRealPt;
-        if (myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt) == false) {
+        if (!myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)) {
             wxLogError("Error converting point : %d, %d to real coordinate", myMovedPos.x, myMovedPos.y);
             wxDELETE(myMsg);
             return;
@@ -576,7 +576,7 @@ void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
 
 void vroomLoaderFrame::OnStartEditingButton(wxCommandEvent &event)
 {
-    if (event.IsChecked() == true) {
+    if (event.IsChecked()) {
         _StartEdition();
     } else {
         _StopEdition();
@@ -601,7 +601,7 @@ void vroomLoaderFrame::_StartEdition()
     m_ViewerLayerManager->FreezeBegin();
     vrLayerVectorOGR *myLayer = new vrLayerVectorOGR();
     int mySpatialTypes[] = {wkbPoint, wkbLineString, wkbPolygon};
-    if (myLayer->Create(myMemoryLayerName, mySpatialTypes[m_editTypeCtrl->GetSelection()]) == false) {
+    if (!myLayer->Create(myMemoryLayerName, mySpatialTypes[m_editTypeCtrl->GetSelection()])) {
         wxFAIL;
     }
     m_LayerManager->Add(myLayer);
@@ -647,7 +647,7 @@ bool vroomLoaderFrame::_SaveEdition(vrLayer *memoryLayer)
 
     wxString mySaveFileName = wxFileSelector(_("Choose a filename for the shapefile"), wxEmptyString, wxEmptyString,
                                              _T("shp"), _T("ESRI Shapefiles (*.shp)|*.shp"), wxFD_SAVE, this);
-    if (mySaveFileName.IsEmpty() == true) {
+    if (mySaveFileName.IsEmpty()) {
         wxLogMessage(_("Saving canceled!"));
         return false;
     }
@@ -656,7 +656,7 @@ bool vroomLoaderFrame::_SaveEdition(vrLayer *memoryLayer)
     mySaveFile.SetExt(_T("shp"));
 
     vrLayerVectorOGR myShapefile;
-    if (myShapefile.Create(mySaveFile, myMemoryLayer->GetGeometryType()) == false) {
+    if (!myShapefile.Create(mySaveFile, myMemoryLayer->GetGeometryType())) {
         wxLogError(_("Creating '%s' failed!"), mySaveFile.GetFullPath());
         return false;
     }
