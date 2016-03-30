@@ -82,20 +82,21 @@ void vroomDrawer::OnFatalException()
 
 
 BEGIN_EVENT_TABLE(vroomDrawerFrame, wxFrame)
-                EVT_MENU(wxID_EXIT, vroomDrawerFrame::OnQuit) EVT_MENU(wxID_ABOUT, vroomDrawerFrame::OnAbout)
+    EVT_MENU(wxID_EXIT, vroomDrawerFrame::OnQuit) EVT_MENU(wxID_ABOUT, vroomDrawerFrame::OnAbout)
 
-                EVT_MENU(wxID_ADD, vroomDrawerFrame::OnLayerAdd) EVT_MENU(wxID_REMOVE, vroomDrawerFrame::OnLayerRemove)
-                EVT_MENU(wxID_ZOOM_IN, vroomDrawerFrame::OnToolZoom)
-                EVT_MENU(ID_MENU_SELECT, vroomDrawerFrame::OnToolSelect)
-                EVT_MENU(ID_MENU_PAN, vroomDrawerFrame::OnToolPan)
-                EVT_MENU(wxID_ZOOM_FIT, vroomDrawerFrame::OnZoomToFit) EVT_MENU (wxID_INFO, vroomDrawerFrame::OnShowLog)
-                EVT_MENU(wxID_DELETE, vroomDrawerFrame::OnTestCrashSoftware)
-                EVT_BUTTON(ID_MENU_ADDMEMORYLAYER, vroomDrawerFrame::OnStarLayerAdd)
+    EVT_MENU(wxID_ADD, vroomDrawerFrame::OnLayerAdd) EVT_MENU(wxID_REMOVE, vroomDrawerFrame::OnLayerRemove)
+    EVT_MENU(wxID_ZOOM_IN, vroomDrawerFrame::OnToolZoom)
+    EVT_MENU(ID_MENU_SELECT, vroomDrawerFrame::OnToolSelect)
+    EVT_MENU(ID_MENU_PAN, vroomDrawerFrame::OnToolPan)
+    EVT_MENU(wxID_ZOOM_FIT, vroomDrawerFrame::OnZoomToFit) EVT_MENU (wxID_INFO, vroomDrawerFrame::OnShowLog)
+    EVT_MENU(wxID_DELETE, vroomDrawerFrame::OnTestCrashSoftware)
+    EVT_BUTTON(ID_MENU_ADDMEMORYLAYER, vroomDrawerFrame::OnStarLayerAdd)
 
-                EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomDrawerFrame::OnToolActionZoom)
-                EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomDrawerFrame::OnToolActionZoom)
-                EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomDrawerFrame::OnToolActionSelect)
-                EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomDrawerFrame::OnToolActionPan) END_EVENT_TABLE()
+    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomDrawerFrame::OnToolActionZoom)
+    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomDrawerFrame::OnToolActionZoom)
+    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomDrawerFrame::OnToolActionSelect)
+    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomDrawerFrame::OnToolActionPan)
+END_EVENT_TABLE()
 
 
 void  vroomDrawerFrame::_CreateControls()
