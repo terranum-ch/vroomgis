@@ -29,3 +29,4 @@ lscrashreport_param.h
 GDAL\build\*.dir\*
 *.vcxproj.user
 *.idea
+cache_cmake.txt
