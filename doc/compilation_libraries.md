@@ -44,7 +44,9 @@ Use the same simple option as GEOS.
 
 Use the following command line to create the makefile
 
-    cmake /Users/lucien/DATA/PRJ/COLTOP-GIS/trunk_vroomgis/app/vroomloader/build -DSEARCH_VROOMGIS_LIBS:BOOL=1 -DSEARCH_GIS_LIB_PATH:PATH=/Users/lucien/DATA/PROGRAMATION/_LIB/_LIBGIS
+    cmake /Users/lucien/DATA/PRJ/COLTOP-GIS/trunk_vroomgis/app/vroomloader/build 
+    -DSEARCH_VROOMGIS_LIBS:BOOL=1 
+    -DSEARCH_GIS_LIB_PATH:PATH=/Users/lucien/DATA/PROGRAMATION/_LIB/_LIBGIS
 
 Then run `make -j8` to create the binary
 
