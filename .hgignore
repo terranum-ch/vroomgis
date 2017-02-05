@@ -28,3 +28,4 @@ wxhgversion_param.h
 lscrashreport_param.h
 GDAL\build\*.dir\*
 *.vcxproj.user
+*.idea

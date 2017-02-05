@@ -191,12 +191,12 @@ bool vrLayerManager::Erase(const wxFileName &filename)
     vrDRIVERS_TYPE myDriverType = myDriver.GetType(filename.GetExt());
     wxString myDriverName = vrDRIVERS_GDAL_NAMES[myDriverType];
 
+    // TODO: Merge this code with the raster code !!! (Same code since GDAL 2.0)
     switch (myDriverType) {
         case vrDRIVER_VECTOR_SHP: {
-            OGRSFDriver *poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
-                    (const char *) myDriverName.mb_str(wxConvUTF8));
+            GDALDriver * poDriver = GetGDALDriverManager()->GetDriverByName((const char*) myDriverName.mb_str(wxConvUTF8));
             wxASSERT(poDriver);
-            if (poDriver->DeleteDataSource(filename.GetFullPath().mb_str(wxConvUTF8)) != OGRERR_NONE) {
+            if (poDriver->Delete(filename.GetFullPath().mb_str(wxConvUTF8)) != CE_None) {
                 wxLogError(_("Deleting '%s' Failed!"), filename.GetFullName());
                 return false;
             }

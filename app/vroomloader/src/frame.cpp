@@ -521,7 +521,7 @@ void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
 
         // get real rectangle
         vrRealRect myRealRect;
-        bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_Rect, myRealRect);
+        bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_rect, myRealRect);
         wxASSERT(bSuccess);
 
         // get fitted rectangle
@@ -538,7 +538,7 @@ void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
         vrCoordinate *myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
         wxASSERT(myCoord);
 
-        wxPoint myClickedPos = myMsg->m_Position;
+        wxPoint myClickedPos = myMsg->m_position;
         if (myClickedPos != wxDefaultPosition) {
             wxPoint2DDouble myRealClickedPos;
             myCoord->ConvertFromPixels(myClickedPos, myRealClickedPos);
@@ -550,7 +550,7 @@ void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
         vrCoordinate *myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
         wxASSERT(myCoord);
 
-        wxPoint myMovedPos = myMsg->m_Position;
+        wxPoint myMovedPos = myMsg->m_position;
         wxPoint2DDouble myMovedRealPt;
         if (!myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)) {
             wxLogError("Error converting point : %d, %d to real coordinate", myMovedPos.x, myMovedPos.y);
@@ -715,7 +715,7 @@ void vroomLoaderFrame::OnToolModifySearch(wxCommandEvent &event)
     wxASSERT(myMemoryLayer);
 
     vrRealRect myRealRect;
-    m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_Rect, myRealRect);
+    m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_rect, myRealRect);
     wxDELETE(myMsg);
     myMemoryLayer->Select(myRealRect);
     wxArrayLong *mySelectedIDs = myMemoryLayer->GetSelectedIDs();
@@ -748,8 +748,8 @@ void vroomLoaderFrame::OnToolModifyUpdate(wxCommandEvent &event)
     wxASSERT(myMemoryLayer);
 
     wxPoint2DDouble myRealPt;
-    m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_Position, myRealPt);
-    int myVertexIndex = myMsg->m_LongData;
+    m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_position, myRealPt);
+    int myVertexIndex = myMsg->m_longData;
     wxDELETE(myMsg);
 
     wxArrayLong *mySelectedIDs = myMemoryLayer->GetSelectedIDs();
@@ -840,7 +840,7 @@ void vroomLoaderFrame::OnToolDrawAction(wxCommandEvent &event)
     wxASSERT(myMsg);
 
     wxPoint2DDouble myRealPt(0, 0);
-    m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_Position, myRealPt);
+    m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_position, myRealPt);
     wxASSERT(m_editor);
     m_editor->AddVertex(myRealPt);
 
@@ -848,10 +848,10 @@ void vroomLoaderFrame::OnToolDrawAction(wxCommandEvent &event)
     wxASSERT(myMemoryRenderer);
 
     if (myMsg->m_evtType == vrEVT_TOOL_EDIT) {
-        wxLogMessage("Clicked: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
+        wxLogMessage("Clicked: %d, %d", myMsg->m_position.x, myMsg->m_position.y);
         m_editor->DrawShapeEdit(myMemoryRenderer->GetRender());
     } else if (myMsg->m_evtType == vrEVT_TOOL_EDIT_FINISHED) {
-        wxLogMessage("Finished: %d, %d", myMsg->m_Position.x, myMsg->m_Position.y);
+        wxLogMessage("Finished: %d, %d", myMsg->m_position.x, myMsg->m_position.y);
         vrLayerVectorOGR *myMemoryLayer = (vrLayerVectorOGR *) myMemoryRenderer->GetLayer();
         long myAddedId = myMemoryLayer->AddFeature(m_editor->GetGeometryRef());
         myMemoryLayer->SetSelectedID(myAddedId);

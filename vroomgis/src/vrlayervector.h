@@ -35,7 +35,7 @@ class vrLayerVector
         : public vrLayer
 {
 protected:
-    OGRDataSource *m_dataset;
+    GDALDataset *m_dataset;
     OGRLayer *m_layer;
     OGRwkbGeometryType m_geometryType;
     wxArrayLong m_selectedIDs;

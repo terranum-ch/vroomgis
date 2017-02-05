@@ -28,8 +28,10 @@
 #include "vrlayervector.h"
 #include "vrlayervectorstar.h"
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
-#include <lscrashreport.h>
 
+#ifdef USE_CRASHREPORT
+    #include <lscrashreport.h>
+#endif
 
 IMPLEMENT_APP(vroomDrawer);
 
@@ -64,6 +66,7 @@ bool vroomDrawer::OnInit()
 
 void vroomDrawer::OnFatalException()
 {
+#ifdef USE_CRASHREPORT
     lsCrashReport myCrashReport(_T("vroomDrawer"));
     if (myCrashReport.PrepareReport(wxDebugReport::Context_Exception) == false) {
         return;
@@ -78,6 +81,7 @@ void vroomDrawer::OnFatalException()
                     _("Connection problem! crashreport wasn't sent. crashreport was saved into '%s'\nplease send it manually to lucien.schreiber@crealp.vs.ch"),
                     myDocPath);
     }
+#endif
 }
 
 
@@ -126,7 +130,7 @@ void  vroomDrawerFrame::_CreateControls()
     bSizer51->Add(m_staticText1, 0, wxALL | wxEXPAND, 5);
 
     m_NbStarCtrl = new wxSlider(m_panel3, wxID_ANY, 500, 1, 2000, wxDefaultPosition, wxDefaultSize, wxSL_LABELS);
-    bSizer51->Add(m_NbStarCtrl, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxEXPAND, 5);
+    bSizer51->Add(m_NbStarCtrl, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
 
     wxString m_FeatureTypeCtrlChoices[] = {_("Points"), _("Lines"), _("Stars")};
     int m_FeatureTypeCtrlNChoices = sizeof(m_FeatureTypeCtrlChoices) / sizeof(wxString);
@@ -559,7 +563,7 @@ void vroomDrawerFrame::OnToolActionZoom(wxCommandEvent &event)
 
     // get real rectangle
     vrRealRect myRealRect;
-    bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_Rect, myRealRect);
+    bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_rect, myRealRect);
     wxASSERT(bSuccess);
 
     // get fitted rectangle
@@ -584,7 +588,7 @@ void vroomDrawerFrame::OnToolActionSelect(wxCommandEvent &event)
     vrCoordinate *myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
     wxASSERT(myCoord);
 
-    wxPoint myClickedPos = myMsg->m_Position;
+    wxPoint myClickedPos = myMsg->m_position;
     if (myClickedPos != wxDefaultPosition) {
         wxPoint2DDouble myRealClickedPos;
         myCoord->ConvertFromPixels(myClickedPos, myRealClickedPos);
@@ -604,7 +608,7 @@ void vroomDrawerFrame::OnToolActionPan(wxCommandEvent &event)
     vrCoordinate *myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
     wxASSERT(myCoord);
 
-    wxPoint myMovedPos = myMsg->m_Position;
+    wxPoint myMovedPos = myMsg->m_position;
     wxPoint2DDouble myMovedRealPt;
     if (!myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)) {
         wxLogError("Error converting point : %d, %d to real coordinate", myMovedPos.x, myMovedPos.y);
