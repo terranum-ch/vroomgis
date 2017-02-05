@@ -320,8 +320,15 @@ bool vrLayerVectorOGR::Open(const wxFileName &filename, bool readwrite)
     m_fileName = filename;
 
     // open datasource
-    m_dataset = OGRSFDriverRegistrar::Open(filename.GetFullPath(), readwrite);
+    int flags = GDAL_OF_VECTOR;
+    if (readwrite == true)
+    {
+        flags = flags | GDAL_OF_UPDATE;
+    }
+
+    //m_dataset = OGRSFDriverRegistrar::Open(filename.GetFullPath(), readwrite);
     //wxLogMessage(filename.GetFullPath());
+    m_dataset = (GDALDataset*) GDALOpenEx(filename.GetFullPath(), flags, NULL, NULL, NULL);
     if (m_dataset == NULL) {
         wxLogError("Unable to open %s, maybe driver not registred - OGRRegisterAll()", filename.GetFullName());
         return false;
@@ -357,8 +364,10 @@ bool vrLayerVectorOGR::Create(const wxFileName &filename, int spatialtype)
     m_driverType = myDriverType;
 
     wxString myDriverName = vrDRIVERS_GDAL_NAMES[myDriverType];
-    OGRSFDriver *poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
-            (const char *) myDriverName.mb_str(wxConvUTF8));
+
+    GDALDriver * poDriver = GetGDALDriverManager()->GetDriverByName((const char *) myDriverName.mb_str(wxConvUTF8));
+    //OGRSFDriver *poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
+    //        (const char *) myDriverName.mb_str(wxConvUTF8));
 
     if (poDriver == NULL) {
         wxLogError("%s driver not available.", myDriverName);
@@ -366,7 +375,7 @@ bool vrLayerVectorOGR::Create(const wxFileName &filename, int spatialtype)
     }
 
     // create dataset
-    m_dataset = poDriver->CreateDataSource((const char *) filename.GetFullPath().mb_str(wxConvUTF8), NULL);
+    m_dataset = poDriver->Create((const char *) filename.GetFullPath().mb_str(wxConvUTF8), 0,0,0, GDT_Unknown, NULL);
     if (m_dataset == NULL) {
         wxLogError("Creation of output file : %s failed.", filename.GetFullName());
         return false;
@@ -466,7 +475,7 @@ bool vrLayerVectorOGR::_Close()
     }
 
     //wxLogMessage("Closing data NOW");
-    OGRDataSource::DestroyDataSource(m_dataset);
+    GDALClose(m_dataset);
     m_dataset = NULL;
     // layer destroyed with the data source
     m_layer = NULL;

@@ -221,19 +221,20 @@ bool vrLayerVectorC2P::Open(const wxFileName &filename, bool readwrite)
     wxASSERT(m_dataset == NULL);
 
     m_fileName = filename;
-    OGRSFDriverRegistrar *myRegistar = OGRSFDriverRegistrar::GetRegistrar();
-    OGRSFDriver *myDriver = myRegistar->GetDriverByName("SQLite");
+    GDALDriver * myDriver = GetGDALDriverManager()->GetDriverByName("SQLite");
+    //OGRSFDriverRegistrar *myRegistar = OGRSFDriverRegistrar::GetRegistrar();
+    //OGRSFDriver *myDriver = myRegistar->GetDriverByName("SQLite");
     if (myDriver == NULL) {
         wxLogError(_("Unable to load SQLite Driver! GDAL is maybe not compiled with SQLite support"));
         return false;
     }
 
-    m_dataset = myDriver->Open(myFileName.GetFullPath(), readwrite);
+    m_dataset = (GDALDataset*) GDALOpenEx(myFileName.GetFullPath(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, NULL, NULL, NULL);
     if (m_dataset == NULL) {
         wxLogError("Unable to open %s", myFileName.GetFullName());
         return false;
     }
-    m_dataset->SetDriver(myDriver);
+    // m_dataset->SetDriver(myDriver);
 
     // get layer
     wxASSERT(m_layer == NULL);

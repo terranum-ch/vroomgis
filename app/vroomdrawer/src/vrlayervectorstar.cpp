@@ -85,9 +85,9 @@ void vrLayerVectorStar::_CreateStarPath(wxPointList &starpoints, const wxPoint &
 
 vrLayerVectorStar::vrLayerVectorStar()
 {
-    wxASSERT(m_Dataset == NULL);
-    wxASSERT(m_Layer == NULL);
-    m_DriverType = vrDRIVER_VECTOR_MEMORY;
+    wxASSERT(m_dataset == NULL);
+    wxASSERT(m_layer == NULL);
+    m_driverType = vrDRIVER_VECTOR_MEMORY;
 }
 
 
@@ -98,9 +98,9 @@ vrLayerVectorStar::~vrLayerVectorStar()
 
 long vrLayerVectorStar::AddFeature(OGRGeometry *geometry, void *data)
 {
-    wxASSERT(m_Layer);
-    OGRFeature *myFeature = OGRFeature::CreateFeature(m_Layer->GetLayerDefn());
-    wxASSERT(m_Layer);
+    wxASSERT(m_layer);
+    OGRFeature *myFeature = OGRFeature::CreateFeature(m_layer->GetLayerDefn());
+    wxASSERT(m_layer);
     myFeature->SetGeometry(geometry);
 
     if (data != NULL) {
@@ -108,7 +108,7 @@ long vrLayerVectorStar::AddFeature(OGRGeometry *geometry, void *data)
         myFeature->SetField(0, *mySize);
     }
 
-    if (m_Layer->CreateFeature(myFeature) != OGRERR_NONE) {
+    if (m_layer->CreateFeature(myFeature) != OGRERR_NONE) {
         wxLogError(_("Error creating feature"));
         OGRFeature::DestroyFeature(myFeature);
         return wxNOT_FOUND;
