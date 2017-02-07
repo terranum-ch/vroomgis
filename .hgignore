@@ -30,3 +30,4 @@ GDAL\build\*.dir\*
 *.vcxproj.user
 *.idea
 cache_cmake.txt
+cache_build.txt
