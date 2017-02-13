@@ -72,6 +72,7 @@ private:
     wxRadioBox *m_FeatureTypeCtrl;
 
     void _CreateControls();
+    void _CreateToolbar();
 
     double _GetRandomNumber(double min, double max);
 

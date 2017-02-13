@@ -28,6 +28,8 @@
 #include "vrlayervector.h"
 #include "vrlayervectorstar.h"
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
+#include "../../../vroomgis/art/vroomgis_toolbmp.cpp"
+#include "../art/vroomdrawer_toolbmp.h"
 
 #ifdef USE_CRASHREPORT
     #include <lscrashreport.h>
@@ -56,6 +58,8 @@ bool vroomDrawer::OnInit()
 
     wxInitAllImageHandlers();
     vroomgis_initialize_images();
+    vroomgis_initialize_images_toolbar();
+    vroomdrawer_initialize_images();
 
     vroomDrawerFrame *frame = new vroomDrawerFrame("vroomDrawer");
     frame->SetSize(50, 50, 800, 500);
@@ -248,6 +252,34 @@ vrLayer *vroomDrawerFrame::_GetMemoryLayerPoints(const wxFileName &name, int num
 }
 
 
+void vroomDrawerFrame::_CreateToolbar(){
+    long myStyle = wxTB_FLAT | wxTB_HORIZONTAL;
+    // conditionnal compilation for better look under win32
+#ifndef __WXMSW__
+    myStyle += wxTB_TEXT;
+#endif
+
+    wxToolBar* m_toolBar1;
+    m_toolBar1 = this->CreateToolBar( myStyle, wxID_ANY );
+    m_toolBar1->SetToolBitmapSize( wxSize( 32,32 ) );
+    wxString mySelectName = _("Select");
+    m_toolBar1->AddTool( ID_MENU_SELECT, mySelectName , wxBitmap(*_img_toolbar_select), wxNullBitmap, wxITEM_NORMAL, mySelectName, wxEmptyString );
+    wxString myZoom2Name = _("Zoom");
+    m_toolBar1->AddTool( wxID_ZOOM_IN, myZoom2Name , wxBitmap(*_img_toolbar_zoom), wxNullBitmap, wxITEM_NORMAL, myZoom2Name, wxEmptyString );
+    wxString myPanName = _("Pan");
+    m_toolBar1->AddTool( ID_MENU_PAN, myPanName, wxBitmap(*_img_toolbar_pan), wxNullBitmap, wxITEM_NORMAL, myPanName, wxEmptyString );   wxString myDataManagerName = _("Data Manager");
+    wxString myZoomName = _("Zoom to fit");
+    m_toolBar1->AddTool( wxID_ZOOM_FIT, myZoomName, wxBitmap(*_img_toolbar_zoomfull), wxNullBitmap, wxITEM_NORMAL,myZoomName, wxEmptyString );
+
+    m_toolBar1->AddSeparator();
+    wxString myAddName = _("Add memory layer...");
+    m_toolBar1->AddTool( ID_MENU_ADDMEMORYLAYER, myAddName, wxBitmap(*_img_toolbar_add_memory), wxNullBitmap, wxITEM_NORMAL,myAddName, wxEmptyString );
+
+    m_toolBar1->Realize();
+}
+
+
+
 vrLayer *vroomDrawerFrame::_GetMemoryLayerLine(const wxFileName &name, int number, const vrRealRect &extent)
 {
     vrLayerVectorOGR *myLayer = new vrLayerVectorOGR();
@@ -312,6 +344,7 @@ vroomDrawerFrame::vroomDrawerFrame(const wxString &title)
 
     // CONTROLS
     _CreateControls();
+    _CreateToolbar();
 
     wxLog *myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
     delete wxLog::SetActiveTarget(myDlgLog);
@@ -510,18 +543,21 @@ void vroomDrawerFrame::OnKeyUp(wxKeyEvent &event)
 void vroomDrawerFrame::OnToolSelect(wxCommandEvent &event)
 {
     m_DisplayCtrl->SetToolDefault();
+    event.Skip();
 }
 
 
 void vroomDrawerFrame::OnToolZoom(wxCommandEvent &event)
 {
     m_DisplayCtrl->SetToolZoom();
+    event.Skip();
 }
 
 
 void vroomDrawerFrame::OnToolPan(wxCommandEvent &event)
 {
     m_DisplayCtrl->SetToolPan();
+    event.Skip();
 }
 
 
@@ -529,6 +565,7 @@ void vroomDrawerFrame::OnZoomToFit(wxCommandEvent &event)
 {
     m_ViewerLayerManager->ZoomToFit(true);
     m_ViewerLayerManager->Reload();
+    event.Skip();
 }
 
 
