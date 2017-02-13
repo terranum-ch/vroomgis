@@ -10,6 +10,10 @@ SOURCE_GROUP(source FILES ${SRC_FILES})
 FILE(GLOB_RECURSE HEAD_FILES "../src/*.h")
 SOURCE_GROUP(header FILES ${HEAD_FILES})
 
+# add art source files
+list(APPEND SRC_FILES "../art/vroomdrawer_toolbmp.cpp")
+list(APPEND HEAD_FILES "../art/vroomdrawer_toolbmp.h")
+
 #CREATE VROOMGIS LIBRARY AND WXWIDGETS - GDAL LIB
 INCLUDE("../../../vroomgis/build/cmake/Use_vroomGISlib.cmake")
 
