@@ -418,12 +418,12 @@ void vroomTwinFrame::OnToolAction(wxCommandEvent &event)
 
     if (myMsg->m_evtType == vrEVT_TOOL_ZOOM) {
         // getting rectangle
-        vrCoordinate *myCoord = myMsg->m_ParentManager->GetDisplay()->GetCoordinate();
+        vrCoordinate *myCoord = myMsg->m_parentManager->GetDisplay()->GetCoordinate();
         wxASSERT(myCoord);
 
         // get real rectangle
         vrRealRect myRealRect;
-        bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_Rect, myRealRect);
+        bool bSuccess = myCoord->ConvertFromPixels(myMsg->m_rect, myRealRect);
         wxASSERT(bSuccess);
 
         // get fitted rectangle
@@ -432,8 +432,8 @@ void vroomTwinFrame::OnToolAction(wxCommandEvent &event)
 
 
         if (!m_SyncroTool) {
-            myMsg->m_ParentManager->Zoom(myFittedRect);
-            myMsg->m_ParentManager->Reload();
+            myMsg->m_parentManager->Zoom(myFittedRect);
+            myMsg->m_parentManager->Reload();
         } else {
             m_ViewerLayerManager1->Zoom(myFittedRect);
             m_ViewerLayerManager1->Reload();
@@ -444,10 +444,10 @@ void vroomTwinFrame::OnToolAction(wxCommandEvent &event)
 
 
     else if (myMsg->m_evtType == vrEVT_TOOL_PAN) {
-        vrCoordinate *myCoord = myMsg->m_ParentManager->GetDisplay()->GetCoordinate();
+        vrCoordinate *myCoord = myMsg->m_parentManager->GetDisplay()->GetCoordinate();
         wxASSERT(myCoord);
 
-        wxPoint myMovedPos = myMsg->m_Position;
+        wxPoint myMovedPos = myMsg->m_position;
         wxPoint2DDouble myMovedRealPt;
         if (!myCoord->ConvertFromPixels(myMovedPos, myMovedRealPt)) {
             wxLogError("Error converting point : %d, %d to real coordinate", myMovedPos.x, myMovedPos.y);
@@ -460,7 +460,7 @@ void vroomTwinFrame::OnToolAction(wxCommandEvent &event)
 
         if (!m_SyncroTool) {
             myCoord->SetExtent(myActExtent);
-            myMsg->m_ParentManager->Reload();
+            myMsg->m_parentManager->Reload();
         } else {
             m_ViewerLayerManager1->GetDisplay()->GetCoordinate()->SetExtent(myActExtent);
             m_ViewerLayerManager1->Reload();
@@ -471,7 +471,7 @@ void vroomTwinFrame::OnToolAction(wxCommandEvent &event)
     } else if (myMsg->m_evtType == vrEVT_TOOL_SIGHT) {
 
         vrViewerLayerManager *myInvertedMgr = m_ViewerLayerManager1;
-        if (myInvertedMgr == myMsg->m_ParentManager) {
+        if (myInvertedMgr == myMsg->m_parentManager) {
             myInvertedMgr = m_ViewerLayerManager2;
         }
 
@@ -482,12 +482,12 @@ void vroomTwinFrame::OnToolAction(wxCommandEvent &event)
         }
         m_Overlay.Reset();
 
-        if (myMsg->m_Position != wxDefaultPosition) {
+        if (myMsg->m_position != wxDefaultPosition) {
             wxClientDC myDC(myInvertedMgr->GetDisplay());
             wxDCOverlay overlaydc(m_Overlay, &myDC);
             overlaydc.Clear();
             myDC.SetPen(*wxGREEN_PEN);
-            myDC.CrossHair(myMsg->m_Position);
+            myDC.CrossHair(myMsg->m_position);
         }
 
     }
