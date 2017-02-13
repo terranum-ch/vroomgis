@@ -27,6 +27,8 @@ private:
     wxButton* m_sdbSizer1OK;
     wxButton* m_sdbSizer1Cancel;
 
+    void _CreateControls();
+
 public:
     vrMemoryLayerDialog(wxWindow* parent,
                         wxWindowID id = wxID_ANY,

@@ -1,16 +1,12 @@
-/*********************************************//**
-@file vrmemorylayerdialog
-@brief Add memory layer dialog
-@date 13 février 2017
-@author Lucien SCHREIBER
- *************************************************/
-
 # include "vrmemorylayerdialog.h"
-
-
 
 vrMemoryLayerDialog::vrMemoryLayerDialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
+    _CreateControls();
+}
+
+
+void vrMemoryLayerDialog::_CreateControls() {
     this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
     wxBoxSizer* bSizer6;
@@ -62,6 +58,6 @@ vrMemoryLayerDialog::vrMemoryLayerDialog( wxWindow* parent, wxWindowID id, const
     this->Centre( wxBOTH );
 }
 
-vrMemoryLayerDialog::~vrMemoryLayerDialog()
-{
+
+vrMemoryLayerDialog::~vrMemoryLayerDialog() {
 }
