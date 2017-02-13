@@ -114,6 +114,8 @@ private:
 
     void OnStarLayerAdd(wxCommandEvent &event);
 
+    void OnMemoryLayerAdd(wxCommandEvent &event);
+
 DECLARE_EVENT_TABLE()
 
 public:
