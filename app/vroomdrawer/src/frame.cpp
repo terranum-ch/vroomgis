@@ -125,35 +125,6 @@ void  vroomDrawerFrame::_CreateControls()
     wxBoxSizer *bSizer4;
     bSizer4 = new wxBoxSizer(wxVERTICAL);
 
-    wxPanel *m_panel3 = new wxPanel(m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                    wxTAB_TRAVERSAL); // wxBORDER_SIMPLE|wxTAB_TRAVERSAL );
-    wxBoxSizer *bSizer51;
-    bSizer51 = new wxBoxSizer(wxVERTICAL);
-
-    wxStaticText *m_staticText1;
-    m_staticText1 = new wxStaticText(m_panel3, wxID_ANY, _("Number of features:"), wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText1->Wrap(-1);
-    bSizer51->Add(m_staticText1, 0, wxALL | wxEXPAND, 5);
-
-    m_NbStarCtrl = new wxSlider(m_panel3, wxID_ANY, 500, 1, 2000, wxDefaultPosition, wxDefaultSize, wxSL_LABELS);
-    bSizer51->Add(m_NbStarCtrl, 0, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
-
-    wxString m_FeatureTypeCtrlChoices[] = {_("Points"), _("Lines"), _("Stars")};
-    int m_FeatureTypeCtrlNChoices = sizeof(m_FeatureTypeCtrlChoices) / sizeof(wxString);
-    m_FeatureTypeCtrl = new wxRadioBox(m_panel3, wxID_ANY, _("Feature's type"), wxDefaultPosition, wxDefaultSize,
-                                       m_FeatureTypeCtrlNChoices, m_FeatureTypeCtrlChoices, 1, wxRA_SPECIFY_COLS);
-    m_FeatureTypeCtrl->SetSelection(0);
-    bSizer51->Add(m_FeatureTypeCtrl, 0, wxALL | wxEXPAND, 5);
-
-    wxButton *m_button1 = new wxButton(m_panel3, ID_MENU_ADDMEMORYLAYER, _("Add memory layer"), wxDefaultPosition,
-                                       wxDefaultSize, 0);
-    bSizer51->Add(m_button1, 0, wxALL, 5);
-
-    m_panel3->SetSizer(bSizer51);
-    m_panel3->Layout();
-    bSizer51->Fit(m_panel3);
-    bSizer4->Add(m_panel3, 0, wxEXPAND, 5);
-
     m_TocCtrl = new vrViewerTOCTree(m_panel1, wxID_ANY);
     bSizer4->Add(m_TocCtrl->GetControl(), 1, wxEXPAND, 5);
 
