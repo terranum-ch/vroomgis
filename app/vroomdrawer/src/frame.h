@@ -68,8 +68,6 @@ private:
     vrViewerLayerManager *m_ViewerLayerManager;
 
     wxKeyboardState m_KeyBoardState;
-    wxSlider *m_NbStarCtrl;
-    wxRadioBox *m_FeatureTypeCtrl;
 
     void _CreateControls();
     void _CreateToolbar();
@@ -111,8 +109,6 @@ private:
     void OnToolActionPan(wxCommandEvent &event);
 
     void OnToolActionSelect(wxCommandEvent &event);
-
-    void OnStarLayerAdd(wxCommandEvent &event);
 
     void OnMemoryLayerAdd(wxCommandEvent &event);
 

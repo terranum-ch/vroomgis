@@ -1,8 +1,26 @@
 # include "vrmemorylayerdialog.h"
 
-vrMemoryLayerDialog::vrMemoryLayerDialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+vrMemoryLayerDialog::vrMemoryLayerDialog(wxWindow* parent, vrLayerManager * manager, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
 {
+    wxASSERT(manager);
+    m_layermanager = manager;
     _CreateControls();
+}
+
+
+void vrMemoryLayerDialog::OnUpdateUIOkButton(wxUpdateUIEvent &event) {
+    m_sdbSizer1OK->Enable(!m_LayerNameCtrl->GetValue().IsEmpty());
+}
+
+void vrMemoryLayerDialog::OnButtonOK(wxCommandEvent &event) {
+    // check for unique memory layer name
+    wxFileName myMemoryLayerName("", m_LayerNameCtrl->GetValue(), "memory");
+    if(m_layermanager->GetLayer(myMemoryLayerName) != NULL) {
+        if (wxMessageBox(_("This layer name is already used! Replace ?"), _("Confirm"), wxYES_NO) != wxYES) {
+            return;
+        }
+    }
+    event.Skip();
 }
 
 
@@ -61,3 +79,9 @@ void vrMemoryLayerDialog::_CreateControls() {
 
 vrMemoryLayerDialog::~vrMemoryLayerDialog() {
 }
+
+
+BEGIN_EVENT_TABLE(vrMemoryLayerDialog, wxDialog)
+    EVT_UPDATE_UI(wxID_OK, vrMemoryLayerDialog::OnUpdateUIOkButton)
+    EVT_BUTTON(wxID_OK, vrMemoryLayerDialog::OnButtonOK)
+END_EVENT_TABLE()
