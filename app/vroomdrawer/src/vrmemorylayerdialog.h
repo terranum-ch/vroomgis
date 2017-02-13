@@ -12,6 +12,7 @@
 #ifndef WX_PRECOMP
 #	include <wx/wx.h>
 #endif
+#include "vroomgis.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,17 +27,28 @@ private:
     wxStdDialogButtonSizer* m_sdbSizer1;
     wxButton* m_sdbSizer1OK;
     wxButton* m_sdbSizer1Cancel;
+    vrLayerManager * m_layermanager;
 
     void _CreateControls();
 
+    void OnUpdateUIOkButton(wxUpdateUIEvent & event);
+    void OnButtonOK(wxCommandEvent & event);
+
 public:
     vrMemoryLayerDialog(wxWindow* parent,
+                        vrLayerManager * manager,
                         wxWindowID id = wxID_ANY,
                         const wxString& title = _("Add memory layer"),
                         const wxPoint& pos = wxDefaultPosition,
                         const wxSize& size = wxDefaultSize,
                         long style = wxDEFAULT_DIALOG_STYLE);
     ~vrMemoryLayerDialog();
+
+    wxString GetLayerName(){return m_LayerNameCtrl->GetValue();}
+    int GetFeatureNumber(){return m_NbStarCtrl->GetValue();}
+    int GetFeatureType(){return m_FeatureTypeCtrl->GetSelection();}
+
+    DECLARE_EVENT_TABLE()
 
 };
 #endif //_VRMEMORY_LAYER_DIALOG_H__

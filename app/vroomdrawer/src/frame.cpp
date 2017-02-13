@@ -637,19 +637,16 @@ void vroomDrawerFrame::OnToolActionPan(wxCommandEvent &event)
 
 
 void vroomDrawerFrame::OnMemoryLayerAdd(wxCommandEvent &event){
-    vrMemoryLayerDialog myDlg(this);
-    myDlg.ShowModal();
-}
+    vrMemoryLayerDialog myDlg(this, m_LayerManager);
+    if(myDlg.ShowModal() != wxID_OK){
+        return;
+    }
 
-
-
-// TODO: Implement this code after the dialog box !!!
-void vroomDrawerFrame::OnStarLayerAdd(wxCommandEvent &event)
-{
-    wxFileName myMemoryLayerName("", _("Memory Features"), "memory");
+    // add layer here
+    wxFileName myMemoryLayerName("", myDlg.GetLayerName(), "memory");
     wxASSERT(myMemoryLayerName.GetExt() == "memory");
 
-    // check if memory layer allready added
+    // check if memory layer already added
     m_ViewerLayerManager->FreezeBegin();
     for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
         if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetFileName() == myMemoryLayerName) {
@@ -678,20 +675,20 @@ void vroomDrawerFrame::OnStarLayerAdd(wxCommandEvent &event)
     vrLayer *myLayer = NULL;
     vrRenderVector *myRender = new vrRenderVector();
 
-    switch (m_FeatureTypeCtrl->GetSelection()) {
+    switch (myDlg.GetFeatureType()) {
         case 1: // points
-            myLayer = _GetMemoryLayerLine(myMemoryLayerName, m_NbStarCtrl->GetValue(), myExtent);
+            myLayer = _GetMemoryLayerLine(myMemoryLayerName, myDlg.GetFeatureNumber(), myExtent);
             break;
 
         case 2: // stars
-            myLayer = _GetMemoryLayerStar(myMemoryLayerName, m_NbStarCtrl->GetValue(), myExtent);
+            myLayer = _GetMemoryLayerStar(myMemoryLayerName, myDlg.GetFeatureNumber(), myExtent);
             myRender->SetSize(1);
             myRender->SetColorPen(*wxBLUE);
             break;
 
 
         default: // points
-            myLayer = _GetMemoryLayerPoints(myMemoryLayerName, m_NbStarCtrl->GetValue(), myExtent);
+            myLayer = _GetMemoryLayerPoints(myMemoryLayerName, myDlg.GetFeatureNumber(), myExtent);
             myRender->SetSize(4);
             myRender->SetColorPen(*wxGREEN);
             break;
@@ -701,5 +698,8 @@ void vroomDrawerFrame::OnStarLayerAdd(wxCommandEvent &event)
     //vrLayer * myMemoryLayer =  m_LayerManager->GetLayer(myMemoryLayerName);
     m_ViewerLayerManager->Add(-1, myLayer, myRender);
     m_ViewerLayerManager->FreezeEnd();
+
 }
+
+
 
