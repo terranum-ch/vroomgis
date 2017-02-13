@@ -100,7 +100,6 @@ BEGIN_EVENT_TABLE(vroomDrawerFrame, wxFrame)
     EVT_MENU(wxID_ZOOM_FIT, vroomDrawerFrame::OnZoomToFit) EVT_MENU (wxID_INFO, vroomDrawerFrame::OnShowLog)
     EVT_MENU(wxID_DELETE, vroomDrawerFrame::OnTestCrashSoftware)
     EVT_MENU(ID_MENU_ADDMEMORYLAYER, vroomDrawerFrame::OnMemoryLayerAdd)
-    //EVT_BUTTON(ID_MENU_ADDMEMORYLAYER, vroomDrawerFrame::OnStarLayerAdd)
 
     EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomDrawerFrame::OnToolActionZoom)
     EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomDrawerFrame::OnToolActionZoom)
@@ -154,6 +153,7 @@ void  vroomDrawerFrame::_CreateControls()
     wxMenuItem *m_menuItem1;
     m_menuItem1 = new wxMenuItem(myFileMenu, wxID_ADD, wxString(_("Add Layer...")), wxEmptyString, wxITEM_NORMAL);
     myFileMenu->Append(m_menuItem1);
+    myFileMenu->Append(ID_MENU_ADDMEMORYLAYER, _("Add memory layer..."));
 
     wxMenuItem *m_menuItem2;
     m_menuItem2 = new wxMenuItem(myFileMenu, wxID_REMOVE, wxString(_("Remove Layer...")), wxEmptyString, wxITEM_NORMAL);
