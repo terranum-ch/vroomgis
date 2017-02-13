@@ -30,6 +30,7 @@
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 #include "../../../vroomgis/art/vroomgis_toolbmp.cpp"
 #include "../art/vroomdrawer_toolbmp.h"
+#include "vrmemorylayerdialog.h"
 
 #ifdef USE_CRASHREPORT
     #include <lscrashreport.h>
@@ -98,7 +99,8 @@ BEGIN_EVENT_TABLE(vroomDrawerFrame, wxFrame)
     EVT_MENU(ID_MENU_PAN, vroomDrawerFrame::OnToolPan)
     EVT_MENU(wxID_ZOOM_FIT, vroomDrawerFrame::OnZoomToFit) EVT_MENU (wxID_INFO, vroomDrawerFrame::OnShowLog)
     EVT_MENU(wxID_DELETE, vroomDrawerFrame::OnTestCrashSoftware)
-    EVT_BUTTON(ID_MENU_ADDMEMORYLAYER, vroomDrawerFrame::OnStarLayerAdd)
+    EVT_MENU(ID_MENU_ADDMEMORYLAYER, vroomDrawerFrame::OnMemoryLayerAdd)
+    //EVT_BUTTON(ID_MENU_ADDMEMORYLAYER, vroomDrawerFrame::OnStarLayerAdd)
 
     EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomDrawerFrame::OnToolActionZoom)
     EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomDrawerFrame::OnToolActionZoom)
@@ -662,6 +664,15 @@ void vroomDrawerFrame::OnToolActionPan(wxCommandEvent &event)
 }
 
 
+
+void vroomDrawerFrame::OnMemoryLayerAdd(wxCommandEvent &event){
+    vrMemoryLayerDialog myDlg(this);
+    myDlg.ShowModal();
+}
+
+
+
+// TODO: Implement this code after the dialog box !!!
 void vroomDrawerFrame::OnStarLayerAdd(wxCommandEvent &event)
 {
     wxFileName myMemoryLayerName("", _("Memory Features"), "memory");
