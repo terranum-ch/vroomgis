@@ -31,8 +31,7 @@
 #include "vroomgis.h"
 
 
-class TEST_vrViewerLayerManager
-        : public CxxTest::TestSuite
+class TEST_vrViewerLayerManager : public CxxTest::TestSuite
 {
 private:
     vrLayerManager *m_LayerManager;

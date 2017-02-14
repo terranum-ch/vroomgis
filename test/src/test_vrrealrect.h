@@ -32,8 +32,7 @@ Testing the coordinate system
 #include "vrrealrect.h"
 
 
-class TEST_vrRealRect
-        : public CxxTest::TestSuite
+class TEST_vrRealRect : public CxxTest::TestSuite
 {
 public:
     void testShowTestName()

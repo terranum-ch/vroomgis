@@ -39,8 +39,7 @@
 
 #include "vrlayer.h"
 
-class Fixture1
-        : public CxxTest::GlobalFixture
+class Fixture1 : public CxxTest::GlobalFixture
 {
 
 public:
@@ -67,8 +66,7 @@ public:
 static Fixture1 fixture1;
 
 
-class Suite
-        : public CxxTest::TestSuite
+class Suite : public CxxTest::TestSuite
 {
 public:
     void testOne()

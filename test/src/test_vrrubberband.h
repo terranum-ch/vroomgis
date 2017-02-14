@@ -32,8 +32,7 @@
 #include "vrrubberband.h"
 
 
-class TEST_vrRubberBand
-        : public CxxTest::TestSuite
+class TEST_vrRubberBand : public CxxTest::TestSuite
 {
 public:
     void testShowTestName()

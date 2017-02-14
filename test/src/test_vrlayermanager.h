@@ -32,8 +32,7 @@
 #include "vrlayermanager.h"
 
 
-class TEST_vrLayerManager
-        : public CxxTest::TestSuite
+class TEST_vrLayerManager : public CxxTest::TestSuite
 {
 private:
     wxFileName m_JpegName;

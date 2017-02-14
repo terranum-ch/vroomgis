@@ -32,8 +32,7 @@
 #include "vrdriver.h"
 
 
-class TEST_vrDrivers
-        : public CxxTest::TestSuite
+class TEST_vrDrivers : public CxxTest::TestSuite
 {
 private:
     vrDrivers m_Driver;

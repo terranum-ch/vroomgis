@@ -35,8 +35,7 @@ Testing the coordinate system
 #include "fake_vrviewerdisplay.cpp"
 
 
-class TEST_vrCoordinate
-        : public CxxTest::TestSuite
+class TEST_vrCoordinate : public CxxTest::TestSuite
 {
 public:
     void testCreateCoordinate()
