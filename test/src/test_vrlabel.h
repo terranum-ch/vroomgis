@@ -30,8 +30,7 @@
 #include "vrlabel.h"
 
 
-class TEST_vrLabel
-        : public CxxTest::TestSuite
+class TEST_vrLabel : public CxxTest::TestSuite
 {
 public:
     wxFont m_Fontt;

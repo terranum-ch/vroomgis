@@ -33,8 +33,7 @@
 #include "vrlayerraster.h"
 #include "vrlayermanager.h"
 
-class TEST_vrOperationVector
-        : public CxxTest::TestSuite
+class TEST_vrOperationVector : public CxxTest::TestSuite
 {
 private:
     vrLayerRasterGDAL *myRaster;

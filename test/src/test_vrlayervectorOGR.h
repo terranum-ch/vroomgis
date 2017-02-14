@@ -33,8 +33,7 @@
 #include "vrlayermanager.h"
 
 
-class TEST_vrLayerVectorOGR
-        : public CxxTest::TestSuite
+class TEST_vrLayerVectorOGR  : public CxxTest::TestSuite
 {
 public:
     void testOpenLayerVectorOGR()

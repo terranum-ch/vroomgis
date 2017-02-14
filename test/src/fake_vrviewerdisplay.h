@@ -28,8 +28,7 @@
 
 #include "vrviewerdisplay.h"
 
-class FakevrViewerDisplay
-        : public vrViewerDisplay
+class FakevrViewerDisplay : public vrViewerDisplay
 {
     wxSize m_WndSize;
 

@@ -32,8 +32,7 @@
 #include "vrrendercoltop.h"
 
 
-class TEST_vrRender
-        : public CxxTest::TestSuite
+class TEST_vrRender : public CxxTest::TestSuite
 {
 private:
 

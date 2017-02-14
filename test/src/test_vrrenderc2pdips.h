@@ -30,8 +30,7 @@
 #include "vrrendervectorc2p.h"
 
 
-class TEST_vrRenderVectorC2PDips
-        : public CxxTest::TestSuite
+class TEST_vrRenderVectorC2PDips : public CxxTest::TestSuite
 {
 private:
 

@@ -36,8 +36,7 @@
 #include "vrlayermanager.h"
 
 
-class TEST_vrLayerRasterGDAL
-        : public CxxTest::TestSuite
+class TEST_vrLayerRasterGDAL : public CxxTest::TestSuite
 {
     friend class vrLayerRasterGDAL;
 

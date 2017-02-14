@@ -33,8 +33,7 @@
 #include "vrrender.h"
 
 
-class TEST_vrRenderer
-        : public CxxTest::TestSuite
+class TEST_vrRenderer : public CxxTest::TestSuite
 {
 public:
     vrLayerManager *m_Manager;
