@@ -31,3 +31,4 @@ GDAL\build\*.dir\*
 *.idea
 cache_cmake.txt
 cache_build.txt
+cache_test.txt
