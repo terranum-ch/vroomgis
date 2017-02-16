@@ -1,1 +1,1 @@
-plugins/wxhgversion = ssh://hg@bitbucket.org/lucsch/wxhgversion
+plugins/wxhgversion = ssh://hg@bitbucket.org/terranum/wxhgversion
