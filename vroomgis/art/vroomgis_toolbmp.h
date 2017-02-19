@@ -8,11 +8,13 @@
 #endif
 
 extern void vroomgis_initialize_images_toolbar(void);
+extern void vroomgis_uninitialize_images_toolbar(void);
 
-extern wxBitmap *_img_toolbar_edit;
-extern wxBitmap *_img_toolbar_pan;
 extern wxBitmap *_img_toolbar_select;
+extern wxBitmap *_img_toolbar_pan;
 extern wxBitmap *_img_toolbar_zoom;
 extern wxBitmap *_img_toolbar_zoomfull;
+extern wxBitmap *_img_toolbar_edit;
+extern wxBitmap *_img_toolbar_modify;
 
 #endif /* VROOMGIS_TOOLBMP_H */
