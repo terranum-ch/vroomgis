@@ -46,9 +46,9 @@ set(CMAKE_MODULE_PATH ${VROOMGIS_PATH}/../build/cmake)
 SET(SEARCH_VROOMGIS_LIBS CACHE BOOL "Sould we search for libraries for vroomGIS ?")
 IF (SEARCH_VROOMGIS_LIBS)
     mark_as_advanced(wxWidgets_wxrc_EXECUTABLE)
-    find_package(wxWidgets COMPONENTS core base adv xml qa REQUIRED)
     include("${wxWidgets_USE_FILE}")
     include_directories(${wxWidgets_INCLUDE_DIRS})
+    link_libraries(${wxWidgets_LIBRARIES})
 
     FIND_PACKAGE(GEOS PATHS "${CMAKE_CURRENT_LIST_DIR}/")
 
