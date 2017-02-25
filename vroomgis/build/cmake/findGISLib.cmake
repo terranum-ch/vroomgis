@@ -45,6 +45,7 @@ IF (SEARCH_GEOS)
                 ${SEARCH_GEOS_LIB_PATH}
                 NO_DEFAULT_PATH)
 
+
         # if unix / mac and search geos
     ELSE (WIN32)
 
@@ -96,7 +97,7 @@ IF (SEARCH_GEOS)
 
     IF (GEOS_LIBRARIES)
         LINK_LIBRARIES(${GEOS_LIBRARIES})
-        MESSAGE("DBG : GEOS lis is ${GEOS_LIBRARIES}")
+        MESSAGE("DBG : GEOS lib is ${GEOS_LIBRARIES}")
     ENDIF (GEOS_LIBRARIES)
 
     #debug message
