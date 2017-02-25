@@ -40,7 +40,9 @@ IMPLEMENT_APP(vroomDrawer);
 
 vroomDrawer::vroomDrawer()
 {
-    wxHandleFatalExceptions();
+#ifdef USE_CRASHREPORT
+     wxHandleFatalExceptions();
+#endif
 }
 
 
