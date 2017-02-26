@@ -92,7 +92,7 @@ class BuildProject(object):
 
         generator = ""
         if self.cmake_generator != "":
-            generator = " -G'" + self.cmake_generator + "' "
+            generator = ' -G"' + self.cmake_generator + '" '
 
         cmake_filepath = ""
         if use_cmake_filepath is True:
