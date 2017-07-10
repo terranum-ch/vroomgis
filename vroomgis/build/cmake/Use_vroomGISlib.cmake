@@ -58,7 +58,7 @@ IF (SEARCH_VROOMGIS_LIBS)
     #include_directories(${GDAL_INCLUDE_DIRS})
     #link_libraries(${GDAL_LIBRARIES})
 
-    INCLUDE ("${VROOMGIS_PATH}/../build/cmake/findGISLib.cmake")
+    INCLUDE (findGISLib)
 
     # TODO: SQLITE SHOULD BE OUTSIDE OF VROOMGIS
     #SQLITE libs
