@@ -128,6 +128,7 @@ IF (SEARCH_GDAL)
     ELSE (WIN32)
 
         IF (SEARCH_GIS_LIB_PATH)
+            MESSAGE(STATUS "Searching GDAL under ${SEARCH_GIS_LIB_PATH}")
             FIND_PATH(GDAL_INCLUDE_DIR gdal.h
                     PATHS ${SEARCH_GIS_LIB_PATH}/include
                     ${SEARCH_GIS_LIB_PATH}
@@ -142,7 +143,7 @@ IF (SEARCH_GDAL)
                     ${SEARCH_GIS_LIB_PATH}/GDAL.framework/unix/lib
                     NO_DEFAULT_PATH)
         ELSE (SEARCH_GIS_LIB_PATH)
-            MESSAGE("Searching GDAL on standard PATHS")
+            MESSAGE(STATUS "Searching GDAL on standard PATHS")
             FIND_PATH(GDAL_INCLUDE_DIR gdal.h
                     HINTS ${SEARCH_GIS_LIB_PATH}/include
                     ${SEARCH_GIS_LIB_PATH}
@@ -174,8 +175,8 @@ IF (SEARCH_GDAL)
     ENDIF (GDAL_LIBRARIES)
 
     #debug message
-    MESSAGE("DBG : GDAL lib is ${GDAL_LIBRARIES}")
-    MESSAGE("DBG : GDAL include is ${GDAL_INCLUDE_DIR}")
+    MESSAGE(STATUS "GDAL lib is ${GDAL_LIBRARIES}")
+    MESSAGE(STATUS "GDAL include is ${GDAL_INCLUDE_DIR}")
 
 
 ENDIF (SEARCH_GDAL)

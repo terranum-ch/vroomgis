@@ -32,3 +32,4 @@ GDAL\build\*.dir\*
 cache_cmake.txt
 cache_build.txt
 cache_test.txt
+bin/*
