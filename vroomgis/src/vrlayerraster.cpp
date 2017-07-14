@@ -672,6 +672,9 @@ bool vrLayerRasterGDAL::_ComputeExtent()
 
 vrLayerRasterGDAL::vrLayerRasterGDAL()
 {
+    m_oneBandMin = 0;
+    m_oneBandMax = 0;
+    m_oneBandNoData = 0;
 }
 
 

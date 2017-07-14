@@ -48,6 +48,7 @@ vrLayerVector::vrLayerVector()
     m_objectDrawn = 0;
     m_skippedVertex = 0;
     m_drawnVertex = 0;
+    m_geometryType = wkbUnknown;
 }
 
 vrLayerVector::~vrLayerVector()

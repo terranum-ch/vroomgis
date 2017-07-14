@@ -483,6 +483,7 @@ void vrViewerLayerManager::Reload()
                                           myVertexSkipped, m_display->GetSize().GetWidth(),
                                           m_display->GetSize().GetHeight()));
     }
+    wxDELETE(myPerf);
 }
 
 

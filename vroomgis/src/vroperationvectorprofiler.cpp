@@ -32,6 +32,9 @@ vrOperationVectorProfiler::vrOperationVectorProfiler(OGRGeometry *geometry, vrLa
     m_rasterLayer->GetGeoTransform(myGeoTransform);
     m_pixelWidth = myGeoTransform.Item(1);
     m_pixelHeight = myGeoTransform.Item(5);
+
+    m_increment_X = fabs(m_pixelWidth);
+    m_increment_Y = fabs(m_pixelHeight);
 }
 
 
@@ -83,10 +86,12 @@ bool vrOperationVectorProfiler::DoProfile(int bandindex)
     m_increment_X = fabs(m_pixelWidth);
     m_increment_Y = fabs(m_pixelHeight);
 
-    if (iNbPoints == myPointX) {
-        m_increment_Y = dy / iNbPoints;
-    } else {
-        m_increment_X = dx / iNbPoints;
+    if (iNbPoints != 0) {
+        if (iNbPoints == myPointX) {
+            m_increment_Y = dy / iNbPoints;
+        } else {
+            m_increment_X = dx / iNbPoints;
+        }
     }
 
     if (dx < 0 && m_increment_X > 0) {

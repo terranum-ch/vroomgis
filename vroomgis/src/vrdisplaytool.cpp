@@ -82,6 +82,7 @@ vrDisplayTool::vrDisplayTool()
     m_iD = wxNOT_FOUND;
     m_name = wxEmptyString;
     m_rubber = NULL;
+    m_display = NULL;
 }
 
 
