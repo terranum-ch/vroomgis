@@ -189,8 +189,9 @@ bool vrLayerManager::Erase(const wxFileName &filename)
 
     vrDrivers myDriver;
     vrDRIVERS_TYPE myDriverType = myDriver.GetType(filename.GetExt());
+    wxString myDriverName = wxEmptyString;
     if (myDriverType >= 0) {
-        wxString myDriverName = vrDRIVERS_GDAL_NAMES[myDriverType];
+        myDriverName = vrDRIVERS_GDAL_NAMES[myDriverType];
     }
 
     // TODO: Merge this code with the raster code !!! (Same code since GDAL 2.0)
