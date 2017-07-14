@@ -22,10 +22,10 @@ size_t vrPerformance::_GetUsedMemory(bool resident)
     if (file) {
         unsigned int vm = 0;
         if(fscanf(file, "%u", &vm)!=0) { // Just need the first num: vm size
-            fclose(file);
             size = (size_t) vm * getpagesize();
         }
     }
+    fclose(file);
     return size;
 
 #elif defined(__WXMAC__)
