@@ -12,8 +12,8 @@
 
 #define what we search
 
-SET(SEARCH_GDAL CACHE BOOL "Sould we search for GDAL ?")
-SET(SEARCH_GEOS CACHE BOOL "Sould we search for GEOS ?")
+OPTION(SEARCH_GDAL "Sould we search for GDAL ?" ON)
+OPTION(SEARCH_GEOS "Sould we search for GEOS ?" ON)
 SET(SEARCH_GIS_LIB_PATH CACHE PATH "Path to the GIS libs")
 
 # we search for geos lib
@@ -86,7 +86,7 @@ IF (SEARCH_GEOS)
     IF (GEOS_INCLUDE_DIR)
         INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
         #INCLUDE_DIRECTORIES(${SEARCH_GEOS_LIB_PATH}/source/headers)
-        MESSAGE("DBG : GEOS include is ${GEOS_INCLUDE_DIR}")
+        #MESSAGE("DBG : GEOS include is ${GEOS_INCLUDE_DIR}")
     ENDIF (GEOS_INCLUDE_DIR)
 
     IF (GEOS_C_INCLUDE_DIR)
@@ -97,7 +97,7 @@ IF (SEARCH_GEOS)
 
     IF (GEOS_LIBRARIES)
         LINK_LIBRARIES(${GEOS_LIBRARIES})
-        MESSAGE("DBG : GEOS lib is ${GEOS_LIBRARIES}")
+        #MESSAGE("DBG : GEOS lib is ${GEOS_LIBRARIES}")
     ENDIF (GEOS_LIBRARIES)
 
     #debug message

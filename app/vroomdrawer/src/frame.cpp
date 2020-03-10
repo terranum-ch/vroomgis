@@ -23,7 +23,7 @@
 #include <wx/filepicker.h>
 
 #include "tmlog.h"	// for double logging process
-#include <wxhgversion_dlg.h>
+#include "wxversion_dlg.h"
 #include "vrrendervectorc2p.h"
 #include "vrlayervector.h"
 #include "vrlayervectorstar.h"
@@ -357,7 +357,7 @@ void vroomDrawerFrame::OnQuit(wxCommandEvent &event)
 
 void vroomDrawerFrame::OnAbout(wxCommandEvent & WXUNUSED(event))
 {
-    wxHgVersionDlg myDlg(this, wxID_ANY, "About");
+    wxVersionDlg myDlg(this, wxID_ANY, "About");
     myDlg.SetBitmapLogo(*_img_vroomgis);
     myDlg.ShowModal();
 }

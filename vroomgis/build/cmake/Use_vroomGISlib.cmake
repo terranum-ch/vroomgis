@@ -43,7 +43,7 @@ ENDIF (NOT VROOMGIS_PATH)
 set(CMAKE_MODULE_PATH ${VROOMGIS_PATH}/../build/cmake)
 
 # NEEDED LIBRARY
-SET(SEARCH_VROOMGIS_LIBS CACHE BOOL "Sould we search for libraries for vroomGIS ?")
+OPTION(SEARCH_VROOMGIS_LIBS "Sould we search for libraries for vroomGIS ?" ON)
 IF (SEARCH_VROOMGIS_LIBS)
     mark_as_advanced(wxWidgets_wxrc_EXECUTABLE)
     find_package(wxWidgets COMPONENTS core base adv xml qa REQUIRED)

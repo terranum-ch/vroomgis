@@ -1,27 +1,43 @@
 # CMAKE BUILD FILE FOR VROOMDRAWER
-# (c) LUCIEN SCHREIBER 2013
-cmake_minimum_required(VERSION 2.6)
+# (c) TERRANUM 2020
+cmake_minimum_required(VERSION 3.11)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 PROJECT("vroomDrawer")
 
 #search source and headers files
-FILE(GLOB_RECURSE SRC_FILES "../src/*.cpp")
+FILE(GLOB_RECURSE SRC_FILES "src/*.cpp")
 SOURCE_GROUP(source FILES ${SRC_FILES})
-FILE(GLOB_RECURSE HEAD_FILES "../src/*.h")
+FILE(GLOB_RECURSE HEAD_FILES "src/*.h")
 SOURCE_GROUP(header FILES ${HEAD_FILES})
 
 # add art source files
-list(APPEND SRC_FILES "../art/vroomdrawer_toolbmp.cpp")
-list(APPEND HEAD_FILES "../art/vroomdrawer_toolbmp.h")
+list(APPEND SRC_FILES "art/vroomdrawer_toolbmp.cpp")
+list(APPEND HEAD_FILES "art/vroomdrawer_toolbmp.h")
+
+# FIND WXWIDGETS
+# FOR WINDOWS, DO NOT FORGET TO DEFINE WXWIN VARIABLE
+# FOR UNIX, SET ENVIRONNEMENT VAR : export WX_CONFIG=<path to wxconfig> before calling cmake
+find_package(wxWidgets COMPONENTS all REQUIRED)
+include(${wxWidgets_USE_FILE})
 
 #CREATE VROOMGIS LIBRARY AND WXWIDGETS - GDAL LIB
-INCLUDE("../../../vroomgis/build/cmake/Use_vroomGISlib.cmake")
+INCLUDE("../../vroomgis/build/cmake/Use_vroomGISlib.cmake")
 
-#USE WXHGVERSION PLUGIN
-INCLUDE("../../../plugins/wxhgversion/build/use_wxhgversion.cmake")
+# wxVERSION PLUGIN
+include(FetchContent)
+FetchContent_Declare(
+        wxVersion
+        GIT_REPOSITORY https://github.com/terranum-ch/wxVersion.git
+        GIT_TAG        476a09746b5bb7ab134f8174602d8455d5693949
+)
+FetchContent_MakeAvailable(wxVersion)
+message("${wxVersion_SOURCE_DIR} source dir")
+INCLUDE_DIRECTORIES("${wxVersion_SOURCE_DIR}/src")
 
 #USE LSCRASHREPORT PLUGIN
-INCLUDE("../../../plugins/lscrashreport/build/use_lscrashreport.cmake")
+INCLUDE("../../plugins/lscrashreport/build/use_lscrashreport.cmake")
 
 # Visual Leak Detector
 set(CMAKE_MODULE_PATH ${VROOMGIS_PATH}/../build/cmake)
@@ -44,7 +60,7 @@ IF (APPLE)
     SET(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) 2013")
 
     # copy icon
-    SET(APP_ICON_LOCATION "../../../vroomgis/art/vroomgis.icns")
+    SET(APP_ICON_LOCATION "../../vroomgis/art/vroomgis.icns")
     SET_SOURCE_FILES_PROPERTIES(${APP_ICON_LOCATION} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     SET(SRC_FILES ${SRC_FILES} ${APP_ICON_LOCATION})
 ENDIF (APPLE)
@@ -57,15 +73,13 @@ IF (WIN32)
 ELSE (WIN32)
     ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE ${SRC_FILES} ${HEAD_FILES})
 ENDIF (WIN32)
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${wxWidgets_LIBRARIES})
+TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${wxWidgets_LIBRARIES} )
 
 # LINK VROOMGIS LIBRARY
 TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
 
-# LINK WXHGVERSION PLUGIN
-IF (USE_WXHGVERSION)
-    TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${WXHGVERSION_NAME})
-ENDIF (USE_WXHGVERSION)
+# LINK WXVERSION PLUGIN
+TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} wxVersion)
 
 IF (USE_CRASHREPORT)
     TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${LSCRASHREPORT_NAME})
@@ -79,5 +93,5 @@ if (WIN32)
 endif (WIN32)
 
 # copy libs to bundle if we are under mac...
-INCLUDE("../../../vroomgis/build/cmake/installMacGISLIB.cmake")
+INCLUDE("../../vroomgis/build/cmake/installMacGISLIB.cmake")
 
