@@ -5,4 +5,4 @@ cmake_minimum_required(VERSION 2.6)
 
 PROJECT("vroomgis")
 
-include(${CMAKE_CURRENT_LIST_DIR}/build/cmake/Use_vroomGISlib.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/vroomgis/build/cmake/Use_vroomGISlib.cmake)
