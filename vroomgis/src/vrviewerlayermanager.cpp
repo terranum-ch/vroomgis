@@ -773,6 +773,9 @@ int vrViewerLayerManager::_Reload(long &vectorcount, long &drawnvertex, long &sk
     vrCoordinate *myCoordinate = m_display->GetCoordinate();
     wxASSERT(myCoordinate);
 
+    if (m_display->GetSize().x < 1 || m_display->GetSize().y < 1){
+        return 0;
+    }
     wxBitmap *myBmp = new wxBitmap(m_display->GetSize());
     wxMemoryDC dc(*myBmp);
     dc.SetBackground(wxBrush(m_display->GetBackgroundColour()));
