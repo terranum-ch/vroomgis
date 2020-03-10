@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 PROJECT("vroomLoader")
 
+#Export for sourcetrail
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 #search all source and headers files
 FILE(GLOB_RECURSE SRC_FILES src/*.cpp)
 SOURCE_GROUP(source FILES ${SRC_FILES})
