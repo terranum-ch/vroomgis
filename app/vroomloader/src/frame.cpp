@@ -22,7 +22,7 @@
 #include "frame.h"
 #include "tmlog.h"              // for double logging process
 #include "vrdisplayvalue.h"     // for displaying raster values
-#include <wxhgversion_dlg.h>
+#include <wxversion_dlg.h>
 #include "vrrendervectorc2p.h"
 #include "vrlayervector.h"
 #include "vrshapeeditor.h"
@@ -258,7 +258,7 @@ void vroomLoaderFrame::OnQuit(wxCommandEvent &event)
 
 void vroomLoaderFrame::OnAbout(wxCommandEvent & WXUNUSED(event))
 {
-    wxHgVersionDlg myDlg(this, wxID_ANY, "About");
+    wxVersionDlg myDlg(this, wxID_ANY, "About");
     myDlg.SetBitmapLogo(*_img_vroomgis);
     myDlg.ShowModal();
 }
