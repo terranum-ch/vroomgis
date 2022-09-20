@@ -5,4 +5,13 @@ cmake_minimum_required(VERSION 2.6)
 
 PROJECT("vroomgis")
 
-include(${CMAKE_CURRENT_LIST_DIR}/vroomgis/build/cmake/Use_vroomGISlib.cmake)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
+
+include_directories(${CONAN_INCLUDE_DIRS})
+
+add_subdirectory(vroomgis)
+
+if (BUILD_TESTS)
+    add_subdirectory(test)
+endif()
