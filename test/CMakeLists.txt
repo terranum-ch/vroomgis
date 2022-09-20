@@ -10,49 +10,49 @@ if (COMMAND cmake_policy)
 endif (COMMAND cmake_policy)
 
 # REMOVE THIS LINE IF CALLED FROM ANOTHER CMAKE FILE
-PROJECT("vroomgis_test")
+project("vroomgis_test")
 
 #search all source files
-FILE(GLOB SRC_FILES src/*.cpp)
-SOURCE_GROUP(source FILES ${SRC_FILES})
-FILE(GLOB HEAD_FILES "src/*.h")
-SOURCE_GROUP(header FILES ${HEAD_FILES})
+file(GLOB SRC_FILES src/*.cpp)
+source_group(source FILES ${SRC_FILES})
+file(GLOB HEAD_FILES "src/*.h")
+source_group(header FILES ${HEAD_FILES})
 
 #ONLY USED FOR ADDING HEADERS TO PROJECT 
 IF (APPLE)
-    ADD_EXECUTABLE("${CMAKE_PROJECT_NAME}-not_build" EXCLUDE_FROM_ALL main.cpp ${HEAD_FILES})
+    add_executable("${CMAKE_PROJECT_NAME}-not_build" EXCLUDE_FROM_ALL main.cpp ${HEAD_FILES})
 ENDIF (APPLE)
 
 # GTK LIB IF LINUX
-MESSAGE("System name is : " ${CMAKE_SYSTEM_NAME})
+message("System name is : " ${CMAKE_SYSTEM_NAME})
 IF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    MESSAGE("Systeme linux detecte")
-    INCLUDE("../vroomgis/build/cmake/FindGTK2.cmake")
-    INCLUDE_DIRECTORIES(${GTK2_INCLUDE_DIRS})
-    MESSAGE("Gtk include is " ${GTK2_INCLUDE_DIRS})
+    message("Systeme linux detecte")
+    include("../vroomgis/build/cmake/FindGTK2.cmake")
+    include_directories(${GTK2_INCLUDE_DIRS})
+    message("Gtk include is " ${GTK2_INCLUDE_DIRS})
 ENDIF (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 #CREATE VROOMGIS LIBRARY
-INCLUDE("../vroomgis/CMakeLists.txt")
+include("../vroomgis/CMakeLists.txt")
 
 #PARAMETERS FOR TEST
-SET(UNIT_TESTING_PATH CACHE PATH "Location of unit testing files and projects")
+set(UNIT_TESTING_PATH CACHE PATH "Location of unit testing files and projects")
 IF (NOT UNIT_TESTING_PATH)
-    MESSAGE(FATAL_ERROR "Unit testing path not specified, tests are going to fail")
+    message(FATAL_ERROR "Unit testing path not specified, tests are going to fail")
 ENDIF (NOT UNIT_TESTING_PATH)
-CONFIGURE_FILE("src/test_param.h.in" "${PROJECT_BINARY_DIR}/test_param.h")
-INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR})
+configure_file("src/test_param.h.in" "${PROJECT_BINARY_DIR}/test_param.h")
+include_directories(${PROJECT_BINARY_DIR})
 
-# INCLUDE_DIRECTORIES(${CXXTEST_INCLUDE_DIR})
+# include_directories(${CXXTEST_INCLUDE_DIR})
 find_package(CxxTest)
 if(CXXTEST_FOUND)
-    SET(CXXTEST_USE_PYTHON 1)
+    set(CXXTEST_USE_PYTHON 1)
     include_directories(${CXXTEST_INCLUDE_DIR})
     enable_testing()
-    CXXTEST_ADD_TEST(${CMAKE_PROJECT_NAME} main.cpp ${HEAD_FILES})
+    cxxtest_add_test(${CMAKE_PROJECT_NAME} main.cpp ${HEAD_FILES})
 endif()
 
 # LINK LIBRARIES
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} CONAN_PKG::wxwidgets)
+target_link_libraries(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
+target_link_libraries(${CMAKE_PROJECT_NAME} CONAN_PKG::wxwidgets)
 

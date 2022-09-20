@@ -3,7 +3,7 @@
 # VROOMGIS NEEDS wxWidgets, GEOS, GDAL
 cmake_minimum_required(VERSION 2.6)
 
-PROJECT("vroomgis")
+project("vroomgis")
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)

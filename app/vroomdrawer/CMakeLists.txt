@@ -4,13 +4,13 @@ cmake_minimum_required(VERSION 3.11)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-PROJECT("vroomDrawer")
+project("vroomDrawer")
 
 #search source and headers files
-FILE(GLOB_RECURSE SRC_FILES "src/*.cpp")
-SOURCE_GROUP(source FILES ${SRC_FILES})
-FILE(GLOB_RECURSE HEAD_FILES "src/*.h")
-SOURCE_GROUP(header FILES ${HEAD_FILES})
+file(GLOB_RECURSE SRC_FILES "src/*.cpp")
+source_group(source FILES ${SRC_FILES})
+file(GLOB_RECURSE HEAD_FILES "src/*.h")
+source_group(header FILES ${HEAD_FILES})
 
 # add art source files
 list(APPEND SRC_FILES "art/vroomdrawer_toolbmp.cpp")
@@ -23,7 +23,7 @@ find_package(wxWidgets COMPONENTS all REQUIRED)
 include(${wxWidgets_USE_FILE})
 
 #CREATE VROOMGIS LIBRARY AND WXWIDGETS - GDAL LIB
-INCLUDE("../../vroomgis/CMakeLists.txt")
+include("../../vroomgis/CMakeLists.txt")
 
 # wxVERSION PLUGIN
 include(FetchContent)
@@ -34,10 +34,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(wxVersion)
 message("${wxVersion_SOURCE_DIR} source dir")
-INCLUDE_DIRECTORIES("${wxVersion_SOURCE_DIR}/src")
+include_directories("${wxVersion_SOURCE_DIR}/src")
 
 #USE LSCRASHREPORT PLUGIN
-INCLUDE("../../plugins/lscrashreport/build/use_lscrashreport.cmake")
+include("../../plugins/lscrashreport/build/use_lscrashreport.cmake")
 
 # Visual Leak Detector
 set(CMAKE_MODULE_PATH ${VROOMGIS_PATH}/../build/cmake)
@@ -51,38 +51,38 @@ if (WIN32)
 endif (WIN32)
 
 IF (APPLE)
-    SET(APP_ICON "vroomgis.icns")
-    SET(MACOSX_BUNDLE_INFO_STRING "VroomGIS test Program")
-    SET(MACOSX_BUNDLE_ICON_FILE ${APP_ICON})
-    SET(MACOSX_BUNDLE_BUNDLE_NAME "${CMAKE_PROJECT_NAME}")
-    SET(MACOSX_BUNDLE_SHORT_VERSION_STRING "Alpha")
-    SET(MACOSX_BUNDLE_BUNDLE_VERSION "1.0.0")
-    SET(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) 2013")
+    set(APP_ICON "vroomgis.icns")
+    set(MACOSX_BUNDLE_INFO_STRING "VroomGIS test Program")
+    set(MACOSX_BUNDLE_ICON_FILE ${APP_ICON})
+    set(MACOSX_BUNDLE_BUNDLE_NAME "${CMAKE_PROJECT_NAME}")
+    set(MACOSX_BUNDLE_SHORT_VERSION_STRING "Alpha")
+    set(MACOSX_BUNDLE_BUNDLE_VERSION "1.0.0")
+    set(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) 2013")
 
     # copy icon
-    SET(APP_ICON_LOCATION "../../vroomgis/art/vroomgis.icns")
+    set(APP_ICON_LOCATION "../../vroomgis/art/vroomgis.icns")
     SET_SOURCE_FILES_PROPERTIES(${APP_ICON_LOCATION} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-    SET(SRC_FILES ${SRC_FILES} ${APP_ICON_LOCATION})
+    set(SRC_FILES ${SRC_FILES} ${APP_ICON_LOCATION})
 ENDIF (APPLE)
 
 
 # conditionnal compilation, Windows needs resource.rc
 IF (WIN32)
-    SOURCE_GROUP(resource FILES ../src/resource.rc)
-    ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} WIN32 ${SRC_FILES} ${HEAD_FILES} "../src/resource.rc")
+    source_group(resource FILES ../src/resource.rc)
+    add_executable(${CMAKE_PROJECT_NAME} WIN32 ${SRC_FILES} ${HEAD_FILES} "../src/resource.rc")
 ELSE (WIN32)
-    ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE ${SRC_FILES} ${HEAD_FILES})
+    add_executable(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE ${SRC_FILES} ${HEAD_FILES})
 ENDIF (WIN32)
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} CONAN_PKG::wxwidgets )
+target_link_libraries(${CMAKE_PROJECT_NAME} CONAN_PKG::wxwidgets )
 
 # LINK VROOMGIS LIBRARY
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
+target_link_libraries(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
 
 # LINK WXVERSION PLUGIN
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} wxVersion)
+target_link_libraries(${CMAKE_PROJECT_NAME} wxVersion)
 
 IF (USE_CRASHREPORT)
-    TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${LSCRASHREPORT_NAME})
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${LSCRASHREPORT_NAME})
 ENDIF (USE_CRASHREPORT)
 
 # Visual Leak Detector
@@ -93,5 +93,5 @@ if (WIN32)
 endif (WIN32)
 
 # copy libs to bundle if we are under mac...
-INCLUDE("../../vroomgis/build/cmake/installMacGISLIB.cmake")
+include("../../vroomgis/build/cmake/installMacGISLIB.cmake")
 
