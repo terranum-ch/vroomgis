@@ -3,12 +3,12 @@
 # VROOMGIS NEEDS wxWidgets, GEOS, GDAL
 
 # ADDITION OF CUSTOM MODULES
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/build/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../build/cmake)
 
 #CREATE LIB WITH ALL MAIN PROJECT CLASS
 #search all source files
-file(GLOB VROOMGIS_LIB_SRC_FILES "${CMAKE_SOURCE_DIR}/vroomgis/src/*.cpp")
-file(GLOB VROOMGIS_LIB_ART_FILES "${CMAKE_SOURCE_DIR}/vroomgis/art/*.cpp")
+file(GLOB VROOMGIS_LIB_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+file(GLOB VROOMGIS_LIB_ART_FILES "${CMAKE_CURRENT_SOURCE_DIR}/art/*.cpp")
 source_group(source FILES ${VROMGIS_LIB_SRC_FILES} ${VROOMGIS_LIB_ART_FILES})
 
 #COUNT SRC FILES IN VROOMGIS
@@ -18,11 +18,11 @@ IF (NOT MY_LENGTH)
 ENDIF (NOT MY_LENGTH)
 
 # search all headers files
-file(GLOB VROOMGIS_LIB_HEAD_FILES "${CMAKE_SOURCE_DIR}/vroomgis/src/*.h")
-file(GLOB VROOMGIS_LIB_HEAD_ART_FILES "${CMAKE_SOURCE_DIR}/vroomgis/art/*.h")
+file(GLOB VROOMGIS_LIB_HEAD_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
+file(GLOB VROOMGIS_LIB_HEAD_ART_FILES "${CMAKE_CURRENT_SOURCE_DIR}/art/*.h")
 source_group(header FILES ${VROOMGIS_LIB_HEAD_FILES} ${VROOMGIS_LIB_HEAD_ART_FILES})
-include_directories("${CMAKE_SOURCE_DIR}/vroomgis/src")
-include_directories("${CMAKE_SOURCE_DIR}/vroomgis/art")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/art")
 
 add_library(vroomgis STATIC ${VROOMGIS_LIB_SRC_FILES}
         ${VROOMGIS_LIB_ART_FILES}
