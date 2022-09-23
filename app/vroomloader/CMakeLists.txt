@@ -16,6 +16,7 @@ file(GLOB_RECURSE HEAD_FILES "src/*.h")
 source_group(header FILES ${HEAD_FILES})
 
 include_directories(${CMAKE_SOURCE_DIR}/vroomgis/src)
+include_directories(${CMAKE_SOURCE_DIR}/vroomgis/art)
 
 # mac specific stuff
 IF (APPLE)
