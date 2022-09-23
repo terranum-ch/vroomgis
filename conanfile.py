@@ -18,16 +18,18 @@ class vroomgis(ConanFile):
     ]
 
     options = {
-        "enable_tests": [True, False],
+        "build_tests": [True, False],
+        "build_apps": [True, False],
     }
     default_options = {
-        "enable_tests": False,
+        "build_tests": False,
+        "build_apps": False,
     }
 
     generators = "cmake", "gcc"
 
     def requirements(self):
-        if self.options.enable_tests:
+        if self.options.build_tests:
             self.requires("gtest/1.11.0")
 
     def configure(self):
@@ -54,7 +56,8 @@ class vroomgis(ConanFile):
     def build(self):
         cmake = CMake(self)
 
-        cmake.definitions["BUILD_TESTS"] = self.options.enable_tests
+        cmake.definitions["BUILD_TESTS"] = self.options.build_tests
+        cmake.definitions["BUILD_APPS"] = self.options.build_apps
 
         cmake.configure()
         cmake.build()
