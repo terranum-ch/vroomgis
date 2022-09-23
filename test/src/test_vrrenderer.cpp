@@ -15,75 +15,54 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _TEST_VR_RENDERER_H_
-#define _TEST_VR_RENDERER_H_
+#include "gtest/gtest.h"
 
-
-#include "wx/wxprec.h"
-
-#ifndef WX_PRECOMP
-
-#include <wx/wx.h>
-
-#endif
-
-
-#include "test_param.h"	//for test parameters
+#include "test_param.h"
 #include "vrrenderer.h"
 #include "vrrender.h"
 
 
-class TEST_vrRenderer : public CxxTest::TestSuite
-{
+class Renderer : public ::testing::Test {
 public:
     vrLayerManager *m_Manager;
     vrLayer *m_LayerShp;
 
-
-    void setUp()
-    {
+    void setUp() {
         m_LayerShp = NULL;
         m_Manager = new vrLayerManager;
-        TS_ASSERT(m_Manager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
+        EXPECT_TRUE(m_Manager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
         m_LayerShp = m_Manager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
-        TS_ASSERT(m_LayerShp != NULL);
+        EXPECT_TRUE(m_LayerShp != NULL);
     }
 
-    void tearDown()
-    {
+    void tearDown() {
         delete m_Manager;
     }
-
-
-    void testRendererCreate()
-    {
-        TS_ASSERT(m_Manager != NULL);
-        TS_ASSERT(m_LayerShp != NULL);
-
-        vrRenderer myRenderer(m_LayerShp);
-        TS_ASSERT_EQUALS(myRenderer.GetLayer()->GetType(), vrDRIVER_VECTOR_SHP);
-
-        TS_ASSERT_EQUALS(myRenderer.GetRender()->GetType(), vrRENDER_VECTOR);
-        TS_ASSERT_EQUALS(myRenderer.GetLabel()->GetColor(), *wxBLACK);
-
-    }
-
-    void testRenderCreate()
-    {
-
-        //vrRenderRaster * myRenderRaster = new vrRenderRaster();
-        vrRenderVector *myRenderVector = new vrRenderVector();
-
-        // crash
-        //vrRenderer myRenderer(m_LayerShp, myRenderRaster);
-
-        // ok
-        vrRenderer myRenderer(m_LayerShp, myRenderVector);
-
-    }
-
-
 };
 
+TEST(Renderer, RendererCreate()
+{
+    EXPECT_TRUE(m_Manager != NULL);
+    EXPECT_TRUE(m_LayerShp != NULL);
 
-#endif
+    vrRenderer myRenderer(m_LayerShp);
+    EXPECT_EQ(myRenderer.GetLayer()->GetType(), vrDRIVER_VECTOR_SHP);
+
+    EXPECT_EQ(myRenderer.GetRender()->GetType(), vrRENDER_VECTOR);
+    EXPECT_EQ(myRenderer.GetLabel()->GetColor(), *wxBLACK);
+
+}
+
+TEST(Renderer, RenderCreate()
+{
+
+    //vrRenderRaster * myRenderRaster = new vrRenderRaster();
+    vrRenderVector *myRenderVector = new vrRenderVector();
+
+    // crash
+    //vrRenderer myRenderer(m_LayerShp, myRenderRaster);
+
+    // ok
+    vrRenderer myRenderer(m_LayerShp, myRenderVector);
+
+}

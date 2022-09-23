@@ -15,66 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _TEST_SETUP_H_
-#define _TEST_SETUP_H_
-
-
-#include "wx/wxprec.h"
-
-#ifndef WX_PRECOMP
-
-#include <wx/wx.h>
-
-#endif
-
-
-#include <cxxtest/TestSuite.h>
-#include <cxxtest/GlobalFixture.h>
-
-#ifdef __LINUX__
-
-#include "gtk/gtk.h"
-
-#endif
+#include "gtest/gtest.h"
 
 #include "vrlayer.h"
 
-class Fixture1 : public CxxTest::GlobalFixture
-{
+class Setup : public ::testing::Test {
 
 public:
-    bool setUpWorld()
-    {
+    bool setUp() {
         wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
         wxInitializer initializer;
         if (!initializer) {
             fprintf(stderr, "Failed to initialize the wxWidgets library, aborting.");
-            TS_FAIL("Unable to init the wxWigets library");
+            ASSERT_TRUE("Unable to init the wxWigets library");
         }
 
 #ifdef __LINUX__
-        TS_ASSERT(gtk_init_check(NULL, NULL));
+        EXPECT_TRUE(gtk_init_check(NULL, NULL));
 #endif
 
         return true;
     }
-
-
 };
 
-
-static Fixture1 fixture1;
-
-
-class Suite : public CxxTest::TestSuite
-{
-public:
-    void testOne()
-    {
-        //setting output to the std err (otherwise log into windows)
-        wxLog::SetActiveTarget(new wxLogStderr());
-        wxLogMessage("Setup file processed ");
-    }
+TEST_F(Setup, LogIsWorking) {
+    //setting output to the std err (otherwise log into windows)
+    wxLog::SetActiveTarget(new wxLogStderr());
+    wxLogMessage("Setup file processed ");
 };
 
 
