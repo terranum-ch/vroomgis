@@ -32,17 +32,10 @@
 #include "../art/vroomdrawer_toolbmp.h"
 #include "vrmemorylayerdialog.h"
 
-#ifdef USE_CRASHREPORT
-    #include <lscrashreport.h>
-#endif
-
 IMPLEMENT_APP(vroomDrawer);
 
 vroomDrawer::vroomDrawer()
 {
-#ifdef USE_CRASHREPORT
-     wxHandleFatalExceptions();
-#endif
 }
 
 
@@ -73,22 +66,6 @@ bool vroomDrawer::OnInit()
 
 void vroomDrawer::OnFatalException()
 {
-#ifdef USE_CRASHREPORT
-    lsCrashReport myCrashReport(_T("vroomDrawer"));
-    if (myCrashReport.PrepareReport(wxDebugReport::Context_Exception) == false) {
-        return;
-    }
-    if (myCrashReport.SendReportWeb(_T("http://www.crealp.ch/crashreport/upload_file.php")) == false) {
-        wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
-        if (myCrashReport.SaveReportFile(myDocPath) == false) {
-            wxLogError(_("Unable to save the crashreport!"));
-            return;
-        }
-        wxLogWarning(
-                    _("Connection problem! crashreport wasn't sent. crashreport was saved into '%s'\nplease send it manually to lucien.schreiber@crealp.vs.ch"),
-                    myDocPath);
-    }
-#endif
 }
 
 

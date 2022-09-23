@@ -45,10 +45,6 @@ ENDIF (WIN32)
 # LINK VROOMGIS LIBRARY
 target_link_libraries(vroomDrawer vroomgis)
 
-IF (USE_CRASHREPORT)
-    target_link_libraries(vroomDrawer ${LSCRASHREPORT_NAME})
-ENDIF (USE_CRASHREPORT)
-
 # Visual Leak Detector
 if (WIN32)
     if (USE_VLD)
