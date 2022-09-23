@@ -30,8 +30,7 @@ protected:
 };
 
 
-TEST_F(Label, LabelCreate)
-{
+TEST_F(Label, LabelCreate) {
     // using *wxNORMAL_FONT crash !!!
     vrLabel myLabel;
 
@@ -43,8 +42,7 @@ TEST_F(Label, LabelCreate)
     EXPECT_EQ(myLabel.GetColor(), *wxBLACK);
 }
 
-TEST_F(Label, LabelCreate2)
-{
+TEST_F(Label, LabelCreate2) {
     wxFont myFont2 = m_Fontt;
     myFont2.SetUnderlined(true);
 
@@ -56,8 +54,7 @@ TEST_F(Label, LabelCreate2)
 #endif
 }
 
-TEST_F(Label, SerializeLabel)
-{
+TEST_F(Label, SerializeLabel) {
 
     // save label
     vrLabel myLabel;
@@ -69,7 +66,6 @@ TEST_F(Label, SerializeLabel)
     //change label colour
     wxColour myColour(255, 0, 0);
     myLabel.SetColor(myColour);
-
 
     // deserialize
     vrSerialize mySerialize2(mySerialize.GetString());

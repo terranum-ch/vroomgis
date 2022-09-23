@@ -20,7 +20,7 @@
 #include "vrlayer.h"
 #include "vrlayerraster.h"
 #include "vrlayervector.h"
-#include "test_param.h"	//for test parameters
+#include "test_param.h"    //for test parameters
 #include "vrlayerrasterc2d.h"
 #include "vrlayermanager.h"
 
@@ -29,8 +29,7 @@ class LayerRasterC2D : public ::testing::Test {
     friend class vrLayerRasterC2D;
 };
 
-TEST_F(LayerRasterC2D, OpenLayerRasterC2D)
-{
+TEST_F(LayerRasterC2D, OpenLayerRasterC2D) {
     //init lib.
     vrLayerManager myManager;
 
@@ -41,9 +40,7 @@ TEST_F(LayerRasterC2D, OpenLayerRasterC2D)
     EXPECT_TRUE(myLayer.IsOK());
 }
 
-
-TEST_F(LayerRasterC2D, GetPixelValueC2D)
-{
+TEST_F(LayerRasterC2D, GetPixelValueC2D) {
     wxLogMessage("Testing getting pixel value for C2D raster");
     vrRealRect myExtent;
     EXPECT_TRUE(myExtent.IsEmpty());

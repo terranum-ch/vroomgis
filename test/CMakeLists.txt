@@ -1,10 +1,24 @@
+cmake_minimum_required(VERSION 3.11)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Project name
 project(vroomgis-tests)
 
 #search all source files
-file(GLOB src_tests "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+file(GLOB src_tests "src/*.cpp")
+file(GLOB head_tests "src/*.cpp")
 
-add_executable(vroomgis-tests ${src_tests})
+include_directories(${CMAKE_SOURCE_DIR}/vroomgis/src)
+
+# Conditional compilation
+IF (WIN32)
+    add_executable(vroomgis-tests WIN32 ${src_tests} ${head_tests})
+ELSEIF (APPLE)
+    add_executable(vroomgis-tests MACOSX_BUNDLE ${src_tests} ${head_tests})
+ELSE ()
+    add_executable(vroomgis-tests ${src_tests} ${head_tests})
+ENDIF ()
 
 # GTK LIB IF LINUX
 message(STATUS "System name is : " ${CMAKE_SYSTEM_NAME})
@@ -20,10 +34,13 @@ set(UNIT_TESTING_PATH CACHE PATH "Location of unit testing files and projects")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/test_param.h.in" "${PROJECT_BINARY_DIR}/test_param.h")
 include_directories(${PROJECT_BINARY_DIR})
 
-include_directories(${CMAKE_SOURCE_DIR}/vroomgis/src)
-
 # LINK LIBRARIES
-add_dependencies(vroomgis-tests vroomgis)
 target_link_libraries(vroomgis-tests vroomgis)
 target_link_libraries(vroomgis-tests CONAN_PKG::gtest)
-target_link_libraries(vroomgis-tests CONAN_PKG::wxwidgets)
+
+# Visual Leak Detector
+if (WIN32)
+    if (USE_VLD)
+        target_link_libraries(vroomgis-tests ${VLD_LIBRARIES})
+    endif (USE_VLD)
+endif (WIN32)

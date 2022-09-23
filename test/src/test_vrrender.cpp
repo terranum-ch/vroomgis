@@ -21,8 +21,7 @@
 #include "vrrendercoltop.h"
 
 
-TEST(Render, RenderBasic)
-{
+TEST(Render, RenderBasic) {
     vrRender myRender;
     vrRenderVector myRenderVect;
     vrRenderRaster myRenderRast;
@@ -31,11 +30,9 @@ TEST(Render, RenderBasic)
     EXPECT_EQ(myRenderVect.GetType(), vrRENDER_VECTOR);
     EXPECT_EQ(myRenderRast.GetType(), vrRENDER_RASTER);
     EXPECT_EQ(myRenderRastc2d.GetType(), vrRENDER_RASTER_C2D);
-
 }
 
-TEST(Render, RenderPointer)
-{
+TEST(Render, RenderPointer) {
     vrRender *mypRender = NULL;
     vrRenderVector myRenderVect;
     vrRenderRaster myRenderRast;
@@ -49,11 +46,9 @@ TEST(Render, RenderPointer)
 
     mypRender = &myRenderRastc2d;
     EXPECT_EQ(mypRender->GetType(), vrRENDER_RASTER_C2D);
-
 }
 
 TEST(Render, RenderGetTransparencyChar) {
-
 #ifndef __WXMSW__
     vrRender *mypRender = NULL;
     vrRenderVector myRenderVect;

@@ -17,13 +17,12 @@
 
 #include <gtest/gtest.h>
 
-#include "test_param.h"	//for test parameters
+#include "test_param.h"    //for test parameters
 #include "vrlayervector.h"
 #include "vrlayermanager.h"
 
 
-TEST(LayerVectorOGR, OpenLayerVectorOGR)
-{
+TEST(LayerVectorOGR, OpenLayerVectorOGR) {
     //init lib.
     vrLayerManager myManager;
 
@@ -34,16 +33,14 @@ TEST(LayerVectorOGR, OpenLayerVectorOGR)
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), true), true);
 }
 
-TEST(LayerVectorOGR, OpenLayerVectorOGRFailled)
-{
+TEST(LayerVectorOGR, OpenLayerVectorOGRFailled) {
     vrLayerVectorOGR myLayer;
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileMisc), false), false);
     EXPECT_EQ(myLayer.IsOK(), false);
 
 }
 
-TEST(LayerVectorOGR, GetExtentVectorOGR)
-{
+TEST(LayerVectorOGR, GetExtentVectorOGR) {
 
     vrRealRect myExtent;
     EXPECT_TRUE(myExtent.IsEmpty());
@@ -62,15 +59,12 @@ TEST(LayerVectorOGR, GetExtentVectorOGR)
     EXPECT_EQ((int) myExtent.GetBottom(), 114173);
 }
 
-
-TEST(LayerVectorOGR, GettingGeometry)
-{
+TEST(LayerVectorOGR, GettingGeometry) {
     vrLayerVectorOGR myLayer;
 
     // layer not opened
     OGRFeature *myFeat = myLayer.GetFeature(0);
     EXPECT_TRUE(myFeat == NULL);
-
 
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false), true);
     EXPECT_EQ(myLayer.IsOK(), true);
@@ -87,27 +81,21 @@ TEST(LayerVectorOGR, GettingGeometry)
 
 }
 
-
-TEST(LayerVectorOGR, GettingGeometryType)
-{
+TEST(LayerVectorOGR, GettingGeometryType) {
     vrLayerVectorOGR myLayer;
 
     // layer not opened
     EXPECT_TRUE(myLayer.GetGeometryType() == wkbUnknown);
 
-
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false), true);
     EXPECT_EQ(myLayer.IsOK(), true);
     EXPECT_EQ(myLayer.GetGeometryType(), wkbLineString);
-
 
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false), true);
     EXPECT_EQ(myLayer.GetGeometryType(), wkbPolygon);
 }
 
-
-TEST(LayerVectorOGR, GettingNextGeometry)
-{
+TEST(LayerVectorOGR, GettingNextGeometry) {
     wxLogMessage("Testing getting next data for layer");
 
     vrLayerVectorOGR myLayer;

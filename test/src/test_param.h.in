@@ -25,8 +25,11 @@
 
 
 #include <wx/wxprec.h>
+
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+
+#include <wx/wx.h>
+
 #endif
 
 // to test private functions
@@ -48,10 +51,6 @@ static const wxString g_TestFileC2D = "mntmo_c2d.c2d";
 static const wxString g_TestProfile = "profile.shp";
 static const wxString g_TestProfileOutPt = "profile_out_pt.shp";
 static const wxString g_TestProfileOutLine = "profile_out_line.shp";
-
-
-
-
 
 
 #endif

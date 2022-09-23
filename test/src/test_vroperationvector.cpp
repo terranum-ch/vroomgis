@@ -48,8 +48,7 @@ protected:
     }
 };
 
-TEST_F(OperationVector, CreateProfileObject)
-{
+TEST_F(OperationVector, CreateProfileObject) {
     EXPECT_TRUE(myRaster->IsOK());
     EXPECT_TRUE(myVector->IsOK());
 
@@ -58,12 +57,9 @@ TEST_F(OperationVector, CreateProfileObject)
     EXPECT_TRUE(myProfiler.IsOk());
 
     OGRFeature::DestroyFeature(myFeat);
-
 }
 
-
-TEST_F(OperationVector, DoProfile)
-{
+TEST_F(OperationVector, DoProfile) {
     OGRFeature *myFeat = myVector->GetNextFeature(true);
     vrOperationVectorProfiler myProfiler(myFeat->GetGeometryRef(), myRaster);
     EXPECT_TRUE(myProfiler.DoProfile());
@@ -71,9 +67,7 @@ TEST_F(OperationVector, DoProfile)
     OGRFeature::DestroyFeature(myFeat);
 }
 
-
-TEST_F(OperationVector, ProfileOut)
-{
+TEST_F(OperationVector, ProfileOut) {
     vrLayerManager myManager;
     wxFileName myOutPtName(g_TestPath, g_TestProfileOutPt);
     myManager.Erase(myOutPtName);
@@ -83,7 +77,6 @@ TEST_F(OperationVector, ProfileOut)
 
     vrLayerVectorOGR myOutPt;
     EXPECT_TRUE(myOutPt.Create(myOutPtName, wkbPoint));
-
 
     OGRFeature *myFeat = myVector->GetNextFeature(true);
     vrOperationVectorProfiler myProfiler(myFeat->GetGeometryRef(), myRaster);
@@ -96,7 +89,6 @@ TEST_F(OperationVector, ProfileOut)
         EXPECT_TRUE(myOutPt.AddFeature(&myPt) != wxNOT_FOUND);
     }
 
-
     vrLayerVectorOGR myOutLine;
     EXPECT_TRUE(myOutLine.Create(myOutLineName, wkbLineString));
     OGRLineString myLine;
@@ -105,9 +97,7 @@ TEST_F(OperationVector, ProfileOut)
 
 }
 
-
-TEST_F(OperationVector, ProfileGeometries)
-{
+TEST_F(OperationVector, ProfileGeometries) {
     OGRFeature *myFeat = myVector->GetNextFeature(true);
     vrOperationVectorProfiler myProfiler(myFeat->GetGeometryRef(), myRaster);
     EXPECT_TRUE(myProfiler.DoProfile());

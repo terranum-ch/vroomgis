@@ -42,8 +42,7 @@ protected:
     }
 };
 
-TEST_F(ViewerLayerManager, AddViewerLayerManager)
-{
+TEST_F(ViewerLayerManager, AddViewerLayerManager) {
     // adding two times the same viewermanager is not permitted
     EXPECT_FALSE(m_LayerManager->AddViewerLayerManager(m_ViewManager));
     vrViewerLayerManager *myManager2 = new vrViewerLayerManager(m_LayerManager, NULL, NULL);
@@ -52,10 +51,7 @@ TEST_F(ViewerLayerManager, AddViewerLayerManager)
     EXPECT_FALSE(m_LayerManager->AddViewerLayerManager(myManager2));
 }
 
-TEST_F(ViewerLayerManager, OpenGISDataViewerManager)
-{
-
-
+TEST_F(ViewerLayerManager, OpenGISDataViewerManager) {
     // open data
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
     vrLayer *myTestSHPLayer = NULL;
@@ -70,17 +66,12 @@ TEST_F(ViewerLayerManager, OpenGISDataViewerManager)
     EXPECT_TRUE(myTestJpegLayer != NULL);
     EXPECT_EQ(myTestJpegLayer->GetType(), vrDRIVER_RASTER_JPEG);
 
-
     // add data to the viewermanager
     EXPECT_TRUE(m_ViewManager->Add(-1, myTestSHPLayer));
     EXPECT_TRUE(m_ViewManager->Add(0, myTestJpegLayer));
-
 }
 
-TEST_F(ViewerLayerManager, GetRenderer)
-{
-
-
+TEST_F(ViewerLayerManager, GetRenderer) {
     // open data
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
     vrLayer *myTestSHPLayer = NULL;
@@ -99,15 +90,12 @@ TEST_F(ViewerLayerManager, GetRenderer)
     // when adding, status should be visible
     EXPECT_TRUE(myRenderer->GetVisible());
 
-
     // trying to get out bounds renderer
     myRenderer = m_ViewManager->GetRenderer(12);
     EXPECT_TRUE(myRenderer == NULL);
-
 }
 
-TEST_F(ViewerLayerManager, Remove)
-{
+TEST_F(ViewerLayerManager, Remove) {
 
     // open data
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
@@ -129,9 +117,7 @@ TEST_F(ViewerLayerManager, Remove)
     EXPECT_EQ(m_ViewManager->Remove(myRenderer), false);
 }
 
-
-TEST_F(ViewerLayerManager, MoveLayer)
-{
+TEST_F(ViewerLayerManager, MoveLayer) {
     wxLogMessage("Testing moving layer");
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileTIF)));

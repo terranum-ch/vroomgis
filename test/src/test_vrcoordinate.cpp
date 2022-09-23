@@ -23,8 +23,7 @@ email                : lucien.schreiber at crealp dot vs dot ch
 #include "fake_vrviewerdisplay.h"
 
 
-TEST(Coordinates, CreateCoordinate)
-{
+TEST(Coordinates, CreateCoordinate) {
     FakevrViewerDisplay myDisplay;
     EXPECT_TRUE(myDisplay.GetSize() == wxSize(600, 400));
     vrCoordinate myCoord(&myDisplay);
@@ -37,22 +36,19 @@ TEST(Coordinates, CreateCoordinate)
     EXPECT_NEAR(myCoord.GetExtent().GetBottom(), 0, 0.000001);
 }
 
-TEST(Coordinates, ComputePixelSizeFailed)
-{
+TEST(Coordinates, ComputePixelSizeFailed) {
     FakevrViewerDisplay myNewDisplay;
     vrCoordinate myCoord(&myNewDisplay);
 
     EXPECT_TRUE(myCoord.GetPixelSize() == wxNOT_FOUND);
 }
 
-TEST(Coordinates, ComputeGetExtent)
-{
+TEST(Coordinates, ComputeGetExtent) {
     FakevrViewerDisplay myNewDisplay;
     vrCoordinate myCoord(&myNewDisplay);
 
     // computing full extent without adding extent return false
     EXPECT_FALSE(myCoord.ComputeFullExtent());
-
 
     // creating false extent
     vrRealRect myTestExtent(598000, 116000, 1000, -2000);
@@ -64,8 +60,7 @@ TEST(Coordinates, ComputeGetExtent)
 
 }
 
-TEST(Coordinates, ExtentAndPixSize)
-{
+TEST(Coordinates, ExtentAndPixSize) {
     FakevrViewerDisplay myNewDisplay(wxSize(610, 410)); // to take into accout the margin
     vrCoordinate myCoord(&myNewDisplay);
 
@@ -77,12 +72,10 @@ TEST(Coordinates, ExtentAndPixSize)
     EXPECT_NEAR(myCoord.GetExtent().GetRight(), 6050, 0.0001);
     EXPECT_NEAR(myCoord.GetExtent().GetBottom(), -50, 0.0001);
 
-
     EXPECT_NEAR(myCoord.GetPixelSize(), 10, 0.000001);
 }
 
-TEST(Coordinates, UpdateExtent)
-{
+TEST(Coordinates, UpdateExtent) {
     FakevrViewerDisplay myNewDisplay(wxSize(610, 410));
     vrCoordinate myCoord(&myNewDisplay);
 
@@ -93,18 +86,15 @@ TEST(Coordinates, UpdateExtent)
     EXPECT_TRUE(myCoord.ComputeFullExtent());
     EXPECT_NEAR(myCoord.GetPixelSize(), 10, 0.00000001);
 
-
     // this is the real test, before was just initialisation
     EXPECT_TRUE(myCoord.UpdateExtent());
     EXPECT_NEAR(myCoord.GetPixelSize(), 10, 0.00000001);
-
 
     // viewer size increase but px size doesn't change
     myNewDisplay.SetFakeSize(wxSize(1220, 820));
     EXPECT_TRUE(myCoord.UpdateExtent());
     EXPECT_NEAR(myCoord.GetPixelSize(), 10, 0.00000001);
     wxLogMessage("---- pixel size is %.f", myCoord.GetPixelSize());
-
 
     // left and top doesn't change too
     EXPECT_NEAR(myCoord.GetExtent().GetLeft(), -50, 0.0001);
@@ -116,8 +106,7 @@ TEST(Coordinates, UpdateExtent)
 
 }
 
-TEST(Coordinates, IsOk)
-{
+TEST(Coordinates, IsOk) {
     FakevrViewerDisplay myNewDisplay(wxSize(610, 410));
     vrCoordinate myCoord(&myNewDisplay);
 
@@ -131,8 +120,7 @@ TEST(Coordinates, IsOk)
     EXPECT_TRUE(myCoord.IsOk());
 }
 
-TEST(Coordinates, GetFittedRectangle)
-{
+TEST(Coordinates, GetFittedRectangle) {
     FakevrViewerDisplay myDisplay;
     EXPECT_TRUE(myDisplay.GetSize() == wxSize(600, 400));
     vrCoordinate myCoord(&myDisplay);
@@ -158,8 +146,7 @@ TEST(Coordinates, GetFittedRectangle)
     EXPECT_TRUE(myCoord.GetRectFitted(mySelRect3) == myResult3);
 }
 
-TEST(Coordinates, GetPixelSize)
-{
+TEST(Coordinates, GetPixelSize) {
     FakevrViewerDisplay myDisplay(wxSize(200, 100));
     EXPECT_TRUE(myDisplay.GetSize() == wxSize(200, 100));
     vrCoordinate myCoord(&myDisplay);
@@ -173,12 +160,9 @@ TEST(Coordinates, GetPixelSize)
     myCoord.SetExtent(myExtent2);
     double myPx2 = myCoord.GetPixelSize();
     EXPECT_NEAR(myPx2, 0.5, 0.000001);
-
-
 }
 
-TEST(Coordinates, ConvertFromPixels)
-{
+TEST(Coordinates, ConvertFromPixels) {
     // init display
     FakevrViewerDisplay myDisplay(wxSize(200, 100));
     EXPECT_TRUE(myDisplay.GetSize() == wxSize(200, 100));
@@ -198,11 +182,9 @@ TEST(Coordinates, ConvertFromPixels)
 
     EXPECT_TRUE(myCoord.ConvertFromPixels(wxPoint(0, 0), myConvertedPt));
     EXPECT_TRUE(myConvertedPt == wxPoint2DDouble(0, 2000));
-
 }
 
-TEST(Coordinates, ConvertFromPixels2)
-{
+TEST(Coordinates, ConvertFromPixels2) {
     // init display
     FakevrViewerDisplay myDisplay(wxSize(200, 100));
     EXPECT_TRUE(myDisplay.GetSize() == wxSize(200, 100));
@@ -216,5 +198,4 @@ TEST(Coordinates, ConvertFromPixels2)
     vrRealRect myConvertedRect;
     EXPECT_TRUE(myCoord.ConvertFromPixels(wxRect(0, 0, 50, 100), myConvertedRect));
     EXPECT_TRUE(myConvertedRect == vrRealRect(0, 2000, 245, -495));
-
 }

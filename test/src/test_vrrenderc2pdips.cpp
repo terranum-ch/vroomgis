@@ -21,14 +21,12 @@
 #include "vrrendervectorc2p.h"
 
 
-TEST(RenderVectorC2PDips, RenderBasic)
-{
+TEST(RenderVectorC2PDips, RenderBasic) {
     vrRenderVectorC2PDips myRenderDips;
     EXPECT_EQ(myRenderDips.GetType(), vrRENDER_VECTOR_C2P_DIPS);
 }
 
-TEST(RenderVectorC2PDips, RenderDefaultColour)
-{
+TEST(RenderVectorC2PDips, RenderDefaultColour) {
     vrRenderVectorC2PDips myRenderDips(*wxRED, 2);
     EXPECT_TRUE(myRenderDips.GetDipColour(10) == *wxRED);
     EXPECT_TRUE(myRenderDips.AddDipColour(*wxBLUE, 10, true));

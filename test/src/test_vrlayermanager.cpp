@@ -17,7 +17,7 @@
 
 #include <gtest/gtest.h>
 
-#include "test_param.h"	//for test parameters
+#include "test_param.h"    //for test parameters
 #include "vrlayermanager.h"
 
 
@@ -32,14 +32,7 @@ protected:
     }
 };
 
-
-TEST_F(LayerManager, CreateLayerManager)
-{
-    wxLogMessage("*************************");
-    wxLogMessage("  VRLAYER MANAGER TESTS  ");
-    wxLogMessage("*************************");
-
-
+TEST_F(LayerManager, CreateLayerManager) {
     vrLayerManager myLayerManager;
     EXPECT_FALSE(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc)));
     EXPECT_TRUE(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP)));
@@ -49,8 +42,7 @@ TEST_F(LayerManager, CreateLayerManager)
     EXPECT_EQ(myLayerManager.GetCount(), 1);
 }
 
-TEST_F(LayerManager, AddingRaster)
-{
+TEST_F(LayerManager, AddingRaster) {
     vrLayerManager myLayerManager;
 
     EXPECT_TRUE(myLayerManager.Open(m_JpegName));
@@ -69,8 +61,7 @@ TEST_F(LayerManager, AddingRaster)
 
 }
 
-TEST_F(LayerManager, GetType)
-{
+TEST_F(LayerManager, GetType) {
     vrLayerManager myLayerManager;
     EXPECT_TRUE(myLayerManager.Open(m_JpegName));
     EXPECT_TRUE(myLayerManager.Open(m_TiffName));
@@ -81,8 +72,7 @@ TEST_F(LayerManager, GetType)
     EXPECT_EQ(myLayerManager.GetLayer(m_TiffName)->GetType(), vrDRIVER_RASTER_TIFF);
 }
 
-TEST_F(LayerManager, RemoveLayer1)
-{
+TEST_F(LayerManager, RemoveLayer1) {
     vrLayerManager myLayerManager;
     EXPECT_TRUE(myLayerManager.Open(m_JpegName));
     EXPECT_TRUE(myLayerManager.Open(m_TiffName));

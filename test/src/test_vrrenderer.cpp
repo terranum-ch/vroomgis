@@ -42,8 +42,7 @@ protected:
     }
 };
 
-TEST_F(Renderer, RendererCreate)
-{
+TEST_F(Renderer, RendererCreate) {
     EXPECT_TRUE(m_Manager != NULL);
     EXPECT_TRUE(m_LayerShp != NULL);
 
@@ -52,11 +51,9 @@ TEST_F(Renderer, RendererCreate)
 
     EXPECT_EQ(myRenderer.GetRender()->GetType(), vrRENDER_VECTOR);
     EXPECT_EQ(myRenderer.GetLabel()->GetColor(), *wxBLACK);
-
 }
 
-TEST_F(Renderer, RenderCreate)
-{
+TEST_F(Renderer, RenderCreate) {
     //vrRenderRaster * myRenderRaster = new vrRenderRaster();
     vrRenderVector *myRenderVector = new vrRenderVector();
 

@@ -20,7 +20,7 @@
 #include "vrlayer.h"
 #include "vrlayerraster.h"
 #include "vrlayervector.h"
-#include "test_param.h"	//for test parameters
+#include "test_param.h"    //for test parameters
 #include "vrlayerraster.h"
 #include "vrlayermanager.h"
 
@@ -29,8 +29,7 @@ class LayerRasterGDAL : public ::testing::Test {
     friend class vrLayerRasterGDAL;
 };
 
-TEST_F(LayerRasterGDAL, OpenLayerRasterGDAL)
-{
+TEST_F(LayerRasterGDAL, OpenLayerRasterGDAL) {
     //init lib.
     vrLayerManager myManager;
 
@@ -42,9 +41,7 @@ TEST_F(LayerRasterGDAL, OpenLayerRasterGDAL)
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), true), true);
 }
 
-
-TEST_F(LayerRasterGDAL, GetExtentRasterGDAL)
-{
+TEST_F(LayerRasterGDAL, GetExtentRasterGDAL) {
     wxLogMessage("Testing getting extent for GDAL extent");
     vrRealRect myExtent;
     EXPECT_TRUE(myExtent.IsEmpty());
@@ -65,9 +62,7 @@ TEST_F(LayerRasterGDAL, GetExtentRasterGDAL)
 
 }
 
-
-TEST_F(LayerRasterGDAL, GettingExtentGDAL2)
-{
+TEST_F(LayerRasterGDAL, GettingExtentGDAL2) {
 
     // GETTING EXTENT FOR ROTATED RASTERS RETURN MAX EXTENT
     vrRealRect myExtent;
@@ -91,9 +86,7 @@ TEST_F(LayerRasterGDAL, GettingExtentGDAL2)
 
 }
 
-
-TEST_F(LayerRasterGDAL, GetPixelValueGDAL)
-{
+TEST_F(LayerRasterGDAL, GetPixelValueGDAL) {
     wxLogMessage("Testing getting pixel value for GDAL raster");
     vrRealRect myExtent;
     EXPECT_TRUE(myExtent.IsEmpty());
