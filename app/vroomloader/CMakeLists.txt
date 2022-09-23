@@ -43,7 +43,7 @@ ELSE (WIN32)
 ENDIF (WIN32)
 
 # LINK VROOMGIS LIBRARY
-target_link_libraries(vroomLoader vroomgis)
+target_link_libraries(vroomLoader vroomgis-lib)
 
 # Visual Leak Detector
 if (WIN32)

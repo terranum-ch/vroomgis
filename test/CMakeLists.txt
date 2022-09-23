@@ -35,7 +35,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/test_param.h.in" "${PROJECT_BINA
 include_directories(${PROJECT_BINARY_DIR})
 
 # LINK LIBRARIES
-target_link_libraries(vroomgis-tests vroomgis)
+target_link_libraries(vroomgis-tests vroomgis-lib)
 target_link_libraries(vroomgis-tests CONAN_PKG::gtest)
 
 # Visual Leak Detector
