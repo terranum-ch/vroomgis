@@ -6,40 +6,10 @@
 # VROOMGIS LIB
 set(VROOMGIS_LIBRARY "vroomgis")
 
-# FINDING VROOMGIS PATH
-FIND_PATH(VROOMGIS_PATH "vroomgis.h"
-        "src"
-        "../plugins/vroomgis/src/"
-        "../../plugins/vroomgis/src/"
-        "../../../plugins/vroomgis/src/"
-        "../../../../plugins/vroomgis/src/"
-        "../../../../../plugins/vroomgis/src/"
-        "/lib/vroomgis/src/"
-        "../lib/vroomgis/src/"
-        "../../lib/vroomgis/src/"
-        "../../../lib/vroomgis/src/"
-        "../../../../lib/vroomgis/src/"
-        "../../../../../lib/vroomgis/src/"
-        "/vroomgis/src"
-        "../vroomgis/src/"
-        "../../vroomgis/src/"
-        "src"
-        "../../../../vroomgis/src/"
-        "../../../../../vroomgis/src/"
-        NO_DEFAULT_PATH)
-
-IF (NOT VROOMGIS_PATH)
-    message("src")
-    message(FATAL_ERROR "Path not found, not able to use the vroomgis library. You may fill the VROOMGIS_PATH manually")
-
-ENDIF (NOT VROOMGIS_PATH)
-#message ("VroomGIS found here : ${VROOMGIS_PATH}")
+set(VROOMGIS_PATH ${CMAKE_SOURCE_DIR}/vroomgis/src)
 
 # ADDITION OF CUSTOM MODULES
-set(CMAKE_MODULE_PATH ${VROOMGIS_PATH}/../build/cmake)
-
-# NEEDED LIBRARY
-option(SEARCH_VROOMGIS_LIBS "Sould we search for libraries for vroomGIS ?" ON)
+set(CMAKE_MODULE_PATH ${VROOMGIS_PATH}/build/cmake)
 
 #CREATE LIB WITH ALL MAIN PROJECT CLASS
 #search all source files
@@ -64,6 +34,10 @@ add_library(${VROOMGIS_LIBRARY} STATIC ${VROOMGIS_LIB_SRC_FILES}
         ${VROOMGIS_LIB_ART_FILES}
         ${VROOMGIS_LIB_HEAD_FILES}
         ${VROOMGIS_LIB_HEAD_ART_FILES})
+
+target_link_libraries(${VROOMGIS_LIBRARY} CONAN_PKG::wxwidgets)
+target_link_libraries(${VROOMGIS_LIBRARY} CONAN_PKG::gdal)
+target_link_libraries(${VROOMGIS_LIBRARY} CONAN_PKG::geos)
 
 # USED FOR PERFORMANCE UNDER WINDOWS
 IF (WIN32)
