@@ -16,45 +16,13 @@ source_group(header FILES ${HEAD_FILES})
 list(APPEND SRC_FILES "art/vroomdrawer_toolbmp.cpp")
 list(APPEND HEAD_FILES "art/vroomdrawer_toolbmp.h")
 
-# FIND WXWIDGETS
-# FOR WINDOWS, DO NOT FORGET TO DEFINE WXWIN VARIABLE
-# FOR UNIX, SET ENVIRONNEMENT VAR : export WX_CONFIG=<path to wxconfig> before calling cmake
-find_package(wxWidgets COMPONENTS all REQUIRED)
-include(${wxWidgets_USE_FILE})
-
-#CREATE VROOMGIS LIBRARY AND WXWIDGETS - GDAL LIB
-include("../../vroomgis/CMakeLists.txt")
-
-# wxVERSION PLUGIN
-include(FetchContent)
-FetchContent_Declare(
-        wxVersion
-        GIT_REPOSITORY https://github.com/terranum-ch/wxVersion.git
-        GIT_TAG        476a09746b5bb7ab134f8174602d8455d5693949
-)
-FetchContent_MakeAvailable(wxVersion)
-message("${wxVersion_SOURCE_DIR} source dir")
-include_directories("${wxVersion_SOURCE_DIR}/src")
-
-#USE LSCRASHREPORT PLUGIN
-include("../../plugins/lscrashreport/build/use_lscrashreport.cmake")
-
-# Visual Leak Detector
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/build/cmake)
-if (WIN32)
-    set(USE_VLD 0 CACHE BOOL "Sould we use Visual Leak Detector (https://vld.codeplex.com) ?")
-    if (USE_VLD)
-        find_package(VLD)
-        include_directories(${VLD_INCLUDE_DIRS})
-        add_definitions(-DUSE_VLD)
-    endif (USE_VLD)
-endif (WIN32)
+include_directories(${CMAKE_SOURCE_DIR}/vroomgis/src)
 
 IF (APPLE)
     set(APP_ICON "vroomgis.icns")
     set(MACOSX_BUNDLE_INFO_STRING "VroomGIS test Program")
     set(MACOSX_BUNDLE_ICON_FILE ${APP_ICON})
-    set(MACOSX_BUNDLE_BUNDLE_NAME "${CMAKE_PROJECT_NAME}")
+    set(MACOSX_BUNDLE_BUNDLE_NAME "vroomDrawer")
     set(MACOSX_BUNDLE_SHORT_VERSION_STRING "Alpha")
     set(MACOSX_BUNDLE_BUNDLE_VERSION "1.0.0")
     set(MACOSX_BUNDLE_COPYRIGHT "Lucien Schreiber (c) 2013")
@@ -68,26 +36,22 @@ ENDIF (APPLE)
 
 # conditionnal compilation, Windows needs resource.rc
 IF (WIN32)
-    source_group(resource FILES ../src/resource.rc)
-    add_executable(${CMAKE_PROJECT_NAME} WIN32 ${SRC_FILES} ${HEAD_FILES} "../src/resource.rc")
+    source_group(resource FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/resource.rc)
+    add_executable(vroomDrawer WIN32 ${SRC_FILES} ${HEAD_FILES} "${CMAKE_CURRENT_SOURCE_DIR}/src/resource.rc")
 ELSE (WIN32)
-    add_executable(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE ${SRC_FILES} ${HEAD_FILES})
+    add_executable(vroomDrawer MACOSX_BUNDLE ${SRC_FILES} ${HEAD_FILES})
 ENDIF (WIN32)
-target_link_libraries(${CMAKE_PROJECT_NAME} CONAN_PKG::wxwidgets )
 
 # LINK VROOMGIS LIBRARY
-target_link_libraries(${CMAKE_PROJECT_NAME} vroomgis)
-
-# LINK WXVERSION PLUGIN
-target_link_libraries(${CMAKE_PROJECT_NAME} wxVersion)
+target_link_libraries(vroomDrawer vroomgis)
 
 IF (USE_CRASHREPORT)
-    target_link_libraries(${CMAKE_PROJECT_NAME} ${LSCRASHREPORT_NAME})
+    target_link_libraries(vroomDrawer ${LSCRASHREPORT_NAME})
 ENDIF (USE_CRASHREPORT)
 
 # Visual Leak Detector
 if (WIN32)
     if (USE_VLD)
-        target_link_libraries(${CMAKE_PROJECT_NAME} ${VLD_LIBRARIES})
+        target_link_libraries(vroomDrawer ${VLD_LIBRARIES})
     endif (USE_VLD)
 endif (WIN32)

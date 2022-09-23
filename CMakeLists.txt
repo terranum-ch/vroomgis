@@ -22,7 +22,25 @@ ENDIF (WIN32)
 add_subdirectory(vroomgis)
 
 option(BUILD_TESTS "Do you want to build the tests (recommended) ?" ON)
+option(BUILD_APPS "Do you want to build the apps ?" ON)
+
+# Visual Leak Detector
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/build/cmake)
+if (WIN32)
+    option(USE_VLD "Sould we use Visual Leak Detector (https://vld.codeplex.com) ?" OFF)
+    if (USE_VLD)
+        find_package(VLD)
+        include_directories(${VLD_INCLUDE_DIRS})
+        add_definitions(-DUSE_VLD)
+    endif (USE_VLD)
+endif (WIN32)
 
 if (BUILD_TESTS)
     add_subdirectory(test)
+endif()
+
+if (BUILD_APPS)
+    add_subdirectory(app/vroomdrawer)
+    add_subdirectory(app/vroomloader)
+    add_subdirectory(app/vroomtwin)
 endif()

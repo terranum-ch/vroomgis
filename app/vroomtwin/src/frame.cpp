@@ -21,9 +21,9 @@
 
 #include "frame.h"
 #include <wx/filepicker.h>
+#include <wx/msgdlg.h>
 
 #include "tmlog.h"	// for double logging process
-#include <wxversion_dlg.h>
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 
 BEGIN_EVENT_TABLE(vroomTwinFrame, wxFrame)
@@ -217,8 +217,7 @@ void vroomTwinFrame::OnQuit(wxCommandEvent & WXUNUSED(event))
 
 void vroomTwinFrame::OnAbout(wxCommandEvent & WXUNUSED(event))
 {
-    wxVersionDlg myDlg(this, wxID_ANY, "About vroomTwin");
-    myDlg.SetBitmapLogo(*_img_vroomgis);
+    wxMessageDialog myDlg(this, "Dummy about dialog.");
     myDlg.ShowModal();
 }
 
