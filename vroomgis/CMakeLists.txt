@@ -24,16 +24,16 @@ source_group(header FILES ${VROOMGIS_LIB_HEAD_FILES} ${VROOMGIS_LIB_HEAD_ART_FIL
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/art")
 
-add_library(vroomgis-lib STATIC ${VROOMGIS_LIB_SRC_FILES}
+add_library(vroomgis STATIC ${VROOMGIS_LIB_SRC_FILES}
         ${VROOMGIS_LIB_ART_FILES}
         ${VROOMGIS_LIB_HEAD_FILES}
         ${VROOMGIS_LIB_HEAD_ART_FILES})
 
-target_link_libraries(vroomgis-lib CONAN_PKG::wxwidgets)
-target_link_libraries(vroomgis-lib CONAN_PKG::gdal)
-target_link_libraries(vroomgis-lib CONAN_PKG::geos)
+target_link_libraries(vroomgis CONAN_PKG::wxwidgets)
+target_link_libraries(vroomgis CONAN_PKG::gdal)
+target_link_libraries(vroomgis CONAN_PKG::geos)
 
 # USED FOR PERFORMANCE UNDER WINDOWS
 IF (WIN32)
-    target_link_libraries(vroomgis-lib "psapi")
+    target_link_libraries(vroomgis "psapi")
 ENDIF (WIN32)
