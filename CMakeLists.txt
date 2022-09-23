@@ -12,6 +12,8 @@ include_directories(${CONAN_INCLUDE_DIRS})
 
 add_subdirectory(vroomgis)
 
+option(BUILD_TESTS "Do you want to build the tests (recommended) ?" ON)
+
 if (BUILD_TESTS)
     add_subdirectory(test)
 endif()
