@@ -15,7 +15,7 @@ Testing the coordinate system
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "test_param.h"	//for test parameters
 #include "vrrealrect.h"
@@ -24,7 +24,7 @@ Testing the coordinate system
 TEST(RealRect, CreateRealRect)
 {
     vrRealRect myRect;
-    EXPECT_TRUE(!myRect.IsOk());
+    EXPECT_FALSE(myRect.IsOk());
 }
 
 
@@ -85,7 +85,7 @@ TEST(RealRect, Equality)
 {
     vrRealRect myRect(10, 10, 10, 10);
     vrRealRect myRect2;
-    EXPECT_TRUE(!myRect2.IsOk());
+    EXPECT_FALSE(myRect2.IsOk());
 
     myRect2 = myRect;
     EXPECT_TRUE(myRect2.IsOk());
@@ -103,7 +103,7 @@ TEST(RealRect, OutsideIntersectRight)
     vrRealRect myRectImg(11, 10, 10, -10);
 
     vrRealRect myResult = myRectWnd.Intersect(myRectImg);
-    EXPECT_TRUE(!myResult.IsOk());
+    EXPECT_FALSE(myResult.IsOk());
 }
 
 TEST(RealRect, OutsideIntersectTop)
@@ -112,7 +112,7 @@ TEST(RealRect, OutsideIntersectTop)
     vrRealRect myRectImg(5, 20, 20, -9);
 
     vrRealRect myResult = myRectWnd.Intersect(myRectImg);
-    EXPECT_TRUE(!myResult.IsOk());
+    EXPECT_FALSE(myResult.IsOk());
 }
 
 TEST(RealRect, OutsideIntersectLeft)
@@ -121,7 +121,7 @@ TEST(RealRect, OutsideIntersectLeft)
     vrRealRect myRectImg(0, 10, 5, -10);
 
     vrRealRect myResult = myRectWnd.Intersect(myRectImg);
-    EXPECT_TRUE(!myResult.IsOk());
+    EXPECT_FALSE(myResult.IsOk());
 }
 
 TEST(RealRect, OutsideIntersectBottom)
@@ -130,5 +130,5 @@ TEST(RealRect, OutsideIntersectBottom)
     vrRealRect myRectImg(0, 9, 9, -9);
 
     vrRealRect myResult = myRectWnd.Intersect(myRectImg);
-    EXPECT_TRUE(!myResult.IsOk());
+    EXPECT_FALSE(myResult.IsOk());
 }

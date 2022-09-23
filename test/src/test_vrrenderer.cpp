@@ -15,19 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "test_param.h"
 #include "vrrenderer.h"
 #include "vrrender.h"
+#include "vrlabel.h"
+#include "vrlayermanager.h"
 
 
 class Renderer : public ::testing::Test {
-public:
+protected:
     vrLayerManager *m_Manager;
     vrLayer *m_LayerShp;
 
-    void setUp() {
+    virtual void setUp() {
         m_LayerShp = NULL;
         m_Manager = new vrLayerManager;
         EXPECT_TRUE(m_Manager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
@@ -35,12 +37,12 @@ public:
         EXPECT_TRUE(m_LayerShp != NULL);
     }
 
-    void tearDown() {
+    virtual void tearDown() {
         delete m_Manager;
     }
 };
 
-TEST(Renderer, RendererCreate()
+TEST_F(Renderer, RendererCreate)
 {
     EXPECT_TRUE(m_Manager != NULL);
     EXPECT_TRUE(m_LayerShp != NULL);
@@ -53,9 +55,8 @@ TEST(Renderer, RendererCreate()
 
 }
 
-TEST(Renderer, RenderCreate()
+TEST_F(Renderer, RenderCreate)
 {
-
     //vrRenderRaster * myRenderRaster = new vrRenderRaster();
     vrRenderVector *myRenderVector = new vrRenderVector();
 
@@ -64,5 +65,4 @@ TEST(Renderer, RenderCreate()
 
     // ok
     vrRenderer myRenderer(m_LayerShp, myRenderVector);
-
 }

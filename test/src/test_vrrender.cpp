@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "vrrender.h"
 #include "vrrendercoltop.h"

@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "vrlabel.h"
 
 
 class Label : public ::testing::Test {
-public:
+protected:
     wxFont m_Fontt;
 
-    void setUp() {
+    virtual void setUp() {
         m_Fontt = wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     }
 };

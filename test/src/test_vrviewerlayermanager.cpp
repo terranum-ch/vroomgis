@@ -15,30 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "test_param.h"
 #include "vroomgis.h"
 
 
-class ViewerLayerManager : public CxxTest::TestSuite {
-private:
+class ViewerLayerManager : public ::testing::Test {
+protected:
     vrLayerManager *m_LayerManager;
     vrViewerLayerManager *m_ViewManager;
 
-public:
-    void setUp() {
+    virtual void setUp() {
         m_LayerManager = new vrLayerManager();
         m_ViewManager = NULL;
         vrViewerDisplay *myDisplay = NULL;
         // will be destroyed by layermanager.
         m_ViewManager = new vrViewerLayerManager(m_LayerManager, NULL, myDisplay);
 
-        // try to add the viewer. But was allready added by ctor.
+        // try to add the viewer. But was already added by ctor.
         EXPECT_EQ(m_LayerManager->AddViewerLayerManager(m_ViewManager), false);
     }
 
-    void tearDown() {
+    virtual void tearDown() {
         delete m_LayerManager;
     }
 };
@@ -46,11 +45,11 @@ public:
 TEST_F(ViewerLayerManager, AddViewerLayerManager)
 {
     // adding two times the same viewermanager is not permitted
-    EXPECT_TRUE(!m_LayerManager->AddViewerLayerManager(m_ViewManager));
+    EXPECT_FALSE(m_LayerManager->AddViewerLayerManager(m_ViewManager));
     vrViewerLayerManager *myManager2 = new vrViewerLayerManager(m_LayerManager, NULL, NULL);
 
     // allready added by ctor
-    EXPECT_TRUE(!m_LayerManager->AddViewerLayerManager(myManager2));
+    EXPECT_FALSE(m_LayerManager->AddViewerLayerManager(myManager2));
 }
 
 TEST_F(ViewerLayerManager, OpenGISDataViewerManager)

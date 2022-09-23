@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "test_param.h"	//for test parameters
 #include "vrlayervector.h"
@@ -50,7 +50,7 @@ TEST(LayerVectorOGR, GetExtentVectorOGR)
 
     // extent failed, layer not opened
     vrLayerVectorOGR myLayer;
-    EXPECT_TRUE(!myLayer.GetExtent(myExtent));
+    EXPECT_FALSE(myLayer.GetExtent(myExtent));
 
     // extent ok for layer ogr
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false), true);

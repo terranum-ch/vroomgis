@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "vrlayer.h"
 
 class Setup : public ::testing::Test {
 
-public:
-    bool setUp() {
+protected:
+    virtual void setUp() {
         wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
         wxInitializer initializer;
         if (!initializer) {
@@ -33,8 +33,6 @@ public:
 #ifdef __LINUX__
         EXPECT_TRUE(gtk_init_check(NULL, NULL));
 #endif
-
-        return true;
     }
 };
 
@@ -43,6 +41,3 @@ TEST_F(Setup, LogIsWorking) {
     wxLog::SetActiveTarget(new wxLogStderr());
     wxLogMessage("Setup file processed ");
 };
-
-
-#endif

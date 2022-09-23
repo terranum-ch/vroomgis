@@ -1,6 +1,6 @@
 # CMAKE BUILD FILE FOR DRAWSPEEDTEST 
 # (c) LUCIEN SCHREIBER CREALP 2013
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.11)
 
 project("drawSpeedTest")
 

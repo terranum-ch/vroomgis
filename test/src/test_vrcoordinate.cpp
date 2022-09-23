@@ -15,13 +15,12 @@ email                : lucien.schreiber at crealp dot vs dot ch
 *                                                                         *
 ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "test_param.h"
 #include "vroomgis.h"
 #include "vrcoordinate.h"
 #include "fake_vrviewerdisplay.h"
-#include "fake_vrviewerdisplay.cpp"
 
 
 TEST(Coordinates, CreateCoordinate)
@@ -52,7 +51,7 @@ TEST(Coordinates, ComputeGetExtent)
     vrCoordinate myCoord(&myNewDisplay);
 
     // computing full extent without adding extent return false
-    EXPECT_TRUE(!myCoord.ComputeFullExtent());
+    EXPECT_FALSE(myCoord.ComputeFullExtent());
 
 
     // creating false extent
@@ -87,7 +86,7 @@ TEST(Coordinates, UpdateExtent)
     FakevrViewerDisplay myNewDisplay(wxSize(610, 410));
     vrCoordinate myCoord(&myNewDisplay);
 
-    EXPECT_TRUE(!myCoord.UpdateExtent());
+    EXPECT_FALSE(myCoord.UpdateExtent());
 
     vrRealRect myTestExtent(0, 4000, 6000, -4000);
     myCoord.AddLayersExtent(myTestExtent);
@@ -122,7 +121,7 @@ TEST(Coordinates, IsOk)
     FakevrViewerDisplay myNewDisplay(wxSize(610, 410));
     vrCoordinate myCoord(&myNewDisplay);
 
-    EXPECT_TRUE(!myCoord.IsOk());
+    EXPECT_FALSE(myCoord.IsOk());
 
     vrRealRect myTestExtent(0, 4000, 6000, -4000);
     myCoord.AddLayersExtent(myTestExtent);
@@ -143,7 +142,7 @@ TEST(Coordinates, GetFittedRectangle)
 
     // not valid rectangle
     vrRealRect mySelRect1(0, 10, 0, 0);
-    EXPECT_TRUE(!myCoord.GetRectFitted(mySelRect1).IsOk());
+    EXPECT_FALSE(myCoord.GetRectFitted(mySelRect1).IsOk());
 
     // perfect ratio (smaller)
     vrRealRect mySelRect(0, 200, 100, -100);

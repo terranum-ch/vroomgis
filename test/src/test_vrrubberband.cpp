@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "test_param.h"
 #include "vrrubberband.h"
@@ -58,8 +58,8 @@ TEST(RubberBand, IsPositive)
     myRubber.SetPointLast(p3);
     EXPECT_TRUE(myRubber.IsPositive());
     myRubber.SetPointLast(p1);
-    EXPECT_TRUE(!myRubber.IsPositive());
-    EXPECT_TRUE(!myRubber.IsPositive());
+    EXPECT_FALSE(myRubber.IsPositive());
+    EXPECT_FALSE(myRubber.IsPositive());
     myRubber.SetPointLast(p2);
     EXPECT_TRUE(myRubber.IsPositive());
 }
@@ -88,13 +88,13 @@ TEST(RubberBand, ValidRubber)
 
     vrRubberBand myRubber(NULL);
     myRubber.SetPointFirst(p1);
-    EXPECT_TRUE(!myRubber.IsValid());// not fully inited
+    EXPECT_FALSE(myRubber.IsValid());// not fully inited
 
     myRubber.SetPointLast(p1);
-    EXPECT_TRUE(!myRubber.IsValid()); // two same points
+    EXPECT_FALSE(myRubber.IsValid()); // two same points
 
     myRubber.SetPointLast(p2);
-    EXPECT_TRUE(!myRubber.IsValid()); // no height
+    EXPECT_FALSE(myRubber.IsValid()); // no height
 
     myRubber.SetPointLast(p3);
     EXPECT_TRUE(myRubber.IsValid()); // valid

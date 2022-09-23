@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "vrlayer.h"
 #include "vrlayerraster.h"
@@ -35,7 +35,7 @@ TEST_F(LayerRasterC2D, OpenLayerRasterC2D)
     vrLayerManager myManager;
 
     vrLayerRasterGDAL myLayer;
-    EXPECT_TRUE(!myLayer.IsOK());
+    EXPECT_FALSE(myLayer.IsOK());
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileC2D), true), true);
     EXPECT_EQ(myLayer.GetType(), vrDRIVER_RASTER_C2D);
     EXPECT_TRUE(myLayer.IsOK());
@@ -50,7 +50,7 @@ TEST_F(LayerRasterC2D, GetPixelValueC2D)
 
     // extent failed, layer not opened
     vrLayerRasterGDAL myLayer;
-    EXPECT_TRUE(!myLayer.GetExtent(myExtent));
+    EXPECT_FALSE(myLayer.GetExtent(myExtent));
 
     // extent ok for layer GDAL
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileC2D), false), true);

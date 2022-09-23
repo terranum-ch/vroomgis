@@ -36,7 +36,7 @@ message("${wxVersion_SOURCE_DIR} source dir")
 include_directories("${wxVersion_SOURCE_DIR}/src")
 
 # Visual Leak Detector
-set(CMAKE_MODULE_PATH ${VROOMGIS_PATH}/../build/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/build/cmake)
 if (WIN32)
     set(USE_VLD 0 CACHE BOOL "Sould we use Visual Leak Detector (https://vld.codeplex.com) ?")
     if (USE_VLD)
@@ -73,7 +73,7 @@ ENDIF (WIN32)
 target_link_libraries(${CMAKE_PROJECT_NAME} CONAN_PKG::wxwidgets)
 
 # LINK VROOMGIS LIBRARY
-target_link_libraries(${CMAKE_PROJECT_NAME} ${VROOMGIS_LIBRARY})
+target_link_libraries(${CMAKE_PROJECT_NAME} vroomgis)
 
 # LINK WXVERSION PLUGIN
 target_link_libraries(${CMAKE_PROJECT_NAME} wxVersion)
@@ -84,8 +84,4 @@ if (WIN32)
         target_link_libraries(${CMAKE_PROJECT_NAME} ${VLD_LIBRARIES})
     endif (USE_VLD)
 endif (WIN32)
-
-# copy libs to bundle if we are under mac...
-# check is done internally.
-include("../../vroomgis/build/cmake/installMacGISLIB.cmake")
 

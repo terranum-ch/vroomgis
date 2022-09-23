@@ -14,8 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
-
+#include <gtest/gtest.h>
 #include <wx/filename.h>
 
 #include "test_param.h"
@@ -24,14 +23,13 @@
 #include "vrlayerraster.h"
 #include "vrlayermanager.h"
 
+
 class OperationVector : public ::testing::Test {
-private:
+protected:
     vrLayerRasterGDAL *myRaster;
     vrLayerVectorOGR *myVector;
 
-
-public:
-    void setUp() {
+    virtual void setUp() {
         OGRRegisterAll();
         GDALAllRegister();
 
@@ -44,13 +42,13 @@ public:
         myVector->Open(myVectorName);
     }
 
-    void tearDown() {
+    virtual void tearDown() {
         wxDELETE(myRaster);
         wxDELETE(myVector);
     }
 };
 
-TEST_F(OperationVector, CreateProfileObject()
+TEST_F(OperationVector, CreateProfileObject)
 {
     EXPECT_TRUE(myRaster->IsOK());
     EXPECT_TRUE(myVector->IsOK());
@@ -64,7 +62,7 @@ TEST_F(OperationVector, CreateProfileObject()
 }
 
 
-TEST_F(OperationVector, DoProfile()
+TEST_F(OperationVector, DoProfile)
 {
     OGRFeature *myFeat = myVector->GetNextFeature(true);
     vrOperationVectorProfiler myProfiler(myFeat->GetGeometryRef(), myRaster);
@@ -74,7 +72,7 @@ TEST_F(OperationVector, DoProfile()
 }
 
 
-TEST_F(OperationVector, ProfileOut()
+TEST_F(OperationVector, ProfileOut)
 {
     vrLayerManager myManager;
     wxFileName myOutPtName(g_TestPath, g_TestProfileOutPt);
@@ -108,7 +106,7 @@ TEST_F(OperationVector, ProfileOut()
 }
 
 
-TEST_F(OperationVector, ProfileGeometries()
+TEST_F(OperationVector, ProfileGeometries)
 {
     OGRFeature *myFeat = myVector->GetNextFeature(true);
     vrOperationVectorProfiler myProfiler(myFeat->GetGeometryRef(), myRaster);

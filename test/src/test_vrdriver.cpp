@@ -15,26 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "vrdriver.h"
 
 
-TEST(Driver, DriverGetWildcards)
+class Drivers : public ::testing::Test {
+protected:
+    vrDrivers m_Driver;
+};
+
+
+TEST_F(Drivers, DriverGetWildcards)
 {
-    EXPECT_TRUE(!m_Driver.GetWildcards().IsEmpty());
+    EXPECT_FALSE(m_Driver.GetWildcards().IsEmpty());
     wxLogDebug(m_Driver.GetWildcards());
 }
 
-TEST(Driver, DriverIsSupported)
+TEST_F(Drivers, DriverIsSupported)
 {
-    EXPECT_TRUE(!m_Driver.IsSupported(wxEmptyString));
+    EXPECT_FALSE(m_Driver.IsSupported(wxEmptyString));
     EXPECT_TRUE(m_Driver.IsSupported("shp"));
-    EXPECT_TRUE(!m_Driver.IsSupported("sh"));
-    EXPECT_EQ(m_Driver.IsSupported("shpp"), false);
+    EXPECT_FALSE(m_Driver.IsSupported("sh"));
+    EXPECT_FALSE(m_Driver.IsSupported("shpp"));
 }
 
-TEST(Driver, DriverGetType)
+TEST_F(Drivers, DriverGetType)
 {
     EXPECT_EQ(m_Driver.GetType("shp"), vrDRIVER_VECTOR_SHP);
     EXPECT_EQ(m_Driver.GetType("tiff"), vrDRIVER_RASTER_TIFF);

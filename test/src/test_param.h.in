@@ -24,7 +24,7 @@
 #define _TEST_PARAM_H_
 
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif

@@ -15,19 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include "test_param.h"	//for test parameters
 #include "vrlayermanager.h"
 
 
 class LayerManager : public ::testing::Test {
-private:
+protected:
     wxFileName m_JpegName;
     wxFileName m_TiffName;
 
-public:
-    void setUp() {
+    virtual void setUp() {
         m_JpegName = wxFileName(g_TestPath, g_TestFileJPEG);
         m_TiffName = wxFileName(g_TestPath, g_TestFileTIF);
     }
@@ -42,7 +41,7 @@ TEST_F(LayerManager, CreateLayerManager)
 
 
     vrLayerManager myLayerManager;
-    EXPECT_TRUE(!myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc)));
+    EXPECT_FALSE(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileMisc)));
     EXPECT_TRUE(myLayerManager.Open(wxFileName(g_TestPath, g_TestFileSHP)));
     EXPECT_EQ(myLayerManager.GetCount(), 1);
     // opening two times the same file

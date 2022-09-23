@@ -1,6 +1,6 @@
 # CMAKE BUILD FILE FOR ADDING C2D FORMAT TO GDAL
 # (c) LUCIEN SCHREIBER CREALP 2010
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.11)
 
 #
 #
