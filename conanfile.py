@@ -8,13 +8,16 @@ class vroomgis(ConanFile):
     requires = [
         "geos/3.11.0",
         "libspatialite/5.0.1",
-        "libdeflate/1.12",
-        "libcurl/7.84.0",
-        "proj/9.0.1",
+        "libdeflate/1.17",
+        "libcurl/7.87.0",
+        "proj/9.1.1",
         "libtiff/4.4.0",
-        "sqlite3/3.39.2",
-        "gdal/3.4.1@terranum-conan+gdal/stable",
-        "wxwidgets/3.2.0@terranum-conan+wxwidgets/stable"
+        "sqlite3/3.40.1",
+        "gdal/3.5.2@terranum-conan+gdal/stable",
+        "wxwidgets/3.2.1@terranum-conan+wxwidgets/stable",
+        "libiconv/1.17",
+        "libpng/1.6.38",
+        "libjpeg/9e"
     ]
 
     options = {
