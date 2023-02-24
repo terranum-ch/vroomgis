@@ -528,7 +528,7 @@ void vrLayerVectorOGR::_DrawLine(wxDC *dc, OGRFeature *feature, OGRGeometry *geo
     }
 
     int iNumVertex = myLine->getNumPoints();
-    wxASSERT(iNumVertex >= 2); // line cannot exists with only one vertex
+    wxASSERT(iNumVertex >= 2); // line cannot exist with only one vertex
 
     wxPointList myPtx;
     myPtx.DeleteContents(true);
@@ -689,10 +689,11 @@ bool vrLayerVectorOGR::GetData(wxBitmap *bmp, const vrRealRect &coord, double px
 
     bool bReturn = true;
     m_objectDrawn = 0;
-    m_previousPoint = wxDefaultPosition;
     m_skippedVertex = 0;
     m_drawnVertex = 0;
     while (1) {
+        m_previousPoint = wxDefaultPosition;
+
         OGRFeature *myFeat = GetNextFeature(false);
         if (myFeat == NULL) {
             break;
@@ -709,6 +710,7 @@ bool vrLayerVectorOGR::GetData(wxBitmap *bmp, const vrRealRect &coord, double px
         if (myGeomType == wkbMultiPolygon || myGeomType == wkbMultiLineString || myGeomType == wkbMultiPoint) {
             OGRGeometryCollection *myCollection = (OGRGeometryCollection *) myFeat->GetGeometryRef();
             for (unsigned int i = 0; i < myCollection->getNumGeometries(); i++) {
+                m_previousPoint = wxDefaultPosition;
                 switch (myGeomType) {
                     case wkbMultiPoint:
                         _DrawPoint(pDC, myFeat, myCollection->getGeometryRef(i), coord, render, label, pxsize);
