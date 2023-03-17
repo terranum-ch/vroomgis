@@ -72,6 +72,10 @@ bool vrRenderer::_IsCorrectRender() {
                 bReturn = true;
                 break;
             }
+            if (m_layer->GetType() == vrDRIVER_RASTER_MEMORY) {
+                bReturn = true;
+                break;
+            }
             break;
 
         case vrRENDER_RASTER_C2D:
@@ -127,6 +131,7 @@ vrRenderer::vrRenderer(vrLayer* layer, vrRender* render, vrLabel* label) {
             case vrDRIVER_RASTER_EASC:
             case vrDRIVER_RASTER_SGRD7:
             case vrDRIVER_RASTER_WMS:
+            case vrDRIVER_RASTER_MEMORY:
                 m_render = new vrRenderRaster();
                 break;
 
