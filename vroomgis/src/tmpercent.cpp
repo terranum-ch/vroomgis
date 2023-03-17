@@ -1,9 +1,9 @@
 /***************************************************************************
-								tmpercent.cpp
-                    For computing percent value (progress dialog)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmpercent.cpp
+ For computing percent value (progress dialog)
+ -------------------
+ copyright            : (C) 2007 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,33 +19,23 @@
 
 #include "tmpercent.h"
 
-tmPercent::tmPercent()
-{
+tmPercent::tmPercent() {
     InitMemberValue();
 }
 
+tmPercent::~tmPercent() {}
 
-tmPercent::~tmPercent()
-{
-
-}
-
-
-tmPercent::tmPercent(long value)
-{
+tmPercent::tmPercent(long value) {
     InitMemberValue();
     Create(value);
 }
 
-void tmPercent::Create(long value)
-{
+void tmPercent::Create(long value) {
     m_totalValue = value;
     m_increment = m_totalValue / 100;
 }
 
-
-void tmPercent::InitMemberValue()
-{
+void tmPercent::InitMemberValue() {
     m_inited = false;
     m_totalValue = 0;
     m_actualValue = 0;
@@ -53,15 +43,12 @@ void tmPercent::InitMemberValue()
     m_increment = 0.0;
 }
 
-void tmPercent::SetValue(long actualvalue)
-{
+void tmPercent::SetValue(long actualvalue) {
     m_actualValue = actualvalue;
 }
 
-
-bool tmPercent::IsNewStep()
-{
-    int iActualPercent = (int) GetPercent();
+bool tmPercent::IsNewStep() {
+    int iActualPercent = (int)GetPercent();
     if (iActualPercent > m_previousPercent) {
         m_previousPercent = iActualPercent;
         return true;
@@ -70,10 +57,8 @@ bool tmPercent::IsNewStep()
     return false;
 }
 
-int tmPercent::GetPercent()
-{
-    if (m_actualValue > m_totalValue)
-        return 100;
+int tmPercent::GetPercent() {
+    if (m_actualValue > m_totalValue) return 100;
 
-    return (int) m_actualValue * 100 / m_totalValue;
+    return (int)m_actualValue * 100 / m_totalValue;
 }

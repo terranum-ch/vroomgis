@@ -1,9 +1,9 @@
 /***************************************************************************
-								vrlayer.h
+ vrlayer.h
                     Abstact base class for layers
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -28,38 +28,32 @@
 #endif
 
 #include <wx/filename.h>
+
+#include "gdal_priv.h"    // gdal include
+#include "ogrsf_frmts.h"  // ogr include
+#include "vrdriver.h"     // Forward declaration not possible
 #include "vrrealrect.h"
-
-#include "ogrsf_frmts.h"	// ogr include
-#include "gdal_priv.h"		// gdal include
-
-
-#include "vrdriver.h" // Forward declaration not possible
-
 
 class vrRender;
 
 class vrLabel;
 
-//Abstact base class for layers
-class vrLayer
-{
-protected:
+// Abstact base class for layers
+class vrLayer {
+  protected:
     vrDRIVERS_TYPE m_driverType;
     wxFileName m_fileName;
 
-public:
+  public:
     vrLayer();
 
     virtual ~vrLayer();
 
-    virtual bool Create(const wxFileName &filename)
-    {
+    virtual bool Create(const wxFileName& filename) {
         return false;
     }
 
-    virtual bool Open(const wxFileName &filename, bool readwrite = false)
-    {
+    virtual bool Open(const wxFileName& filename, bool readwrite = false) {
         return false;
     }
 
@@ -69,33 +63,27 @@ public:
 
     virtual vrDRIVERS_TYPE GetType();
 
-    virtual bool GetExtent(vrRealRect &rect)
-    {
+    virtual bool GetExtent(vrRealRect& rect) {
         return false;
     }
 
-    virtual bool GetDataThread(wxImage *bmp, const vrRealRect &coord, double pxsize, const vrRender *render = NULL,
-                               vrLabel *label = NULL)
-    {
+    virtual bool GetDataThread(wxImage* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = NULL,
+                               vrLabel* label = NULL) {
         return false;
     }
 
-    virtual bool GetData(wxBitmap *bmp, const vrRealRect &coord, double pxsize, const vrRender *render = NULL,
-                         vrLabel *label = NULL)
-    {
+    virtual bool GetData(wxBitmap* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = NULL,
+                         vrLabel* label = NULL) {
         return false;
     }
 
-    virtual bool IsOK()
-    {
+    virtual bool IsOK() {
         return false;
     }
 
-    virtual bool HasData()
-    {
+    virtual bool HasData() {
         return false;
     }
-
 };
 
 WX_DECLARE_OBJARRAY(vrLayer*, vrArrayLayer);

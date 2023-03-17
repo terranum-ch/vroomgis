@@ -2,14 +2,14 @@ These are the instructions to compile the libraries needed by vroomGiS.
 
 # wxWidgets
 
-## OSX
+## OSX
 
 `../configure --prefix=<path_to>/_LIBWX --enable-unicode --disable-shared --enable-mediactrl=no --with-macosx-version-min=10.8`
 
 > Note: Last sentence is very important on OSX 10.11 (El Capitain) Otherwise we will have lots of linking errors
 
 
-# GEOS
+# GEOS
 
 ## OSX
 
@@ -20,7 +20,7 @@ These are the instructions to compile the libraries needed by vroomGiS.
 
 # PROJ4
 
-## OSX
+## OSX
 
 Use the same simple option as GEOS.
 

@@ -20,7 +20,6 @@
 #include "test_param.h"
 #include "vrrubberband.h"
 
-
 TEST(RubberBand, GetRect1) {
     wxPoint p1(10, 10);
     wxPoint p2(50, 50);
@@ -82,14 +81,14 @@ TEST(RubberBand, ValidRubber) {
 
     vrRubberBand myRubber(NULL);
     myRubber.SetPointFirst(p1);
-    EXPECT_FALSE(myRubber.IsValid());// not fully inited
+    EXPECT_FALSE(myRubber.IsValid());  // not fully inited
 
     myRubber.SetPointLast(p1);
-    EXPECT_FALSE(myRubber.IsValid()); // two same points
+    EXPECT_FALSE(myRubber.IsValid());  // two same points
 
     myRubber.SetPointLast(p2);
-    EXPECT_FALSE(myRubber.IsValid()); // no height
+    EXPECT_FALSE(myRubber.IsValid());  // no height
 
     myRubber.SetPointLast(p3);
-    EXPECT_TRUE(myRubber.IsValid()); // valid
+    EXPECT_TRUE(myRubber.IsValid());  // valid
 }

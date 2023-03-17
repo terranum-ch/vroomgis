@@ -1,9 +1,9 @@
 /***************************************************************************
-				vrviewerlayermanager.cpp
+ vrviewerlayermanager.cpp
 
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,17 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "vrviewerlayermanager.h"
-#include "vrevent.h"
-#include "vrlayermanager.h"
-#include "vrlayer.h"
-#include "vrlayervector.h"
-#include "vrviewertoc.h"
-#include "vrviewerdisplay.h"
-#include "vrcoordinate.h"
-#include "vrperformance.h"
 
+#include "vrcoordinate.h"
+#include "vrevent.h"
+#include "vrlayer.h"
+#include "vrlayermanager.h"
+#include "vrlayervector.h"
+#include "vrperformance.h"
+#include "vrviewerdisplay.h"
+#include "vrviewertoc.h"
 
 wxDEFINE_EVENT(vrEVT_VLM_RELOAD, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_ZOOM, wxCommandEvent);
@@ -39,15 +38,12 @@ wxDEFINE_EVENT(vrEVT_TOOL_MODIFY, wxCommandEvent);
 wxDEFINE_EVENT(vrEVT_TOOL_MODIFY_FINISHED, wxCommandEvent);
 
 BEGIN_EVENT_TABLE(vrViewerLayerManager, wxEvtHandler)
-    EVT_COMMAND(wxID_ANY, vrEVT_VLM_RELOAD, vrViewerLayerManager::OnReload)
+EVT_COMMAND(wxID_ANY, vrEVT_VLM_RELOAD, vrViewerLayerManager::OnReload)
 END_EVENT_TABLE()
 
-
-vrViewerLayerManager::vrViewerLayerManager(vrLayerManager *parent, wxWindow *window, vrViewerDisplay *viewer,
-                                           vrViewerTOC *toc)
-{
-
-    //wxASSERT(viewer);
+vrViewerLayerManager::vrViewerLayerManager(vrLayerManager* parent, wxWindow* window, vrViewerDisplay* viewer,
+                                           vrViewerTOC* toc) {
+    // wxASSERT(viewer);
     wxASSERT(parent);
     m_windowParent = NULL;
     m_display = viewer;
@@ -69,9 +65,8 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager *parent, wxWindow *win
         m_display->SetViewerLayerManager(this);
     }
 
-
     if (m_toc == NULL) {
-        //wxLogError("No toc defined");
+        // wxLogError("No toc defined");
     } else {
         m_toc->SetViewerLayerManager(this);
     }
@@ -80,33 +75,27 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager *parent, wxWindow *win
     m_layerManager->AddViewerLayerManager(this);
 }
 
-
-vrViewerLayerManager::~vrViewerLayerManager()
-{
-    //wxLogMessage("ViewerLayerManager Dtor called");
+vrViewerLayerManager::~vrViewerLayerManager() {
+    // wxLogMessage("ViewerLayerManager Dtor called");
 
     if (m_windowParent) {
         m_windowParent->RemoveEventHandler(this);
     }
 
-
     wxDELETE(m_display);
     wxDELETE(m_toc);
-
 
     // delete renderers
     unsigned int iCount = m_renderers.GetCount();
     for (unsigned int i = 0; i < iCount; i++) {
-        vrRenderer *myRenderer = m_renderers.Item(0);
+        vrRenderer* myRenderer = m_renderers.Item(0);
         wxASSERT(myRenderer);
         wxDELETE(myRenderer);
         m_renderers.RemoveAt(0);
     }
-
 }
 
-void vrViewerLayerManager::InitializeExtent(const vrRealRect &extent)
-{
+void vrViewerLayerManager::InitializeExtent(const vrRealRect& extent) {
     // Check input
     vrRealRect myExtent(extent);
     if (myExtent.m_height > 0) {
@@ -116,7 +105,7 @@ void vrViewerLayerManager::InitializeExtent(const vrRealRect &extent)
     m_userDefinedExtent = true;
     m_computeExtentStatus = false;
 
-    vrCoordinate *coord = m_display->GetCoordinate();
+    vrCoordinate* coord = m_display->GetCoordinate();
     wxASSERT(coord);
 
     coord->ClearLayersExtent();
@@ -131,13 +120,10 @@ void vrViewerLayerManager::InitializeExtent(const vrRealRect &extent)
     }
 }
 
-
-bool vrViewerLayerManager::Add(long pos, vrLayer *layer, vrRender *render, vrLabel *label, bool visible)
-{
+bool vrViewerLayerManager::Add(long pos, vrLayer* layer, vrRender* render, vrLabel* label, bool visible) {
     wxASSERT(layer);
-    vrRenderer *myRenderer = new vrRenderer(layer, render, label);
+    vrRenderer* myRenderer = new vrRenderer(layer, render, label);
     myRenderer->SetVisible(visible);
-
 
     // compute coordinate if layer added is visible and
     // there is no other visible layers
@@ -152,11 +138,10 @@ bool vrViewerLayerManager::Add(long pos, vrLayer *layer, vrRender *render, vrLab
     }
 
     if (m_computeExtentStatus) {
-        //wxLogMessage("Computing extent required");
+        // wxLogMessage("Computing extent required");
     }
 
-
-    if (pos >= (signed) m_renderers.GetCount()) {
+    if (pos >= (signed)m_renderers.GetCount()) {
         pos = m_renderers.GetCount();
     }
 
@@ -182,15 +167,12 @@ bool vrViewerLayerManager::Add(long pos, vrLayer *layer, vrRender *render, vrLab
         }
     }
 
-
     return true;
 }
 
-
-bool vrViewerLayerManager::Move(long oldpos, long newpos)
-{
+bool vrViewerLayerManager::Move(long oldpos, long newpos) {
     wxASSERT(oldpos >= 0 && newpos >= 0);
-    wxASSERT(oldpos < (signed) m_renderers.GetCount() && newpos < (signed) m_renderers.GetCount());
+    wxASSERT(oldpos < (signed)m_renderers.GetCount() && newpos < (signed)m_renderers.GetCount());
     wxASSERT(oldpos != newpos);
 
     int myNewPos = newpos;
@@ -198,11 +180,10 @@ bool vrViewerLayerManager::Move(long oldpos, long newpos)
         myNewPos = myNewPos - 1;
     }
 
-    vrRenderer *myRenderer = m_renderers.Item(oldpos);
+    vrRenderer* myRenderer = m_renderers.Item(oldpos);
     wxASSERT(myRenderer);
     m_renderers.RemoveAt(oldpos);
     m_renderers.Insert(myRenderer, myNewPos);
-
 
     if (m_toc && !m_toc->Move(oldpos, newpos)) {
         wxLogError("Moving layer '%s' from position %ld to %ld failed",
@@ -217,14 +198,12 @@ bool vrViewerLayerManager::Move(long oldpos, long newpos)
     return true;
 }
 
-
-bool vrViewerLayerManager::Remove(vrRenderer *renderer)
-{
+bool vrViewerLayerManager::Remove(vrRenderer* renderer) {
     wxASSERT(renderer);
 
     int myRemoveIndex = wxNOT_FOUND;
     for (int i = 0; i < GetCount(); i++) {
-        vrRenderer *myRenderer = GetRenderer(i);
+        vrRenderer* myRenderer = GetRenderer(i);
         wxASSERT(myRenderer);
         if (myRenderer == renderer) {
             myRemoveIndex = i;
@@ -243,7 +222,7 @@ bool vrViewerLayerManager::Remove(vrRenderer *renderer)
     }
 
     // remove from Renderer array
-    vrRenderer *myRenderer = GetRenderer(myRemoveIndex);
+    vrRenderer* myRenderer = GetRenderer(myRemoveIndex);
     wxASSERT(myRenderer);
     wxDELETE(myRenderer);
     m_renderers.RemoveAt(myRemoveIndex);
@@ -257,9 +236,7 @@ bool vrViewerLayerManager::Remove(vrRenderer *renderer)
     return true;
 }
 
-
-bool vrViewerLayerManager::ZoomOut(const vrRealRect &extent)
-{
+bool vrViewerLayerManager::ZoomOut(const vrRealRect& extent) {
     if (!extent.IsOk()) {
         wxLogError("Specified extent (%f, %f, %f, %f) isn't supported", extent.GetLeft(), extent.GetTop(),
                    extent.GetRight(), extent.GetBottom());
@@ -271,7 +248,7 @@ bool vrViewerLayerManager::ZoomOut(const vrRealRect &extent)
     if (DivRatio < 1.0) {
         DivRatio = 1.0;
     }
-    if (DivRatio > 10.0) { // For convenience purposes
+    if (DivRatio > 10.0) {  // For convenience purposes
         DivRatio = 10.0;
     }
     wxPoint2DDouble myCenter = extent.GetCentre();
@@ -280,9 +257,7 @@ bool vrViewerLayerManager::ZoomOut(const vrRealRect &extent)
     return Zoom(myFullExtent);
 }
 
-
-bool vrViewerLayerManager::Zoom(const vrRealRect &extent)
-{
+bool vrViewerLayerManager::Zoom(const vrRealRect& extent) {
     if (!extent.IsOk()) {
         wxLogError("Specified extent (%f, %f, %f, %f) isn't supported", extent.GetLeft(), extent.GetTop(),
                    extent.GetRight(), extent.GetBottom());
@@ -292,7 +267,7 @@ bool vrViewerLayerManager::Zoom(const vrRealRect &extent)
     wxASSERT(m_display);
 
     // create fitted rectangle
-    vrCoordinate *myCoord = m_display->GetCoordinate();
+    vrCoordinate* myCoord = m_display->GetCoordinate();
     wxASSERT(myCoord);
     vrRealRect myFittedRect = myCoord->GetRectFitted(extent);
     if (!myFittedRect.IsOk()) {
@@ -309,17 +284,13 @@ bool vrViewerLayerManager::Zoom(const vrRealRect &extent)
     return true;
 }
 
-
-void vrViewerLayerManager::ZoomToFit(bool onlyvisible)
-{
+void vrViewerLayerManager::ZoomToFit(bool onlyvisible) {
     _GetLayersExtent(onlyvisible);
 }
 
-
-long vrViewerLayerManager::Select(const wxRect &extent, vrRenderer *selectlayer)
-{
+long vrViewerLayerManager::Select(const wxRect& extent, vrRenderer* selectlayer) {
     // make selection on this layer if not null, otherwise use selection from TOC
-    vrRenderer *mySelectLayer = selectlayer;
+    vrRenderer* mySelectLayer = selectlayer;
     if (selectlayer == NULL) {
         int myIndex = m_toc->GetSelection();
         if (myIndex == wxNOT_FOUND) {
@@ -346,32 +317,28 @@ long vrViewerLayerManager::Select(const wxRect &extent, vrRenderer *selectlayer)
     }
     m_display->GetCoordinate()->ConvertFromPixels(myPxExtent, myRealCoord);
 
-    vrLayerVector *myLayer = static_cast<vrLayerVector *>(mySelectLayer->GetLayer());
+    vrLayerVector* myLayer = static_cast<vrLayerVector*>(mySelectLayer->GetLayer());
     wxASSERT(myLayer);
     return myLayer->Select(myRealCoord);
 }
 
-
-void vrViewerLayerManager::ClearSelection()
-{
+void vrViewerLayerManager::ClearSelection() {
     for (int i = 0; i < GetCount(); i++) {
         if (m_renderers.Item(i)->GetLayer()->GetType() >= vrDRIVER_VECTOR_SHP &&
             m_renderers.Item(i)->GetLayer()->GetType() <= vrDRIVER_VECTOR_MEMORY) {
-            vrLayerVector *myLayer = (vrLayerVector *) m_renderers.Item(i)->GetLayer();
+            vrLayerVector* myLayer = (vrLayerVector*)m_renderers.Item(i)->GetLayer();
             wxASSERT(myLayer);
             myLayer->GetSelectedIDs()->Clear();
         }
     }
 }
 
-
-int vrViewerLayerManager::GetSelectionCount(int *sellayers)
-{
+int vrViewerLayerManager::GetSelectionCount(int* sellayers) {
     int iTotal = 0;
     for (int i = 0; i < GetCount(); i++) {
         if (m_renderers.Item(i)->GetLayer()->GetType() >= vrDRIVER_VECTOR_SHP &&
             m_renderers.Item(i)->GetLayer()->GetType() <= vrDRIVER_VECTOR_MEMORY) {
-            vrLayerVector *myLayer = (vrLayerVector *) m_renderers.Item(i)->GetLayer();
+            vrLayerVector* myLayer = (vrLayerVector*)m_renderers.Item(i)->GetLayer();
             wxASSERT(myLayer);
             int mySelCount = myLayer->GetSelectedIDs()->GetCount();
             if (mySelCount > 0) {
@@ -385,23 +352,19 @@ int vrViewerLayerManager::GetSelectionCount(int *sellayers)
     return iTotal;
 }
 
-
-vrRenderer *vrViewerLayerManager::GetRenderer(const unsigned int &index)
-{
+vrRenderer* vrViewerLayerManager::GetRenderer(const unsigned int& index) {
     // check index into limits
     if (index > m_renderers.GetCount() - 1) {
         wxLogError("Trying to Get Renderer out of bounds");
         return NULL;
     }
 
-    vrRenderer *renderer = m_renderers.Item(index);
+    vrRenderer* renderer = m_renderers.Item(index);
     wxASSERT(renderer);
     return renderer;
 }
 
-
-vrRenderer *vrViewerLayerManager::GetRenderer(const wxString &layername)
-{
+vrRenderer* vrViewerLayerManager::GetRenderer(const wxString& layername) {
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
         // check on the full path (with file name)
         if (m_renderers.Item(i)->GetLayer()->GetFileName().GetFullPath() == layername) {
@@ -415,24 +378,19 @@ vrRenderer *vrViewerLayerManager::GetRenderer(const wxString &layername)
     return NULL;
 }
 
-
 // number of renderers
-int vrViewerLayerManager::GetCount()
-{
+int vrViewerLayerManager::GetCount() {
     return m_renderers.GetCount();
 }
 
-
-void vrViewerLayerManager::FreezeBegin()
-{
+void vrViewerLayerManager::FreezeBegin() {
     wxASSERT(m_toc);
     wxASSERT(!m_freezeStatus);
     m_freezeStatus = true;
     m_toc->FreezeBegin();
 }
 
-void vrViewerLayerManager::FreezeEnd()
-{
+void vrViewerLayerManager::FreezeEnd() {
     wxASSERT(m_toc);
     wxASSERT(m_freezeStatus);
     m_freezeStatus = false;
@@ -444,19 +402,16 @@ void vrViewerLayerManager::FreezeEnd()
         m_computeExtentStatus = false;
     }
 
-
     // reloading data
     Reload();
-
 }
 
-
-void vrViewerLayerManager::Reload()
-{
-    vrPerformance *myPerf = NULL;
+void vrViewerLayerManager::Reload() {
+    vrPerformance* myPerf = NULL;
     if (m_perfMonitorFile.IsOk()) {
         myPerf = new vrPerformance(m_perfMonitorFile.GetFullPath(),
-                                   "Number of layers\tTotal Vector Objects\tDrawn Vertex\tSkipped Vertex\tWindow Resolution(x)\tWindow Resolution(y)\t");
+                                   "Number of layers\tTotal Vector Objects\tDrawn Vertex\tSkipped Vertex\tWindow "
+                                   "Resolution(x)\tWindow Resolution(y)\t");
     }
 
     int myCountLayer = 0;
@@ -486,12 +441,10 @@ void vrViewerLayerManager::Reload()
     wxDELETE(myPerf);
 }
 
-
-bool vrViewerLayerManager::StartEdition(vrRenderer *renderer)
-{
+bool vrViewerLayerManager::StartEdition(vrRenderer* renderer) {
     bool bEditionStarted = false;
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
-        vrRenderer *myRenderer = m_renderers.Item(i);
+        vrRenderer* myRenderer = m_renderers.Item(i);
         wxASSERT(myRenderer);
 
         if (myRenderer == renderer) {
@@ -506,11 +459,9 @@ bool vrViewerLayerManager::StartEdition(vrRenderer *renderer)
     return bEditionStarted;
 }
 
-
-void vrViewerLayerManager::StopEdition()
-{
+void vrViewerLayerManager::StopEdition() {
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
-        vrRenderer *myRenderer = m_renderers.Item(i);
+        vrRenderer* myRenderer = m_renderers.Item(i);
         wxASSERT(myRenderer);
         myRenderer->SetInEdition(false);
 
@@ -520,11 +471,9 @@ void vrViewerLayerManager::StopEdition()
     }
 }
 
-
-vrRenderer *vrViewerLayerManager::GetEditionRenderer()
-{
+vrRenderer* vrViewerLayerManager::GetEditionRenderer() {
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
-        vrRenderer *myRenderer = m_renderers.Item(i);
+        vrRenderer* myRenderer = m_renderers.Item(i);
         wxASSERT(myRenderer);
         if (myRenderer->IsInEdition()) {
             return myRenderer;
@@ -533,21 +482,15 @@ vrRenderer *vrViewerLayerManager::GetEditionRenderer()
     return NULL;
 }
 
-
-void vrViewerLayerManager::StartPerfMonitor(const wxFileName &filename)
-{
+void vrViewerLayerManager::StartPerfMonitor(const wxFileName& filename) {
     m_perfMonitorFile = filename;
 }
 
-
-void vrViewerLayerManager::StopPerfMonitor()
-{
+void vrViewerLayerManager::StopPerfMonitor() {
     m_perfMonitorFile.Clear();
 }
 
-
-void vrViewerLayerManager::SetEngineThreaded(bool enable)
-{
+void vrViewerLayerManager::SetEngineThreaded(bool enable) {
 #ifdef __LINUX__
     if (enable) {
         if (wxMessageBox(_("Engine not fully compatible with Linux, vector layers will not be rendered! Continue ?"),
@@ -559,45 +502,39 @@ void vrViewerLayerManager::SetEngineThreaded(bool enable)
     m_reloadThread = enable;
 }
 
-
-bool vrViewerLayerManager::_BitmapArrayInit()
-{
+bool vrViewerLayerManager::_BitmapArrayInit() {
     wxASSERT(m_images.GetCount() == 0);
     if (m_renderers.GetCount() == 0) {
-        //wxLogError("Unable to create images, no layer opened");
+        // wxLogError("Unable to create images, no layer opened");
         return false;
     }
 
     wxSize myDisplaySize = m_display->GetSize();
 
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
-
         // create image only for visible layers
         if (m_renderers.Item(i)->GetVisible()) {
-            wxImage *myImage = new wxImage(myDisplaySize);
+            wxImage* myImage = new wxImage(myDisplaySize);
             /*if (myImage->HasAlpha() == false) {
                 myImage->InitAlpha();
             }*/
 
-            //wxLogMessage("Creation des images : %p", myImage);
+            // wxLogMessage("Creation des images : %p", myImage);
 
             m_images.Add(myImage, 1);
-
         }
     }
-    //wxLogMessage("Created %ld images", m_images.GetCount());
+    // wxLogMessage("Created %ld images", m_images.GetCount());
     return true;
 }
 
-
-void vrViewerLayerManager::_BitmapArrayDelete()
-{
+void vrViewerLayerManager::_BitmapArrayDelete() {
     if (m_images.GetCount() > 0) {
-        //wxLogMessage("Deleting %ld images", m_images.GetCount());
+        // wxLogMessage("Deleting %ld images", m_images.GetCount());
 
         unsigned int iCountImg = m_images.GetCount();
         for (unsigned j = 0; j < iCountImg; j++) {
-            wxImage *myImage = m_images.Item(0);
+            wxImage* myImage = m_images.Item(0);
             wxASSERT(myImage);
             wxDELETE(myImage);
             m_images.RemoveAt(0);
@@ -606,13 +543,10 @@ void vrViewerLayerManager::_BitmapArrayDelete()
     }
 }
 
-
-bool vrViewerLayerManager::_GetLayersData(long &vectorcount)
-{
-
+bool vrViewerLayerManager::_GetLayersData(long& vectorcount) {
     // gettting display coordinates
     wxASSERT(m_display);
-    vrCoordinate *myCoordinate = m_display->GetCoordinate();
+    vrCoordinate* myCoordinate = m_display->GetCoordinate();
     wxASSERT(myCoordinate);
 
     vectorcount = 0;
@@ -642,20 +576,17 @@ bool vrViewerLayerManager::_GetLayersData(long &vectorcount)
 
     // remove invalid raster
     for (int i = myInvalidRaster.GetCount() - 1; i >= 0; i--) {
-        wxImage *myImage = m_images.Item(myInvalidRaster.Item(i));
+        wxImage* myImage = m_images.Item(myInvalidRaster.Item(i));
         wxASSERT(myImage);
         wxDELETE(myImage);
         m_images.RemoveAt(myInvalidRaster.Item(i));
-        //wxLogMessage("Removing image at index : %d", i);
+        // wxLogMessage("Removing image at index : %d", i);
     }
     return bReturn;
 }
 
-
-bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible)
-{
-
-    vrCoordinate *myCoordinate = m_display->GetCoordinate();
+bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible) {
+    vrCoordinate* myCoordinate = m_display->GetCoordinate();
     wxASSERT(myCoordinate);
 
     // clear actual layer extent
@@ -666,7 +597,7 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible)
     // then we totally ignore coordinates from empty vector layers.
     bool bHasRealCoordinates = false;
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
-        vrRenderer *myRenderer = m_renderers.Item(i);
+        vrRenderer* myRenderer = m_renderers.Item(i);
         if (myRenderer == NULL) {
             continue;
         }
@@ -683,7 +614,7 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible)
     // really compute extent
     vrRealRect myLayerExtent;
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
-        vrRenderer *myRenderer = m_renderers.Item(i);
+        vrRenderer* myRenderer = m_renderers.Item(i);
         if (myRenderer == NULL) {
             continue;
         }
@@ -703,12 +634,9 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible)
     }
 
     return myCoordinate->ComputeFullExtent();
-
 }
 
-
-wxBitmap *vrViewerLayerManager::_MergeBitmapData()
-{
+wxBitmap* vrViewerLayerManager::_MergeBitmapData() {
     if (m_images.GetCount() == 0) {
         return NULL;
     }
@@ -716,8 +644,7 @@ wxBitmap *vrViewerLayerManager::_MergeBitmapData()
     wxSize mySize = m_images.Item(0)->GetSize();
     wxASSERT(mySize != wxDefaultSize);
 
-
-    wxBitmap *myAggregatedBmp = new wxBitmap(mySize);
+    wxBitmap* myAggregatedBmp = new wxBitmap(mySize);
     wxMemoryDC myDC(*myAggregatedBmp);
 
     // paint the background
@@ -733,20 +660,17 @@ wxBitmap *vrViewerLayerManager::_MergeBitmapData()
         myDC.DrawBitmap(myBmp, 0, 0, true);
     }
 
-    //wxLogMessage("Merging bitmaps with mask took : %ldms", sw.Time());
+    // wxLogMessage("Merging bitmaps with mask took : %ldms", sw.Time());
 
     myDC.SelectObject(wxNullBitmap);
     return myAggregatedBmp;
-
 }
 
-
-int vrViewerLayerManager::_ReloadThread(long &vectorcount)
-{
+int vrViewerLayerManager::_ReloadThread(long& vectorcount) {
     _BitmapArrayInit();
 
     _GetLayersData(vectorcount);
-    wxBitmap *myFinalBmp = _MergeBitmapData();
+    wxBitmap* myFinalBmp = _MergeBitmapData();
 
     int myLayersNumber = m_images.GetCount();
     wxSize myBmpSize = wxDefaultSize;
@@ -765,18 +689,16 @@ int vrViewerLayerManager::_ReloadThread(long &vectorcount)
     return myLayersNumber;
 }
 
-
-int vrViewerLayerManager::_Reload(long &vectorcount, long &drawnvertex, long &skippedvertex)
-{
+int vrViewerLayerManager::_Reload(long& vectorcount, long& drawnvertex, long& skippedvertex) {
     // gettting display coordinates
     wxASSERT(m_display);
-    vrCoordinate *myCoordinate = m_display->GetCoordinate();
+    vrCoordinate* myCoordinate = m_display->GetCoordinate();
     wxASSERT(myCoordinate);
 
-    if (m_display->GetSize().x < 1 || m_display->GetSize().y < 1){
+    if (m_display->GetSize().x < 1 || m_display->GetSize().y < 1) {
         return 0;
     }
-    wxBitmap *myBmp = new wxBitmap(m_display->GetSize());
+    wxBitmap* myBmp = new wxBitmap(m_display->GetSize());
     wxMemoryDC dc(*myBmp);
     dc.SetBackground(wxBrush(m_display->GetBackgroundColour()));
     dc.Clear();
@@ -819,22 +741,13 @@ int vrViewerLayerManager::_Reload(long &vectorcount, long &drawnvertex, long &sk
     return iShownLayer;
 }
 
-
-void vrViewerLayerManager::OnReload(wxCommandEvent &event)
-{
+void vrViewerLayerManager::OnReload(wxCommandEvent& event) {
     Reload();
     event.Skip();
 }
-
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(wxArrayImage);
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(vrArrayViewerLayerManager);
-
-
-
-
-
-

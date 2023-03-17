@@ -1,9 +1,9 @@
 /***************************************************************************
-								test_vrlayermanager.h
-				Manage the layers. Keep a list of all opened layers
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrlayermanager.h
+ Manage the layers. Keep a list of all opened layers
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +17,11 @@
 
 #include <gtest/gtest.h>
 
-#include "test_param.h"    //for test parameters
+#include "test_param.h"  //for test parameters
 #include "vrlayermanager.h"
 
-
 class LayerManager : public ::testing::Test {
-protected:
+  protected:
     wxFileName m_JpegName;
     wxFileName m_TiffName;
 
@@ -48,7 +47,6 @@ TEST_F(LayerManager, AddingRaster) {
     EXPECT_TRUE(myLayerManager.Open(m_JpegName));
     EXPECT_EQ(myLayerManager.GetCount(), 1);
 
-
     EXPECT_TRUE(myLayerManager.Open(m_TiffName));
     EXPECT_EQ(myLayerManager.GetCount(), 2);
 
@@ -57,8 +55,6 @@ TEST_F(LayerManager, AddingRaster) {
     EXPECT_EQ(myLayerManager.GetCount(), 2);
     EXPECT_TRUE(myLayerManager.Open(m_TiffName));
     EXPECT_EQ(myLayerManager.GetCount(), 2);
-
-
 }
 
 TEST_F(LayerManager, GetType) {
@@ -79,11 +75,11 @@ TEST_F(LayerManager, RemoveLayer1) {
     EXPECT_EQ(myLayerManager.GetCount(), 2);
 
     // removing layer
-    vrLayer *myLayer = myLayerManager.GetLayer(m_JpegName);
+    vrLayer* myLayer = myLayerManager.GetLayer(m_JpegName);
     EXPECT_TRUE(myLayer != NULL);
 
     EXPECT_TRUE(myLayerManager.Close(myLayer));
 
     // myLayer isn't valid anymore dont test again !
-    //EXPECT_TRUE(myLayerManager.Close(myLayer)==false);
+    // EXPECT_TRUE(myLayerManager.Close(myLayer)==false);
 }

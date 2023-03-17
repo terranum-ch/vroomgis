@@ -16,10 +16,8 @@
 
 #include <gtest/gtest.h>
 
-#include "wx/wxprec.h"
-
 #include "vrrendervectorc2p.h"
-
+#include "wx/wxprec.h"
 
 TEST(RenderVectorC2PDips, RenderBasic) {
     vrRenderVectorC2PDips myRenderDips;

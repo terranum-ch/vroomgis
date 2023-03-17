@@ -1,9 +1,9 @@
 /***************************************************************************
-								vrviewerdisplay.cpp
-								Default display
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrviewerdisplay.cpp
+ Default display
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,14 +16,13 @@
  ***************************************************************************/
 
 #include "vrviewerdisplay.h"
+
 #include "vrcoordinate.h"
-#include "vrevent.h"
 #include "vrdisplaytool.h"
+#include "vrevent.h"
 #include "vrviewerlayermanager.h"
 
-
-bool vrViewerDisplay::_DrawRoundedMessage(const wxString &text, const wxColour &colour)
-{
+bool vrViewerDisplay::_DrawRoundedMessage(const wxString& text, const wxColour& colour) {
     if (text.IsEmpty()) {
         wxLogError("No text specified, specify a text");
         return false;
@@ -44,8 +43,8 @@ bool vrViewerDisplay::_DrawRoundedMessage(const wxString &text, const wxColour &
     bdc.SetBrush(wxBrush(GetBackgroundColour()));
     bdc.SetPen(wxPen(GetBackgroundColour()));
 
-    //bdc.SetBrush(*wxWHITE_BRUSH);
-    //bdc.SetPen(*wxWHITE_PEN);
+    // bdc.SetBrush(*wxWHITE_BRUSH);
+    // bdc.SetPen(*wxWHITE_PEN);
     bdc.DrawRectangle(0, 0, width, height);
 
     // draw rectangle
@@ -53,14 +52,11 @@ bool vrViewerDisplay::_DrawRoundedMessage(const wxString &text, const wxColour &
     wxRect myRect(width / 4, height / 3, width / 2, height / 3);
     bdc.DrawRoundedRectangle(myRect, height / 20);
 
-
-
     // draw text
     wxFont myFont(myRect.GetWidth() / text.Len(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
     wxASSERT(myFont.IsOk());
     bdc.SetFont(myFont);
     bdc.SetTextForeground(*wxWHITE);
-
 
     wxSize myTextSize = bdc.GetTextExtent(text);
     wxRect myTextRectComputed(myTextSize);
@@ -69,9 +65,7 @@ bool vrViewerDisplay::_DrawRoundedMessage(const wxString &text, const wxColour &
     return true;
 }
 
-
-void vrViewerDisplay::OnPaint(wxPaintEvent &event)
-{
+void vrViewerDisplay::OnPaint(wxPaintEvent& event) {
     wxPaintDC dc(this);
 
     if (m_bmp == NULL) {
@@ -83,7 +77,7 @@ void vrViewerDisplay::OnPaint(wxPaintEvent &event)
 
     // draw overlay
     for (unsigned int i = 0; i < m_overlayArray.GetCount(); i++) {
-        vrViewerOverlay *myOverlay = m_overlayArray[i];
+        vrViewerOverlay* myOverlay = m_overlayArray[i];
         if (myOverlay == NULL || !myOverlay->IsVisible()) {
             continue;
         }
@@ -91,10 +85,7 @@ void vrViewerDisplay::OnPaint(wxPaintEvent &event)
     }
 }
 
-
-void vrViewerDisplay::OnSizeChange(wxSizeEvent &event)
-{
-
+void vrViewerDisplay::OnSizeChange(wxSizeEvent& event) {
     if (event.GetSize().GetWidth() < 2 && event.GetSize().GetHeight() < 2) {
         event.Skip();
         return;
@@ -116,14 +107,11 @@ void vrViewerDisplay::OnSizeChange(wxSizeEvent &event)
     event.Skip();
 }
 
-void vrViewerDisplay::OnEraseBackground(wxPaintEvent &event)
-{
+void vrViewerDisplay::OnEraseBackground(wxPaintEvent& event) {
     // this is used to avoid flickering
 }
 
-
-void vrViewerDisplay::OnMouseDown(wxMouseEvent &event)
-{
+void vrViewerDisplay::OnMouseDown(wxMouseEvent& event) {
     SetFocus();
     CaptureMouse();
     if (m_tool != NULL) {
@@ -131,9 +119,7 @@ void vrViewerDisplay::OnMouseDown(wxMouseEvent &event)
     }
 }
 
-
-void vrViewerDisplay::OnMouseUp(wxMouseEvent &event)
-{
+void vrViewerDisplay::OnMouseUp(wxMouseEvent& event) {
     if (HasCapture()) {
         ReleaseMouse();
     }
@@ -143,9 +129,7 @@ void vrViewerDisplay::OnMouseUp(wxMouseEvent &event)
     }
 }
 
-
-void vrViewerDisplay::OnMouseMove(wxMouseEvent &event)
-{
+void vrViewerDisplay::OnMouseMove(wxMouseEvent& event) {
     if (m_tool != NULL) {
         m_tool->MouseMove(event);
     }
@@ -165,27 +149,21 @@ void vrViewerDisplay::OnMouseMove(wxMouseEvent &event)
     }
 }
 
-
-void vrViewerDisplay::OnMouseDClickLeft(wxMouseEvent &event)
-{
+void vrViewerDisplay::OnMouseDClickLeft(wxMouseEvent& event) {
     SetFocus();
     if (m_tool != NULL) {
         m_tool->MouseDClickLeft(event);
     }
 }
 
-
-void vrViewerDisplay::OnMouseCaptureLost(wxMouseEvent &event)
-{
+void vrViewerDisplay::OnMouseCaptureLost(wxMouseEvent& event) {
     // Only used under Windows. Mouse capture is lost when a dialog is displayed.
     if (HasCapture()) {
         ReleaseMouse();
     }
 }
 
-
-vrViewerDisplay::vrViewerDisplay()
-{
+vrViewerDisplay::vrViewerDisplay() {
     m_coordinate = NULL;
     m_bmp = NULL;
     m_tool = NULL;
@@ -198,11 +176,8 @@ vrViewerDisplay::vrViewerDisplay()
     wxLogError("Don't use this vrViewerDisplay ctor, only here for tests");
 }
 
-
-vrViewerDisplay::vrViewerDisplay(wxWindow *parent, wxWindowID id, const wxColour &colour)
-        : wxPanel(parent, id)
-{
-
+vrViewerDisplay::vrViewerDisplay(wxWindow* parent, wxWindowID id, const wxColour& colour)
+    : wxPanel(parent, id) {
     m_coordinate = new vrCoordinate(this);
     m_bmp = NULL;
     m_tool = NULL;
@@ -225,13 +200,9 @@ vrViewerDisplay::vrViewerDisplay(wxWindow *parent, wxWindowID id, const wxColour
     Connect(wxEVT_MOTION, wxMouseEventHandler(vrViewerDisplay::OnMouseMove), NULL, this);
     Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(vrViewerDisplay::OnMouseDClickLeft), NULL, this);
     Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(vrViewerDisplay::OnMouseCaptureLost), NULL, this);
-
 }
 
-vrViewerDisplay::~vrViewerDisplay()
-{
-
-
+vrViewerDisplay::~vrViewerDisplay() {
     // disconnect event
     Disconnect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground), NULL, this);
     Disconnect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange), NULL, this);
@@ -252,23 +223,16 @@ vrViewerDisplay::~vrViewerDisplay()
     ClearOverlayArray();
 }
 
-
-void vrViewerDisplay::SetViewerLayerManager(vrViewerLayerManager *value)
-{
+void vrViewerDisplay::SetViewerLayerManager(vrViewerLayerManager* value) {
     wxASSERT(value);
     m_viewerManager = value;
 }
 
-
-vrViewerLayerManager *vrViewerDisplay::GetViewerLayerManager()
-{
+vrViewerLayerManager* vrViewerDisplay::GetViewerLayerManager() {
     return m_viewerManager;
 }
 
-
-void vrViewerDisplay::SetBitmap(wxBitmap *bmp)
-{
-
+void vrViewerDisplay::SetBitmap(wxBitmap* bmp) {
     wxDELETE(m_bmp);
 
     // reference copy, this isn't expensive
@@ -278,9 +242,7 @@ void vrViewerDisplay::SetBitmap(wxBitmap *bmp)
     _InvalidateView(true);
 }
 
-
-void vrViewerDisplay::SetStatusCoordinates(wxStatusBar *status, int field, const wxString &errmsg)
-{
+void vrViewerDisplay::SetStatusCoordinates(wxStatusBar* status, int field, const wxString& errmsg) {
     wxASSERT(status);
     m_status = status;
     m_statusField = field;
@@ -288,9 +250,7 @@ void vrViewerDisplay::SetStatusCoordinates(wxStatusBar *status, int field, const
     m_status->SetStatusText(m_statusErrText, m_statusField);
 }
 
-
-void vrViewerDisplay::_InvalidateView(bool updatenow)
-{
+void vrViewerDisplay::_InvalidateView(bool updatenow) {
     this->Refresh();
 
     if (updatenow) {
@@ -298,36 +258,27 @@ void vrViewerDisplay::_InvalidateView(bool updatenow)
     }
 }
 
-
-void vrViewerDisplay::SetToolDefault()
-{
+void vrViewerDisplay::SetToolDefault() {
     SetTool(new vrDisplayToolDefault(this));
 }
 
-void vrViewerDisplay::SetToolZoom()
-{
+void vrViewerDisplay::SetToolZoom() {
     SetTool(new vrDisplayToolZoom(this));
 }
 
-void vrViewerDisplay::SetToolZoomOut()
-{
+void vrViewerDisplay::SetToolZoomOut() {
     SetTool(new vrDisplayToolZoomOut(this));
 }
 
-void vrViewerDisplay::SetToolPan()
-{
+void vrViewerDisplay::SetToolPan() {
     SetTool(new vrDisplayToolPan(this));
 }
 
-
-void vrViewerDisplay::SetToolSight()
-{
+void vrViewerDisplay::SetToolSight() {
     SetTool(new vrDisplayToolSight(this));
 }
 
-
-void vrViewerDisplay::SetTool(vrDisplayTool *tool)
-{
+void vrViewerDisplay::SetTool(vrDisplayTool* tool) {
     wxDELETE(m_tool);
 
     wxASSERT(m_tool == NULL);
@@ -338,17 +289,15 @@ void vrViewerDisplay::SetTool(vrDisplayTool *tool)
     SetCursor(m_tool->GetCursor());
 }
 
-
-/*********************************************//**
-@brief Set a secondary Tool
-@details Cursor from the secondary tool is not
- used, he is mainly used for displaying live
- informations when mouse move for exemple
-@param tool the tool (derived from vrDisplayTool)
-@date 23 décembre 2010
-*************************************************/
-void vrViewerDisplay::SetToolSecondary(vrDisplayTool *tool)
-{
+/*********************************************/ /**
+ @brief Set a secondary Tool
+ @details Cursor from the secondary tool is not
+  used, he is mainly used for displaying live
+  informations when mouse move for exemple
+ @param tool the tool (derived from vrDisplayTool)
+ @date 23 décembre 2010
+ *************************************************/
+void vrViewerDisplay::SetToolSecondary(vrDisplayTool* tool) {
     wxDELETE(m_toolSecondary);
     wxASSERT(m_toolSecondary == NULL);
 
@@ -359,11 +308,9 @@ void vrViewerDisplay::SetToolSecondary(vrDisplayTool *tool)
     m_toolSecondary = tool;
 }
 
-
-vrViewerOverlay *vrViewerDisplay::GetOverlayByName(const wxString &name)
-{
+vrViewerOverlay* vrViewerDisplay::GetOverlayByName(const wxString& name) {
     for (unsigned int i = 0; i < m_overlayArray.GetCount(); i++) {
-        vrViewerOverlay *myOverlay = m_overlayArray[i];
+        vrViewerOverlay* myOverlay = m_overlayArray[i];
         if (myOverlay == NULL) {
             continue;
         }
@@ -374,16 +321,12 @@ vrViewerOverlay *vrViewerDisplay::GetOverlayByName(const wxString &name)
     return NULL;
 }
 
-
-void vrViewerDisplay::ClearOverlayArray()
-{
+void vrViewerDisplay::ClearOverlayArray() {
     unsigned int oCount = m_overlayArray.GetCount();
     for (unsigned int i = 0; i < oCount; i++) {
-        vrViewerOverlay *myOverlay = m_overlayArray[0];
+        vrViewerOverlay* myOverlay = m_overlayArray[0];
         wxDELETE(myOverlay);
         m_overlayArray.RemoveAt(0);
     }
     wxASSERT(m_overlayArray.GetCount() == 0);
 }
-
-

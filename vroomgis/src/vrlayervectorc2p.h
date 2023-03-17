@@ -1,6 +1,6 @@
 /***************************************************************************
  vrlayervectorsc2p.h
- 
+
  -------------------
  copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
@@ -29,47 +29,43 @@
 
 #include <wx/regex.h>
 
-
 #include "vrlayervector.h"
 
 class vrRender;
 
 class vrLabel;
 
-
-enum CT_LAYER_TYPE
-{
-    CT_DIP = 0, CT_POLYGON = 1
+enum CT_LAYER_TYPE {
+    CT_DIP = 0,
+    CT_POLYGON = 1
 };
 
-//For dealing with GIS data stored into C2P projects.
-class vrLayerVectorC2P
-        : public vrLayerVectorOGR
-{
-private:
+// For dealing with GIS data stored into C2P projects.
+class vrLayerVectorC2P : public vrLayerVectorOGR {
+  private:
     int m_activeLayerIndex;
 
-protected:
-    virtual void _DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *geometry, const wxRect2DDouble &coord,
-                            const vrRender *render, vrLabel *label, double pxsize);
+  protected:
+    virtual void _DrawPoint(wxDC* dc, OGRFeature* feature, OGRGeometry* geometry, const wxRect2DDouble& coord,
+                            const vrRender* render, vrLabel* label, double pxsize);
 
-    virtual void _DrawPolygon(wxDC *gdc, OGRFeature *feature, OGRGeometry *geometry, const wxRect2DDouble &coord,
-                              const vrRender *render, vrLabel *label, double pxsize);
+    virtual void _DrawPolygon(wxDC* gdc, OGRFeature* feature, OGRGeometry* geometry, const wxRect2DDouble& coord,
+                              const vrRender* render, vrLabel* label, double pxsize);
 
-public:
+  public:
     vrLayerVectorC2P();
 
     virtual ~vrLayerVectorC2P();
 
-    virtual bool Open(const wxFileName &filename, bool readwrite = false);
+    virtual bool Open(const wxFileName& filename, bool readwrite = false);
 
     virtual wxFileName GetDisplayName();
 
-    virtual long AddFeature(OGRGeometry *geometry, void *data = NULL);
+    virtual long AddFeature(OGRGeometry* geometry, void* data = NULL);
 
     virtual bool DeleteFeature(long fid);
 
-    virtual bool GetExtent(vrRealRect &rect);
+    virtual bool GetExtent(vrRealRect& rect);
 
     CT_LAYER_TYPE GetActiveLayerType();
 
@@ -77,4 +73,3 @@ public:
 };
 
 #endif
-

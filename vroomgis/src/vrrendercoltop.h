@@ -1,8 +1,8 @@
 /***************************************************************************
  vrrendercoltop.h
- 
+
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -29,28 +29,24 @@
 
 #include <wx/image.h>
 
-
 #include "vrrender.h"
 
-class vrRenderRasterColtop
-        : public vrRenderRaster
-{
-protected:
+class vrRenderRasterColtop : public vrRenderRaster {
+  protected:
     int m_northAngle;
     int m_colorStretchMin;
     int m_colorStretchMax;
     bool m_isColorInverted;
     bool m_isLowerHemisphere;
 
-
-public:
+  public:
     vrRenderRasterColtop();
 
     virtual ~vrRenderRasterColtop();
 
     virtual wxImage::RGBValue GetColorFromDipDir(double dip, double dipdir);
 
-    virtual wxImage::RGBValue GetColorFromCircleCoord(const wxPoint &coord, int radius);
+    virtual wxImage::RGBValue GetColorFromCircleCoord(const wxPoint& coord, int radius);
 
     void SetNorthAngle(int value);
 
@@ -62,9 +58,7 @@ public:
 
     void SetColorStretchMax(int value);
 
-
-    virtual bool Serialize(vrSerialize &serialobj);
+    virtual bool Serialize(vrSerialize& serialobj);
 };
 
 #endif
-

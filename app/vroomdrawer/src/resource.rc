@@ -1,7 +1,5 @@
-//#define wxUSE_NO_MANIFEST 1
+// #define wxUSE_NO_MANIFEST 1
 
 #include "wx/msw/wx.rc"
 
-vroomgis ICON
-"../../../vroomgis/art/vroomgis.ico"
-
+vroomgis ICON "../../../vroomgis/art/vroomgis.ico"

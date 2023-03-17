@@ -11,55 +11,50 @@
 
 #include <wx/app.h>
 #include <wx/cmdline.h>
+#include <wx/dcgraph.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
-#include <wx/dcgraph.h>
 
-enum RENDERER_TYPE
-{
-    RENDERER_WXGRAPHICSCONTEXT = 0, RENDERER_DC, RENDERER_GCDC
+enum RENDERER_TYPE {
+    RENDERER_WXGRAPHICSCONTEXT = 0,
+    RENDERER_DC,
+    RENDERER_GCDC
 };
-
 
 static const wxString availlableRendererName[] = {_T("wxGraphicsContext"), _T("wxDC"), _T("wxGCDC")};
 
+static const wxCmdLineEntryDesc cmdLineDesc[] = {
+    {wxCMD_LINE_SWITCH, "h", "help", "show this help message", wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP},
+    {wxCMD_LINE_OPTION, "v", "vmax", "max vertex before cut (default 0)", wxCMD_LINE_VAL_NUMBER},
+    {wxCMD_LINE_OPTION, "i", "vincrement", "vertex increment (default 100)", wxCMD_LINE_VAL_NUMBER},
+    {wxCMD_LINE_OPTION, "r", "renderer",
+     "renderer processor (default is 0) see bellow for availlable renderer processor", wxCMD_LINE_VAL_NUMBER},
+    {wxCMD_LINE_NONE}};
 
-static const wxCmdLineEntryDesc cmdLineDesc[] = {{wxCMD_LINE_SWITCH, "h", "help",       "show this help message",                                                         wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP},
-                                                 {wxCMD_LINE_OPTION, "v", "vmax",       "max vertex before cut (default 0)",                                              wxCMD_LINE_VAL_NUMBER},
-                                                 {wxCMD_LINE_OPTION, "i", "vincrement", "vertex increment (default 100)",                                                 wxCMD_LINE_VAL_NUMBER},
-                                                 {wxCMD_LINE_OPTION, "r", "renderer",   "renderer processor (default is 0) see bellow for availlable renderer processor", wxCMD_LINE_VAL_NUMBER},
-                                                 {wxCMD_LINE_NONE}};
-
-
-void PrintArray(const wxArrayString &array, const wxString &msg)
-{
+void PrintArray(const wxArrayString& array, const wxString& msg) {
     wxPrintf(msg + _T("\n"));
     for (unsigned int i = 0; i < array.GetCount(); i++) {
         wxPrintf(array[i] + _T("\n"));
     }
 }
 
-
-int GetRandomNumber(int maxnumber)
-{
-    int output = 0 + (rand() % (int) (maxnumber - 0 + 1));
+int GetRandomNumber(int maxnumber) {
+    int output = 0 + (rand() % (int)(maxnumber - 0 + 1));
     return output;
 }
 
-
 long DrawRandomLineswxGraphicsContext(int numberlines, int maxvertexbeforecut, wxSize bitmapsize,
-                                      const wxString &bitmappath, const wxString &bitmapname = wxEmptyString,
-                                      bool keepbitmap = false)
-{
+                                      const wxString& bitmappath, const wxString& bitmapname = wxEmptyString,
+                                      bool keepbitmap = false) {
     wxStopWatch sw;
 
     // create bitmap
-    wxBitmap *myBmp = new wxBitmap(bitmapsize);
+    wxBitmap* myBmp = new wxBitmap(bitmapsize);
     wxMemoryDC dc(*myBmp);
     dc.SetBackground(*wxWHITE_BRUSH);
     dc.Clear();
 
-    wxGraphicsContext *gdc = wxGraphicsContext::Create(dc);
+    wxGraphicsContext* gdc = wxGraphicsContext::Create(dc);
 
     int iMaxVertex = maxvertexbeforecut;
     if (iMaxVertex == 0) {
@@ -85,7 +80,7 @@ long DrawRandomLineswxGraphicsContext(int numberlines, int maxvertexbeforecut, w
             break;
         }
     }
-    //wxLogMessage(_("Number of loop: %d"), iLoop);
+    // wxLogMessage(_("Number of loop: %d"), iLoop);
     wxDELETE(gdc);
 
     dc.SelectObject(wxNullBitmap);
@@ -105,14 +100,12 @@ long DrawRandomLineswxGraphicsContext(int numberlines, int maxvertexbeforecut, w
     return sw.Time();
 }
 
-
-long DrawRandomLineswxDC(int numberlines, int maxvertexbeforecut, wxSize bitmapsize, const wxString &bitmappath,
-                         const wxString &bitmapname = wxEmptyString, bool keepbitmap = false)
-{
+long DrawRandomLineswxDC(int numberlines, int maxvertexbeforecut, wxSize bitmapsize, const wxString& bitmappath,
+                         const wxString& bitmapname = wxEmptyString, bool keepbitmap = false) {
     wxStopWatch sw;
 
     // create bitmap
-    wxBitmap *myBmp = new wxBitmap(bitmapsize);
+    wxBitmap* myBmp = new wxBitmap(bitmapsize);
     wxMemoryDC dc(*myBmp);
     dc.SetBackground(*wxWHITE_BRUSH);
     dc.Clear();
@@ -127,13 +120,12 @@ long DrawRandomLineswxDC(int numberlines, int maxvertexbeforecut, wxSize bitmaps
     int iLineDrawn = 0;
     int iLoop = 0;
     while (1) {
-
-        wxPoint *myPt = new wxPoint[iMaxVertex];
+        wxPoint* myPt = new wxPoint[iMaxVertex];
         for (unsigned int i = 0; i < iMaxVertex; i++) {
             myPt[i] = wxPoint(GetRandomNumber(bitmapsize.GetWidth()), GetRandomNumber(bitmapsize.GetHeight()));
             ++iLineDrawn;
         }
-        iLineDrawn = iLineDrawn - 1; // ignore first vertex when counting lines
+        iLineDrawn = iLineDrawn - 1;  // ignore first vertex when counting lines
         dc.DrawLines(iMaxVertex, myPt);
         wxDELETEA(myPt);
 
@@ -159,14 +151,12 @@ long DrawRandomLineswxDC(int numberlines, int maxvertexbeforecut, wxSize bitmaps
     return sw.Time();
 }
 
-
-long DrawRandomLineswxGCDC(int numberlines, int maxvertexbeforecut, wxSize bitmapsize, const wxString &bitmappath,
-                           const wxString &bitmapname = wxEmptyString, bool keepbitmap = false)
-{
+long DrawRandomLineswxGCDC(int numberlines, int maxvertexbeforecut, wxSize bitmapsize, const wxString& bitmappath,
+                           const wxString& bitmapname = wxEmptyString, bool keepbitmap = false) {
     wxStopWatch sw;
 
     // create bitmap
-    wxBitmap *myBmp = new wxBitmap(bitmapsize);
+    wxBitmap* myBmp = new wxBitmap(bitmapsize);
     wxMemoryDC dc(*myBmp);
     dc.SetBackground(*wxWHITE_BRUSH);
     dc.Clear();
@@ -183,13 +173,12 @@ long DrawRandomLineswxGCDC(int numberlines, int maxvertexbeforecut, wxSize bitma
     int iLineDrawn = 0;
     int iLoop = 0;
     while (1) {
-
-        wxPoint *myPt = new wxPoint[iMaxVertex];
+        wxPoint* myPt = new wxPoint[iMaxVertex];
         for (unsigned int i = 0; i < iMaxVertex; i++) {
             myPt[i] = wxPoint(GetRandomNumber(bitmapsize.GetWidth()), GetRandomNumber(bitmapsize.GetHeight()));
             ++iLineDrawn;
         }
-        iLineDrawn = iLineDrawn - 1; // ignore first vertex when counting lines
+        iLineDrawn = iLineDrawn - 1;  // ignore first vertex when counting lines
         myGCDC.DrawLines(iMaxVertex, myPt);
         wxDELETEA(myPt);
 
@@ -215,9 +204,7 @@ long DrawRandomLineswxGCDC(int numberlines, int maxvertexbeforecut, wxSize bitma
     return sw.Time();
 }
 
-
-int main(int argc, char **argv)
-{
+int main(int argc, char** argv) {
     // debugging string for OSX
     // this is needed for viewing string content with Xcode !!
     wxString myTest = _T("Test debugging");
@@ -232,7 +219,8 @@ int main(int argc, char **argv)
     }
     wxInitAllImageHandlers();
 
-    wxString myLogoTxt = _T(
+    wxString myLogoTxt =
+        _T(
             "*\n* drawSpeedTest \n* Testing line drawing speed \n* (c) Copyright 2013 Lucien Schreiber - CREALP . All Rights Reserved. \n*\n");
     wxCmdLineParser parser(cmdLineDesc, argc, argv);
     parser.SetLogo(myLogoTxt);
@@ -245,7 +233,6 @@ int main(int argc, char **argv)
         }
         return 0;
     }
-
 
     long myTotalLines = 10000;
     wxSize myBmpSize(1000, 1000);
@@ -266,7 +253,6 @@ int main(int argc, char **argv)
     wxPrintf(myLogoTxt);
     wxPrintf(_("Using: ") + availlableRendererName[myRendererType] + _T("\n"));
 
-
     if (myMaxVertex == 0) {
         myMaxVertex = myTotalLines;
     }
@@ -281,7 +267,7 @@ int main(int argc, char **argv)
                                              _T("/Users/lucien/DATA/PRJ/COLTOP-GIS/test/speed/bmp"));
                 break;
 
-            default: // RENDERER_WXGRAPHICSCONTEXT
+            default:  // RENDERER_WXGRAPHICSCONTEXT
                 myTime = DrawRandomLineswxGraphicsContext(myTotalLines, myActualIncrement, myBmpSize,
                                                           _T("/Users/lucien/DATA/PRJ/COLTOP-GIS/test/speed/bmp"));
                 break;

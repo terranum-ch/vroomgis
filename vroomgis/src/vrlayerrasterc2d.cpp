@@ -1,9 +1,9 @@
 /***************************************************************************
-				vrlayerrasterc2d.cpp
+ vrlayerrasterc2d.cpp
                     
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,23 +16,17 @@
  ***************************************************************************/
 
 #include "vrlayerrasterc2d.h"
+
+#include "vrlabel.h"
 #include "vrrealrect.h"
 #include "vrrendercoltop.h"
-#include "vrlabel.h"
 
+vrLayerRasterC2D::vrLayerRasterC2D() {}
 
-vrLayerRasterC2D::vrLayerRasterC2D()
-{
-}
+vrLayerRasterC2D::~vrLayerRasterC2D() {}
 
-vrLayerRasterC2D::~vrLayerRasterC2D()
-{
-}
-
-bool vrLayerRasterC2D::_GetRasterData(unsigned char **imgdata, const wxSize &outimgpxsize, const wxRect &readimgpxinfo,
-                                      const vrRender *render)
-{
-
+bool vrLayerRasterC2D::_GetRasterData(unsigned char** imgdata, const wxSize& outimgpxsize, const wxRect& readimgpxinfo,
+                                      const vrRender* render) {
     wxASSERT(m_dataset);
     m_dataset->FlushCache();
     int myRasterCount = m_dataset->GetRasterCount();
@@ -44,17 +38,16 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char **imgdata, const wxSize &out
 
     // create array for image data (RGBRGBRGB...)
     unsigned int myimgRGBLen = outimgpxsize.GetWidth() * outimgpxsize.GetHeight() * 3;
-    *imgdata = (unsigned char *) malloc(myimgRGBLen);
+    *imgdata = (unsigned char*)malloc(myimgRGBLen);
     if (*imgdata == NULL) {
         wxLogError("Image creation failed, out of memory");
         return false;
     }
 
-
     // read band 2 (slope)
-    GDALRasterBand *band = m_dataset->GetRasterBand(2);
+    GDALRasterBand* band = m_dataset->GetRasterBand(2);
     int myDataSize = GDALGetDataTypeSize(GDT_Float32) / 8;
-    void *mySlopeData = CPLMalloc(myDataSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight());
+    void* mySlopeData = CPLMalloc(myDataSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight());
     if (band->RasterIO(GF_Read, readimgpxinfo.GetX(), readimgpxinfo.GetY(), readimgpxinfo.GetWidth(),
                        readimgpxinfo.GetHeight(), mySlopeData, outimgpxsize.GetWidth(), outimgpxsize.GetHeight(),
                        GDT_Float32, 0, 0) != CE_None) {
@@ -66,10 +59,9 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char **imgdata, const wxSize &out
         return false;
     }
 
-
     // read band 3 (aspect)
     band = m_dataset->GetRasterBand(3);
-    void *myAspectData = CPLMalloc(myDataSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight());
+    void* myAspectData = CPLMalloc(myDataSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight());
     if (band->RasterIO(GF_Read, readimgpxinfo.GetX(), readimgpxinfo.GetY(), readimgpxinfo.GetWidth(),
                        readimgpxinfo.GetHeight(), myAspectData, outimgpxsize.GetWidth(), outimgpxsize.GetHeight(),
                        GDT_Float32, 0, 0) != CE_None) {
@@ -81,7 +73,7 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char **imgdata, const wxSize &out
         return false;
     }
 
-    vrRenderRasterColtop *myColtopRender = (vrRenderRasterColtop *) render;
+    vrRenderRasterColtop* myColtopRender = (vrRenderRasterColtop*)render;
     wxASSERT(myColtopRender);
     wxASSERT(myColtopRender->GetType() == vrRENDER_RASTER_C2D);
 
@@ -105,17 +97,13 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char **imgdata, const wxSize &out
     return true;
 }
 
-
-bool vrLayerRasterC2D::GetRasterData(unsigned char **imgdata, const wxSize &outimgpxsize, const wxRect &readimgpxinfo,
-                                     const vrRender *render)
-{
+bool vrLayerRasterC2D::GetRasterData(unsigned char** imgdata, const wxSize& outimgpxsize, const wxRect& readimgpxinfo,
+                                     const vrRender* render) {
     return _GetRasterData(imgdata, outimgpxsize, readimgpxinfo, render);
 }
 
-
 // NOT used anymore, using wxImage::HSVtoRGB instead
-void vrLayerRasterC2D::_HSVtoRGB(int *r, int *g, int *b, int h, int s, int v)
-{
+void vrLayerRasterC2D::_HSVtoRGB(int* r, int* g, int* b, int h, int s, int v) {
     long p, q, t;
     int f;
 
@@ -164,4 +152,3 @@ void vrLayerRasterC2D::_HSVtoRGB(int *r, int *g, int *b, int h, int s, int v)
             break;
     }
 }
-	

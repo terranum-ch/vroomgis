@@ -1,0 +1,14 @@
+Language: Cpp
+BasedOnStyle: Google
+IndentWidth: 4
+AccessModifierOffset: -2
+ColumnLimit: 120
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+PackConstructorInitializers: Never
+AllowShortFunctionsOnASingleLine: Empty
+PointerAlignment: Left
+DerivePointerAlignment: false
+AllowShortEnumsOnASingleLine: false
+AlignOperands: Align
+PenaltyBreakAssignment: 40

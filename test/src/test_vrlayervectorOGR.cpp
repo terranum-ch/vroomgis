@@ -1,9 +1,9 @@
 /***************************************************************************
-								test_vrlayervectorOGR.h
-								Test the OGR Layers
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrlayervectorOGR.h
+ Test the OGR Layers
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,13 +17,12 @@
 
 #include <gtest/gtest.h>
 
-#include "test_param.h"    //for test parameters
-#include "vrlayervector.h"
+#include "test_param.h"  //for test parameters
 #include "vrlayermanager.h"
-
+#include "vrlayervector.h"
 
 TEST(LayerVectorOGR, OpenLayerVectorOGR) {
-    //init lib.
+    // init lib.
     vrLayerManager myManager;
 
     vrLayerVectorOGR myLayer;
@@ -37,11 +36,9 @@ TEST(LayerVectorOGR, OpenLayerVectorOGRFailled) {
     vrLayerVectorOGR myLayer;
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileMisc), false), false);
     EXPECT_EQ(myLayer.IsOK(), false);
-
 }
 
 TEST(LayerVectorOGR, GetExtentVectorOGR) {
-
     vrRealRect myExtent;
     EXPECT_TRUE(myExtent.IsEmpty());
 
@@ -53,32 +50,31 @@ TEST(LayerVectorOGR, GetExtentVectorOGR) {
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), false), true);
     EXPECT_EQ(myLayer.IsOK(), true);
     EXPECT_TRUE(myLayer.GetExtent(myExtent));
-    EXPECT_EQ((int) myExtent.GetLeft(), 598000);
-    EXPECT_EQ((int) myExtent.GetTop(), 117200);
-    EXPECT_EQ((int) myExtent.GetRight(), 598662);
-    EXPECT_EQ((int) myExtent.GetBottom(), 114173);
+    EXPECT_EQ((int)myExtent.GetLeft(), 598000);
+    EXPECT_EQ((int)myExtent.GetTop(), 117200);
+    EXPECT_EQ((int)myExtent.GetRight(), 598662);
+    EXPECT_EQ((int)myExtent.GetBottom(), 114173);
 }
 
 TEST(LayerVectorOGR, GettingGeometry) {
     vrLayerVectorOGR myLayer;
 
     // layer not opened
-    OGRFeature *myFeat = myLayer.GetFeature(0);
+    OGRFeature* myFeat = myLayer.GetFeature(0);
     EXPECT_TRUE(myFeat == NULL);
 
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false), true);
     EXPECT_EQ(myLayer.IsOK(), true);
 
-    OGRFeature *myGeom = NULL;
+    OGRFeature* myGeom = NULL;
     myGeom = myLayer.GetFeature(0);
     EXPECT_TRUE(myGeom != NULL);
 
-    OGRLineString *myLine = (OGRLineString *) myGeom->GetGeometryRef();
+    OGRLineString* myLine = (OGRLineString*)myGeom->GetGeometryRef();
     wxLogMessage("line returned start here : %.4f | %.4f and contain %d vertex", myLine->getX(0), myLine->getY(0),
                  myLine->getNumPoints());
 
     OGRFeature::DestroyFeature(myGeom);
-
 }
 
 TEST(LayerVectorOGR, GettingGeometryType) {
@@ -103,7 +99,7 @@ TEST(LayerVectorOGR, GettingNextGeometry) {
     EXPECT_EQ(myLayer.IsOK(), true);
 
     bool restart = true;
-    OGRFeature *myFeat = NULL;
+    OGRFeature* myFeat = NULL;
     int iCount = 0;
 
     while (1) {
@@ -114,10 +110,9 @@ TEST(LayerVectorOGR, GettingNextGeometry) {
         }
 
         wxLogMessage("oid : %ld contain %d vertex", myFeat->GetFID(),
-                     (((OGRLineString *) myFeat->GetGeometryRef())->getNumPoints()));
+                     (((OGRLineString*)myFeat->GetGeometryRef())->getNumPoints()));
         iCount++;
         OGRFeature::DestroyFeature(myFeat);
-
     }
     wxLogMessage("%d feature readed", iCount);
     EXPECT_EQ(iCount, 45);

@@ -1,9 +1,9 @@
 /***************************************************************************
-								test_vrlayervectorGDAL.h
-								Test the GDAL Layers
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrlayervectorGDAL.h
+ Test the GDAL Layers
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,20 +17,19 @@
 
 #include <gtest/gtest.h>
 
+#include "test_param.h"  //for test parameters
 #include "vrlayer.h"
-#include "vrlayerraster.h"
-#include "vrlayervector.h"
-#include "test_param.h"    //for test parameters
-#include "vrlayerrasterc2d.h"
 #include "vrlayermanager.h"
-
+#include "vrlayerraster.h"
+#include "vrlayerrasterc2d.h"
+#include "vrlayervector.h"
 
 class LayerRasterC2D : public ::testing::Test {
     friend class vrLayerRasterC2D;
 };
 
 TEST_F(LayerRasterC2D, OpenLayerRasterC2D) {
-    //init lib.
+    // init lib.
     vrLayerManager myManager;
 
     vrLayerRasterGDAL myLayer;
@@ -62,5 +61,4 @@ TEST_F(LayerRasterC2D, GetPixelValueC2D) {
     }
     myTxtValues.RemoveLast(1);
     wxLogMessage(myTxtValues);
-
 }

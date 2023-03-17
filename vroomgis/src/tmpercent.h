@@ -26,11 +26,8 @@
 
 #endif
 
-
-class tmPercent
-        : public wxObject
-{
-private:
+class tmPercent : public wxObject {
+  private:
     bool m_inited;
     long m_totalValue;
     double m_increment;
@@ -39,8 +36,8 @@ private:
 
     void InitMemberValue();
 
-protected:
-public:
+  protected:
+  public:
     // ctor - dtor
     tmPercent();
 
@@ -52,8 +49,7 @@ public:
 
     void SetValue(long actualvalue);
 
-    long GetValue()
-    {
+    long GetValue() {
         return m_actualValue;
     }
 

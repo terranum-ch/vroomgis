@@ -1,9 +1,9 @@
 /***************************************************************************
-								test_vrdriver.h
-							Testing vrDrivers class
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrdriver.h
+ Testing vrDrivers class
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,9 +19,8 @@
 
 #include "vrdriver.h"
 
-
 class Drivers : public ::testing::Test {
-protected:
+  protected:
     vrDrivers m_Driver;
 };
 

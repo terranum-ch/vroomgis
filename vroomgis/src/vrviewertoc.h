@@ -1,9 +1,9 @@
 /***************************************************************************
-								vrviewertoc.h
-				Default TOC
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrviewertoc.h
+ Default TOC
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,7 +27,6 @@
 
 #include <wx/treectrl.h>
 
-
 class vrRenderer;
 
 class vrViewerLayerManager;
@@ -44,21 +43,19 @@ const int vrID_POPUP_BRUSH_TRANSPARENT = wxID_HIGHEST + 7 + vrID_VIEWERTOC_BASE;
 const int vrID_POPUP_BRUSH_BDIAGONAL = wxID_HIGHEST + 8 + vrID_VIEWERTOC_BASE;
 const int vrID_POPUP_GROUP_ADD = wxID_HIGHEST + 9 + vrID_VIEWERTOC_BASE;
 
-
-class vrViewerTOC
-{
-private:
+class vrViewerTOC {
+  private:
     bool m_freezeStatus;
-    vrViewerLayerManager *m_viewerManager;
+    vrViewerLayerManager* m_viewerManager;
 
-protected:
-    virtual wxMenu *CreateContextualMenu(vrRenderer *renderer, bool usegroup = false);
+  protected:
+    virtual wxMenu* CreateContextualMenu(vrRenderer* renderer, bool usegroup = false);
 
     virtual void SymbologyModified();
 
     void ReloadData();
 
-    inline vrViewerLayerManager *GetViewerLayerManager() const;
+    inline vrViewerLayerManager* GetViewerLayerManager() const;
 
     inline const bool IsFreezed() const;
 
@@ -70,12 +67,12 @@ protected:
 
     bool SetColorBrush(int itemindex);
 
-public:
+  public:
     vrViewerTOC();
 
     virtual ~vrViewerTOC();
 
-    virtual bool Add(int index, vrRenderer *renderer) = 0;
+    virtual bool Add(int index, vrRenderer* renderer) = 0;
 
     virtual bool Move(long oldpos, long newpos) = 0;
 
@@ -83,13 +80,11 @@ public:
 
     virtual int GetSelection() = 0;
 
-    virtual bool SetEditStyle(int index)
-    {
+    virtual bool SetEditStyle(int index) {
         return false;
     }
 
-    virtual bool SetNormalStyle(int index)
-    {
+    virtual bool SetNormalStyle(int index) {
         return false;
     }
 
@@ -97,54 +92,47 @@ public:
 
     virtual void FreezeEnd();
 
-    void SetViewerLayerManager(vrViewerLayerManager *value);
+    void SetViewerLayerManager(vrViewerLayerManager* value);
 
-    virtual wxControl *GetControl() = 0;
+    virtual wxControl* GetControl() = 0;
 };
 
-
-inline vrViewerLayerManager *vrViewerTOC::GetViewerLayerManager() const
-{
+inline vrViewerLayerManager* vrViewerTOC::GetViewerLayerManager() const {
     return m_viewerManager;
 }
 
-
-inline const bool vrViewerTOC::IsFreezed() const
-{
+inline const bool vrViewerTOC::IsFreezed() const {
     return m_freezeStatus;
 }
 
-
 /************************************ vrViewerTOCList **********************************************/
-class vrViewerTOCList
-        : public vrViewerTOC
-{
-private:
-    wxCheckListBox *m_checkList;
+class vrViewerTOCList : public vrViewerTOC {
+  private:
+    wxCheckListBox* m_checkList;
 
-    void OnMouseRightDown(wxMouseEvent &event);
+    void OnMouseRightDown(wxMouseEvent& event);
 
-    void OnMouseWheel(wxMouseEvent &event);
+    void OnMouseWheel(wxMouseEvent& event);
 
-    void OnSetColorPen(wxCommandEvent &event);
+    void OnSetColorPen(wxCommandEvent& event);
 
-    void OnSetColorBrush(wxCommandEvent &event);
+    void OnSetColorBrush(wxCommandEvent& event);
 
-    void OnSetTransparency(wxCommandEvent &event);
+    void OnSetTransparency(wxCommandEvent& event);
 
-    void OnSetWidth(wxCommandEvent &event);
+    void OnSetWidth(wxCommandEvent& event);
 
-    void OnSetBrushStyle(wxCommandEvent &event);
+    void OnSetBrushStyle(wxCommandEvent& event);
 
-    void OnVisibleStatusChanged(wxCommandEvent &event);
+    void OnVisibleStatusChanged(wxCommandEvent& event);
 
-public:
-    vrViewerTOCList(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-                    const wxSize &size = wxDefaultSize, int n = 0, const wxString choices[] = NULL, long style = 0);
+  public:
+    vrViewerTOCList(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize, int n = 0, const wxString choices[] = NULL, long style = 0);
 
     virtual ~vrViewerTOCList();
 
-    virtual bool Add(int index, vrRenderer *renderer);
+    virtual bool Add(int index, vrRenderer* renderer);
 
     virtual bool Move(long oldpos, long newpos);
 
@@ -152,28 +140,26 @@ public:
 
     virtual int GetSelection();
 
-    virtual wxControl *GetControl();
+    virtual wxControl* GetControl();
 };
-
 
 /************************************ vrViewerTOCTreeData ******************************************/
-enum vrVIEWERTOC_TREEDATA_TYPES
-{
-    vrTREEDATA_TYPE_INVALID = -1, vrTREEDATA_TYPE_LAYER = 0, vrTREEDATA_TYPE_LEGEND, vrTREEDATA_TYPE_GROUP
+enum vrVIEWERTOC_TREEDATA_TYPES {
+    vrTREEDATA_TYPE_INVALID = -1,
+    vrTREEDATA_TYPE_LAYER = 0,
+    vrTREEDATA_TYPE_LEGEND,
+    vrTREEDATA_TYPE_GROUP
 };
 
-
-enum vrVIEWERTOC_IMAGES_TYPES
-{
-    vrVIEWERTOC_IMAGE_CHECKED = 0, vrVIEWERTOC_IMAGE_UNCHECKED, vrVIEWERTOC_IMAGE_GROUP_ON, vrVIEWERTOC_IMAGE_GROUP_OFF
-
+enum vrVIEWERTOC_IMAGES_TYPES {
+    vrVIEWERTOC_IMAGE_CHECKED = 0,
+    vrVIEWERTOC_IMAGE_UNCHECKED,
+    vrVIEWERTOC_IMAGE_GROUP_ON,
+    vrVIEWERTOC_IMAGE_GROUP_OFF
 };
 
-
-class vrViewerTOCTreeData
-        : public wxTreeItemData
-{
-public:
+class vrViewerTOCTreeData : public wxTreeItemData {
+  public:
     vrViewerTOCTreeData();
 
     virtual ~vrViewerTOCTreeData();
@@ -182,18 +168,14 @@ public:
     vrVIEWERTOC_IMAGES_TYPES m_checkedImgType;
 };
 
-
 /************************************ vrViewerTOCTree **********************************************/
-class vrViewerTOCTree
-        : public vrViewerTOC
-{
-private:
-    wxTreeCtrl *m_tree;
+class vrViewerTOCTree : public vrViewerTOC {
+  private:
+    wxTreeCtrl* m_tree;
     wxTreeItemId m_rootNode;
     bool m_useGroupMenu;
 
-
-    wxTreeItemId _IndexToTree(wxTreeItemId root, const wxString &searchtext, vrVIEWERTOC_TREEDATA_TYPES searchtype);
+    wxTreeItemId _IndexToTree(wxTreeItemId root, const wxString& searchtext, vrVIEWERTOC_TREEDATA_TYPES searchtype);
 
     int _TreeToIndex(wxTreeItemId treeitem, vrVIEWERTOC_TREEDATA_TYPES searchtype);
 
@@ -201,7 +183,7 @@ private:
 
     void _SetItemImageUnique(wxTreeItemId item, vrVIEWERTOC_IMAGES_TYPES image);
 
-    void _FillTreeList(wxTreeItemId root, wxArrayTreeItemIds &array);
+    void _FillTreeList(wxTreeItemId root, wxArrayTreeItemIds& array);
 
     void _CopyTreeItems(wxTreeItemId origin, wxTreeItemId destination, bool isRoot = true);
 
@@ -213,43 +195,42 @@ private:
 
     void _ReorderFromTree(wxTreeItemId moveditem);
 
-    int _SearchIntoViewerLayerManager(const wxString &layername);
+    int _SearchIntoViewerLayerManager(const wxString& layername);
 
+    void OnMouseDown(wxMouseEvent& event);
 
-    void OnMouseDown(wxMouseEvent &event);
+    void OnItemRightDown(wxTreeEvent& event);
 
-    void OnItemRightDown(wxTreeEvent &event);
+    void OnSetColorPen(wxCommandEvent& event);
 
-    void OnSetColorPen(wxCommandEvent &event);
+    void OnSetColorBrush(wxCommandEvent& event);
 
-    void OnSetColorBrush(wxCommandEvent &event);
+    void OnSetBrushStyle(wxCommandEvent& event);
 
-    void OnSetBrushStyle(wxCommandEvent &event);
+    void OnSetTransparency(wxCommandEvent& event);
 
-    void OnSetTransparency(wxCommandEvent &event);
+    void OnSetWidth(wxCommandEvent& event);
 
-    void OnSetWidth(wxCommandEvent &event);
-
-    void OnNewGroup(wxCommandEvent &event);
+    void OnNewGroup(wxCommandEvent& event);
 
     // dragging functions
     wxTreeItemId m_dragItemID;
 
-    void OnDragStart(wxTreeEvent &event);
+    void OnDragStart(wxTreeEvent& event);
 
-    void OnDragStop(wxTreeEvent &event);
+    void OnDragStop(wxTreeEvent& event);
 
-    void OnEditStart(wxTreeEvent &event);
+    void OnEditStart(wxTreeEvent& event);
 
-public:
-    vrViewerTOCTree(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-                    const wxSize &size = wxDefaultSize,
+  public:
+    vrViewerTOCTree(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
+                    const wxSize& size = wxDefaultSize,
                     long style = wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT | wxTR_TWIST_BUTTONS | wxTR_NO_LINES |
                                  wxTR_EDIT_LABELS);
 
     virtual ~vrViewerTOCTree();
 
-    virtual bool Add(int index, vrRenderer *renderer);
+    virtual bool Add(int index, vrRenderer* renderer);
 
     virtual bool Move(long oldpos, long newpos);
 
@@ -257,21 +238,17 @@ public:
 
     virtual int GetSelection();
 
-    virtual wxControl *GetControl();
+    virtual wxControl* GetControl();
 
     virtual bool SetEditStyle(int index);
 
     virtual bool SetNormalStyle(int index);
 
-    bool AddGroup(const wxString &name);
+    bool AddGroup(const wxString& name);
 
-    void SetUseGroupMenu(bool value)
-    {
+    void SetUseGroupMenu(bool value) {
         m_useGroupMenu = value;
     }
-
-
 };
-
 
 #endif

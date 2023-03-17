@@ -1,7 +1,7 @@
 /***************************************************************************
  vrvieweroverlay.h
  -------------------
- copyright            : (C) 2012 CREALP Lucien Schreiber 
+ copyright            : (C) 2012 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -26,24 +26,23 @@
 
 #endif
 
-#include "vrrender.h"
 #include <ogrsf_frmts.h>
+
+#include "vrrender.h"
 
 class vrViewerDisplay;
 
-/***************************************************************************//**
-@brief Overlay abstract base class
-@author Lucien Schreiber (c) CREALP 2012
-@date 18 september 2012
-*******************************************************************************/
-class vrViewerOverlay
-{
-private:
+/***************************************************************************/ /**
+ @brief Overlay abstract base class
+ @author Lucien Schreiber (c) CREALP 2012
+ @date 18 september 2012
+ *******************************************************************************/
+class vrViewerOverlay {
+  private:
     wxString m_name;
     bool m_visible;
 
-
-public:
+  public:
     vrViewerOverlay(wxString name);
 
     virtual ~vrViewerOverlay();
@@ -54,46 +53,37 @@ public:
 
     void SetVisible(bool value);
 
-    virtual bool DrawOverlay(wxPaintDC *dc) = 0;
+    virtual bool DrawOverlay(wxPaintDC* dc) = 0;
 };
 
-inline const wxString vrViewerOverlay::GetName() const
-{
+inline const wxString vrViewerOverlay::GetName() const {
     return m_name;
 }
 
-
-inline const bool vrViewerOverlay::IsVisible() const
-{
+inline const bool vrViewerOverlay::IsVisible() const {
     return m_visible;
 }
 
 WX_DECLARE_OBJARRAY(vrViewerOverlay*, vrViewerOverlayArray);
 
-
-
-
-
-/***************************************************************************//**
-@brief Overlay simple text class
-@author Lucien Schreiber (c) CREALP 2012
-@date 18 septembre 2012
-*******************************************************************************/
-class vrViewerOverlayText
-        : public vrViewerOverlay
-{
-private:
+/***************************************************************************/ /**
+ @brief Overlay simple text class
+ @author Lucien Schreiber (c) CREALP 2012
+ @date 18 septembre 2012
+ *******************************************************************************/
+class vrViewerOverlayText : public vrViewerOverlay {
+  private:
     wxFont m_font;
     wxString m_text;
     wxPoint m_pos;
     wxColour m_textColour;
 
-public:
+  public:
     vrViewerOverlayText(wxString name, wxString text);
 
     virtual ~vrViewerOverlayText();
 
-    virtual bool DrawOverlay(wxPaintDC *dc);
+    virtual bool DrawOverlay(wxPaintDC* dc);
 
     inline const wxFont GetFont() const;
 
@@ -112,50 +102,43 @@ public:
     void SetTextColour(wxColour value);
 };
 
-
-inline const wxFont vrViewerOverlayText::GetFont() const
-{
+inline const wxFont vrViewerOverlayText::GetFont() const {
     return m_font;
 }
 
-inline const wxString vrViewerOverlayText::GetText() const
-{
+inline const wxString vrViewerOverlayText::GetText() const {
     return m_text;
 }
 
-inline const wxPoint vrViewerOverlayText::GetPosition() const
-{
+inline const wxPoint vrViewerOverlayText::GetPosition() const {
     return m_pos;
 }
 
-inline const wxColour vrViewerOverlayText::GetTextColour() const
-{
+inline const wxColour vrViewerOverlayText::GetTextColour() const {
     return m_textColour;
 }
 
-
-/*************************************************************************************//**
-@brief Support Geometric polygon overlay
-@author Lucien Schreiber copyright CREALP
-@date 20 september 2012
-*****************************************************************************************/
+/*************************************************************************************/ /**
+ @brief Support Geometric polygon overlay
+ @author Lucien Schreiber copyright CREALP
+ @date 20 september 2012
+ *****************************************************************************************/
 #if (0)
 // not used anymore...
 class vrViewerOverlayGeomPolygon : public vrViewerOverlay {
-private:
-    OGRPolygon * m_polygon;
+  private:
+    OGRPolygon* m_polygon;
     vrRenderVector m_renderPolygon;
-    vrViewerDisplay * m_display;
-    
-public:
-    vrViewerOverlayGeomPolygon(const wxString & name, vrViewerDisplay * viewer);
+    vrViewerDisplay* m_display;
+
+  public:
+    vrViewerOverlayGeomPolygon(const wxString& name, vrViewerDisplay* viewer);
     virtual ~vrViewerOverlayGeomPolygon();
-    
-    void SetPolygon(OGRPolygon * value);
-    void SetRender(vrRenderVector * value);
-    virtual bool DrawOverlay(wxPaintDC * dc);
+
+    void SetPolygon(OGRPolygon* value);
+    void SetRender(vrRenderVector* value);
+    virtual bool DrawOverlay(wxPaintDC* dc);
 };
 #endif
-
 
 #endif

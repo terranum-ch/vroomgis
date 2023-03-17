@@ -1,9 +1,9 @@
 /***************************************************************************
-								test_vrlayervectorGDAL.h
-								Test the GDAL Layers
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrlayervectorGDAL.h
+ Test the GDAL Layers
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,20 +17,18 @@
 
 #include <gtest/gtest.h>
 
+#include "test_param.h"  //for test parameters
 #include "vrlayer.h"
+#include "vrlayermanager.h"
 #include "vrlayerraster.h"
 #include "vrlayervector.h"
-#include "test_param.h"    //for test parameters
-#include "vrlayerraster.h"
-#include "vrlayermanager.h"
-
 
 class LayerRasterGDAL : public ::testing::Test {
     friend class vrLayerRasterGDAL;
 };
 
 TEST_F(LayerRasterGDAL, OpenLayerRasterGDAL) {
-    //init lib.
+    // init lib.
     vrLayerManager myManager;
 
     vrLayerRasterGDAL myLayer;
@@ -54,16 +52,13 @@ TEST_F(LayerRasterGDAL, GetExtentRasterGDAL) {
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), false), true);
     EXPECT_EQ(myLayer.IsOK(), true);
     EXPECT_TRUE(myLayer.GetExtent(myExtent));
-    EXPECT_EQ((int) myExtent.GetLeft(), 598000);
-    EXPECT_EQ((int) myExtent.GetTop(), 116000);
-    EXPECT_EQ((int) myExtent.GetRight(), 599000);
-    EXPECT_EQ((int) myExtent.GetBottom(), 114000);
-
-
+    EXPECT_EQ((int)myExtent.GetLeft(), 598000);
+    EXPECT_EQ((int)myExtent.GetTop(), 116000);
+    EXPECT_EQ((int)myExtent.GetRight(), 599000);
+    EXPECT_EQ((int)myExtent.GetBottom(), 114000);
 }
 
 TEST_F(LayerRasterGDAL, GettingExtentGDAL2) {
-
     // GETTING EXTENT FOR ROTATED RASTERS RETURN MAX EXTENT
     vrRealRect myExtent;
     EXPECT_TRUE(myExtent.IsEmpty());
@@ -83,7 +78,6 @@ TEST_F(LayerRasterGDAL, GettingExtentGDAL2) {
 
     wxLogMessage("Windows extent is :\nleft : \t%.3f\nright : \t%.3f\ntop : \t%.3f\nbottom : \t%.3f",
                  myExtent.GetLeft(), myExtent.GetRight(), myExtent.GetTop(), myExtent.GetBottom());
-
 }
 
 TEST_F(LayerRasterGDAL, GetPixelValueGDAL) {
@@ -110,5 +104,4 @@ TEST_F(LayerRasterGDAL, GetPixelValueGDAL) {
     }
     myTxtValues.RemoveLast(1);
     wxLogMessage(myTxtValues);
-
 }

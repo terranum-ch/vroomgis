@@ -1,8 +1,8 @@
 /***************************************************************************
  frame.h
- Drawer test program for VroomGIS 
+ Drawer test program for VroomGIS
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
-***************************************************************************/
+ ***************************************************************************/
 
 #ifndef _FRAME_H_
 #define _FRAME_H_
@@ -30,20 +30,17 @@
 #endif
 
 #include <wx/filename.h>
-#include <wx/splitter.h>	//splitter bar
+#include <wx/splitter.h>  //splitter bar
 #include <wx/stdpaths.h>
-#include "vroomgis.h"
 
+#include "vroomgis.h"
 
 const int ID_MENU_SELECT = wxID_HIGHEST + 1;
 const int ID_MENU_PAN = wxID_HIGHEST + 2;
 const int ID_MENU_ADDMEMORYLAYER = wxID_HIGHEST + 3;
 
-
-class vroomDrawer
-        : public wxApp
-{
-public:
+class vroomDrawer : public wxApp {
+  public:
     vroomDrawer();
 
     virtual bool OnInit();
@@ -53,19 +50,16 @@ public:
 
 DECLARE_APP(vroomDrawer);
 
-
-class vroomDrawerFrame
-        : public wxFrame
-{
-private:
-    //wxTextCtrl* m_LogCtrl;
-    wxLogWindow *m_LogWnd;
+class vroomDrawerFrame : public wxFrame {
+  private:
+    // wxTextCtrl* m_LogCtrl;
+    wxLogWindow* m_LogWnd;
 
     // controls (vroomgis)
-    vrViewerTOCTree *m_TocCtrl;
-    vrViewerDisplay *m_DisplayCtrl;
-    vrLayerManager *m_LayerManager;
-    vrViewerLayerManager *m_ViewerLayerManager;
+    vrViewerTOCTree* m_TocCtrl;
+    vrViewerDisplay* m_DisplayCtrl;
+    vrLayerManager* m_LayerManager;
+    vrViewerLayerManager* m_ViewerLayerManager;
 
     wxKeyboardState m_KeyBoardState;
 
@@ -74,55 +68,52 @@ private:
 
     double _GetRandomNumber(double min, double max);
 
-    vrLayer *_GetMemoryLayerPoints(const wxFileName &name, int number, const vrRealRect &extent);
+    vrLayer* _GetMemoryLayerPoints(const wxFileName& name, int number, const vrRealRect& extent);
 
-    vrLayer *_GetMemoryLayerLine(const wxFileName &name, int number, const vrRealRect &extent);
+    vrLayer* _GetMemoryLayerLine(const wxFileName& name, int number, const vrRealRect& extent);
 
-    vrLayer *_GetMemoryLayerStar(const wxFileName &name, int number, const vrRealRect &extent);
+    vrLayer* _GetMemoryLayerStar(const wxFileName& name, int number, const vrRealRect& extent);
 
-    void OnKeyDown(wxKeyEvent &event);
+    void OnKeyDown(wxKeyEvent& event);
 
-    void OnKeyUp(wxKeyEvent &event);
+    void OnKeyUp(wxKeyEvent& event);
 
-    void OnQuit(wxCommandEvent &event);
+    void OnQuit(wxCommandEvent& event);
 
-    void OnAbout(wxCommandEvent &event);
+    void OnAbout(wxCommandEvent& event);
 
-    void OnLayerAdd(wxCommandEvent &event);
+    void OnLayerAdd(wxCommandEvent& event);
 
-    void OnLayerRemove(wxCommandEvent &event);
+    void OnLayerRemove(wxCommandEvent& event);
 
-    void OnToolZoom(wxCommandEvent &event);
+    void OnToolZoom(wxCommandEvent& event);
 
-    void OnToolSelect(wxCommandEvent &event);
+    void OnToolSelect(wxCommandEvent& event);
 
-    void OnToolPan(wxCommandEvent &event);
+    void OnToolPan(wxCommandEvent& event);
 
-    void OnZoomToFit(wxCommandEvent &event);
+    void OnZoomToFit(wxCommandEvent& event);
 
-    void OnTestCrashSoftware(wxCommandEvent &event);
+    void OnTestCrashSoftware(wxCommandEvent& event);
 
-    void OnShowLog(wxCommandEvent &event);
+    void OnShowLog(wxCommandEvent& event);
 
-    void OnToolActionZoom(wxCommandEvent &event);
+    void OnToolActionZoom(wxCommandEvent& event);
 
-    void OnToolActionPan(wxCommandEvent &event);
+    void OnToolActionPan(wxCommandEvent& event);
 
-    void OnToolActionSelect(wxCommandEvent &event);
+    void OnToolActionSelect(wxCommandEvent& event);
 
-    void OnMemoryLayerAdd(wxCommandEvent &event);
+    void OnMemoryLayerAdd(wxCommandEvent& event);
 
-DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 
-public:
-    vroomDrawerFrame(const wxString &title);
+  public:
+    vroomDrawerFrame(const wxString& title);
 
     ~vroomDrawerFrame();
 
-    bool OpenLayers(const wxArrayString &names);
+    bool OpenLayers(const wxArrayString& names);
 };
 
-
 #endif
-
-

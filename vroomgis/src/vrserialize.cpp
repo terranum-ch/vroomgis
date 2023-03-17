@@ -17,26 +17,20 @@
 
 #include "vrserialize.h"
 
-
 // serializing data out
-vrSerialize::vrSerialize()
-{
+vrSerialize::vrSerialize() {
     m_outdirection = true;
     m_stream = _T("");
 }
 
-
 // serializing data in
-vrSerialize::vrSerialize(wxString stream)
-{
+vrSerialize::vrSerialize(wxString stream) {
     m_outdirection = false;
     m_stream = stream;
     m_divStream.SetString(m_stream, vrSERIAL_MAINSEP);
 }
 
-
-bool vrSerialize::CanRead()
-{
+bool vrSerialize::CanRead() {
     if (m_outdirection) {
         wxLogError(_T("Error, stream is in writing mode"));
         return false;
@@ -49,18 +43,13 @@ bool vrSerialize::CanRead()
     return true;
 }
 
-
-void vrSerialize::WriteInt(int value)
-{
+void vrSerialize::WriteInt(int value) {
     if (CanStore()) {
         m_stream.Append(wxString::Format(_T("%d"), value));
     }
-
 }
 
-
-int vrSerialize::ReadInt(const wxString &part)
-{
+int vrSerialize::ReadInt(const wxString& part) {
     long lvalue = 0;
     if (!part.ToLong(&lvalue)) {
         wxLogError(_T("Error trying to convert string to integer"));
@@ -69,9 +58,7 @@ int vrSerialize::ReadInt(const wxString &part)
     return lvalue;
 }
 
-
-bool vrSerialize::ReadStream(wxString &part)
-{
+bool vrSerialize::ReadStream(wxString& part) {
     if (CanRead()) {
         if (m_divStream.HasMoreTokens()) {
             part = m_divStream.GetNextToken();
@@ -82,19 +69,15 @@ bool vrSerialize::ReadStream(wxString &part)
     return false;
 }
 
-
-vrSerialize &vrSerialize::operator<<(bool value)
-{
+vrSerialize& vrSerialize::operator<<(bool value) {
     if (CanStore()) {
-        WriteInt((int) value);
+        WriteInt((int)value);
         AddSeparator();
     }
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator<<(wxString value)
-{
+vrSerialize& vrSerialize::operator<<(wxString value) {
     if (CanStore()) {
         m_stream.Append(value);
         AddSeparator();
@@ -102,9 +85,7 @@ vrSerialize &vrSerialize::operator<<(wxString value)
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator<<(const wxString &value)
-{
+vrSerialize& vrSerialize::operator<<(const wxString& value) {
     if (CanStore()) {
         m_stream.Append(value);
         AddSeparator();
@@ -112,8 +93,7 @@ vrSerialize &vrSerialize::operator<<(const wxString &value)
     return *this;
 }
 
-vrSerialize &vrSerialize::operator<<(const wxChar *pvalue)
-{
+vrSerialize& vrSerialize::operator<<(const wxChar* pvalue) {
     wxString value(pvalue);
     if (CanStore()) {
         m_stream.Append(value);
@@ -122,9 +102,7 @@ vrSerialize &vrSerialize::operator<<(const wxChar *pvalue)
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator<<(wxColour value)
-{
+vrSerialize& vrSerialize::operator<<(wxColour value) {
     if (CanStore()) {
         m_stream.Append(value.GetAsString(wxC2S_CSS_SYNTAX));
         AddSeparator();
@@ -132,9 +110,7 @@ vrSerialize &vrSerialize::operator<<(wxColour value)
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator<<(wxFont value)
-{
+vrSerialize& vrSerialize::operator<<(wxFont value) {
     if (CanStore()) {
         m_stream.Append(value.GetNativeFontInfoDesc());
         AddSeparator();
@@ -142,20 +118,15 @@ vrSerialize &vrSerialize::operator<<(wxFont value)
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator<<(int value)
-{
+vrSerialize& vrSerialize::operator<<(int value) {
     if (CanStore()) {
         WriteInt(value);
         AddSeparator();
     }
     return *this;
-
 }
 
-
-vrSerialize &vrSerialize::operator>>(bool &value)
-{
+vrSerialize& vrSerialize::operator>>(bool& value) {
     wxString partstream = wxEmptyString;
     if (ReadStream(partstream)) {
         value = false;
@@ -166,9 +137,7 @@ vrSerialize &vrSerialize::operator>>(bool &value)
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator>>(wxString &value)
-{
+vrSerialize& vrSerialize::operator>>(wxString& value) {
     wxString partstream = wxEmptyString;
     if (ReadStream(partstream)) {
         value = partstream;
@@ -176,21 +145,16 @@ vrSerialize &vrSerialize::operator>>(wxString &value)
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator>>(wxColour &value)
-{
+vrSerialize& vrSerialize::operator>>(wxColour& value) {
     wxString partstream = wxEmptyString;
     if (ReadStream(partstream)) {
         wxColour tmpcol(partstream);
-        if (tmpcol.IsOk())
-            value = tmpcol;
+        if (tmpcol.IsOk()) value = tmpcol;
     }
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator>>(wxFont &value)
-{
+vrSerialize& vrSerialize::operator>>(wxFont& value) {
     wxString partstream = wxEmptyString;
     if (ReadStream(partstream)) {
         // TODO: This message is needed, otherwise crash in release mode (Mac) ?
@@ -203,9 +167,7 @@ vrSerialize &vrSerialize::operator>>(wxFont &value)
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator>>(int &value)
-{
+vrSerialize& vrSerialize::operator>>(int& value) {
     wxString partstream = wxEmptyString;
     if (ReadStream(partstream)) {
         value = ReadInt(partstream);
@@ -213,20 +175,14 @@ vrSerialize &vrSerialize::operator>>(int &value)
     return *this;
 }
 
-
-vrSerialize &vrSerialize::operator>>(wxBrushStyle &value)
-{
+vrSerialize& vrSerialize::operator>>(wxBrushStyle& value) {
     wxString partstream = wxEmptyString;
     if (ReadStream(partstream)) {
-        value = (wxBrushStyle) ReadInt(partstream);
+        value = (wxBrushStyle)ReadInt(partstream);
     }
     return *this;
 }
 
-
-bool vrSerialize::IsStoring()
-{
+bool vrSerialize::IsStoring() {
     return m_outdirection;
 }
-
-

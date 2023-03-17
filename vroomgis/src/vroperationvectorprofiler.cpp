@@ -1,7 +1,7 @@
 /***************************************************************************
  vroperationvectorprofiler.cpp
  -------------------
- copyright            : (C) 2013 CREALP Lucien Schreiber 
+ copyright            : (C) 2013 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -15,13 +15,13 @@
  ***************************************************************************/
 
 #include "vroperationvectorprofiler.h"
+
 #include "vrlayerraster.h"
 
-vrOperationVectorProfiler::vrOperationVectorProfiler(OGRGeometry *geometry, vrLayerRasterGDAL *raster)
-{
+vrOperationVectorProfiler::vrOperationVectorProfiler(OGRGeometry* geometry, vrLayerRasterGDAL* raster) {
     m_lineString = NULL;
     if (geometry->getGeometryType() == wkbFlatten(wkbLineString)) {
-        m_lineString = static_cast<OGRLineString *>(geometry);
+        m_lineString = static_cast<OGRLineString*>(geometry);
     }
     m_rasterLayer = raster;
     m_pixelWidth = 0;
@@ -37,14 +37,9 @@ vrOperationVectorProfiler::vrOperationVectorProfiler(OGRGeometry *geometry, vrLa
     m_increment_Y = fabs(m_pixelHeight);
 }
 
+vrOperationVectorProfiler::~vrOperationVectorProfiler() {}
 
-vrOperationVectorProfiler::~vrOperationVectorProfiler()
-{
-}
-
-
-bool vrOperationVectorProfiler::IsOk()
-{
+bool vrOperationVectorProfiler::IsOk() {
     if (m_lineString == NULL) {
         return false;
     }
@@ -52,9 +47,7 @@ bool vrOperationVectorProfiler::IsOk()
     return m_rasterLayer != NULL;
 }
 
-
-bool vrOperationVectorProfiler::DoProfile(int bandindex)
-{
+bool vrOperationVectorProfiler::DoProfile(int bandindex) {
     if (!IsOk()) {
         return false;
     }
@@ -101,7 +94,6 @@ bool vrOperationVectorProfiler::DoProfile(int bandindex)
         m_increment_Y = m_increment_Y * -1.0;
     }
 
-
     wxArrayDouble myValues;
     for (int i = 0; i < iNbPoints + 1; i++) {
         double myX = p1.getX() + (i * m_increment_X);
@@ -112,16 +104,14 @@ bool vrOperationVectorProfiler::DoProfile(int bandindex)
             continue;
         }
         double myZVal = myValues.Item(bandindex);
-        //wxLogMessage(_("%f"), myZVal);
+        // wxLogMessage(_("%f"), myZVal);
         m_zResults.Add(myZVal);
     }
 
     return true;
 }
 
-
-bool vrOperationVectorProfiler::GetResultPoint(int index, OGRPoint *point)
-{
+bool vrOperationVectorProfiler::GetResultPoint(int index, OGRPoint* point) {
     if (!IsOk()) {
         return false;
     }
@@ -146,9 +136,7 @@ bool vrOperationVectorProfiler::GetResultPoint(int index, OGRPoint *point)
     return true;
 }
 
-
-bool vrOperationVectorProfiler::GetResultLine(OGRGeometry *line)
-{
+bool vrOperationVectorProfiler::GetResultLine(OGRGeometry* line) {
     if (!IsOk()) {
         return false;
     }
@@ -162,9 +150,9 @@ bool vrOperationVectorProfiler::GetResultLine(OGRGeometry *line)
         return false;
     }
 
-    OGRLineString *myLine = static_cast<OGRLineString *>(line);
+    OGRLineString* myLine = static_cast<OGRLineString*>(line);
     for (unsigned int i = 0; i < m_zResults.GetCount(); i++) {
-        OGRPoint *myPt = static_cast<OGRPoint *>(OGRGeometryFactory::createGeometry(wkbPoint));
+        OGRPoint* myPt = static_cast<OGRPoint*>(OGRGeometryFactory::createGeometry(wkbPoint));
         if (!GetResultPoint(i, myPt)) {
             wxLogError(_("Error getting point: %ld"), i);
             OGRGeometryFactory::destroyGeometry(myPt);
@@ -177,12 +165,7 @@ bool vrOperationVectorProfiler::GetResultLine(OGRGeometry *line)
     return myLine;
 }
 
-
-double vrOperationVectorProfiler::GetIncrementDistance()
-{
+double vrOperationVectorProfiler::GetIncrementDistance() {
     double myDistance = sqrt((m_increment_X * m_increment_X) + (m_increment_Y * m_increment_Y));
     return myDistance;
 }
-
-
-

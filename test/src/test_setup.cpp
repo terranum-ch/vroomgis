@@ -1,9 +1,9 @@
 /***************************************************************************
-								test_setup.h
-							Setup tests
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_setup.h
+ Setup tests
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,8 +20,7 @@
 #include "vrlayer.h"
 
 class Setup : public ::testing::Test {
-
-protected:
+  protected:
     virtual void setUp() {
         wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
         wxInitializer initializer;
@@ -37,7 +36,7 @@ protected:
 };
 
 TEST_F(Setup, LogIsWorking) {
-    //setting output to the std err (otherwise log into windows)
+    // setting output to the std err (otherwise log into windows)
     wxLog::SetActiveTarget(new wxLogStderr());
     wxLogMessage("Setup file processed ");
 };

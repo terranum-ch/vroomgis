@@ -1,9 +1,9 @@
 /***************************************************************************
-								vrrender.h
-				Decorator base class 
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrrender.h
+ Decorator base class
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,9 +27,7 @@
 
 #include "vrserialize.h"
 
-
-enum vrRENDER_TYPE
-{
+enum vrRENDER_TYPE {
     vrRENDER_VECTOR = 0,
     vrRENDER_VECTOR_C2P_DIPS,
     vrRENDER_VECTOR_C2P_POLY,
@@ -38,19 +36,16 @@ enum vrRENDER_TYPE
     vrRENDER_UNKNOWN
 };
 
-
-class vrRender
-{
-protected:
+class vrRender {
+  protected:
     vrRENDER_TYPE m_type;
     int m_transparency;
     wxColour m_selectionColour;
     static wxColour m_defaultSelectionColour;
 
-
     unsigned char GetTransparencyChar();
 
-public:
+  public:
     vrRender();
 
     virtual ~vrRender();
@@ -67,38 +62,33 @@ public:
 
     static void SetDefaultSelectionColour(wxColour value);
 
-    virtual bool Serialize(vrSerialize &serialobj);
+    virtual bool Serialize(vrSerialize& serialobj);
 };
 
-
-inline const int vrRender::GetTransparency() const
-{
+inline const int vrRender::GetTransparency() const {
     return m_transparency;
 }
 
-
-class vrRenderVector
-        : public vrRender
-{
-private:
+class vrRenderVector : public vrRender {
+  private:
     wxColour m_colorPen;
     wxColour m_colorBrush;
     wxBrushStyle m_brushStyle;
     int m_size;
     bool m_useFastAndUglyDC;
 
-public:
+  public:
     vrRenderVector();
 
     virtual ~vrRenderVector();
 
     wxColour GetColorPen();
 
-    void SetColorPen(const wxColour &color);
+    void SetColorPen(const wxColour& color);
 
     wxColour GetColorBrush();
 
-    void SetColorBrush(const wxColour &color);
+    void SetColorBrush(const wxColour& color);
 
     wxBrushStyle GetBrushStyle();
 
@@ -112,31 +102,22 @@ public:
 
     void SetUseFastAndUglyDC(bool value);
 
-
-    virtual bool Serialize(vrSerialize &serialobj);
+    virtual bool Serialize(vrSerialize& serialobj);
 };
 
-
-inline const int vrRenderVector::GetSize() const
-{
+inline const int vrRenderVector::GetSize() const {
     return m_size;
 }
 
-
-inline const bool vrRenderVector::IsUsingFastAndUglyDC() const
-{
+inline const bool vrRenderVector::IsUsingFastAndUglyDC() const {
     return m_useFastAndUglyDC;
 }
 
-
-class vrRenderRaster
-        : public vrRender
-{
-public:
+class vrRenderRaster : public vrRender {
+  public:
     vrRenderRaster();
 
     virtual ~vrRenderRaster();
-
 };
 
 #endif

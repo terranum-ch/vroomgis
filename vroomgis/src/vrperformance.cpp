@@ -5,11 +5,9 @@
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
-
 #include "vrperformance.h"
 
-size_t vrPerformance::_GetUsedMemory(bool resident)
-{
+size_t vrPerformance::_GetUsedMemory(bool resident) {
 #if defined(__LINUX__)
     // Ugh, getrusage doesn't work well on Linux.  Try grabbing info
     // directly from the /proc pseudo-filesystem.  Reading from
@@ -18,11 +16,11 @@ size_t vrPerformance::_GetUsedMemory(bool resident)
     // shared pages, text/code, data/stack, library, dirty pages.  The
     // mem sizes should all be multiplied by the page size.
     size_t size = 0;
-    FILE *file = fopen("/proc/self/statm", "r");
+    FILE* file = fopen("/proc/self/statm", "r");
     if (file) {
         unsigned int vm = 0;
-        if(fscanf(file, "%u", &vm)!=0) { // Just need the first num: vm size
-            size = (size_t) vm * getpagesize();
+        if (fscanf(file, "%u", &vm) != 0) {  // Just need the first num: vm size
+            size = (size_t)vm * getpagesize();
         }
     }
     fclose(file);
@@ -40,19 +38,18 @@ size_t vrPerformance::_GetUsedMemory(bool resident)
 #elif defined(__WXMSW__)
     // According to MSDN...
     PROCESS_MEMORY_COUNTERS counters;
-    if (GetProcessMemoryInfo (GetCurrentProcess(), &counters, sizeof (counters)))
+    if (GetProcessMemoryInfo(GetCurrentProcess(), &counters, sizeof(counters)))
         return counters.PagefileUsage;
-    else return 0;
+    else
+        return 0;
 
 #else
     // No idea what platform this is
-    return 0;   // Punt
+    return 0;  // Punt
 #endif
 }
 
-
-vrPerformance::vrPerformance(wxString file, wxString header)
-{
+vrPerformance::vrPerformance(wxString file, wxString header) {
     wxASSERT(file != wxEmptyString);
     m_filePath = wxFileName(file);
     m_stopWatch.Start(0);
@@ -62,14 +59,9 @@ vrPerformance::vrPerformance(wxString file, wxString header)
     }
 }
 
+vrPerformance::~vrPerformance() {}
 
-vrPerformance::~vrPerformance()
-{
-}
-
-
-void vrPerformance::StopWork(wxString text)
-{
+void vrPerformance::StopWork(wxString text) {
     long myUsedMem = _GetUsedMemory(true);
     wxString myDebug = _T("Undefined");
 #ifndef NDEBUG
@@ -78,8 +70,7 @@ void vrPerformance::StopWork(wxString text)
     myDebug = _("No");
 #endif
 
-    m_file.Write(
-            wxString::Format(_T("%s\t%s\t%s\t%ld\t%ld\t"), wxDateTime::Now().FormatISOCombined(), wxGetOsDescription(),
-                             myDebug, m_stopWatch.Time(), myUsedMem) + text + _T("\n"));
+    m_file.Write(wxString::Format(_T("%s\t%s\t%s\t%ld\t%ld\t"), wxDateTime::Now().FormatISOCombined(),
+                                  wxGetOsDescription(), myDebug, m_stopWatch.Time(), myUsedMem) +
+                 text + _T("\n"));
 }
-

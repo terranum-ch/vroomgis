@@ -28,14 +28,14 @@
  * DEALINGS IN THE SOFTWARE.
  ****************************************************************************/
 
-#include "gdal_priv.h"
 #include "gdal_frmts.h"
+#include "gdal_priv.h"
 
 CPL_CVSID("$Id: gdalallregister.cpp 27196 2014-04-16 11:41:24Z rouault $");
 
 #ifdef notdef
 // we may have a use for this some day
-static char *szConfiguredFormats = "GDAL_FORMATS";
+static char* szConfiguredFormats = "GDAL_FORMATS";
 #endif
 
 /************************************************************************/
@@ -71,8 +71,7 @@ static char *szConfiguredFormats = "GDAL_FORMATS";
  * This function should generally be called once at the beginning of the application.
  */
 
-void CPL_STDCALL GDALAllRegister()
-{
+void CPL_STDCALL GDALAllRegister() {
     GetGDALDriverManager()->AutoLoadDrivers();
 
 #ifdef FRMT_vrt
@@ -119,7 +118,7 @@ void CPL_STDCALL GDALAllRegister()
 
 #ifdef FRMT_aigrid
     //    GDALRegister_AIGrid2();
-        GDALRegister_AIGrid();
+    GDALRegister_AIGrid();
 #endif
 
 #ifdef FRMT_aaigrid
@@ -258,12 +257,12 @@ void CPL_STDCALL GDALAllRegister()
 
 #ifdef FRMT_jp2kak
     // JPEG2000 support using Kakadu toolkit
-        GDALRegister_JP2KAK();
+    GDALRegister_JP2KAK();
 #endif
 
 #ifdef FRMT_jpipkak
     // JPEG2000 support using Kakadu toolkit
-        GDALRegister_JPIPKAK();
+    GDALRegister_JPIPKAK();
 #endif
 
 #ifdef FRMT_ecw
@@ -273,7 +272,7 @@ void CPL_STDCALL GDALAllRegister()
 
 #ifdef FRMT_openjpeg
     // JPEG2000 support using OpenJPEG library
-        GDALRegister_JP2OpenJPEG();
+    GDALRegister_JP2OpenJPEG();
 #endif
 
 #ifdef FRMT_l1b
@@ -296,7 +295,7 @@ void CPL_STDCALL GDALAllRegister()
     // JPEG2000 support using JasPer toolkit
     // This one should always be placed after other JasPer supported formats,
     // such as BMP or PNM. In other case we will get bad side effects.
-        GDALRegister_JPEG2000();
+    GDALRegister_JPEG2000();
 #endif
 
 #ifdef FRMT_mrsid_lidar

@@ -1,9 +1,9 @@
 /***************************************************************************
-test_vrcoordinate.h
-Testing the coordinate system
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrcoordinate.h
+ Testing the coordinate system
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,9 +17,8 @@ Testing the coordinate system
 
 #include <gtest/gtest.h>
 
-#include "test_param.h"    //for test parameters
+#include "test_param.h"  //for test parameters
 #include "vrrealrect.h"
-
 
 TEST(RealRect, CreateRealRect) {
     vrRealRect myRect;

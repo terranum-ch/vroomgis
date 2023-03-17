@@ -52,7 +52,7 @@ TEST_F(OperationVector, CreateProfileObject) {
     EXPECT_TRUE(myRaster->IsOK());
     EXPECT_TRUE(myVector->IsOK());
 
-    OGRFeature *myFeat = myVector->GetNextFeature(true);
+    OGRFeature* myFeat = myVector->GetNextFeature(true);
     vrOperationVectorProfiler myProfiler(myFeat->GetGeometryRef(), myRaster);
     EXPECT_TRUE(myProfiler.IsOk());
 
@@ -60,7 +60,7 @@ TEST_F(OperationVector, CreateProfileObject) {
 }
 
 TEST_F(OperationVector, DoProfile) {
-    OGRFeature *myFeat = myVector->GetNextFeature(true);
+    OGRFeature* myFeat = myVector->GetNextFeature(true);
     vrOperationVectorProfiler myProfiler(myFeat->GetGeometryRef(), myRaster);
     EXPECT_TRUE(myProfiler.DoProfile());
     EXPECT_TRUE(myProfiler.GetResultRef()->GetCount() > 0);
@@ -78,7 +78,7 @@ TEST_F(OperationVector, ProfileOut) {
     vrLayerVectorOGR myOutPt;
     EXPECT_TRUE(myOutPt.Create(myOutPtName, wkbPoint));
 
-    OGRFeature *myFeat = myVector->GetNextFeature(true);
+    OGRFeature* myFeat = myVector->GetNextFeature(true);
     vrOperationVectorProfiler myProfiler(myFeat->GetGeometryRef(), myRaster);
     EXPECT_TRUE(myProfiler.DoProfile());
     int myNumResult = myProfiler.GetResultRef()->GetCount();
@@ -94,18 +94,17 @@ TEST_F(OperationVector, ProfileOut) {
     OGRLineString myLine;
     EXPECT_TRUE(myProfiler.GetResultLine(&myLine));
     EXPECT_TRUE(myOutLine.AddFeature(&myLine) != wxNOT_FOUND);
-
 }
 
 TEST_F(OperationVector, ProfileGeometries) {
-    OGRFeature *myFeat = myVector->GetNextFeature(true);
+    OGRFeature* myFeat = myVector->GetNextFeature(true);
     vrOperationVectorProfiler myProfiler(myFeat->GetGeometryRef(), myRaster);
     EXPECT_TRUE(myProfiler.DoProfile());
-    //int myNumResult = myProfiler.GetResultRef()->GetCount();
+    // int myNumResult = myProfiler.GetResultRef()->GetCount();
 
     OGRPoint myPt0;
     OGRPoint myPtEnd;
-    OGRLineString *myLine = static_cast<OGRLineString *> (myFeat->GetGeometryRef());
+    OGRLineString* myLine = static_cast<OGRLineString*>(myFeat->GetGeometryRef());
 
     EXPECT_TRUE(myProfiler.GetResultPoint(0, &myPt0));
     EXPECT_TRUE(myPt0.getX() == myLine->getX(0));

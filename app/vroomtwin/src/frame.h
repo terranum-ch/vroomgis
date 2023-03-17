@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef _VROOMTWIN_TEST_H_
 #define _VROOMTWIN_TEST_H_
 
@@ -30,9 +29,9 @@
 
 #endif
 
-
-#include <wx/splitter.h>	
 #include <wx/dnd.h>
+#include <wx/splitter.h>
+
 #include "vroomgis.h"
 
 const int vtID_SET_SYNCRO_MODE = wxID_HIGHEST + 1;
@@ -41,84 +40,73 @@ const int vtID_OVERLAY_TEXT = wxID_HIGHEST + 3;
 
 class vroomTwinFrame;
 
-
-class vroomTwin
-        : public wxApp
-{
-public:
+class vroomTwin : public wxApp {
+  public:
     virtual bool OnInit();
 };
 
+class vroomDropFiles : public wxFileDropTarget {
+  private:
+    vroomTwinFrame* m_LoaderFrame;
 
-class vroomDropFiles
-        : public wxFileDropTarget
-{
-private:
-    vroomTwinFrame *m_LoaderFrame;
+  public:
+    vroomDropFiles(vroomTwinFrame* parent);
 
-public:
-    vroomDropFiles(vroomTwinFrame *parent);
-
-    virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
+    virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
 };
 
-
-class vroomTwinFrame
-        : public wxFrame
-{
-private:
-    wxLogWindow *m_LogWnd;
+class vroomTwinFrame : public wxFrame {
+  private:
+    wxLogWindow* m_LogWnd;
     bool m_SyncroTool;
     wxOverlay m_Overlay;
 
     // vroomgis engine
-    vrLayerManager *m_LayerManager;
+    vrLayerManager* m_LayerManager;
 
-    vrViewerTOCList *m_TocCtrl1;
-    vrViewerLayerManager *m_ViewerLayerManager1;
-    vrViewerDisplay *m_DisplayCtrl1;
+    vrViewerTOCList* m_TocCtrl1;
+    vrViewerLayerManager* m_ViewerLayerManager1;
+    vrViewerDisplay* m_DisplayCtrl1;
 
-    vrViewerTOCList *m_TocCtrl2;
-    vrViewerLayerManager *m_ViewerLayerManager2;
-    vrViewerDisplay *m_DisplayCtrl2;
-
+    vrViewerTOCList* m_TocCtrl2;
+    vrViewerLayerManager* m_ViewerLayerManager2;
+    vrViewerDisplay* m_DisplayCtrl2;
 
     void _CreateControls();
 
-DECLARE_EVENT_TABLE();
-public:
-    vroomTwinFrame(const wxString &title);
+    DECLARE_EVENT_TABLE();
+
+  public:
+    vroomTwinFrame(const wxString& title);
 
     ~vroomTwinFrame();
 
-    bool OpenLayers(const wxArrayString &names);
+    bool OpenLayers(const wxArrayString& names);
 
-    void OnQuit(wxCommandEvent &event);
+    void OnQuit(wxCommandEvent& event);
 
-    void OnAbout(wxCommandEvent &event);
+    void OnAbout(wxCommandEvent& event);
 
-    void OnOpenLayer(wxCommandEvent &event);
+    void OnOpenLayer(wxCommandEvent& event);
 
-    void OnCloseLayer(wxCommandEvent &event);
+    void OnCloseLayer(wxCommandEvent& event);
 
-    void OnShowLog(wxCommandEvent &event);
+    void OnShowLog(wxCommandEvent& event);
 
-    void OnOverlayText(wxCommandEvent &event);
+    void OnOverlayText(wxCommandEvent& event);
 
-    void OnSyncroToolSwitch(wxCommandEvent &event);
+    void OnSyncroToolSwitch(wxCommandEvent& event);
 
-    //void OnToolSelect (wxCommandEvent & event);
-    void OnToolZoom(wxCommandEvent &event);
+    // void OnToolSelect (wxCommandEvent & event);
+    void OnToolZoom(wxCommandEvent& event);
 
-    void OnToolPan(wxCommandEvent &event);
+    void OnToolPan(wxCommandEvent& event);
 
-    void OnToolSight(wxCommandEvent &event);
+    void OnToolSight(wxCommandEvent& event);
 
-    void OnToolZoomToFit(wxCommandEvent &event);
+    void OnToolZoomToFit(wxCommandEvent& event);
 
-    void OnToolAction(wxCommandEvent &event);
+    void OnToolAction(wxCommandEvent& event);
 };
 
 #endif
-
-

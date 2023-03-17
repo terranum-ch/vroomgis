@@ -1,9 +1,8 @@
 /***************************************************************************
-				vrdisplayvalue.cpp
-
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrdisplayvalue.cpp
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,36 +15,34 @@
  ***************************************************************************/
 
 #include "vrdisplayvalue.h"
-#include "vroomgis.h"
+
 #include "vrlayerraster.h"
+#include "vroomgis.h"
 
 BEGIN_EVENT_TABLE(vrDisplayValueDlg, wxDialog)
-    EVT_CLOSE(vrDisplayValueDlg::OnCloseDlg)
+EVT_CLOSE(vrDisplayValueDlg::OnCloseDlg)
 END_EVENT_TABLE();
 
-
-vrDisplayValueDlg::vrDisplayValueDlg(wxWindow *parent, vrViewerLayerManager *viewerlayermanager, wxWindowID id,
-                                     const wxString &title, const wxPoint &pos, const wxSize &size, long style)
-        : wxDialog(parent, id, title, pos, size, style)
-{
+vrDisplayValueDlg::vrDisplayValueDlg(wxWindow* parent, vrViewerLayerManager* viewerlayermanager, wxWindowID id,
+                                     const wxString& title, const wxPoint& pos, const wxSize& size, long style)
+    : wxDialog(parent, id, title, pos, size, style) {
     wxASSERT(viewerlayermanager);
     m_LayerViewerManager = viewerlayermanager;
 
-
     this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
-    wxBoxSizer *bSizer2;
+    wxBoxSizer* bSizer2;
     bSizer2 = new wxBoxSizer(wxVERTICAL);
 
-    wxBoxSizer *bSizer3;
+    wxBoxSizer* bSizer3;
     bSizer3 = new wxBoxSizer(wxHORIZONTAL);
 
-    wxFlexGridSizer *fgSizer1;
+    wxFlexGridSizer* fgSizer1;
     fgSizer1 = new wxFlexGridSizer(2, 2, 0, 0);
     fgSizer1->SetFlexibleDirection(wxBOTH);
     fgSizer1->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
 
-    wxStaticText *m_staticText2;
+    wxStaticText* m_staticText2;
     m_staticText2 = new wxStaticText(this, wxID_ANY, wxT("Layer:"), wxDefaultPosition, wxDefaultSize, 0);
     m_staticText2->Wrap(-1);
     fgSizer1->Add(m_staticText2, 0, wxALL, 5);
@@ -55,7 +52,7 @@ vrDisplayValueDlg::vrDisplayValueDlg(wxWindow *parent, vrViewerLayerManager *vie
     m_LayerChoice->SetSelection(0);
     fgSizer1->Add(m_LayerChoice, 0, wxALL, 5);
 
-    wxStaticText *m_staticText6;
+    wxStaticText* m_staticText6;
     m_staticText6 = new wxStaticText(this, wxID_ANY, wxT("Values:"), wxDefaultPosition, wxDefaultSize, 0);
     m_staticText6->Wrap(-1);
     fgSizer1->Add(m_staticText6, 0, wxALL, 5);
@@ -78,23 +75,17 @@ vrDisplayValueDlg::vrDisplayValueDlg(wxWindow *parent, vrViewerLayerManager *vie
         m_LayerChoice->Append(myLayerName);
     }
     m_LayerChoice->SetSelection(0);
-
 }
 
-vrDisplayValueDlg::~vrDisplayValueDlg()
-{
-}
+vrDisplayValueDlg::~vrDisplayValueDlg() {}
 
-
-void vrDisplayValueDlg::OnCloseDlg(wxCloseEvent &event)
-{
+void vrDisplayValueDlg::OnCloseDlg(wxCloseEvent& event) {
     wxASSERT(m_LayerViewerManager);
     m_LayerViewerManager->GetDisplay()->SetToolDefault();
     Destroy();
 }
 
-void vrDisplayValueDlg::UpdateValues(const wxPoint &pos)
-{
+void vrDisplayValueDlg::UpdateValues(const wxPoint& pos) {
     wxASSERT(m_LayerViewerManager);
     if (m_LayerChoice->GetCount() == 0) {
         return;
@@ -112,7 +103,7 @@ void vrDisplayValueDlg::UpdateValues(const wxPoint &pos)
         wxLogWarning("This isn't a raster layer, please select a raster layer");
         return;
     }
-    vrLayerRasterGDAL *myRasterLayer = (vrLayerRasterGDAL *) m_LayerViewerManager->GetRenderer(iIndex)->GetLayer();
+    vrLayerRasterGDAL* myRasterLayer = (vrLayerRasterGDAL*)m_LayerViewerManager->GetRenderer(iIndex)->GetLayer();
     wxASSERT(myRasterLayer);
 
     wxPoint2DDouble myCoord;
@@ -135,21 +126,15 @@ void vrDisplayValueDlg::UpdateValues(const wxPoint &pos)
     m_ValuesText->SetLabel(myTextValues);
 }
 
-
-vrDisplayValueTool::vrDisplayValueTool(vrViewerDisplay *display, vrDisplayValueDlg *dialog)
-{
+vrDisplayValueTool::vrDisplayValueTool(vrViewerDisplay* display, vrDisplayValueDlg* dialog) {
     Create(display, wxID_DEFAULT, "Select", wxCursor(wxCURSOR_ARROW));
     wxASSERT(dialog);
     m_Dlg = dialog;
 }
 
-vrDisplayValueTool::~vrDisplayValueTool()
-{
-}
+vrDisplayValueTool::~vrDisplayValueTool() {}
 
-
-bool vrDisplayValueTool::MouseMove(const wxMouseEvent &event)
-{
+bool vrDisplayValueTool::MouseMove(const wxMouseEvent& event) {
     if (m_Dlg == NULL) {
         return false;
     }
@@ -161,4 +146,3 @@ bool vrDisplayValueTool::MouseMove(const wxMouseEvent &event)
     m_Dlg->UpdateValues(event.GetPosition());
     return true;
 }
-

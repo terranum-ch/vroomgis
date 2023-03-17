@@ -1,9 +1,9 @@
 /***************************************************************************
-								test_vrrender.h
-					Rendering array storring vrLayer, vrRender, vrLabel
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrrender.h
+ Rendering array storring vrLayer, vrRender, vrLabel
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,16 +18,15 @@
 #include <gtest/gtest.h>
 
 #include "test_param.h"
-#include "vrrenderer.h"
-#include "vrrender.h"
 #include "vrlabel.h"
 #include "vrlayermanager.h"
-
+#include "vrrender.h"
+#include "vrrenderer.h"
 
 class Renderer : public ::testing::Test {
-protected:
-    vrLayerManager *m_Manager;
-    vrLayer *m_LayerShp;
+  protected:
+    vrLayerManager* m_Manager;
+    vrLayer* m_LayerShp;
 
     virtual void setUp() {
         m_LayerShp = NULL;
@@ -54,11 +53,11 @@ TEST_F(Renderer, RendererCreate) {
 }
 
 TEST_F(Renderer, RenderCreate) {
-    //vrRenderRaster * myRenderRaster = new vrRenderRaster();
-    vrRenderVector *myRenderVector = new vrRenderVector();
+    // vrRenderRaster * myRenderRaster = new vrRenderRaster();
+    vrRenderVector* myRenderVector = new vrRenderVector();
 
     // crash
-    //vrRenderer myRenderer(m_LayerShp, myRenderRaster);
+    // vrRenderer myRenderer(m_LayerShp, myRenderRaster);
 
     // ok
     vrRenderer myRenderer(m_LayerShp, myRenderVector);

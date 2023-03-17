@@ -1,9 +1,9 @@
 /***************************************************************************
-				vrrenderer.cpp
+ vrrenderer.cpp
                     
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,17 +16,16 @@
  ***************************************************************************/
 
 #include "vrrenderer.h"
-#include "vrlayer.h"
-#include "vrrender.h"
-#include "vrrendervectorc2p.h"
-#include "vrrendercoltop.h"
+
 #include "vrlabel.h"
+#include "vrlayer.h"
 #include "vrlayervector.h"
 #include "vrlayervectorc2p.h"
+#include "vrrender.h"
+#include "vrrendercoltop.h"
+#include "vrrendervectorc2p.h"
 
-
-bool vrRenderer::_IsCorrectRender()
-{
+bool vrRenderer::_IsCorrectRender() {
     wxASSERT(m_layer);
     if (m_render == NULL) {
         return false;
@@ -100,9 +99,7 @@ bool vrRenderer::_IsCorrectRender()
     return bReturn;
 }
 
-
-vrRenderer::vrRenderer(vrLayer *layer, vrRender *render, vrLabel *label)
-{
+vrRenderer::vrRenderer(vrLayer* layer, vrRender* render, vrLabel* label) {
     wxASSERT(layer);
     m_layer = layer;
 
@@ -117,9 +114,9 @@ vrRenderer::vrRenderer(vrLayer *layer, vrRender *render, vrLabel *label)
             case vrDRIVER_VECTOR_MEMORY:
                 m_render = new vrRenderVector();
                 {
-                    OGRwkbGeometryType myGeomType = ((vrLayerVector *) GetLayer())->GetGeometryType();
+                    OGRwkbGeometryType myGeomType = ((vrLayerVector*)GetLayer())->GetGeometryType();
                     if (myGeomType == wkbPoint || myGeomType == wkbPoint25D) {
-                        ((vrRenderVector *) m_render)->SetSize(vrRENDERER_VECTOR_POINT_DEFAULT_SIZE);
+                        ((vrRenderVector*)m_render)->SetSize(vrRENDERER_VECTOR_POINT_DEFAULT_SIZE);
                     }
                 }
                 break;
@@ -138,7 +135,7 @@ vrRenderer::vrRenderer(vrLayer *layer, vrRender *render, vrLabel *label)
                 break;
 
             case vrDRIVER_VECTOR_C2P: {
-                CT_LAYER_TYPE myLayerType = ((vrLayerVectorC2P *) GetLayer())->GetActiveLayerType();
+                CT_LAYER_TYPE myLayerType = ((vrLayerVectorC2P*)GetLayer())->GetActiveLayerType();
                 if (myLayerType == CT_DIP) {
                     m_render = new vrRenderVectorC2PDips();
                 } else if (myLayerType == CT_POLYGON) {
@@ -146,9 +143,7 @@ vrRenderer::vrRenderer(vrLayer *layer, vrRender *render, vrLabel *label)
                 } else {
                     wxLogError(_("Unsupported geometry type: %d"), myLayerType);
                 }
-            }
-                break;
-
+            } break;
 
             default:
                 m_render = new vrRender();
@@ -161,7 +156,6 @@ vrRenderer::vrRenderer(vrLayer *layer, vrRender *render, vrLabel *label)
         wxASSERT(bCorrectRender);
     }
 
-
     if (label == NULL) {
         m_label = new vrLabel();
     } else {
@@ -169,18 +163,14 @@ vrRenderer::vrRenderer(vrLayer *layer, vrRender *render, vrLabel *label)
     }
 }
 
-
-vrRenderer::~vrRenderer()
-{
+vrRenderer::~vrRenderer() {
     wxASSERT(m_render);
     wxASSERT(m_label);
     wxDELETE(m_render);
     wxDELETE(m_label);
 }
 
-
-bool vrRenderer::GetBitmapDataThread(wxImage *bmp, const vrRealRect &coord, double pxsize, long &vectorcount)
-{
+bool vrRenderer::GetBitmapDataThread(wxImage* bmp, const vrRealRect& coord, double pxsize, long& vectorcount) {
     wxASSERT(bmp);
     wxASSERT(GetVisible());
 
@@ -190,53 +180,41 @@ bool vrRenderer::GetBitmapDataThread(wxImage *bmp, const vrRealRect &coord, doub
 
     vectorcount = 0;
     if (GetLayer()->GetType() != vrDRIVER_UNKNOWN && GetLayer()->GetType() < vrDRIVER_RASTER_TIFF) {
-        vectorcount = ((vrLayerVector *) GetLayer())->GetObjectDrawn();
+        vectorcount = ((vrLayerVector*)GetLayer())->GetObjectDrawn();
     }
     return bValue;
 }
 
-
-bool vrRenderer::GetBitmapData(wxBitmap *bmp, const vrRealRect &coord, double pxsize, long &vectorcount,
-                               long &drawnvertex, long &skippedvertex)
-{
+bool vrRenderer::GetBitmapData(wxBitmap* bmp, const vrRealRect& coord, double pxsize, long& vectorcount,
+                               long& drawnvertex, long& skippedvertex) {
     wxASSERT(bmp);
     wxASSERT(GetVisible());
 
     bool bValue = GetLayer()->GetData(bmp, coord, pxsize, GetRender(), GetLabel());
     vectorcount = 0;
     if (GetLayer()->GetType() != vrDRIVER_UNKNOWN && GetLayer()->GetType() < vrDRIVER_RASTER_TIFF) {
-        vectorcount = ((vrLayerVector *) GetLayer())->GetObjectDrawn();
-        drawnvertex = ((vrLayerVector *) GetLayer())->GetVertexDrawn();
-        skippedvertex = ((vrLayerVector *) GetLayer())->GetVertexSkipped();
+        vectorcount = ((vrLayerVector*)GetLayer())->GetObjectDrawn();
+        drawnvertex = ((vrLayerVector*)GetLayer())->GetVertexDrawn();
+        skippedvertex = ((vrLayerVector*)GetLayer())->GetVertexSkipped();
     }
     return bValue;
 }
 
-
-void vrRenderer::SetRender(vrRender *value)
-{
+void vrRenderer::SetRender(vrRender* value) {
     m_render = value;
 }
 
-void vrRenderer::SetLabel(vrLabel *value)
-{
+void vrRenderer::SetLabel(vrLabel* value) {
     m_label = value;
 }
 
-
-void vrRenderer::SetVisible(bool value)
-{
+void vrRenderer::SetVisible(bool value) {
     m_visible = value;
 }
 
-
-void vrRenderer::SetInEdition(bool value)
-{
+void vrRenderer::SetInEdition(bool value) {
     m_inEdition = value;
 }
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(vrArrayRenderer);
-
-
-

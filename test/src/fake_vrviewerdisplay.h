@@ -2,7 +2,7 @@
  fake_vrviewerdisplay.h
 
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -25,32 +25,27 @@
 
 #endif
 
-
 #include "vrviewerdisplay.h"
 
-class FakevrViewerDisplay : public vrViewerDisplay
-{
+class FakevrViewerDisplay : public vrViewerDisplay {
     wxSize m_WndSize;
 
-public:
-    FakevrViewerDisplay(const wxSize &size = wxSize(600, 400));
+  public:
+    FakevrViewerDisplay(const wxSize& size = wxSize(600, 400));
 
     virtual ~FakevrViewerDisplay();
 
-    void SetFakeSize(const wxSize &size)
-    {
+    void SetFakeSize(const wxSize& size) {
         m_WndSize = size;
     }
 
-    virtual void DoGetSize(int *w, int *h) const;
+    virtual void DoGetSize(int* w, int* h) const;
 
-    virtual wxSize GetSize()
-    {
+    virtual wxSize GetSize() {
         int w, h;
         DoGetSize(&w, &h);
         return wxSize(w, h);
     }
-
 };
 
 #endif

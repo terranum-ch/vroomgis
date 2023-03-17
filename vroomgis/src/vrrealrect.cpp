@@ -2,7 +2,7 @@
  vrrealrect.cpp
  support intersection with negative width / height
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -17,35 +17,27 @@
 
 #include "vrrealrect.h"
 
-vrRealRect::vrRealRect()
-{
+vrRealRect::vrRealRect() {
     vrRealRect(0, 0, 0, 0);
 }
 
-
-vrRealRect::vrRealRect(const vrRealRect &source)
-{
+vrRealRect::vrRealRect(const vrRealRect& source) {
     m_x = source.m_x;
     m_y = source.m_y;
     m_width = source.m_width;
     m_height = source.m_height;
 }
 
-vrRealRect::vrRealRect(double left, double top, double width, double height)
-{
+vrRealRect::vrRealRect(double left, double top, double width, double height) {
     m_x = left;
     m_y = top;
     m_width = width;
     m_height = height;
 }
 
-vrRealRect::~vrRealRect()
-{
-}
+vrRealRect::~vrRealRect() {}
 
-
-vrRealRect vrRealRect::Intersect(const vrRealRect &rect1)
-{
+vrRealRect vrRealRect::Intersect(const vrRealRect& rect1) {
     wxDouble left, right, bottom, top;
 
     left = wxMax(rect1.m_x, m_x);
@@ -59,7 +51,6 @@ vrRealRect vrRealRect::Intersect(const vrRealRect &rect1)
         top = wxMax(rect1.m_y, m_y);
         bottom = wxMin(rect1.m_y + rect1.m_height, m_y + m_height);
     }
-
 
     vrRealRect myIntersect;
     if (right < left) {
@@ -78,9 +69,7 @@ vrRealRect vrRealRect::Intersect(const vrRealRect &rect1)
     return myIntersect;
 }
 
-
-vrRealRect vrRealRect::Union(const wxRect2DDouble &rect)
-{
+vrRealRect vrRealRect::Union(const wxRect2DDouble& rect) {
     wxDouble left, right, bottom, top;
 
     left = wxMin(rect.m_x, m_x);
@@ -94,7 +83,6 @@ vrRealRect vrRealRect::Union(const wxRect2DDouble &rect)
         top = wxMin(rect.m_y, m_y);
         bottom = wxMax(rect.m_y + rect.m_height, m_y + m_height);
     }
-
 
     vrRealRect myUnion;
     if (right < left) {
@@ -111,12 +99,9 @@ vrRealRect vrRealRect::Union(const wxRect2DDouble &rect)
     myUnion.SetRightBottom(wxPoint2DDouble(right, bottom));
 
     return myUnion;
-
 }
 
-
-bool vrRealRect::Contains(const wxPoint2DDouble &pt)
-{
+bool vrRealRect::Contains(const wxPoint2DDouble& pt) {
     if (pt.m_x < GetLeft()) {
         return false;
     }
@@ -124,7 +109,6 @@ bool vrRealRect::Contains(const wxPoint2DDouble &pt)
     if (pt.m_x > GetRight()) {
         return false;
     }
-
 
     wxDouble myMin = wxMin(GetTop(), GetBottom());
     wxDouble myMax = wxMax(GetTop(), GetBottom());
@@ -139,9 +123,6 @@ bool vrRealRect::Contains(const wxPoint2DDouble &pt)
     return true;
 }
 
-
-bool vrRealRect::IsOk() const
-{
+bool vrRealRect::IsOk() const {
     return m_width != 0;
 }
-

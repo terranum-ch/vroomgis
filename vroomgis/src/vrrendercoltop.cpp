@@ -1,9 +1,9 @@
 /***************************************************************************
-				vrrendercoltop.cpp
+ vrrendercoltop.cpp
                     
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,8 +17,7 @@
 
 #include "vrrendercoltop.h"
 
-vrRenderRasterColtop::vrRenderRasterColtop()
-{
+vrRenderRasterColtop::vrRenderRasterColtop() {
     m_type = vrRENDER_RASTER_C2D;
     m_northAngle = 0;
     m_isColorInverted = false;
@@ -27,21 +26,15 @@ vrRenderRasterColtop::vrRenderRasterColtop()
     m_colorStretchMax = 90;
 }
 
+vrRenderRasterColtop::~vrRenderRasterColtop() {}
 
-vrRenderRasterColtop::~vrRenderRasterColtop()
-{
-}
-
-
-wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double dipdir)
-{
+wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double dipdir) {
     double myDir = dipdir;
     double myDip = dip;
 
     if (!m_isLowerHemisphere) {
         myDir = myDir + 180.0;
     }
-
 
     myDir = myDir + m_northAngle;
     while (myDir > 360.0) {
@@ -54,7 +47,6 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
         myDir = 0;
     }
     wxASSERT(myDir <= 360.0);
-
 
     // Stretch colors
     double myNDip = 0;
@@ -72,16 +64,13 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromDipDir(double dip, double di
     return myRGBValue;
 }
 
-
-wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint &coord, int radius)
-{
+wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint& coord, int radius) {
     double myStretchRadius = radius;
 
     // STRETCHING COORDINATES
     double pixelbydegree = radius / 90.0;
     double minstretchradius = pixelbydegree * m_colorStretchMin;
     if (m_colorStretchMin > 0) {
-
         if (coord.x * coord.x + coord.y * coord.y < minstretchradius * minstretchradius) {
             return wxImage::RGBValue(255, 255, 255);
         }
@@ -94,7 +83,6 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint &c
         }
         myStretchRadius = maxstretchradius;
     }
-
 
     // HUE (Color rotation)
     double myHue = 0;
@@ -132,39 +120,26 @@ wxImage::RGBValue vrRenderRasterColtop::GetColorFromCircleCoord(const wxPoint &c
     return myRGBValue;
 }
 
-
-void vrRenderRasterColtop::SetNorthAngle(int value)
-{
+void vrRenderRasterColtop::SetNorthAngle(int value) {
     m_northAngle = 360.0 - value;
 }
 
-
-void vrRenderRasterColtop::SetColorInverted(bool value)
-{
+void vrRenderRasterColtop::SetColorInverted(bool value) {
     m_isColorInverted = value;
 }
 
-
-void vrRenderRasterColtop::SetLowerHemisphere(bool value)
-{
+void vrRenderRasterColtop::SetLowerHemisphere(bool value) {
     m_isLowerHemisphere = value;
 }
 
-
-void vrRenderRasterColtop::SetColorStretchMin(int value)
-{
+void vrRenderRasterColtop::SetColorStretchMin(int value) {
     m_colorStretchMin = value;
 }
 
-
-void vrRenderRasterColtop::SetColorStretchMax(int value)
-{
+void vrRenderRasterColtop::SetColorStretchMax(int value) {
     m_colorStretchMax = value;
 }
 
-
-bool vrRenderRasterColtop::Serialize(vrSerialize &serialobj)
-{
+bool vrRenderRasterColtop::Serialize(vrSerialize& serialobj) {
     return false;
 }
-

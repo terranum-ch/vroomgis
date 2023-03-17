@@ -1,9 +1,9 @@
 /***************************************************************************
-								test_vrrender.h
-							Rendering main class for data
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrrender.h
+ Rendering main class for data
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,7 +20,6 @@
 #include "vrrender.h"
 #include "vrrendercoltop.h"
 
-
 TEST(Render, RenderBasic) {
     vrRender myRender;
     vrRenderVector myRenderVect;
@@ -33,7 +32,7 @@ TEST(Render, RenderBasic) {
 }
 
 TEST(Render, RenderPointer) {
-    vrRender *mypRender = NULL;
+    vrRender* mypRender = NULL;
     vrRenderVector myRenderVect;
     vrRenderRaster myRenderRast;
     vrRenderRasterColtop myRenderRastc2d;
@@ -50,20 +49,20 @@ TEST(Render, RenderPointer) {
 
 TEST(Render, RenderGetTransparencyChar) {
 #ifndef __WXMSW__
-    vrRender *mypRender = NULL;
+    vrRender* mypRender = NULL;
     vrRenderVector myRenderVect;
 
     mypRender = &myRenderVect;
 
-    mypRender->SetTransparency(0); // opaque
+    mypRender->SetTransparency(0);  // opaque
     EXPECT_EQ(mypRender->GetTransparency(), 0);
     EXPECT_EQ(mypRender->GetTransparencyChar(), 255);
 
-    mypRender->SetTransparency(100); // transparent
+    mypRender->SetTransparency(100);  // transparent
     EXPECT_EQ(mypRender->GetTransparency(), 100);
     EXPECT_EQ(mypRender->GetTransparencyChar(), 0);
 
-    mypRender->SetTransparency(50); // medium tranparency
+    mypRender->SetTransparency(50);  // medium tranparency
     EXPECT_EQ(mypRender->GetTransparency(), 50);
     EXPECT_EQ(mypRender->GetTransparencyChar(), 128);
 #endif

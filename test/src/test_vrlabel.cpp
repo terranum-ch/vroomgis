@@ -1,9 +1,9 @@
 /***************************************************************************
-								test_vrlabel.h
-							Labelling class for data
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrlabel.h
+ Labelling class for data
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,16 +19,14 @@
 
 #include "vrlabel.h"
 
-
 class Label : public ::testing::Test {
-protected:
+  protected:
     wxFont m_Fontt;
 
     virtual void setUp() {
         m_Fontt = wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     }
 };
-
 
 TEST_F(Label, LabelCreate) {
     // using *wxNORMAL_FONT crash !!!
@@ -55,7 +53,6 @@ TEST_F(Label, LabelCreate2) {
 }
 
 TEST_F(Label, SerializeLabel) {
-
     // save label
     vrLabel myLabel;
     vrSerialize mySerialize;
@@ -63,7 +60,7 @@ TEST_F(Label, SerializeLabel) {
     EXPECT_TRUE(mySerialize.GetString() != wxEmptyString);
     wxLogMessage(mySerialize.GetString());
 
-    //change label colour
+    // change label colour
     wxColour myColour(255, 0, 0);
     myLabel.SetColor(myColour);
 

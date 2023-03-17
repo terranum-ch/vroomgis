@@ -2,6 +2,4 @@
 
 #include "wx/msw/wx.rc"
 
-vroomgis ICON
-"../../../vroomgis/art/vroomgis.ico"
-
+vroomgis ICON "../../../vroomgis/art/vroomgis.ico"

@@ -1,8 +1,8 @@
 /***************************************************************************
  vrshapeeditor.h
- 
+
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -36,134 +36,108 @@ class vrViewerDisplay;
 
 class vrRender;
 
-
-enum vrSHAPEEDITOR_TYPES
-{
-    vrSHAPEEDITOR_TYPE_POINT = 0, vrSHAPEEDITOR_TYPE_LINE, vrSHAPEEDITOR_TYPE_POLYGON, vrSHAPEEDITOR_TYPE_UNKHNOWN = 100
+enum vrSHAPEEDITOR_TYPES {
+    vrSHAPEEDITOR_TYPE_POINT = 0,
+    vrSHAPEEDITOR_TYPE_LINE,
+    vrSHAPEEDITOR_TYPE_POLYGON,
+    vrSHAPEEDITOR_TYPE_UNKHNOWN = 100
 };
 
-
-class vrShapeEditor
-{
-protected:
-    OGRGeometry *m_geometry;
-    vrViewerDisplay *m_display;
+class vrShapeEditor {
+  protected:
+    OGRGeometry* m_geometry;
+    vrViewerDisplay* m_display;
     vrSHAPEEDITOR_TYPES m_type;
 
-
-public:
-    vrShapeEditor(vrViewerDisplay *display);
+  public:
+    vrShapeEditor(vrViewerDisplay* display);
 
     virtual ~vrShapeEditor();
 
     inline const vrSHAPEEDITOR_TYPES GetType() const;
 
-
-    virtual bool AddVertex(const wxPoint2DDouble &point)
-    {
+    virtual bool AddVertex(const wxPoint2DDouble& point) {
         return false;
     }
 
-    virtual bool RemoveVertex(int index = wxNOT_FOUND)
-    {
+    virtual bool RemoveVertex(int index = wxNOT_FOUND) {
         return false;
     }
 
-    virtual OGRGeometry *GetGeometryRef();
+    virtual OGRGeometry* GetGeometryRef();
 
-    bool SetGeometry(OGRGeometry *geometry);
+    bool SetGeometry(OGRGeometry* geometry);
 
-    virtual void ViewChanged()
-    {
+    virtual void ViewChanged() {
         ;
     }
 
-    virtual void DrawShapeEdit(vrRender *render)
-    {
+    virtual void DrawShapeEdit(vrRender* render) {
         ;
     }
 
-    virtual void DrawShapeFinish(vrRender *render)
-    {
+    virtual void DrawShapeFinish(vrRender* render) {
         ;
     }
 
-    virtual void DrawShapeModify(vrRender *render);
+    virtual void DrawShapeModify(vrRender* render);
 };
 
-
-inline const vrSHAPEEDITOR_TYPES vrShapeEditor::GetType() const
-{
+inline const vrSHAPEEDITOR_TYPES vrShapeEditor::GetType() const {
     return m_type;
 }
 
-
-
-
-/*************************************************************************************//**
-@brief Draw temporarily points
-@author Lucien Schreiber copyright CREALP
-@date 30 mars 2012
-*****************************************************************************************/
-class vrShapeEditorPoint
-        : public vrShapeEditor
-{
-public:
-    vrShapeEditorPoint(vrViewerDisplay *display);
+/*************************************************************************************/ /**
+ @brief Draw temporarily points
+ @author Lucien Schreiber copyright CREALP
+ @date 30 mars 2012
+ *****************************************************************************************/
+class vrShapeEditorPoint : public vrShapeEditor {
+  public:
+    vrShapeEditorPoint(vrViewerDisplay* display);
 
     virtual ~vrShapeEditorPoint();
 
-    virtual bool AddVertex(const wxPoint2DDouble &point);
+    virtual bool AddVertex(const wxPoint2DDouble& point);
 
-    virtual void DrawShapeFinish(vrRender *render);
-
+    virtual void DrawShapeFinish(vrRender* render);
 };
 
-
-
-
-/*************************************************************************************//**
-@brief Draw temporarily lines
-@author Lucien Schreiber copyright CREALP
-@date 30 mars 2012
-*****************************************************************************************/
-class vrShapeEditorLine
-        : public vrShapeEditor
-{
-protected:
+/*************************************************************************************/ /**
+ @brief Draw temporarily lines
+ @author Lucien Schreiber copyright CREALP
+ @date 30 mars 2012
+ *****************************************************************************************/
+class vrShapeEditorLine : public vrShapeEditor {
+  protected:
     wxOverlay m_overlay;
 
-public:
-    vrShapeEditorLine(vrViewerDisplay *display);
+  public:
+    vrShapeEditorLine(vrViewerDisplay* display);
 
     virtual ~vrShapeEditorLine();
 
     virtual void ViewChanged();
 
-    virtual bool AddVertex(const wxPoint2DDouble &point);
+    virtual bool AddVertex(const wxPoint2DDouble& point);
 
-    virtual void DrawShapeEdit(vrRender *render);
+    virtual void DrawShapeEdit(vrRender* render);
 };
 
-
-
-/*************************************************************************************//**
-@brief Draw temporarily polygons
-@author Lucien Schreiber copyright CREALP
-@date 02 avril 2012
-*****************************************************************************************/
-class vrShapeEditorPolygon
-        : public vrShapeEditorLine
-{
-public:
-    vrShapeEditorPolygon(vrViewerDisplay *display);
+/*************************************************************************************/ /**
+ @brief Draw temporarily polygons
+ @author Lucien Schreiber copyright CREALP
+ @date 02 avril 2012
+ *****************************************************************************************/
+class vrShapeEditorPolygon : public vrShapeEditorLine {
+  public:
+    vrShapeEditorPolygon(vrViewerDisplay* display);
 
     virtual ~vrShapeEditorPolygon();
 
     virtual void ViewChanged();
 
-    virtual OGRGeometry *GetGeometryRef();
+    virtual OGRGeometry* GetGeometryRef();
 };
 
 #endif
-

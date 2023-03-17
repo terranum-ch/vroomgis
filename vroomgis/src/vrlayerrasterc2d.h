@@ -1,9 +1,9 @@
 /***************************************************************************
-				vrlayerrasterc2d.h
+ vrlayerrasterc2d.h
                     
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -28,8 +28,8 @@
 #endif
 
 #include <wx/image.h>
-#include "vrlayerraster.h"
 
+#include "vrlayerraster.h"
 
 class vrRealRect;
 
@@ -37,24 +37,21 @@ class vrRender;
 
 class vrLabel;
 
-class vrLayerRasterC2D
-        : public vrLayerRasterGDAL
-{
-private:
-    void _HSVtoRGB(int *r, int *g, int *b, int h, int s, int v);
+class vrLayerRasterC2D : public vrLayerRasterGDAL {
+  private:
+    void _HSVtoRGB(int* r, int* g, int* b, int h, int s, int v);
 
-protected:
-    virtual bool _GetRasterData(unsigned char **imgdata, const wxSize &outimgpxsize, const wxRect &readimgpxinfo,
-                                const vrRender *render);
+  protected:
+    virtual bool _GetRasterData(unsigned char** imgdata, const wxSize& outimgpxsize, const wxRect& readimgpxinfo,
+                                const vrRender* render);
 
-public:
+  public:
     vrLayerRasterC2D();
 
     virtual ~vrLayerRasterC2D();
 
-    virtual bool GetRasterData(unsigned char **imgdata, const wxSize &outimgpxsize, const wxRect &readimgpxinfo,
-                               const vrRender *render);
-
+    virtual bool GetRasterData(unsigned char** imgdata, const wxSize& outimgpxsize, const wxRect& readimgpxinfo,
+                               const vrRender* render);
 };
 
 #endif

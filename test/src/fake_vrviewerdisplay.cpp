@@ -2,7 +2,7 @@
  fake_vrviewerdisplay.cpp
 
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -15,22 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "fake_vrviewerdisplay.h"
 
-FakevrViewerDisplay::FakevrViewerDisplay(const wxSize &size)
-{
+FakevrViewerDisplay::FakevrViewerDisplay(const wxSize& size) {
     m_WndSize = size;
 }
 
-FakevrViewerDisplay::~FakevrViewerDisplay()
-{
-    //int i = 0;
+FakevrViewerDisplay::~FakevrViewerDisplay() {
+    // int i = 0;
 }
 
-void FakevrViewerDisplay::DoGetSize(int *w, int *h) const
-{
+void FakevrViewerDisplay::DoGetSize(int* w, int* h) const {
     *w = m_WndSize.GetWidth();
     *h = m_WndSize.GetHeight();
 }
-

@@ -1,9 +1,8 @@
 /***************************************************************************
-				vrdisplayvalue.h
-
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrdisplayvalue.h
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,61 +26,52 @@
 
 #endif
 
-
 #include "vrdisplaytool.h"
 
 class vrViewerLayerManager;
 
 class vrViewerDisplay;
 
-class vrDisplayValueDlg
-        : public wxDialog
-{
-private:
-    vrViewerLayerManager *m_LayerViewerManager;
+class vrDisplayValueDlg : public wxDialog {
+  private:
+    vrViewerLayerManager* m_LayerViewerManager;
 
     // controls
-    wxChoice *m_LayerChoice;
-    wxStaticText *m_ValuesText;
+    wxChoice* m_LayerChoice;
+    wxStaticText* m_ValuesText;
 
-    void OnCloseDlg(wxCloseEvent &event);
+    void OnCloseDlg(wxCloseEvent& event);
 
-DECLARE_EVENT_TABLE();
-public:
-    vrDisplayValueDlg(wxWindow *parent, vrViewerLayerManager *viewerlayermanager, wxWindowID id = wxID_ANY,
-                      const wxString &title = "Display Raster value", const wxPoint &pos = wxDefaultPosition,
-                      const wxSize &size = wxSize(300, -1),
-                      long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER); //wxSTAY_ON_TOP );
+    DECLARE_EVENT_TABLE();
+
+  public:
+    vrDisplayValueDlg(wxWindow* parent, vrViewerLayerManager* viewerlayermanager, wxWindowID id = wxID_ANY,
+                      const wxString& title = "Display Raster value", const wxPoint& pos = wxDefaultPosition,
+                      const wxSize& size = wxSize(300, -1),
+                      long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);  // wxSTAY_ON_TOP );
     virtual ~vrDisplayValueDlg();
 
-    void UpdateValues(const wxPoint &pos);
-
+    void UpdateValues(const wxPoint& pos);
 };
 
+class vrDisplayValueTool : public vrDisplayTool {
+  private:
+    vrDisplayValueDlg* m_Dlg;
 
-class vrDisplayValueTool
-        : public vrDisplayTool
-{
-private:
-    vrDisplayValueDlg *m_Dlg;
-
-public:
-    vrDisplayValueTool(vrViewerDisplay *display, vrDisplayValueDlg *dialog);
+  public:
+    vrDisplayValueTool(vrViewerDisplay* display, vrDisplayValueDlg* dialog);
 
     virtual ~vrDisplayValueTool();
 
-    virtual bool MouseDown(const wxMouseEvent &event)
-    {
+    virtual bool MouseDown(const wxMouseEvent& event) {
         return true;
     }
 
-    virtual bool MouseUp(const wxMouseEvent &event)
-    {
+    virtual bool MouseUp(const wxMouseEvent& event) {
         return true;
     }
 
-    virtual bool MouseMove(const wxMouseEvent &event);
-
+    virtual bool MouseMove(const wxMouseEvent& event);
 };
 
 #endif

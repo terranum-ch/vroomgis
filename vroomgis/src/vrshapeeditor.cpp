@@ -1,8 +1,8 @@
 /***************************************************************************
  vrshapeeditor.cpp
- 
+
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -16,31 +16,28 @@
  ***************************************************************************/
 
 #include "vrshapeeditor.h"
-#include "vrviewerlayermanager.h"
-#include "vrviewerdisplay.h"
+
 #include "vrcoordinate.h"
 #include "vrrender.h"
+#include "vrviewerdisplay.h"
+#include "vrviewerlayermanager.h"
 #include "vrvieweroverlay.h"
 
-vrShapeEditor::vrShapeEditor(vrViewerDisplay *display)
-{
+vrShapeEditor::vrShapeEditor(vrViewerDisplay* display) {
     m_display = display;
     wxASSERT(m_display);
     m_geometry = NULL;
     m_type = vrSHAPEEDITOR_TYPE_UNKHNOWN;
 }
 
-vrShapeEditor::~vrShapeEditor()
-{
+vrShapeEditor::~vrShapeEditor() {
     if (m_geometry != NULL) {
         OGRGeometryFactory::destroyGeometry(m_geometry);
         m_geometry = NULL;
     }
 }
 
-
-bool vrShapeEditor::SetGeometry(OGRGeometry *geometry)
-{
+bool vrShapeEditor::SetGeometry(OGRGeometry* geometry) {
     if (geometry == NULL) {
         return false;
     }
@@ -52,61 +49,49 @@ bool vrShapeEditor::SetGeometry(OGRGeometry *geometry)
     return true;
 }
 
-
-OGRGeometry *vrShapeEditor::GetGeometryRef()
-{
+OGRGeometry* vrShapeEditor::GetGeometryRef() {
     return m_geometry;
 }
 
-
-void vrShapeEditor::DrawShapeModify(vrRender *render)
-{
-    vrRenderVector *myOriginRender = (vrRenderVector *) render;
+void vrShapeEditor::DrawShapeModify(vrRender* render) {
+    vrRenderVector* myOriginRender = (vrRenderVector*)render;
     vrRenderVector myRenderVector(*myOriginRender);
     myRenderVector.SetColorPen(render->GetSelectionColour());
     DrawShapeFinish(&myRenderVector);
 }
 
-
-vrShapeEditorPoint::vrShapeEditorPoint(vrViewerDisplay *display)
-        : vrShapeEditor(display)
-{
+vrShapeEditorPoint::vrShapeEditorPoint(vrViewerDisplay* display)
+    : vrShapeEditor(display) {
     if (m_geometry == NULL) {
         m_geometry = OGRGeometryFactory::createGeometry(wkbPoint);
     }
     m_type = vrSHAPEEDITOR_TYPE_POINT;
 }
 
-
-vrShapeEditorPoint::~vrShapeEditorPoint()
-{
+vrShapeEditorPoint::~vrShapeEditorPoint() {
     // geometry destruction will occur in parent.
 }
 
-
-bool vrShapeEditorPoint::AddVertex(const wxPoint2DDouble &point)
-{
+bool vrShapeEditorPoint::AddVertex(const wxPoint2DDouble& point) {
     wxASSERT(m_geometry);
-    OGRPoint *myPt = (OGRPoint *) m_geometry;
+    OGRPoint* myPt = (OGRPoint*)m_geometry;
     myPt->setX(point.m_x);
     myPt->setY(point.m_y);
     return true;
 }
 
-
-void vrShapeEditorPoint::DrawShapeFinish(vrRender *render)
-{
+void vrShapeEditorPoint::DrawShapeFinish(vrRender* render) {
     wxASSERT(m_display);
     wxASSERT(m_geometry);
 
-    vrRenderVector *myRender = (vrRenderVector *) render;
+    vrRenderVector* myRender = (vrRenderVector*)render;
     wxPen myPen(myRender->GetColorPen(), myRender->GetSize());
     wxPoint myPt;
-    OGRPoint *myOGRPt = (OGRPoint *) m_geometry;
+    OGRPoint* myOGRPt = (OGRPoint*)m_geometry;
     bool myResult = m_display->GetCoordinate()->ConvertToPixels(wxPoint2DDouble(myOGRPt->getX(), myOGRPt->getY()),
                                                                 myPt);
     wxASSERT(myResult);
-    wxClientDC myDC((wxWindow *) m_display);
+    wxClientDC myDC((wxWindow*)m_display);
     myDC.SetPen(myPen);
 
 #ifdef __WXMSW__
@@ -116,31 +101,25 @@ void vrShapeEditorPoint::DrawShapeFinish(vrRender *render)
 #endif
 }
 
-
-vrShapeEditorLine::vrShapeEditorLine(vrViewerDisplay *display)
-        : vrShapeEditor(display)
-{
+vrShapeEditorLine::vrShapeEditorLine(vrViewerDisplay* display)
+    : vrShapeEditor(display) {
     if (m_geometry == NULL) {
         m_geometry = OGRGeometryFactory::createGeometry(wkbLineString);
     }
     m_type = vrSHAPEEDITOR_TYPE_LINE;
 }
 
-
-vrShapeEditorLine::~vrShapeEditorLine()
-{
+vrShapeEditorLine::~vrShapeEditorLine() {
     // geometry destruction in parent
 }
 
-
-bool vrShapeEditorLine::AddVertex(const wxPoint2DDouble &point)
-{
+bool vrShapeEditorLine::AddVertex(const wxPoint2DDouble& point) {
     OGRPoint myPt;
     myPt.setX(point.m_x);
     myPt.setY(point.m_y);
 
     wxASSERT(m_geometry);
-    OGRLineString *myLine = (OGRLineString *) m_geometry;
+    OGRLineString* myLine = (OGRLineString*)m_geometry;
 
     // Check that the vertex that we are trying to add is not equal to the last vertex
     if (myLine->getNumPoints() > 0) {
@@ -157,14 +136,12 @@ bool vrShapeEditorLine::AddVertex(const wxPoint2DDouble &point)
     return true;
 }
 
-
-void vrShapeEditorLine::DrawShapeEdit(vrRender *render)
-{
+void vrShapeEditorLine::DrawShapeEdit(vrRender* render) {
     wxASSERT(m_display);
     wxASSERT(m_geometry);
 
-    //wxASSERT(render->GetType() == vrRENDER_VECTOR);
-    vrRenderVector *myRender = (vrRenderVector *) render;
+    // wxASSERT(render->GetType() == vrRENDER_VECTOR);
+    vrRenderVector* myRender = (vrRenderVector*)render;
     wxPen myPen(myRender->GetColorPen(), myRender->GetSize());
 
     wxClientDC myDC(m_display);
@@ -172,12 +149,12 @@ void vrShapeEditorLine::DrawShapeEdit(vrRender *render)
     overlaydc.Clear();
 
     myDC.SetPen(myPen);
-    OGRLineString *myLine = (OGRLineString *) m_geometry;
+    OGRLineString* myLine = (OGRLineString*)m_geometry;
     if (myLine->getNumPoints() <= 1) {
         return;
     }
 
-    wxPoint *myPts = new wxPoint[myLine->getNumPoints()];
+    wxPoint* myPts = new wxPoint[myLine->getNumPoints()];
     for (int i = 0; i < myLine->getNumPoints(); i++) {
         wxPoint2DDouble myRealPt(myLine->getX(i), myLine->getY(i));
         wxPoint myPxPt = wxDefaultPosition;
@@ -188,41 +165,32 @@ void vrShapeEditorLine::DrawShapeEdit(vrRender *render)
     wxDELETEA(myPts);
 }
 
-
-void vrShapeEditorLine::ViewChanged()
-{
+void vrShapeEditorLine::ViewChanged() {
     m_overlay.Reset();
-
 }
 
-
-/*************************************************************************************//**
-@brief Draw temporarily polygons
-@author Lucien Schreiber copyright CREALP
-@date 02 avril 2012
-*****************************************************************************************/
-vrShapeEditorPolygon::vrShapeEditorPolygon(vrViewerDisplay *display)
-        : vrShapeEditorLine(display)
-{
+/*************************************************************************************/ /**
+ @brief Draw temporarily polygons
+ @author Lucien Schreiber copyright CREALP
+ @date 02 avril 2012
+ *****************************************************************************************/
+vrShapeEditorPolygon::vrShapeEditorPolygon(vrViewerDisplay* display)
+    : vrShapeEditorLine(display) {
     m_type = vrSHAPEEDITOR_TYPE_POLYGON;
 }
 
-vrShapeEditorPolygon::~vrShapeEditorPolygon()
-{
-}
+vrShapeEditorPolygon::~vrShapeEditorPolygon() {}
 
-
-OGRGeometry *vrShapeEditorPolygon::GetGeometryRef()
-{
+OGRGeometry* vrShapeEditorPolygon::GetGeometryRef() {
     wxASSERT(m_geometry);
-    OGRLinearRing *myRing = (OGRLinearRing *) m_geometry;
+    OGRLinearRing* myRing = (OGRLinearRing*)m_geometry;
     if (myRing->getNumPoints() < 3) {
         wxLogError(_("Only %d vertex, unable to create polygon"), myRing->getNumPoints());
         return NULL;
     }
 
-    OGRGeometry *myGeom = OGRGeometryFactory::createGeometry(wkbPolygon);
-    OGRPolygon *myPolygonGeom = (OGRPolygon *) myGeom;
+    OGRGeometry* myGeom = OGRGeometryFactory::createGeometry(wkbPolygon);
+    OGRPolygon* myPolygonGeom = (OGRPolygon*)myGeom;
     myPolygonGeom->addRing(myRing);
     myPolygonGeom->closeRings();
     OGRGeometryFactory::destroyGeometry(m_geometry);
@@ -230,11 +198,6 @@ OGRGeometry *vrShapeEditorPolygon::GetGeometryRef()
     return myGeom;
 }
 
-
-void vrShapeEditorPolygon::ViewChanged()
-{
+void vrShapeEditorPolygon::ViewChanged() {
     vrShapeEditorLine::ViewChanged();
 }
-
-
-

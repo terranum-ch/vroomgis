@@ -1,9 +1,8 @@
 /***************************************************************************
-				vrprogress.h
-                    
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrprogress.h
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -28,51 +27,43 @@
 #endif
 
 #include <wx/progdlg.h>
-#include "tmpercent.h"
+
 #include "gdal_priv.h"
+#include "tmpercent.h"
 
-
-class vrProgress
-{
-public:
+class vrProgress {
+  public:
     vrProgress();
 
     virtual ~vrProgress();
-
 };
 
-int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char *pszMessage, void *pProgressArg);
+int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char* pszMessage, void* pProgressArg);
 
-class vrProgressSimple
-        : public vrProgress
-{
-private:
-    wxProgressDialog *m_progressWnd;
+class vrProgressSimple : public vrProgress {
+  private:
+    wxProgressDialog* m_progressWnd;
     tmPercent m_percent;
     bool m_continue;
 
-
-public:
-    vrProgressSimple(wxWindow *parent, wxString title, wxString message);
+  public:
+    vrProgressSimple(wxWindow* parent, wxString title, wxString message);
 
     virtual ~vrProgressSimple();
 
-    inline tmPercent *GetPercent();
+    inline tmPercent* GetPercent();
 
     inline const bool GetContinue() const;
 
     void UpdateProgress();
 };
 
-inline tmPercent *vrProgressSimple::GetPercent()
-{
+inline tmPercent* vrProgressSimple::GetPercent() {
     return &m_percent;
 }
 
-inline const bool vrProgressSimple::GetContinue() const
-{
+inline const bool vrProgressSimple::GetContinue() const {
     return m_continue;
 }
 
 #endif
-

@@ -1,9 +1,9 @@
 /***************************************************************************
-								vrlayer.cpp
-					Abstact base class for layers
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrlayer.cpp
+ Abstact base class for layers
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,38 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "vrlayer.h"
 
-vrLayer::vrLayer()
-{
+vrLayer::vrLayer() {
     m_driverType = vrDRIVER_UNKNOWN;
     m_fileName.Clear();
 }
 
+vrLayer::~vrLayer() {}
 
-vrLayer::~vrLayer()
-{
-}
-
-
-wxFileName vrLayer::GetFileName()
-{
+wxFileName vrLayer::GetFileName() {
     return m_fileName;
 }
 
-
-wxFileName vrLayer::GetDisplayName()
-{
+wxFileName vrLayer::GetDisplayName() {
     return m_fileName;
 }
 
-
-vrDRIVERS_TYPE vrLayer::GetType()
-{
+vrDRIVERS_TYPE vrLayer::GetType() {
     return m_driverType;
 }
-
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(vrArrayLayer);

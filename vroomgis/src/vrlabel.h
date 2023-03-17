@@ -2,7 +2,7 @@
  vrlabel.h
  Label definition class
  -------------------
- copyright            : (C) 2009 CREALP Lucien Schreiber 
+ copyright            : (C) 2009 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
@@ -31,17 +31,15 @@ class OGRGeometry;
 
 class vrRender;
 
-
-class vrLabel
-{
-private:
+class vrLabel {
+  private:
     wxFont m_font;
     wxColor m_color;
     bool m_active;
     int m_field;
 
-public:
-    vrLabel(const wxFont &font = wxNullFont, const wxColour &color = *wxBLACK);
+  public:
+    vrLabel(const wxFont& font = wxNullFont, const wxColour& color = *wxBLACK);
 
     virtual ~vrLabel();
 
@@ -61,42 +59,31 @@ public:
 
     void SetField(int value);
 
-    virtual bool Serialize(vrSerialize &serialobj);
+    virtual bool Serialize(vrSerialize& serialobj);
 
-    virtual bool AddFeature(long fid, OGRGeometry *geom, const wxString &text, double rotation = 0.0)
-    {
+    virtual bool AddFeature(long fid, OGRGeometry* geom, const wxString& text, double rotation = 0.0) {
         return false;
     }
 
-    virtual bool Draw(wxGraphicsContext *gdc, const wxRect2DDouble &coord, const vrRender *render, double pixsize = 0)
-    {
+    virtual bool Draw(wxGraphicsContext* gdc, const wxRect2DDouble& coord, const vrRender* render, double pixsize = 0) {
         return false;
     }
 };
 
-
-inline const wxFont vrLabel::GetFont() const
-{
+inline const wxFont vrLabel::GetFont() const {
     return m_font;
 }
 
-
-inline const wxColor vrLabel::GetColor() const
-{
+inline const wxColor vrLabel::GetColor() const {
     return m_color;
 }
 
-
-inline const bool vrLabel::IsActive() const
-{
+inline const bool vrLabel::IsActive() const {
     return m_active;
 }
 
-
-inline const int vrLabel::GetField() const
-{
+inline const int vrLabel::GetField() const {
     return m_field;
 }
-
 
 #endif

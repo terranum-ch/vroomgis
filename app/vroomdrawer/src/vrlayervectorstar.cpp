@@ -16,16 +16,14 @@
  ***************************************************************************/
 
 #include "vrlayervectorstar.h"
+
 #include "vrlabel.h"
 #include "vrrender.h"
 
-
-void vrLayerVectorStar::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *geometry, const wxRect2DDouble &coord,
-                                   const vrRender *render, vrLabel *label, double pxsize)
-{
-
+void vrLayerVectorStar::_DrawPoint(wxDC* dc, OGRFeature* feature, OGRGeometry* geometry, const wxRect2DDouble& coord,
+                                   const vrRender* render, vrLabel* label, double pxsize) {
     wxASSERT(render->GetType() == vrRENDER_VECTOR);
-    vrRenderVector *myRender = (vrRenderVector *) render;
+    vrRenderVector* myRender = (vrRenderVector*)render;
     wxPen myPen(myRender->GetColorPen(), myRender->GetSize());
     wxPen mySelPen(myRender->GetSelectionColour(), myRender->GetSize());
     dc->SetPen(myPen);
@@ -33,7 +31,7 @@ void vrLayerVectorStar::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *g
         dc->SetPen(mySelPen);
     }
 
-    OGRPoint *myGeom = (OGRPoint *) geometry;
+    OGRPoint* myGeom = (OGRPoint*)geometry;
     wxPoint myPt = _GetPointFromReal(wxPoint2DDouble(myGeom->getX(), myGeom->getY()), coord.GetLeftTop(), pxsize);
     int myStarSize = feature->GetFieldAsInteger(0);
 
@@ -48,9 +46,7 @@ void vrLayerVectorStar::_DrawPoint(wxDC *dc, OGRFeature *feature, OGRGeometry *g
     return;
 }
 
-
-void vrLayerVectorStar::_CreateStarPath(wxPointList &starpoints, const wxPoint &center, int radius)
-{
+void vrLayerVectorStar::_CreateStarPath(wxPointList& starpoints, const wxPoint& center, int radius) {
     const int myAngle = 72;
     const int myNumberPeak = 5;
 
@@ -82,29 +78,22 @@ void vrLayerVectorStar::_CreateStarPath(wxPointList &starpoints, const wxPoint &
     }
 }
 
-
-vrLayerVectorStar::vrLayerVectorStar()
-{
+vrLayerVectorStar::vrLayerVectorStar() {
     wxASSERT(m_dataset == NULL);
     wxASSERT(m_layer == NULL);
     m_driverType = vrDRIVER_VECTOR_MEMORY;
 }
 
+vrLayerVectorStar::~vrLayerVectorStar() {}
 
-vrLayerVectorStar::~vrLayerVectorStar()
-{
-}
-
-
-long vrLayerVectorStar::AddFeature(OGRGeometry *geometry, void *data)
-{
+long vrLayerVectorStar::AddFeature(OGRGeometry* geometry, void* data) {
     wxASSERT(m_layer);
-    OGRFeature *myFeature = OGRFeature::CreateFeature(m_layer->GetLayerDefn());
+    OGRFeature* myFeature = OGRFeature::CreateFeature(m_layer->GetLayerDefn());
     wxASSERT(m_layer);
     myFeature->SetGeometry(geometry);
 
     if (data != NULL) {
-        int *mySize = (int *) data;
+        int* mySize = (int*)data;
         myFeature->SetField(0, *mySize);
     }
 
@@ -118,8 +107,3 @@ long vrLayerVectorStar::AddFeature(OGRGeometry *geometry, void *data)
     OGRFeature::DestroyFeature(myFeature);
     return myFeatureID;
 }
-
-
-
-
-

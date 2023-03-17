@@ -1,9 +1,9 @@
 /***************************************************************************
-								vroomgis.h
+ vroomgis.h
                     Main include for VROOMGIS engine
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,22 +27,20 @@
 
 #endif
 
-#include "vrviewertoc.h"
-#include "vrlayermanager.h"
 #include "vrcoordinate.h"
-#include "vrviewerdisplay.h"
-#include "vrevent.h"
 #include "vrdisplaytool.h"
+#include "vrevent.h"
+#include "vrlayermanager.h"
+#include "vrviewerdisplay.h"
+#include "vrviewertoc.h"
 
-//#include "vrdriver.h"
-//#include "vrlabel.h"
-//#include "vrlayer.h"
-//#include "vrlayerraster.h"
-//#include "vrlayervector.h"
-//#include "vrrender.h"
-//#include "vrrenderer.h"
-//#include "vrviewerlayermanager.h"
-
-
+// #include "vrdriver.h"
+// #include "vrlabel.h"
+// #include "vrlayer.h"
+// #include "vrlayerraster.h"
+// #include "vrlayervector.h"
+// #include "vrrender.h"
+// #include "vrrenderer.h"
+// #include "vrviewerlayermanager.h"
 
 #endif

@@ -25,12 +25,12 @@ def GetCmakeDirName():
 
 def updateSVN():
     myPath = os.path.normpath(os.path.join(GetCmakeDirName(), ".."))
-    print ("Updating subversion in: {}".format(myPath))
+    print("Updating subversion in: {}".format(myPath))
     try:
         p = Popen("svn update", shell=True, cwd=myPath)
         p.wait()
     except:
-        print ("Error updating subversion in: {}".format(myPath))
+        print("Error updating subversion in: {}".format(myPath))
 
     # print version number
     try:
@@ -38,7 +38,7 @@ def updateSVN():
         information = p.communicate()
         myVersion = str(information[0])
         # myVersionAlone = myVersion[myVersion.find("'")+1:-3]
-        print ("Updated version is: {}".format(myVersion))
+        print("Updated version is: {}".format(myVersion))
     except:
         print("Error getting version for {}".format(GetCmakeDirName()))
 
@@ -48,14 +48,14 @@ def createAndClearDirectory(directory):
         try:
             shutil.rmtree(directory)
         except:
-            print ("Removing directory failed!", directory)
+            print("Removing directory failed!", directory)
 
-    print ("creating directory:", directory)
+    print("creating directory:", directory)
     os.mkdir(directory)
 
 
 def BuildMacPro():
-    print ("Configuring Mac Pro (UNIL)")
+    print("Configuring Mac Pro (UNIL)")
     builddir = "/Users/lucien/Documents/PRJ/COLTOPGIS/bin/vroomgis/drawspeedtest"
     createAndClearDirectory(builddir)
 
@@ -69,7 +69,7 @@ def BuildMacPro():
 
 
 def BuildMacBook():
-    print ("Configuring MacBook")
+    print("Configuring MacBook")
     builddir = "/Users/lucien/DATA/PRJ/COLTOP-GIS/bin/vroomgis/drawspeedtest"
     createAndClearDirectory(builddir)
 
@@ -95,20 +95,24 @@ def BuildLinux():
 
 
 def BuildWindows7():
-    print ("Configuring Windows")
+    print("Configuring Windows")
     builddir = "D:\\PRJ\\COLTOPGIS\\bin\\vroomgis\\drawspeedtest"
     createAndClearDirectory(builddir)
     os.environ['WXWIN'] = "D:\\LIB\\wxWIDGETS-SVN"
     try:
-        p = Popen("cmake -G\"Visual Studio 10\" " + GetCmakeDirName() + " -DUSE_MT_LIBRARY:BOOL=1", shell=True,
-                  cwd=builddir)
+        p = Popen(
+            "cmake -G\"Visual Studio 10\" " + GetCmakeDirName() + " -DUSE_MT_LIBRARY:BOOL=1",
+            shell=True,
+            cwd=builddir)
         p.wait()
     except:
         print("Error creating makefile")
-    print ("Second run")
+    print("Second run")
     try:
-        p = Popen("cmake -G\"Visual Studio 10\" " + GetCmakeDirName() + " -DUSE_MT_LIBRARY:BOOL=1", shell=True,
-                  cwd=builddir)
+        p = Popen(
+            "cmake -G\"Visual Studio 10\" " + GetCmakeDirName() + " -DUSE_MT_LIBRARY:BOOL=1",
+            shell=True,
+            cwd=builddir)
         p.wait()
     except:
         print("Error creating makefile")
@@ -116,42 +120,45 @@ def BuildWindows7():
 
 def RunBuildMac():
     builddir = myPath = os.path.normpath(
-        os.path.join(GetCmakeDirName(), "..", "..", "..", "..", "bin", "vroomgis", "drawspeedtest"))
-    print (builddir)
+        os.path.join(GetCmakeDirName(), "..", "..", "..", "..", "bin", "vroomgis",
+                     "drawspeedtest"))
+    print(builddir)
 
     try:
         p = Popen("xcodebuild -configuration Debug", shell=True, cwd=builddir)
         p.wait()
     except:
-        print ("Error building in", builddir)
+        print("Error building in", builddir)
         return
 
     try:
         p = Popen("xcodebuild -configuration Release", shell=True, cwd=builddir)
         p.wait()
     except:
-        print ("Error building in", builddir)
+        print("Error building in", builddir)
         return
 
 
 def RunBuildWindows(solutionname):
     builddir = myPath = os.path.normpath(
-        os.path.join(GetCmakeDirName(), "..", "..", "..", "..", "bin", "vroomgis", "drawspeedtest"))
-    print (builddir)
+        os.path.join(GetCmakeDirName(), "..", "..", "..", "..", "bin", "vroomgis",
+                     "drawspeedtest"))
+    print(builddir)
     mycommand = "msbuild {}.sln /p:Configuration={}"
 
     try:
         p = Popen(mycommand.format(solutionname, "Debug"), shell=True, cwd=builddir)
         p.wait()
     except:
-        print ("Error building in", builddir)
+        print("Error building in", builddir)
         return
 
     try:
-        p = Popen(mycommand.format(solutionname, "RelWithDebInfo"), shell=True, cwd=builddir)
+        p = Popen(mycommand.format(solutionname, "RelWithDebInfo"), shell=True,
+                  cwd=builddir)
         p.wait()
     except:
-        print ("Error building in", builddir)
+        print("Error building in", builddir)
         return
 
 
@@ -188,7 +195,8 @@ if __name__ == '__main__':
     button4.pack()
 
     solutionname = label.cget("text")
-    button5 = Button(myContainer1, text="Build Windows (bin)", command=lambda: RunBuildWindows(solutionname))
+    button5 = Button(myContainer1, text="Build Windows (bin)",
+                     command=lambda: RunBuildWindows(solutionname))
     button5.pack()
 
     root.mainloop()

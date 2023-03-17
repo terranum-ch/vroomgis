@@ -1,9 +1,9 @@
 /***************************************************************************
-							test_vrviewerlayermanager.h
-							Manage a view for the viewer
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ test_vrviewerlayermanager.h
+ Manage a view for the viewer
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,16 +20,15 @@
 #include "test_param.h"
 #include "vroomgis.h"
 
-
 class ViewerLayerManager : public ::testing::Test {
-protected:
-    vrLayerManager *m_LayerManager;
-    vrViewerLayerManager *m_ViewManager;
+  protected:
+    vrLayerManager* m_LayerManager;
+    vrViewerLayerManager* m_ViewManager;
 
     virtual void setUp() {
         m_LayerManager = new vrLayerManager();
         m_ViewManager = NULL;
-        vrViewerDisplay *myDisplay = NULL;
+        vrViewerDisplay* myDisplay = NULL;
         // will be destroyed by layermanager.
         m_ViewManager = new vrViewerLayerManager(m_LayerManager, NULL, myDisplay);
 
@@ -45,7 +44,7 @@ protected:
 TEST_F(ViewerLayerManager, AddViewerLayerManager) {
     // adding two times the same viewermanager is not permitted
     EXPECT_FALSE(m_LayerManager->AddViewerLayerManager(m_ViewManager));
-    vrViewerLayerManager *myManager2 = new vrViewerLayerManager(m_LayerManager, NULL, NULL);
+    vrViewerLayerManager* myManager2 = new vrViewerLayerManager(m_LayerManager, NULL, NULL);
 
     // allready added by ctor
     EXPECT_FALSE(m_LayerManager->AddViewerLayerManager(myManager2));
@@ -54,14 +53,14 @@ TEST_F(ViewerLayerManager, AddViewerLayerManager) {
 TEST_F(ViewerLayerManager, OpenGISDataViewerManager) {
     // open data
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
-    vrLayer *myTestSHPLayer = NULL;
+    vrLayer* myTestSHPLayer = NULL;
     myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
     EXPECT_TRUE(myTestSHPLayer != NULL);
     EXPECT_EQ(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
 
     // open data 2
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileJPEG)));
-    vrLayer *myTestJpegLayer = NULL;
+    vrLayer* myTestJpegLayer = NULL;
     myTestJpegLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileJPEG));
     EXPECT_TRUE(myTestJpegLayer != NULL);
     EXPECT_EQ(myTestJpegLayer->GetType(), vrDRIVER_RASTER_JPEG);
@@ -74,7 +73,7 @@ TEST_F(ViewerLayerManager, OpenGISDataViewerManager) {
 TEST_F(ViewerLayerManager, GetRenderer) {
     // open data
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
-    vrLayer *myTestSHPLayer = NULL;
+    vrLayer* myTestSHPLayer = NULL;
     myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
     EXPECT_TRUE(myTestSHPLayer != NULL);
     EXPECT_EQ(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
@@ -83,7 +82,7 @@ TEST_F(ViewerLayerManager, GetRenderer) {
     EXPECT_TRUE(m_ViewManager->Add(-1, myTestSHPLayer));
 
     // renderer should be accessible
-    vrRenderer *myRenderer = m_ViewManager->GetRenderer(0);
+    vrRenderer* myRenderer = m_ViewManager->GetRenderer(0);
     EXPECT_TRUE(myRenderer != NULL);
     EXPECT_EQ(myRenderer->GetLayer(), myTestSHPLayer);
 
@@ -96,10 +95,9 @@ TEST_F(ViewerLayerManager, GetRenderer) {
 }
 
 TEST_F(ViewerLayerManager, Remove) {
-
     // open data
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
-    vrLayer *myTestSHPLayer = NULL;
+    vrLayer* myTestSHPLayer = NULL;
     myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
     EXPECT_TRUE(myTestSHPLayer != NULL);
     EXPECT_EQ(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
@@ -108,7 +106,7 @@ TEST_F(ViewerLayerManager, Remove) {
     EXPECT_TRUE(m_ViewManager->Add(-1, myTestSHPLayer));
 
     // renderer should be accessible
-    vrRenderer *myRenderer = m_ViewManager->GetRenderer(0);
+    vrRenderer* myRenderer = m_ViewManager->GetRenderer(0);
     EXPECT_TRUE(myRenderer != NULL);
     EXPECT_EQ(myRenderer->GetLayer(), myTestSHPLayer);
 
@@ -124,9 +122,9 @@ TEST_F(ViewerLayerManager, MoveLayer) {
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileJPEG)));
     EXPECT_EQ(m_LayerManager->GetCount(), 3);
 
-    vrLayer *myLayer1 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileJPEG));
-    vrLayer *myLayer2 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileTIF));
-    vrLayer *myLayer3 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
+    vrLayer* myLayer1 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileJPEG));
+    vrLayer* myLayer2 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileTIF));
+    vrLayer* myLayer3 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
 
     EXPECT_TRUE(m_ViewManager->Add(-1, myLayer3));
     EXPECT_TRUE(m_ViewManager->Add(-1, myLayer2));
@@ -134,7 +132,7 @@ TEST_F(ViewerLayerManager, MoveLayer) {
 
     // Moving code
     wxString myJpegName = m_ViewManager->GetRenderer(0)->GetLayer()->GetDisplayName().GetFullName();
-    //wxLogMessage (myJpegName + " - " + g_TestFileJPEG);
+    // wxLogMessage (myJpegName + " - " + g_TestFileJPEG);
     EXPECT_TRUE(myJpegName == g_TestFileJPEG);
     EXPECT_TRUE(m_ViewManager->Move(2, 0));
     EXPECT_TRUE(m_ViewManager->GetRenderer(0)->GetLayer()->GetDisplayName().GetFullName() == g_TestFileSHP);

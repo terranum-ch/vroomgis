@@ -4,11 +4,11 @@
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
-#	include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 extern void vroomdrawer_initialize_images(void);
 
-extern wxBitmap *_img_toolbar_add_memory;
+extern wxBitmap* _img_toolbar_add_memory;
 
 #endif /* VROOMDRAWER_TOOLBMP_H */

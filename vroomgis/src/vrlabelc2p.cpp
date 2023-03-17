@@ -1,19 +1,18 @@
 /***************************************************************************
  vrlabelc2p.cpp
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
-
 #include "vrlabelc2p.h"
-#include "vrrendervectorc2p.h"
+
 #include <ogr_geometry.h>
 
+#include "vrrendervectorc2p.h"
 
 vrLabelC2P::vrLabelC2P(wxFont font, wxColour color)
-        : vrLabel(font, color)
-{
+    : vrLabel(font, color) {
     m_actualPt = wxDefaultPosition;
     m_offset = 5;
     m_actualRotation = 0.0;
@@ -21,14 +20,9 @@ vrLabelC2P::vrLabelC2P(wxFont font, wxColour color)
     m_actualSelected = false;
 }
 
+vrLabelC2P::~vrLabelC2P() {}
 
-vrLabelC2P::~vrLabelC2P()
-{
-}
-
-
-bool vrLabelC2P::AddFeature(long fid, OGRGeometry *geom, const wxString &text, double rotation)
-{
+bool vrLabelC2P::AddFeature(long fid, OGRGeometry* geom, const wxString& text, double rotation) {
     if (geom == NULL) {
         return false;
     }
@@ -38,18 +32,16 @@ bool vrLabelC2P::AddFeature(long fid, OGRGeometry *geom, const wxString &text, d
         m_actualSelected = true;
     }
 
-    OGRPoint *myPt = (OGRPoint *) geom;
+    OGRPoint* myPt = (OGRPoint*)geom;
     m_actualPt = wxPoint(wxRound(myPt->getX()), wxRound(myPt->getY()));
     m_actualRotation = rotation;
-    m_actualText = text + wxString("\u00B0"); // degree symbol
+    m_actualText = text + wxString("\u00B0");  // degree symbol
     return true;
 }
 
-
-bool vrLabelC2P::Draw(wxGraphicsContext *gdc, const wxRect2DDouble &coord, const vrRender *render, double pixsize)
-{
+bool vrLabelC2P::Draw(wxGraphicsContext* gdc, const wxRect2DDouble& coord, const vrRender* render, double pixsize) {
     wxASSERT(gdc);
-    vrRenderVectorC2PDips *myRender = (vrRenderVectorC2PDips *) render;
+    vrRenderVectorC2PDips* myRender = (vrRenderVectorC2PDips*)render;
     if (m_actualSelected) {
         gdc->SetFont(GetFont(), myRender->GetSelectionColour());
     } else {
@@ -75,4 +67,3 @@ bool vrLabelC2P::Draw(wxGraphicsContext *gdc, const wxRect2DDouble &coord, const
     gdc->DrawText(m_actualText, myMovedPt.m_x, myMovedPt.m_y, 0);
     return true;
 }
-

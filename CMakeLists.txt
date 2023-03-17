@@ -37,10 +37,10 @@ endif (WIN32)
 
 if (BUILD_TESTS)
     add_subdirectory(test)
-endif()
+endif ()
 
 if (BUILD_APPS)
     add_subdirectory(app/vroomdrawer)
     add_subdirectory(app/vroomloader)
     add_subdirectory(app/vroomtwin)
-endif()
+endif ()

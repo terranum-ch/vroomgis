@@ -1,9 +1,8 @@
 /***************************************************************************
-								vrrubberband.h
-
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrrubberband.h
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,24 +26,23 @@
 
 #include "wx/overlay.h"
 
-class vrRubberBand
-{
-private:
-    wxWindow *m_window;
+class vrRubberBand {
+  private:
+    wxWindow* m_window;
     wxPoint m_pointStart;
     wxPoint m_pointEnd;
     wxOverlay m_overlay;
 
     wxRect _CreateRect();
 
-public:
-    vrRubberBand(wxWindow *window);
+  public:
+    vrRubberBand(wxWindow* window);
 
     virtual ~vrRubberBand();
 
-    void SetPointFirst(const wxPoint &pt);
+    void SetPointFirst(const wxPoint& pt);
 
-    void SetPointLast(const wxPoint &pt);
+    void SetPointLast(const wxPoint& pt);
 
     wxRect GetRect();
 
@@ -53,7 +51,6 @@ public:
     bool IsPositive();
 
     void Update();
-
 };
 
 #endif

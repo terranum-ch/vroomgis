@@ -26,6 +26,7 @@
 #endif
 
 #include <wx/dcbuffer.h>
+
 #include "vrvieweroverlay.h"
 
 class vrCoordinate;
@@ -34,72 +35,66 @@ class vrDisplayTool;
 
 class vrViewerLayerManager;
 
-class vrViewerDisplay
-        : public wxPanel
-{
-private:
-    vrCoordinate *m_coordinate;
-    wxBitmap *m_bmp;
-    vrDisplayTool *m_tool;
-    vrDisplayTool *m_toolSecondary;
-    vrViewerLayerManager *m_viewerManager;
-    wxStatusBar *m_status;
+class vrViewerDisplay : public wxPanel {
+  private:
+    vrCoordinate* m_coordinate;
+    wxBitmap* m_bmp;
+    vrDisplayTool* m_tool;
+    vrDisplayTool* m_toolSecondary;
+    vrViewerLayerManager* m_viewerManager;
+    wxStatusBar* m_status;
     int m_statusField;
     wxString m_statusErrText;
     vrViewerOverlayArray m_overlayArray;
     wxString m_noDataText;
 
-
-    bool _DrawRoundedMessage(const wxString &text, const wxColour &colour = *wxLIGHT_GREY);
+    bool _DrawRoundedMessage(const wxString& text, const wxColour& colour = *wxLIGHT_GREY);
 
     void _InvalidateView(bool updatenow);
 
-    void OnPaint(wxPaintEvent &event);
+    void OnPaint(wxPaintEvent& event);
 
-    void OnSizeChange(wxSizeEvent &event);
+    void OnSizeChange(wxSizeEvent& event);
 
-    void OnEraseBackground(wxPaintEvent &event);
+    void OnEraseBackground(wxPaintEvent& event);
 
     // mouse event functions
-    void OnMouseDown(wxMouseEvent &event);
+    void OnMouseDown(wxMouseEvent& event);
 
-    void OnMouseUp(wxMouseEvent &event);
+    void OnMouseUp(wxMouseEvent& event);
 
-    void OnMouseMove(wxMouseEvent &event);
+    void OnMouseMove(wxMouseEvent& event);
 
-    void OnMouseDClickLeft(wxMouseEvent &event);
+    void OnMouseDClickLeft(wxMouseEvent& event);
 
-    void OnMouseCaptureLost(wxMouseEvent &event);
+    void OnMouseCaptureLost(wxMouseEvent& event);
 
-public:
+  public:
     vrViewerDisplay();
 
-    vrViewerDisplay(wxWindow *parent, wxWindowID id = wxID_ANY, const wxColour &colour = *wxWHITE);
+    vrViewerDisplay(wxWindow* parent, wxWindowID id = wxID_ANY, const wxColour& colour = *wxWHITE);
 
     virtual ~vrViewerDisplay();
 
-    void SetViewerLayerManager(vrViewerLayerManager *value);
+    void SetViewerLayerManager(vrViewerLayerManager* value);
 
-    vrViewerLayerManager *GetViewerLayerManager();
+    vrViewerLayerManager* GetViewerLayerManager();
 
-    void SetNoDataText(const wxString &text)
-    {
+    void SetNoDataText(const wxString& text) {
         m_noDataText = text;
     }
 
-    void SetBitmap(wxBitmap *bmp);
+    void SetBitmap(wxBitmap* bmp);
 
-    wxBitmap *GetBitmapRef()
-    {
+    wxBitmap* GetBitmapRef() {
         return m_bmp;
     }
 
-    vrCoordinate *GetCoordinate()
-    {
+    vrCoordinate* GetCoordinate() {
         return m_coordinate;
     }
 
-    void SetStatusCoordinates(wxStatusBar *status, int field = 0, const wxString &errmsg = wxEmptyString);
+    void SetStatusCoordinates(wxStatusBar* status, int field = 0, const wxString& errmsg = wxEmptyString);
 
     void SetToolDefault();
 
@@ -111,30 +106,25 @@ public:
 
     void SetToolSight();
 
-    void SetTool(vrDisplayTool *tool);
+    void SetTool(vrDisplayTool* tool);
 
-    void SetToolSecondary(vrDisplayTool *tool);
+    void SetToolSecondary(vrDisplayTool* tool);
 
-    inline const vrDisplayTool *GetTool() const;
+    inline const vrDisplayTool* GetTool() const;
 
-    inline vrViewerOverlayArray *GetOverlayArrayRef();
+    inline vrViewerOverlayArray* GetOverlayArrayRef();
 
-    vrViewerOverlay *GetOverlayByName(const wxString &name);
+    vrViewerOverlay* GetOverlayByName(const wxString& name);
 
     void ClearOverlayArray();
 };
 
-
-inline const vrDisplayTool *vrViewerDisplay::GetTool() const
-{
+inline const vrDisplayTool* vrViewerDisplay::GetTool() const {
     return m_tool;
 }
 
-
-inline vrViewerOverlayArray *vrViewerDisplay::GetOverlayArrayRef()
-{
+inline vrViewerOverlayArray* vrViewerDisplay::GetOverlayArrayRef() {
     return &m_overlayArray;
 }
-
 
 #endif

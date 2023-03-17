@@ -1,9 +1,9 @@
 /***************************************************************************
-								vrdriver.cpp
-				List of supported drivers and misc function for them
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrdriver.cpp
+ List of supported drivers and misc function for them
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,9 +17,7 @@
 
 #include "vrdriver.h"
 
-
-wxString vrDrivers::GetWildcards(const vrDRIVERS_FLAG &flags)
-{
+wxString vrDrivers::GetWildcards(const vrDRIVERS_FLAG& flags) {
     wxArrayInt myTypes;
     if (flags & vrDRIVERS_FLAG_GENERIC) {
         myTypes.Add(vrDRIVER_VECTOR_SHP);
@@ -32,16 +30,14 @@ wxString vrDrivers::GetWildcards(const vrDRIVERS_FLAG &flags)
     }
 
     if (flags & vrDRIVERS_FLAG_COLTOP) {
-        //myTypes.Add(vrDRIVER_VECTOR_C2P);
+        // myTypes.Add(vrDRIVER_VECTOR_C2P);
         myTypes.Add(vrDRIVER_RASTER_C2D);
     }
 
     return GetSpecificWildcards(myTypes);
 }
 
-
-wxString vrDrivers::GetSpecificWildcards(const wxArrayInt &types)
-{
+wxString vrDrivers::GetSpecificWildcards(const wxArrayInt& types) {
     wxString myWildcards = wxEmptyString;
 
     if (types.GetCount() > 1) {
@@ -61,9 +57,7 @@ wxString vrDrivers::GetSpecificWildcards(const wxArrayInt &types)
     return myWildcards;
 }
 
-
-vrDRIVERS_TYPE vrDrivers::GetType(const wxString &extension)
-{
+vrDRIVERS_TYPE vrDrivers::GetType(const wxString& extension) {
     wxString myExtension = extension;
     if (myExtension.IsEmpty()) {
         wxLogError("Empty extension not supported");
@@ -71,7 +65,7 @@ vrDRIVERS_TYPE vrDrivers::GetType(const wxString &extension)
     }
 
     if (myExtension.Len() < 3) {
-        wxLogError("Only %d character in the extension (need 3 character)", (int) myExtension.Len());
+        wxLogError("Only %d character in the extension (need 3 character)", (int)myExtension.Len());
         return vrDRIVER_UNKNOWN;
     }
 
@@ -82,19 +76,16 @@ vrDRIVERS_TYPE vrDrivers::GetType(const wxString &extension)
     }
 
     for (unsigned int i = 0; i < sizeof(vrDRIVERS_EXTENSION) / sizeof(wxString); i++) {
-
         if (!vrDRIVERS_EXTENSION[i].IsEmpty()) {
             if (vrDRIVERS_EXTENSION[i].Find(myExtension.Lower()) != wxNOT_FOUND) {
-                return (vrDRIVERS_TYPE) i;
+                return (vrDRIVERS_TYPE)i;
             }
         }
     }
     return vrDRIVER_UNKNOWN;
 }
 
-
-wxString vrDrivers::GetWildcardsRaster()
-{
+wxString vrDrivers::GetWildcardsRaster() {
     wxArrayInt myType;
     myType.Add(vrDRIVER_RASTER_TIFF);
     myType.Add(vrDRIVER_RASTER_JPEG);
@@ -105,19 +96,12 @@ wxString vrDrivers::GetWildcardsRaster()
     return GetSpecificWildcards(myType);
 }
 
-
-wxString vrDrivers::GetWildcardsVector()
-{
+wxString vrDrivers::GetWildcardsVector() {
     wxArrayInt myType;
     myType.Add(vrDRIVER_VECTOR_SHP);
     return GetSpecificWildcards(myType);
 }
 
-
-bool vrDrivers::IsSupported(const wxString &extension)
-{
+bool vrDrivers::IsSupported(const wxString& extension) {
     return GetType(extension) != vrDRIVER_UNKNOWN;
-
 }
-
-

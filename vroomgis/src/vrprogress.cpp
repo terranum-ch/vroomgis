@@ -1,9 +1,8 @@
 /***************************************************************************
-				vrprogress.cpp
-                    
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ vrprogress.cpp
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,19 +16,13 @@
 
 #include "vrprogress.h"
 
-vrProgress::vrProgress()
-{
-}
+vrProgress::vrProgress() {}
 
-vrProgress::~vrProgress()
-{
-}
+vrProgress::~vrProgress() {}
 
-
-int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char *pszMessage, void *pProgressArg)
-{
+int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char* pszMessage, void* pProgressArg) {
     wxASSERT(pProgressArg);
-    vrProgressSimple *mypSimple = (vrProgressSimple *) pProgressArg;
+    vrProgressSimple* mypSimple = (vrProgressSimple*)pProgressArg;
     mypSimple->GetPercent()->SetValue(dfComplete * 100.0);
 
     mypSimple->UpdateProgress();
@@ -39,28 +32,20 @@ int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char *pszMessage, void
     return TRUE;
 }
 
-
-vrProgressSimple::vrProgressSimple(wxWindow *parent, wxString title, wxString message)
-{
+vrProgressSimple::vrProgressSimple(wxWindow* parent, wxString title, wxString message) {
     m_progressWnd = new wxProgressDialog(title, message, 100, parent, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
     m_continue = true;
     m_percent.Create(100);
 }
 
-
-vrProgressSimple::~vrProgressSimple()
-{
+vrProgressSimple::~vrProgressSimple() {
     wxDELETE(m_progressWnd);
 }
 
-
-void vrProgressSimple::UpdateProgress()
-{
+void vrProgressSimple::UpdateProgress() {
     wxASSERT(m_progressWnd);
     if (m_percent.IsNewStep()) {
         wxLogMessage("percent : %d", m_percent.GetPercent());
         m_continue = m_progressWnd->Update(m_percent.GetPercent());
     }
 }
-
-

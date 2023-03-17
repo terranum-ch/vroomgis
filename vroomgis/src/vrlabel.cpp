@@ -1,9 +1,9 @@
 /***************************************************************************
-				vrlabel.cpp
+ vrlabel.cpp
                     
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ -------------------
+ copyright            : (C) 2009 CREALP Lucien Schreiber
+ email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,9 +17,7 @@
 
 #include "vrlabel.h"
 
-vrLabel::vrLabel(const wxFont &font, const wxColour &color)
-{
-
+vrLabel::vrLabel(const wxFont& font, const wxColour& color) {
     // create default font and color if required
     if (font == wxNullFont) {
         m_font = wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
@@ -32,38 +30,25 @@ vrLabel::vrLabel(const wxFont &font, const wxColour &color)
     SetField(wxNOT_FOUND);
 }
 
+vrLabel::~vrLabel() {}
 
-vrLabel::~vrLabel()
-{
-}
-
-
-void vrLabel::SetFont(wxFont value)
-{
+void vrLabel::SetFont(wxFont value) {
     m_font = value;
 }
 
-
-void vrLabel::SetColor(wxColor value)
-{
+void vrLabel::SetColor(wxColor value) {
     m_color = value;
 }
 
-
-void vrLabel::SetActive(bool value)
-{
+void vrLabel::SetActive(bool value) {
     m_active = value;
 }
 
-
-void vrLabel::SetField(int value)
-{
+void vrLabel::SetField(int value) {
     m_field = value;
 }
 
-
-bool vrLabel::Serialize(vrSerialize &serialobj)
-{
+bool vrLabel::Serialize(vrSerialize& serialobj) {
     serialobj.EnterObject();
     if (serialobj.IsStoring()) {
         serialobj << m_font;

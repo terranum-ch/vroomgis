@@ -16,82 +16,78 @@
  ***************************************************************************/
 
 #ifdef USE_VLD
-#include <vld.h> // Visual Leak Detector (https://vld.codeplex.com/)
+#include <vld.h>  // Visual Leak Detector (https://vld.codeplex.com/)
 #endif
 
 #include <wx/msgdlg.h>
 
 #include "frame.h"
-#include "tmlog.h"              // for double logging process
-#include "vrdisplayvalue.h"     // for displaying raster values
-#include "vrrendervectorc2p.h"
-#include "vrlayervector.h"
-#include "vrshapeeditor.h"
+#include "tmlog.h"  // for double logging process
 #include "vrdisplaytool.h"
+#include "vrdisplayvalue.h"  // for displaying raster values
+#include "vrlayervector.h"
 #include "vroomgis_bmp.h"
+#include "vrrendervectorc2p.h"
+#include "vrshapeeditor.h"
 
 IMPLEMENT_APP(vroomLoader);
 
-bool vroomLoader::OnInit()
-{
-    if (!wxApp::OnInit())
-        return false;
+bool vroomLoader::OnInit() {
+    if (!wxApp::OnInit()) return false;
 
     wxInitAllImageHandlers();
     vroomgis_initialize_images();
 
-    vroomLoaderFrame *frame = new vroomLoaderFrame("vroomLoader");
-    //frame->CenterOnScreen(wxBOTH);
+    vroomLoaderFrame* frame = new vroomLoaderFrame("vroomLoader");
+    // frame->CenterOnScreen(wxBOTH);
     frame->SetSize(50, 50, 800, 500);
     frame->Show(true);
 
     return true;
 }
 
-
 BEGIN_EVENT_TABLE(vroomLoaderFrame, wxFrame)
-    EVT_MENU(wxID_EXIT, vroomLoaderFrame::OnQuit) EVT_MENU(wxID_ABOUT, vroomLoaderFrame::OnAbout)
-    EVT_MENU(wxID_OPEN, vroomLoaderFrame::OnOpenLayer) EVT_MENU(wxID_REMOVE, vroomLoaderFrame::OnCloseLayer)
-    EVT_MENU (wxID_INFO, vroomLoaderFrame::OnShowLog)
-    EVT_MENU (wxID_DEFAULT, vroomLoaderFrame::OnToolSelect)
-    EVT_MENU (wxID_ZOOM_IN, vroomLoaderFrame::OnToolZoom)
-    EVT_MENU (wxID_ZOOM_FIT, vroomLoaderFrame::OnToolZoomToFit)
-    EVT_MENU (wxID_ZOOM_100, vroomLoaderFrame::OnToolZoomToFit)
-    EVT_MENU (wxID_MOVE_FRAME, vroomLoaderFrame::OnToolPan)
-    EVT_MENU (vlID_MOVE_LAYER, vroomLoaderFrame::OnMoveLayer)
-    EVT_MENU (vlID_DISPLAY_VALUE, vroomLoaderFrame::OnToolDisplayValue)
-    EVT_MENU (vlID_PERFORMANCE, vroomLoaderFrame::OnLogPerformance)
-    EVT_MENU (vlID_THREADED, vroomLoaderFrame::OnEngineThreaded) EVT_KEY_DOWN(vroomLoaderFrame::OnKeyDown)
-    EVT_KEY_UP(vroomLoaderFrame::OnKeyUp)
+EVT_MENU(wxID_EXIT, vroomLoaderFrame::OnQuit)
+EVT_MENU(wxID_ABOUT, vroomLoaderFrame::OnAbout)
+EVT_MENU(wxID_OPEN, vroomLoaderFrame::OnOpenLayer)
+EVT_MENU(wxID_REMOVE, vroomLoaderFrame::OnCloseLayer)
+EVT_MENU(wxID_INFO, vroomLoaderFrame::OnShowLog)
+EVT_MENU(wxID_DEFAULT, vroomLoaderFrame::OnToolSelect)
+EVT_MENU(wxID_ZOOM_IN, vroomLoaderFrame::OnToolZoom)
+EVT_MENU(wxID_ZOOM_FIT, vroomLoaderFrame::OnToolZoomToFit)
+EVT_MENU(wxID_ZOOM_100, vroomLoaderFrame::OnToolZoomToFit)
+EVT_MENU(wxID_MOVE_FRAME, vroomLoaderFrame::OnToolPan)
+EVT_MENU(vlID_MOVE_LAYER, vroomLoaderFrame::OnMoveLayer)
+EVT_MENU(vlID_DISPLAY_VALUE, vroomLoaderFrame::OnToolDisplayValue)
+EVT_MENU(vlID_PERFORMANCE, vroomLoaderFrame::OnLogPerformance)
+EVT_MENU(vlID_THREADED, vroomLoaderFrame::OnEngineThreaded)
+EVT_KEY_DOWN(vroomLoaderFrame::OnKeyDown)
+EVT_KEY_UP(vroomLoaderFrame::OnKeyUp)
 
-    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
-    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomLoaderFrame::OnToolAction)
-    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
-    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomLoaderFrame::OnToolAction)
-    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT, vroomLoaderFrame::OnToolDrawAction)
-    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT_FINISHED, vroomLoaderFrame::OnToolDrawAction)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOM, vroomLoaderFrame::OnToolAction)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_ZOOMOUT, vroomLoaderFrame::OnToolAction)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_SELECT, vroomLoaderFrame::OnToolAction)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_PAN, vroomLoaderFrame::OnToolAction)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT, vroomLoaderFrame::OnToolDrawAction)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_EDIT_FINISHED, vroomLoaderFrame::OnToolDrawAction)
 
-    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_MODIFY, vroomLoaderFrame::OnToolModifySearch)
-    EVT_COMMAND(wxID_ANY, vrEVT_TOOL_MODIFY_FINISHED, vroomLoaderFrame::OnToolModifyUpdate)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_MODIFY, vroomLoaderFrame::OnToolModifySearch)
+EVT_COMMAND(wxID_ANY, vrEVT_TOOL_MODIFY_FINISHED, vroomLoaderFrame::OnToolModifyUpdate)
 
-    EVT_TOGGLEBUTTON(vlID_EDIT_BTN, vroomLoaderFrame::OnStartEditingButton)
-    EVT_UPDATE_UI(vlID_EDIT_CHOICE, vroomLoaderFrame::OnUpdateUIEditType)
-    EVT_MENU(vlID_DRAW_MENU, vroomLoaderFrame::OnToolDraw)
-    EVT_MENU(vlID_MODIFY_MENU, vroomLoaderFrame::OnToolModify)
+EVT_TOGGLEBUTTON(vlID_EDIT_BTN, vroomLoaderFrame::OnStartEditingButton)
+EVT_UPDATE_UI(vlID_EDIT_CHOICE, vroomLoaderFrame::OnUpdateUIEditType)
+EVT_MENU(vlID_DRAW_MENU, vroomLoaderFrame::OnToolDraw)
+EVT_MENU(vlID_MODIFY_MENU, vroomLoaderFrame::OnToolModify)
 
-    EVT_UPDATE_UI_RANGE(vlID_DRAW_MENU, vlID_MODIFY_MENU,  vroomLoaderFrame::OnUpdateUIDrawMenu)
+EVT_UPDATE_UI_RANGE(vlID_DRAW_MENU, vlID_MODIFY_MENU, vroomLoaderFrame::OnUpdateUIDrawMenu)
 END_EVENT_TABLE()
 
-
-vroomDropFiles::vroomDropFiles(vroomLoaderFrame *parent)
-{
+vroomDropFiles::vroomDropFiles(vroomLoaderFrame* parent) {
     wxASSERT(parent);
     m_LoaderFrame = parent;
 }
 
-
-bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames)
-{
+bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames) {
     if (filenames.GetCount() == 0) {
         return false;
     }
@@ -100,22 +96,20 @@ bool vroomDropFiles::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &file
     return true;
 }
 
-
-void  vroomLoaderFrame::_CreateControls()
-{
-    wxBoxSizer *bSizer1;
+void vroomLoaderFrame::_CreateControls() {
+    wxBoxSizer* bSizer1;
     bSizer1 = new wxBoxSizer(wxVERTICAL);
 
-    wxSplitterWindow *m_splitter2;
+    wxSplitterWindow* m_splitter2;
     m_splitter2 = new wxSplitterWindow(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
                                        wxSP_BORDER | wxSP_LIVE_UPDATE);
-    wxPanel *m_panel1;
+    wxPanel* m_panel1;
     m_panel1 = new wxPanel(m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer *bSizer4;
+    wxBoxSizer* bSizer4;
     bSizer4 = new wxBoxSizer(wxVERTICAL);
 
     // Edition panel
-    wxBoxSizer *bSizer41;
+    wxBoxSizer* bSizer41;
     bSizer41 = new wxBoxSizer(wxHORIZONTAL);
 
     wxString m_editTypeCtrlChoices[] = {_("Points"), _("Lines"), _("Polygons")};
@@ -129,7 +123,6 @@ void  vroomLoaderFrame::_CreateControls()
     bSizer41->Add(m_editStartCtrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
     bSizer4->Add(bSizer41, 0, wxEXPAND, 5);
 
-
     m_TocCtrl = new vrViewerTOCTree(m_panel1, wxID_ANY);
     bSizer4->Add(m_TocCtrl->GetControl(), 2, wxEXPAND, 5);
     m_TocCtrl->SetUseGroupMenu(true);
@@ -137,9 +130,9 @@ void  vroomLoaderFrame::_CreateControls()
     m_panel1->SetSizer(bSizer4);
     m_panel1->Layout();
     bSizer4->Fit(m_panel1);
-    wxPanel *m_panel2;
+    wxPanel* m_panel2;
     m_panel2 = new wxPanel(m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
-    wxBoxSizer *bSizer5;
+    wxBoxSizer* bSizer5;
     bSizer5 = new wxBoxSizer(wxVERTICAL);
 
     m_DisplayCtrl = new vrViewerDisplay(m_panel2, wxID_ANY, wxColour(120, 120, 120));
@@ -155,10 +148,8 @@ void  vroomLoaderFrame::_CreateControls()
     this->SetSizer(bSizer1);
 }
 
-
-vroomLoaderFrame::vroomLoaderFrame(const wxString &title)
-        : wxFrame(NULL, wxID_ANY, title)
-{
+vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
+    : wxFrame(NULL, wxID_ANY, title) {
     m_PerfLogFile = wxFileName(wxGetHomeDir(), "vroomgis-performance.txt");
 
     wxIcon myVroomGISIcon;
@@ -169,9 +160,9 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString &title)
     m_editor = NULL;
 
     // MENU
-    wxMenu *fileMenu = new wxMenu;
-    wxMenu *helpMenu = new wxMenu;
-    wxMenu *toolMenu = new wxMenu;
+    wxMenu* fileMenu = new wxMenu;
+    wxMenu* helpMenu = new wxMenu;
+    wxMenu* toolMenu = new wxMenu;
 
     helpMenu->Append(wxID_ABOUT, "&About...\tF1", "Show about dialog");
     helpMenu->Append(wxID_INFO, "Show Log Window", "Show log window");
@@ -199,27 +190,23 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString &title)
     toolMenu->AppendCheckItem(vlID_THREADED, "Enable mono-image rendering (most compatible)");
     toolMenu->Check(vlID_THREADED, true);
 
-
-    wxMenuBar *menuBar = new wxMenuBar();
+    wxMenuBar* menuBar = new wxMenuBar();
     menuBar->Append(fileMenu, "&File");
     menuBar->Append(toolMenu, "&Tools");
     menuBar->Append(helpMenu, "&Help");
 
     SetMenuBar(menuBar);
 
-
     // STATUS BAR
     CreateStatusBar(2);
     SetStatusText("Welcome to vroomLoader");
 
-
     // CONTROLS
     _CreateControls();
 
-    wxLog *myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
+    wxLog* myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
     delete wxLog::SetActiveTarget(myDlgLog);
     m_LogWnd = new wxLogWindow(this, "vroomLoader Log", true, true);
-
 
     // Connect Events
     m_DisplayCtrl->Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(vroomLoaderFrame::OnRightClick), NULL, this);
@@ -235,9 +222,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString &title)
     m_DisplayCtrl->SetStatusCoordinates(GetStatusBar(), 1, _("Coordinates not available"));
 }
 
-
-vroomLoaderFrame::~vroomLoaderFrame()
-{
+vroomLoaderFrame::~vroomLoaderFrame() {
     // Disconnect Events
     m_DisplayCtrl->Disconnect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(vroomLoaderFrame::OnRightClick), NULL, this);
     m_DisplayCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomLoaderFrame::OnKeyDown), NULL, this);
@@ -250,22 +235,16 @@ vroomLoaderFrame::~vroomLoaderFrame()
     vroomgis_clear_images();
 }
 
-
-void vroomLoaderFrame::OnQuit(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnQuit(wxCommandEvent& event) {
     event.Skip();
 }
 
-
-void vroomLoaderFrame::OnAbout(wxCommandEvent & WXUNUSED(event))
-{
+void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
     wxMessageDialog myDlg(this, "Dummy about dialog.");
     myDlg.ShowModal();
 }
 
-
-bool vroomLoaderFrame::OpenLayers(const wxArrayString &names)
-{
+bool vroomLoaderFrame::OpenLayers(const wxArrayString& names) {
     for (unsigned int i = 0; i < names.GetCount(); i++) {
         // open files
         bool myOpen = m_LayerManager->Open(wxFileName(names.Item(i)));
@@ -275,16 +254,16 @@ bool vroomLoaderFrame::OpenLayers(const wxArrayString &names)
     m_ViewerLayerManager->FreezeBegin();
     for (unsigned int j = 0; j < names.GetCount(); j++) {
         // get files
-        vrLayer *myLayer = m_LayerManager->GetLayer(wxFileName(names.Item(j)));
+        vrLayer* myLayer = m_LayerManager->GetLayer(wxFileName(names.Item(j)));
         wxASSERT(myLayer);
 
         // if type is DIPS
-        vrRenderVectorC2PDips *myRender = NULL;
+        vrRenderVectorC2PDips* myRender = NULL;
         if (myLayer->GetType() == vrDRIVER_VECTOR_C2P) {
             // change default colour;
             myRender = new vrRenderVectorC2PDips(*wxBLUE);
             myRender->SetUsingDefaultColour(false);
-            //adding support for familly 2
+            // adding support for familly 2
             myRender->AddDipColour(*wxRED, 10, true);
         }
 
@@ -293,11 +272,9 @@ bool vroomLoaderFrame::OpenLayers(const wxArrayString &names)
     }
     m_ViewerLayerManager->FreezeEnd();
     return true;
-
 }
 
-void vroomLoaderFrame::OnOpenLayer(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnOpenLayer(wxCommandEvent& event) {
     /*
         wxArrayString myTestFile;
         myTestFile.Add("/home/lucien/programmation/ColtopGIS/test_data/mntmo.c2d");
@@ -316,17 +293,14 @@ void vroomLoaderFrame::OnOpenLayer(wxCommandEvent &event)
         myFileDlg.GetPaths(myPathsFileName);
         wxASSERT(myPathsFileName.GetCount() > 0);
 
-
         OpenLayers(myPathsFileName);
     }
 }
 
-
-void vroomLoaderFrame::OnCloseLayer(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnCloseLayer(wxCommandEvent& event) {
     wxArrayString myLayersName;
     for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
-        vrRenderer *myRenderer = m_ViewerLayerManager->GetRenderer(i);
+        vrRenderer* myRenderer = m_ViewerLayerManager->GetRenderer(i);
         wxASSERT(myRenderer);
         myLayersName.Add(myRenderer->GetLayer()->GetDisplayName().GetFullName());
     }
@@ -335,7 +309,6 @@ void vroomLoaderFrame::OnCloseLayer(wxCommandEvent &event)
         wxLogError("No layer opened, nothing to close");
         return;
     }
-
 
     wxMultiChoiceDialog myChoiceDlg(this, "Select Layer(s) to close", "Close layer(s)", myLayersName);
     if (myChoiceDlg.ShowModal() != wxID_OK) {
@@ -350,10 +323,10 @@ void vroomLoaderFrame::OnCloseLayer(wxCommandEvent &event)
 
     // removing layer(s)
     m_ViewerLayerManager->FreezeBegin();
-    for (int j = (signed) myLayerToRemoveIndex.GetCount() - 1; j >= 0; j--) {
+    for (int j = (signed)myLayerToRemoveIndex.GetCount() - 1; j >= 0; j--) {
         // remove from viewer manager (TOC and Display)
-        vrRenderer *myRenderer = m_ViewerLayerManager->GetRenderer(myLayerToRemoveIndex.Item(j));
-        vrLayer *myLayer = myRenderer->GetLayer();
+        vrRenderer* myRenderer = m_ViewerLayerManager->GetRenderer(myLayerToRemoveIndex.Item(j));
+        vrLayer* myLayer = myRenderer->GetLayer();
         wxASSERT(myRenderer);
         m_ViewerLayerManager->Remove(myRenderer);
 
@@ -364,22 +337,18 @@ void vroomLoaderFrame::OnCloseLayer(wxCommandEvent &event)
     m_ViewerLayerManager->FreezeEnd();
 }
 
-
-void vroomLoaderFrame::OnShowLog(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnShowLog(wxCommandEvent& event) {
     m_LogWnd->Show(true);
 }
 
-
-void vroomLoaderFrame::OnKeyDown(wxKeyEvent &event)
-{
+void vroomLoaderFrame::OnKeyDown(wxKeyEvent& event) {
     m_KeyBoardState = wxKeyboardState(event.ControlDown(), event.ShiftDown(), event.AltDown(), event.MetaDown());
     if (m_KeyBoardState.GetModifiers() != wxMOD_CMD) {
         event.Skip();
         return;
     }
 
-    const vrDisplayTool *myTool = m_DisplayCtrl->GetTool();
+    const vrDisplayTool* myTool = m_DisplayCtrl->GetTool();
     if (myTool == NULL) {
         event.Skip();
         return;
@@ -391,15 +360,13 @@ void vroomLoaderFrame::OnKeyDown(wxKeyEvent &event)
     event.Skip();
 }
 
-
-void vroomLoaderFrame::OnKeyUp(wxKeyEvent &event)
-{
+void vroomLoaderFrame::OnKeyUp(wxKeyEvent& event) {
     if (m_KeyBoardState.GetModifiers() != wxMOD_CMD) {
         event.Skip();
         return;
     }
 
-    const vrDisplayTool *myTool = m_DisplayCtrl->GetTool();
+    const vrDisplayTool* myTool = m_DisplayCtrl->GetTool();
     if (myTool == NULL) {
         event.Skip();
         return;
@@ -411,27 +378,19 @@ void vroomLoaderFrame::OnKeyUp(wxKeyEvent &event)
     event.Skip();
 }
 
-
-void vroomLoaderFrame::OnToolSelect(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnToolSelect(wxCommandEvent& event) {
     m_DisplayCtrl->SetToolDefault();
 }
 
-
-void vroomLoaderFrame::OnToolZoom(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnToolZoom(wxCommandEvent& event) {
     m_DisplayCtrl->SetToolZoom();
 }
 
-
-void vroomLoaderFrame::OnToolPan(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnToolPan(wxCommandEvent& event) {
     m_DisplayCtrl->SetToolPan();
 }
 
-
-void vroomLoaderFrame::OnToolZoomToFit(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnToolZoomToFit(wxCommandEvent& event) {
     if (event.GetId() == wxID_ZOOM_100) {
         m_ViewerLayerManager->ZoomToFit(true);
     } else {
@@ -441,9 +400,7 @@ void vroomLoaderFrame::OnToolZoomToFit(wxCommandEvent &event)
     m_ViewerLayerManager->Reload();
 }
 
-
-void vroomLoaderFrame::OnMoveLayer(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnMoveLayer(wxCommandEvent& event) {
     if (m_ViewerLayerManager->GetCount() <= 1) {
         wxLogError("Moving layer not possible with less than 2 layers");
         return;
@@ -458,9 +415,10 @@ void vroomLoaderFrame::OnMoveLayer(wxCommandEvent &event)
     wxMenu myPosMenu;
     myPosMenu.SetTitle("Move layer to following position");
     for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
-        myPosMenu.Append(vlID_MENU_POPUP_LAYER + i, wxString::Format("%d - %s", i + 1,
-                                                                     m_ViewerLayerManager->GetRenderer(
-                                                                             i)->GetLayer()->GetDisplayName().GetFullName()));
+        myPosMenu.Append(
+            vlID_MENU_POPUP_LAYER + i,
+            wxString::Format("%d - %s", i + 1,
+                             m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetDisplayName().GetFullName()));
     }
     wxPoint myPos = wxGetMousePosition();
 
@@ -477,10 +435,8 @@ void vroomLoaderFrame::OnMoveLayer(wxCommandEvent &event)
     m_ViewerLayerManager->Move(iOldPos, iNewPos);
 }
 
-
-void vroomLoaderFrame::OnToolDisplayValue(wxCommandEvent &event)
-{
-    m_DisplayValueDlg = (vrDisplayValueDlg *) wxWindow::FindWindowById(vlID_DISPLAY_VALUE_DLG);
+void vroomLoaderFrame::OnToolDisplayValue(wxCommandEvent& event) {
+    m_DisplayValueDlg = (vrDisplayValueDlg*)wxWindow::FindWindowById(vlID_DISPLAY_VALUE_DLG);
     if (m_DisplayValueDlg != NULL) {
         m_DisplayValueDlg->Raise();
     } else {
@@ -488,13 +444,11 @@ void vroomLoaderFrame::OnToolDisplayValue(wxCommandEvent &event)
         m_DisplayValueDlg->Show();
     }
 
-    vrDisplayValueTool *myDisplayTool = new vrDisplayValueTool(m_DisplayCtrl, m_DisplayValueDlg);
+    vrDisplayValueTool* myDisplayTool = new vrDisplayValueTool(m_DisplayCtrl, m_DisplayValueDlg);
     m_DisplayCtrl->SetTool(myDisplayTool);
 }
 
-
-void vroomLoaderFrame::OnLogPerformance(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnLogPerformance(wxCommandEvent& event) {
     if (event.IsChecked()) {
         m_ViewerLayerManager->StartPerfMonitor(m_PerfLogFile);
     } else {
@@ -502,21 +456,17 @@ void vroomLoaderFrame::OnLogPerformance(wxCommandEvent &event)
     }
 }
 
-
-void vroomLoaderFrame::OnEngineThreaded(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnEngineThreaded(wxCommandEvent& event) {
     m_ViewerLayerManager->SetEngineThreaded(!event.IsChecked());
 }
 
-
-void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
-{
-    vrDisplayToolMessage *myMsg = (vrDisplayToolMessage *) event.GetClientData();
+void vroomLoaderFrame::OnToolAction(wxCommandEvent& event) {
+    vrDisplayToolMessage* myMsg = (vrDisplayToolMessage*)event.GetClientData();
     wxASSERT(myMsg);
 
     if (myMsg->m_evtType == vrEVT_TOOL_ZOOM || myMsg->m_evtType == vrEVT_TOOL_ZOOMOUT) {
         // getting rectangle
-        vrCoordinate *myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
+        vrCoordinate* myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
         wxASSERT(myCoord);
 
         // get real rectangle
@@ -535,7 +485,7 @@ void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
             m_ViewerLayerManager->ZoomOut(myFittedRect);
         }
     } else if (myMsg->m_evtType == vrEVT_TOOL_SELECT) {
-        vrCoordinate *myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
+        vrCoordinate* myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
         wxASSERT(myCoord);
 
         wxPoint myClickedPos = myMsg->m_position;
@@ -543,11 +493,12 @@ void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
             wxPoint2DDouble myRealClickedPos;
             myCoord->ConvertFromPixels(myClickedPos, myRealClickedPos);
             wxMessageBox(wxString::Format("Selected coordinate :\nx:\t%.4f\ny:\t%.4f", myRealClickedPos.m_x,
-                                          myRealClickedPos.m_y), "Selected coordinate");
+                                          myRealClickedPos.m_y),
+                         "Selected coordinate");
         }
 
     } else if (myMsg->m_evtType == vrEVT_TOOL_PAN) {
-        vrCoordinate *myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
+        vrCoordinate* myCoord = m_ViewerLayerManager->GetDisplay()->GetCoordinate();
         wxASSERT(myCoord);
 
         wxPoint myMovedPos = myMsg->m_position;
@@ -564,18 +515,14 @@ void vroomLoaderFrame::OnToolAction(wxCommandEvent &event)
         m_ViewerLayerManager->Reload();
     }
 
-
     else {
         wxLogError("Operation not supported now");
     }
 
-
     wxDELETE(myMsg);
 }
 
-
-void vroomLoaderFrame::OnStartEditingButton(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnStartEditingButton(wxCommandEvent& event) {
     if (event.IsChecked()) {
         _StartEdition();
     } else {
@@ -583,15 +530,11 @@ void vroomLoaderFrame::OnStartEditingButton(wxCommandEvent &event)
     }
 }
 
-
-void vroomLoaderFrame::OnUpdateUIEditType(wxUpdateUIEvent &event)
-{
+void vroomLoaderFrame::OnUpdateUIEditType(wxUpdateUIEvent& event) {
     event.Enable(!m_editStartCtrl->GetValue());
 }
 
-
-void vroomLoaderFrame::_StartEdition()
-{
+void vroomLoaderFrame::_StartEdition() {
     wxLogMessage("Edition Started!");
 
     // add a layer of selected type into memory
@@ -599,7 +542,7 @@ void vroomLoaderFrame::_StartEdition()
     wxASSERT(myMemoryLayerName.GetExt() == "memory");
 
     m_ViewerLayerManager->FreezeBegin();
-    vrLayerVectorOGR *myLayer = new vrLayerVectorOGR();
+    vrLayerVectorOGR* myLayer = new vrLayerVectorOGR();
     int mySpatialTypes[] = {wkbPoint, wkbLineString, wkbPolygon};
     if (!myLayer->Create(myMemoryLayerName, mySpatialTypes[m_editTypeCtrl->GetSelection()])) {
         wxFAIL;
@@ -609,18 +552,16 @@ void vroomLoaderFrame::_StartEdition()
     m_ViewerLayerManager->FreezeEnd();
 }
 
-
-void vroomLoaderFrame::_StopEdition()
-{
+void vroomLoaderFrame::_StopEdition() {
     wxLogMessage("Edition Stopped!");
 
     m_ViewerLayerManager->FreezeBegin();
     for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
         if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_MEMORY) {
-            vrRenderer *myRenderer = m_ViewerLayerManager->GetRenderer(i);
-            vrLayer *myLayer = myRenderer->GetLayer();
+            vrRenderer* myRenderer = m_ViewerLayerManager->GetRenderer(i);
+            vrLayer* myLayer = myRenderer->GetLayer();
             // asks if the edited data must be saved
-            vrLayerVectorOGR *myMemoryLayer = (vrLayerVectorOGR *) myLayer;
+            vrLayerVectorOGR* myMemoryLayer = (vrLayerVectorOGR*)myLayer;
             if (myMemoryLayer->GetFeatureCount() > 0) {
                 if (wxMessageBox(_("Save the edited data to a shapefile?"), _("Save"),
                                  wxYES_NO | wxNO_DEFAULT | wxCENTRE, this) == wxYES) {
@@ -639,10 +580,8 @@ void vroomLoaderFrame::_StopEdition()
     m_DisplayCtrl->SetToolDefault();
 }
 
-
-bool vroomLoaderFrame::_SaveEdition(vrLayer *memoryLayer)
-{
-    vrLayerVectorOGR *myMemoryLayer = (vrLayerVectorOGR *) memoryLayer;
+bool vroomLoaderFrame::_SaveEdition(vrLayer* memoryLayer) {
+    vrLayerVectorOGR* myMemoryLayer = (vrLayerVectorOGR*)memoryLayer;
     wxASSERT(myMemoryLayer);
 
     wxString mySaveFileName = wxFileSelector(_("Choose a filename for the shapefile"), wxEmptyString, wxEmptyString,
@@ -661,7 +600,6 @@ bool vroomLoaderFrame::_SaveEdition(vrLayer *memoryLayer)
         return false;
     }
 
-
     bool restart = false;
     myMemoryLayer->ClearSpatialFilter();
     for (long i = 0; i < myMemoryLayer->GetFeatureCount(); i++) {
@@ -669,7 +607,7 @@ bool vroomLoaderFrame::_SaveEdition(vrLayer *memoryLayer)
         if (i == 0) {
             restart = true;
         }
-        OGRFeature *myFeature = myMemoryLayer->GetNextFeature(restart);
+        OGRFeature* myFeature = myMemoryLayer->GetNextFeature(restart);
         wxASSERT(myFeature);
         myShapefile.AddFeature(myFeature->GetGeometryRef());
         OGRFeature::DestroyFeature(myFeature);
@@ -677,16 +615,12 @@ bool vroomLoaderFrame::_SaveEdition(vrLayer *memoryLayer)
     return true;
 }
 
-
-void vroomLoaderFrame::OnUpdateUIDrawMenu(wxUpdateUIEvent &event)
-{
+void vroomLoaderFrame::OnUpdateUIDrawMenu(wxUpdateUIEvent& event) {
     event.Enable(m_editStartCtrl->GetValue());
 }
 
-
-vrRenderer *vroomLoaderFrame::_GetMemoryRenderer()
-{
-    vrRenderer *myMemoryRenderer = NULL;
+vrRenderer* vroomLoaderFrame::_GetMemoryRenderer() {
+    vrRenderer* myMemoryRenderer = NULL;
     for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
         if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_MEMORY) {
             myMemoryRenderer = m_ViewerLayerManager->GetRenderer(i);
@@ -697,35 +631,31 @@ vrRenderer *vroomLoaderFrame::_GetMemoryRenderer()
     return myMemoryRenderer;
 }
 
-
-void vroomLoaderFrame::OnToolModify(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnToolModify(wxCommandEvent& event) {
     m_DisplayCtrl->SetTool(new vrDisplayToolModify(m_DisplayCtrl));
 }
 
-
-void vroomLoaderFrame::OnToolModifySearch(wxCommandEvent &event)
-{
-    vrDisplayToolMessage *myMsg = (vrDisplayToolMessage *) event.GetClientData();
+void vroomLoaderFrame::OnToolModifySearch(wxCommandEvent& event) {
+    vrDisplayToolMessage* myMsg = (vrDisplayToolMessage*)event.GetClientData();
     wxASSERT(myMsg);
 
-    vrRenderer *myMemoryRenderer = _GetMemoryRenderer();
+    vrRenderer* myMemoryRenderer = _GetMemoryRenderer();
     wxASSERT(myMemoryRenderer);
-    vrLayerVectorOGR *myMemoryLayer = (vrLayerVectorOGR *) myMemoryRenderer->GetLayer();
+    vrLayerVectorOGR* myMemoryLayer = (vrLayerVectorOGR*)myMemoryRenderer->GetLayer();
     wxASSERT(myMemoryLayer);
 
     vrRealRect myRealRect;
     m_DisplayCtrl->GetCoordinate()->ConvertFromPixels(myMsg->m_rect, myRealRect);
     wxDELETE(myMsg);
     myMemoryLayer->Select(myRealRect);
-    wxArrayLong *mySelectedIDs = myMemoryLayer->GetSelectedIDs();
+    wxArrayLong* mySelectedIDs = myMemoryLayer->GetSelectedIDs();
     wxASSERT(mySelectedIDs);
     if (mySelectedIDs->GetCount() != 0) {
         wxLogMessage(_T("Selected Geometries ID: %ld (number: %ld)"), mySelectedIDs->Item(0),
                      mySelectedIDs->GetCount());
         // copy geometry vertex to tool
-        OGRFeature *myFeature = myMemoryLayer->GetFeature(mySelectedIDs->Item(0));
-        vrDisplayToolModify *myModifyTool = (vrDisplayToolModify *) m_DisplayCtrl->GetTool();
+        OGRFeature* myFeature = myMemoryLayer->GetFeature(mySelectedIDs->Item(0));
+        vrDisplayToolModify* myModifyTool = (vrDisplayToolModify*)m_DisplayCtrl->GetTool();
         wxASSERT(myModifyTool);
         myModifyTool->SetActiveGeometry(myFeature->GetGeometryRef(), myMemoryLayer->GetGeometryType(),
                                         m_DisplayCtrl->GetCoordinate());
@@ -736,15 +666,13 @@ void vroomLoaderFrame::OnToolModifySearch(wxCommandEvent &event)
     }
 }
 
-
-void vroomLoaderFrame::OnToolModifyUpdate(wxCommandEvent &event)
-{
-    vrDisplayToolMessage *myMsg = (vrDisplayToolMessage *) event.GetClientData();
+void vroomLoaderFrame::OnToolModifyUpdate(wxCommandEvent& event) {
+    vrDisplayToolMessage* myMsg = (vrDisplayToolMessage*)event.GetClientData();
     wxASSERT(myMsg);
 
-    vrRenderer *myMemoryRenderer = _GetMemoryRenderer();
+    vrRenderer* myMemoryRenderer = _GetMemoryRenderer();
     wxASSERT(myMemoryRenderer);
-    vrLayerVectorOGR *myMemoryLayer = (vrLayerVectorOGR *) myMemoryRenderer->GetLayer();
+    vrLayerVectorOGR* myMemoryLayer = (vrLayerVectorOGR*)myMemoryRenderer->GetLayer();
     wxASSERT(myMemoryLayer);
 
     wxPoint2DDouble myRealPt;
@@ -752,51 +680,44 @@ void vroomLoaderFrame::OnToolModifyUpdate(wxCommandEvent &event)
     int myVertexIndex = myMsg->m_longData;
     wxDELETE(myMsg);
 
-    wxArrayLong *mySelectedIDs = myMemoryLayer->GetSelectedIDs();
+    wxArrayLong* mySelectedIDs = myMemoryLayer->GetSelectedIDs();
     wxASSERT(mySelectedIDs);
     wxASSERT(mySelectedIDs->GetCount() > 0);
 
     // update geometry and send new geometry to the modify tool
-    OGRFeature *myFeature = myMemoryLayer->GetFeature(mySelectedIDs->Item(0));
+    OGRFeature* myFeature = myMemoryLayer->GetFeature(mySelectedIDs->Item(0));
     switch (myMemoryLayer->GetGeometryType()) {
-        case wkbLineString: // line
+        case wkbLineString:  // line
         {
-            OGRLineString *myLine = (OGRLineString *) myFeature->GetGeometryRef();
+            OGRLineString* myLine = (OGRLineString*)myFeature->GetGeometryRef();
             myLine->setPoint(myVertexIndex, myRealPt.m_x, myRealPt.m_y);
-        }
-            break;
-
+        } break;
 
         case wkbPolygon: {
-            OGRPolygon *myPolygon = (OGRPolygon *) myFeature->GetGeometryRef();
-            OGRLineString *myLine = (OGRLineString *) myPolygon->getExteriorRing();
+            OGRPolygon* myPolygon = (OGRPolygon*)myFeature->GetGeometryRef();
+            OGRLineString* myLine = (OGRLineString*)myPolygon->getExteriorRing();
             myLine->setPoint(myVertexIndex, myRealPt.m_x, myRealPt.m_y);
-        }
-            break;
-
+        } break;
 
         case wkbPoint: {
-            OGRPoint *myPt = (OGRPoint *) myFeature->GetGeometryRef();
+            OGRPoint* myPt = (OGRPoint*)myFeature->GetGeometryRef();
             myPt->setX(myRealPt.m_x);
             myPt->setY(myRealPt.m_y);
-        }
-            break;
+        } break;
 
         default:
             wxLogError(_T("Modification of geometry type: %d isn't supported!"), myMemoryLayer->GetGeometryType());
             break;
     }
     myMemoryLayer->SetFeature(myFeature);
-    vrDisplayToolModify *myModifyTool = (vrDisplayToolModify *) m_DisplayCtrl->GetTool();
+    vrDisplayToolModify* myModifyTool = (vrDisplayToolModify*)m_DisplayCtrl->GetTool();
     myModifyTool->SetActiveGeometry(myFeature->GetGeometryRef(), myMemoryLayer->GetGeometryType(),
                                     m_DisplayCtrl->GetCoordinate());
     OGRFeature::DestroyFeature(myFeature);
     m_ViewerLayerManager->Reload();
 }
 
-
-void vroomLoaderFrame::OnToolDraw(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnToolDraw(wxCommandEvent& event) {
     wxLogMessage("setting edit tool");
     switch (m_editTypeCtrl->GetSelection()) {
         case 1:
@@ -816,9 +737,7 @@ void vroomLoaderFrame::OnToolDraw(wxCommandEvent &event)
     }
 }
 
-
-void vroomLoaderFrame::OnToolDrawAction(wxCommandEvent &event)
-{
+void vroomLoaderFrame::OnToolDrawAction(wxCommandEvent& event) {
     // create editor if not exists
     if (m_editor == NULL) {
         switch (m_editTypeCtrl->GetSelection()) {
@@ -836,7 +755,7 @@ void vroomLoaderFrame::OnToolDrawAction(wxCommandEvent &event)
         }
     }
 
-    vrDisplayToolMessage *myMsg = (vrDisplayToolMessage *) event.GetClientData();
+    vrDisplayToolMessage* myMsg = (vrDisplayToolMessage*)event.GetClientData();
     wxASSERT(myMsg);
 
     wxPoint2DDouble myRealPt(0, 0);
@@ -844,7 +763,7 @@ void vroomLoaderFrame::OnToolDrawAction(wxCommandEvent &event)
     wxASSERT(m_editor);
     m_editor->AddVertex(myRealPt);
 
-    vrRenderer *myMemoryRenderer = _GetMemoryRenderer();
+    vrRenderer* myMemoryRenderer = _GetMemoryRenderer();
     wxASSERT(myMemoryRenderer);
 
     if (myMsg->m_evtType == vrEVT_TOOL_EDIT) {
@@ -852,7 +771,7 @@ void vroomLoaderFrame::OnToolDrawAction(wxCommandEvent &event)
         m_editor->DrawShapeEdit(myMemoryRenderer->GetRender());
     } else if (myMsg->m_evtType == vrEVT_TOOL_EDIT_FINISHED) {
         wxLogMessage("Finished: %d, %d", myMsg->m_position.x, myMsg->m_position.y);
-        vrLayerVectorOGR *myMemoryLayer = (vrLayerVectorOGR *) myMemoryRenderer->GetLayer();
+        vrLayerVectorOGR* myMemoryLayer = (vrLayerVectorOGR*)myMemoryRenderer->GetLayer();
         long myAddedId = myMemoryLayer->AddFeature(m_editor->GetGeometryRef());
         myMemoryLayer->SetSelectedID(myAddedId);
         wxDELETE(m_editor);
@@ -860,4 +779,3 @@ void vroomLoaderFrame::OnToolDrawAction(wxCommandEvent &event)
     }
     wxDELETE(myMsg);
 }
-
