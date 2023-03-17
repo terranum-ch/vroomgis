@@ -550,16 +550,7 @@ bool vrDisplayToolSight::MouseMove(const wxMouseEvent &event)
     if (!event.Dragging()) {
         return false;
     }
-
-
-    {
-        wxClientDC myDC(GetDisplay());
-        wxDCOverlay overlaydc(m_overlay, &myDC);
-        overlaydc.Clear();
-    }
-    m_overlay.Reset();
-
-
+    
     wxClientDC myDC(GetDisplay());
     wxDCOverlay overlaydc(m_overlay, &myDC);
     overlaydc.Clear();
