@@ -308,7 +308,11 @@ bool vrLayerVectorC2P::GetExtent(vrRealRect& rect) {
     }
 
     OGREnvelope myExtent;
-    m_layer->GetExtent(&myExtent);
+    OGRErr extent_err = m_layer->GetExtent(&myExtent);
+    if (extent_err != OGRERR_NONE){
+        wxLogError("Error getting extent (%d)!", extent_err);
+        return false;
+    }
 
     /*
     wxASSERT(myExtent.IsInit() == false);

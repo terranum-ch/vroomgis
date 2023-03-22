@@ -108,7 +108,7 @@ void vrRubberBand::Update() {
     dc.SetPen(*wxGREY_PEN);
     dc.SetBrush(wxColour(192, 192, 192, 64));
 #else
-    dc.SetPen(wxPen(*wxLIGHT_GREY, 2, wxSOLID));
+    dc.SetPen(wxPen(*wxLIGHT_GREY, 2, wxPENSTYLE_SOLID));
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
 #endif
     dc.DrawRectangle(GetRect());

@@ -549,7 +549,7 @@ bool vrDisplayToolEditLine::MouseMove(const wxMouseEvent& event) {
 #ifdef __WXMAC__
     myDC.SetPen(*wxGREY_PEN);
 #else
-    myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxSOLID));
+    myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxPENSTYLE_SOLID));
 #endif
 
     myDC.DrawLine(m_previousPoint, event.GetPosition());
@@ -673,7 +673,7 @@ bool vrDisplayToolModify::MouseMove(const wxMouseEvent& event) {
 #ifdef __WXMAC__
     myDC.SetPen(*wxGREY_PEN);
 #else
-    myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxSOLID));
+    myDC.SetPen(wxPen(*wxLIGHT_GREY, 2, wxPENSTYLE_SOLID));
 #endif
 
     if (m_activeVertex != 0) {
