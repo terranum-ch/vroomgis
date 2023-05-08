@@ -349,7 +349,7 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char** imgdata, const wxSize& ou
                 if (band->RasterIO(GF_Read, readimgpxinfo.GetX(), readimgpxinfo.GetY(), readimgpxinfo.GetWidth(),
                                    readimgpxinfo.GetHeight(), *imgdata + offs, outimgpxsize.GetWidth(),
                                    outimgpxsize.GetHeight(), GDT_Byte, 3, 0) != CE_None) {
-                    wxLogError(_T("Unknown error while reading band %i from %s"), i, m_fileName.GetFullName());
+                    wxLogError(_("Unknown error while reading band %i from %s"), i, m_fileName.GetFullName());
                     if (*imgdata != NULL) {
                         CPLFree(*imgdata);
                         *imgdata = NULL;
@@ -492,7 +492,7 @@ bool vrLayerRasterGDAL::_ComputeStat() {
 
     // try computing statistics (take more time...)
     if (myRasterBand->ComputeStatistics(true, &m_oneBandMin, &m_oneBandMax, NULL, NULL, NULL, NULL) != CE_None) {
-        wxLogWarning(_("Getting information for raster ‘%s’ failed!\nThis image is either empty or corrupted."),
+        wxLogWarning(_("Getting information for raster '%s' failed!\nThis image is either empty or corrupted."),
                      m_fileName.GetFullName());
         return false;
     }
@@ -730,7 +730,7 @@ bool vrLayerRasterGDAL::GetDataThread(wxImage* bmp, const vrRealRect& coord, dou
     unsigned int myimglen = bmp->GetWidth() * bmp->GetHeight();
     alphachar = (unsigned char*)malloc(myimglen);
     if (alphachar == NULL) {
-        wxLogError(_T("Error creating translucency"));
+        wxLogError(_("Error creating translucency"));
         return false;
     }
 

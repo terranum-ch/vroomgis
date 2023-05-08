@@ -47,7 +47,7 @@ wxMenu* vrViewerTOC::CreateContextualMenu(vrRenderer* renderer, bool usegroup) {
     myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_SOLID, _("Solid Brush"));
     myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_TRANSPARENT, _("Transparent Brush"));
     myBrushMenu->AppendRadioItem(vrID_POPUP_BRUSH_BDIAGONAL, _("Diagonal Brush"));
-    myPopMenu->AppendSubMenu(myBrushMenu, _T("Brush"));
+    myPopMenu->AppendSubMenu(myBrushMenu, _("Brush"));
 
     // disable all
     myPopMenu->Enable(vrID_POPUP_PEN_COLOR, false);

@@ -32,12 +32,12 @@ vrSerialize::vrSerialize(wxString stream) {
 
 bool vrSerialize::CanRead() {
     if (m_outdirection) {
-        wxLogError(_T("Error, stream is in writing mode"));
+        wxLogError(_("Error, stream is in writing mode"));
         return false;
     }
 
     if (m_stream.IsEmpty()) {
-        wxLogWarning(_T("Nothing to read, stream empty"));
+        wxLogWarning(_("Nothing to read, stream empty"));
         return false;
     }
     return true;
@@ -52,7 +52,7 @@ void vrSerialize::WriteInt(int value) {
 int vrSerialize::ReadInt(const wxString& part) {
     long lvalue = 0;
     if (!part.ToLong(&lvalue)) {
-        wxLogError(_T("Error trying to convert string to integer"));
+        wxLogError(_("Error trying to convert string to integer"));
     }
 
     return lvalue;

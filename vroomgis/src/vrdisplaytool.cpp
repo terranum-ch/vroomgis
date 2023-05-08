@@ -650,7 +650,7 @@ bool vrDisplayToolModify::MouseDown(const wxMouseEvent& event) {
             break;
         }
     }
-    wxLogMessage(_T("Active vertex is : %d"), m_activeVertex);
+    wxLogMessage(_("Active vertex is : %d"), m_activeVertex);
     return true;
 }
 
