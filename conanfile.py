@@ -6,18 +6,19 @@ class vroomgis(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     requires = [
-        "geos/3.11.0",
-        "libspatialite/5.0.1",
-        "libdeflate/1.17",
-        "libcurl/7.87.0",
-        "proj/9.1.1",
-        "libtiff/4.4.0",
-        "sqlite3/3.40.1",
-        "gdal/3.5.2@terranum-conan+gdal/stable",
-        "wxwidgets/3.2.1@terranum-conan+wxwidgets/stable",
+        "wxwidgets/3.2.5@terranum-conan+wxwidgets/stable",
+        "gdal/3.8.3@terranum-conan+gdal/stable",
+        "libdeflate/1.19",
+        "proj/9.3.1",
+        "libtiff/4.6.0",
+        "sqlite3/3.44.2",
         "libiconv/1.17",
-        "libpng/1.6.38",
-        "libjpeg/9e"
+        "libjpeg/9e",
+        #"geos/3.12.0",
+        #"libspatialite/5.0.1",
+        #"libcurl/7.87.0",
+        #"libpng/1.6.40",
+        #"zlib/1.2.12"
     ]
 
     options = {
@@ -25,8 +26,8 @@ class vroomgis(ConanFile):
         "build_apps": [True, False],
     }
     default_options = {
-        "build_tests": False,
-        "build_apps": False,
+        "build_tests": True,
+        "build_apps": True,
     }
 
     generators = "cmake", "gcc"
@@ -38,6 +39,9 @@ class vroomgis(ConanFile):
     def configure(self):
         self.options["gdal"].with_curl = True
         self.options["gdal"].shared = True
+        if self.settings.os == "Linux":
+            self.options["wxwidgets"].png = "system" # use png sys lib on linux, otherwise leads to a crash.
+            self.options['gdal'].with_png = False # to avoid static linking of libpng
 
     def imports(self):
         # Copy libraries

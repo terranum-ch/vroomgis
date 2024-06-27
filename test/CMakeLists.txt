@@ -36,7 +36,11 @@ include_directories(${PROJECT_BINARY_DIR})
 
 # LINK LIBRARIES
 target_link_libraries(vroomgis-tests vroomgis)
-target_link_libraries(vroomgis-tests CONAN_PKG::gtest)
+# use system PNG for linux otherwise we have problem when displaying icons
+if (UNIX AND NOT APPLE)
+    message(STATUS "PNG lib for test is : ${PNG_LIBRARY}")
+    target_link_libraries(vroomgis-tests ${PNG_LIBRARY} xkbcommon)
+endif (UNIX AND NOT APPLE)
 
 # Visual Leak Detector
 if (WIN32)

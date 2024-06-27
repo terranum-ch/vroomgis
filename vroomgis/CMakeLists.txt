@@ -29,9 +29,16 @@ add_library(vroomgis STATIC ${VROOMGIS_LIB_SRC_FILES}
         ${VROOMGIS_LIB_HEAD_FILES}
         ${VROOMGIS_LIB_HEAD_ART_FILES})
 
-target_link_libraries(vroomgis CONAN_PKG::wxwidgets)
-target_link_libraries(vroomgis CONAN_PKG::gdal)
-target_link_libraries(vroomgis CONAN_PKG::geos)
+# using targets leeds to linking error on Linux
+#target_link_libraries(vroomgis CONAN_PKG::wxwidgets)
+#target_link_libraries(vroomgis CONAN_PKG::gdal)
+#target_link_libraries(vroomgis CONAN_PKG::geos)
+target_link_libraries(vroomgis ${CONAN_LIBS})
+
+if(UNIX AND NOT APPLE)
+    message(STATUS "PNG_LIBRARY for vroomgis: ${PNG_LIBRARY}")
+    target_link_libraries(vroomgis ${PNG_LIBRARY} xkbcommon)
+endif(UNIX AND NOT APPLE)
 
 # USED FOR PERFORMANCE UNDER WINDOWS
 IF (WIN32)

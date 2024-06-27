@@ -41,6 +41,11 @@ ENDIF (WIN32)
 
 # LINK VROOMGIS LIBRARY
 target_link_libraries(vroomTwin vroomgis)
+# use system PNG for linux otherwise we have problem when displaying icons
+if (UNIX AND NOT APPLE)
+    message(STATUS "PNG lib for vroomTwin is : ${PNG_LIBRARY}")
+    target_link_libraries(vroomTwin ${PNG_LIBRARY} xkbcommon)
+endif (UNIX AND NOT APPLE)
 
 # Visual Leak Detector
 if (WIN32)

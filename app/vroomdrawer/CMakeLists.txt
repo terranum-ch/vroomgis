@@ -42,8 +42,12 @@ ELSE (WIN32)
     add_executable(vroomDrawer MACOSX_BUNDLE ${SRC_FILES} ${HEAD_FILES})
 ENDIF (WIN32)
 
-# LINK VROOMGIS LIBRARY
+# use system PNG for linux otherwise we have problem when displaying icons
 target_link_libraries(vroomDrawer vroomgis)
+if (UNIX AND NOT APPLE)
+    message(STATUS "PNG lib for vroomDrawer is : ${PNG_LIBRARY}")
+    target_link_libraries(vroomDrawer ${PNG_LIBRARY} xkbcommon)
+endif (UNIX AND NOT APPLE)
 
 # Visual Leak Detector
 if (WIN32)
