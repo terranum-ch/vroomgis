@@ -23,7 +23,7 @@ class Label : public ::testing::Test {
   protected:
     wxFont m_Fontt;
 
-    virtual void setUp() {
+    virtual void SetUp() {
         m_Fontt = wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     }
 };
@@ -34,9 +34,9 @@ TEST_F(Label, LabelCreate) {
 
     // getting font is strange...
     // lot of mac alert ???, to be tested on windows
-#ifndef __WXMAC__
+//#ifndef __WXMAC__
     EXPECT_EQ(myLabel.GetFont(), m_Fontt);
-#endif
+//#endif
     EXPECT_EQ(myLabel.GetColor(), *wxBLACK);
 }
 

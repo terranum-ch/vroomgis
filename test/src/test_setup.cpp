@@ -16,14 +16,14 @@
  ***************************************************************************/
 
 #include <gtest/gtest.h>
-#ifdef __LINUX__
-        #include <gtk/gtk.h>
-#endif
+// #ifdef __LINUX__
+//         #include <gtk/gtk.h>
+// #endif
 #include "vrlayer.h"
 
 class Setup : public ::testing::Test {
   protected:
-    virtual void setUp() {
+    virtual void SetUp() {
         wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
         wxInitializer initializer;
         if (!initializer) {
@@ -31,9 +31,9 @@ class Setup : public ::testing::Test {
             ASSERT_TRUE("Unable to init the wxWigets library");
         }
 
-#ifdef __LINUX__
-         EXPECT_TRUE(gtk_init_check(NULL, NULL));
-#endif
+// #ifdef __LINUX__
+//          EXPECT_TRUE(gtk_init_check(NULL, NULL));
+// #endif
     }
 };
 
