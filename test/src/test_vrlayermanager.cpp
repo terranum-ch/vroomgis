@@ -27,7 +27,7 @@ class LayerManager : public ::testing::Test {
 
     virtual void SetUp() {
         m_JpegName = wxFileName(g_TestPath, g_TestFileJPEG);
-        m_TiffName = wxFileName(g_TestPath, g_TestFileTIF);
+        m_TiffName = wxFileName(g_TestPath, g_TestFileMNT);
     }
 };
 

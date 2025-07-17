@@ -75,14 +75,13 @@ jobs:
       run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
-        conan install .. -o build_tests=False --build=gtk --build=missing
+        conan install .. --build=missing
 
     - name: Build
       working-directory: ${{github.workspace}}/bin
       run: conan build ..
 
-#    Unit test is disabled for now, it requires additional files to be added to the repository.
-#    - name: Run tests
-#      working-directory: ${{github.workspace}}/bin
-#      run: |
-#        ctest --verbose
+    - name: Run tests
+      working-directory: ${{github.workspace}}/bin
+      run: |
+        ctest --verbose

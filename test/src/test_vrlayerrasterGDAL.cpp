@@ -33,10 +33,10 @@ TEST_F(LayerRasterGDAL, OpenLayerRasterGDAL) {
 
     vrLayerRasterGDAL myLayer;
     EXPECT_FALSE(myLayer.IsOK());
-    EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), true), true);
+    EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileMNT), true), true);
     EXPECT_EQ(myLayer.GetType(), vrDRIVER_RASTER_TIFF);
     EXPECT_TRUE(myLayer.IsOK());
-    EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), true), true);
+    EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileMNT), true), true);
 }
 
 TEST_F(LayerRasterGDAL, GetExtentRasterGDAL) {
@@ -49,13 +49,13 @@ TEST_F(LayerRasterGDAL, GetExtentRasterGDAL) {
     EXPECT_FALSE(myLayer.GetExtent(myExtent));
 
     // extent ok for layer GDAL
-    EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileTIF), false), true);
+    EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileMNT), false), true);
     EXPECT_EQ(myLayer.IsOK(), true);
     EXPECT_TRUE(myLayer.GetExtent(myExtent));
-    EXPECT_EQ((int)myExtent.GetLeft(), 598000);
-    EXPECT_EQ((int)myExtent.GetTop(), 116000);
-    EXPECT_EQ((int)myExtent.GetRight(), 599000);
-    EXPECT_EQ((int)myExtent.GetBottom(), 114000);
+    EXPECT_EQ((int)myExtent.GetLeft(), 597999);
+    EXPECT_EQ((int)myExtent.GetTop(), 116001);
+    EXPECT_EQ((int)myExtent.GetRight(), 598999);
+    EXPECT_EQ((int)myExtent.GetBottom(), 114001);
 }
 
 TEST_F(LayerRasterGDAL, GettingExtentGDAL2) {
@@ -71,10 +71,10 @@ TEST_F(LayerRasterGDAL, GettingExtentGDAL2) {
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileJPEG), false), true);
     EXPECT_EQ(myLayer.IsOK(), true);
     EXPECT_TRUE(myLayer.GetExtent(myExtent));
-    EXPECT_NEAR(myExtent.GetLeft(), 575147.743, 0.001);
-    EXPECT_NEAR(myExtent.GetTop(), 169147.080, 0.001);
-    EXPECT_NEAR(myExtent.GetRight(), 613503.148, 0.001);
-    EXPECT_NEAR(myExtent.GetBottom(), 141898.483, 0.001);
+    EXPECT_DOUBLE_EQ(myExtent.GetLeft(), 598000.0);
+    EXPECT_DOUBLE_EQ(myExtent.GetTop(), 116000.0);
+    EXPECT_DOUBLE_EQ(myExtent.GetRight(), 599000.0);
+    EXPECT_DOUBLE_EQ(myExtent.GetBottom(), 114000.0);
 
     wxLogMessage("Windows extent is :\nleft : \t%.3f\nright : \t%.3f\ntop : \t%.3f\nbottom : \t%.3f",
                  myExtent.GetLeft(), myExtent.GetRight(), myExtent.GetTop(), myExtent.GetBottom());

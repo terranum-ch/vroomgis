@@ -118,12 +118,12 @@ TEST_F(ViewerLayerManager, Remove) {
 TEST_F(ViewerLayerManager, MoveLayer) {
     wxLogMessage("Testing moving layer");
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
-    EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileTIF)));
+    EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileMNT)));
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileJPEG)));
     EXPECT_EQ(m_LayerManager->GetCount(), 3);
 
     vrLayer* myLayer1 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileJPEG));
-    vrLayer* myLayer2 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileTIF));
+    vrLayer* myLayer2 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileMNT));
     vrLayer* myLayer3 = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
 
     EXPECT_TRUE(m_ViewManager->Add(-1, myLayer3));

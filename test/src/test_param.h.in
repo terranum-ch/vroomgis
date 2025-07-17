@@ -37,17 +37,22 @@
 
 // DEFINED BY CMAKE
 #cmakedefine UNIT_TESTING_PATH "@UNIT_TESTING_PATH@"
+#cmakedefine UNIT_TESTING_PATH_OUTPUT "@UNIT_TESTING_PATH_OUTPUT@"
 // END OF CMAKE DEFINITIONS
 
 static const wxString g_TestPath = UNIT_TESTING_PATH;
+static const wxString g_TestPathOutput = UNIT_TESTING_PATH_OUTPUT;
+
+// Input files
 static const wxString g_TestFileMisc = "gpl.txt";
 static const wxString g_TestFileSHP = "fluss_poly_combioula.shp";
 static const wxString g_TestFileSHP2 = "gwn_combioula.shp";
-static const wxString g_TestFileTIF = "MNT.tif";
-static const wxString g_TestFileJPEG = "Boltigen.jpg";
+static const wxString g_TestFileJPEG = "mntj.jpg";
 static const wxString g_TestFileMNT = "mntmo.tif";
 static const wxString g_TestFileC2D = "mntmo_c2d.c2d";
 static const wxString g_TestProfile = "profile.shp";
+
+// Output files
 static const wxString g_TestProfileOutPt = "profile_out_pt.shp";
 static const wxString g_TestProfileOutLine = "profile_out_line.shp";
 

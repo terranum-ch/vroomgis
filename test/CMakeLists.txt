@@ -2,10 +2,12 @@ MESSAGE(STATUS "USING UNIT TESTING")
 SET(PROGNAMETEST ${CMAKE_PROJECT_NAME}_test)
 
 # Unit testing path configuration
-set(UNIT_TESTING_PATH CACHE PATH "Location of unit testing files and projects")
-if (NOT UNIT_TESTING_PATH)
-    message(FATAL_ERROR "UNIT_TESTING_PATH is not set. Please set it to the location of your unit testing files and projects.")
-endif ()
+set(UNIT_TESTING_PATH ${CMAKE_CURRENT_SOURCE_DIR}/data)
+set(UNIT_TESTING_PATH_OUTPUT ${CMAKE_BINARY_DIR}/output_test_data)
+# create output directory if it does not exist
+if(NOT EXISTS ${UNIT_TESTING_PATH_OUTPUT})
+    file(MAKE_DIRECTORY ${UNIT_TESTING_PATH_OUTPUT})
+endif()
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/src/test_param.h.in" "${PROJECT_BINARY_DIR}/test_param.h")
 include_directories(${PROJECT_BINARY_DIR})
 

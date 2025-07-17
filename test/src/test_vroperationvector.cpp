@@ -69,10 +69,10 @@ TEST_F(OperationVector, DoProfile) {
 
 TEST_F(OperationVector, ProfileOut) {
     vrLayerManager myManager;
-    wxFileName myOutPtName(g_TestPath, g_TestProfileOutPt);
+    wxFileName myOutPtName(g_TestPathOutput, g_TestProfileOutPt);
     myManager.Erase(myOutPtName);
 
-    wxFileName myOutLineName(g_TestPath, g_TestProfileOutLine);
+    wxFileName myOutLineName(g_TestPathOutput, g_TestProfileOutLine);
     myManager.Erase(myOutLineName);
 
     vrLayerVectorOGR myOutPt;
