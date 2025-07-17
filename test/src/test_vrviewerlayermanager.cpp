@@ -25,7 +25,7 @@ class ViewerLayerManager : public ::testing::Test {
     vrLayerManager* m_LayerManager;
     vrViewerLayerManager* m_ViewManager;
 
-    virtual void setUp() {
+    virtual void SetUp() {
         m_LayerManager = new vrLayerManager();
         m_ViewManager = NULL;
         vrViewerDisplay* myDisplay = NULL;

@@ -29,7 +29,7 @@ protected:
     vrLayerRasterGDAL *myRaster;
     vrLayerVectorOGR *myVector;
 
-    virtual void setUp() {
+    virtual void SetUp() {
         OGRRegisterAll();
         GDALAllRegister();
 

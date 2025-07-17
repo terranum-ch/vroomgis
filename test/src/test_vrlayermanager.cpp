@@ -25,7 +25,7 @@ class LayerManager : public ::testing::Test {
     wxFileName m_JpegName;
     wxFileName m_TiffName;
 
-    virtual void setUp() {
+    virtual void SetUp() {
         m_JpegName = wxFileName(g_TestPath, g_TestFileJPEG);
         m_TiffName = wxFileName(g_TestPath, g_TestFileTIF);
     }
@@ -44,6 +44,7 @@ TEST_F(LayerManager, CreateLayerManager) {
 TEST_F(LayerManager, AddingRaster) {
     vrLayerManager myLayerManager;
 
+    EXPECT_TRUE(wxFileExists(m_JpegName.GetFullPath()));
     EXPECT_TRUE(myLayerManager.Open(m_JpegName));
     EXPECT_EQ(myLayerManager.GetCount(), 1);
 

@@ -29,6 +29,7 @@ class LayerRasterC2D : public ::testing::Test {
 };
 
 TEST_F(LayerRasterC2D, OpenLayerRasterC2D) {
+    GTEST_SKIP() << "Skipping C2D raster test, as it requires GDAL and C2D support.";
     // init lib.
     vrLayerManager myManager;
 
@@ -40,6 +41,7 @@ TEST_F(LayerRasterC2D, OpenLayerRasterC2D) {
 }
 
 TEST_F(LayerRasterC2D, GetPixelValueC2D) {
+    GTEST_SKIP() << "Skipping C2D raster pixel value test, as it requires GDAL and C2D support.";
     wxLogMessage("Testing getting pixel value for C2D raster");
     vrRealRect myExtent;
     EXPECT_TRUE(myExtent.IsEmpty());

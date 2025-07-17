@@ -28,7 +28,7 @@ class Renderer : public ::testing::Test {
     vrLayerManager* m_Manager;
     vrLayer* m_LayerShp;
 
-    virtual void setUp() {
+    virtual void SetUp() {
         m_LayerShp = NULL;
         m_Manager = new vrLayerManager;
         EXPECT_TRUE(m_Manager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
