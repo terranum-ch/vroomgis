@@ -47,6 +47,7 @@ if (WIN32)
 endif (WIN32)
 
 if (BUILD_TESTS)
+    enable_testing()
     add_subdirectory(test)
 endif ()
 
