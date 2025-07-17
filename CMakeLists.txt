@@ -2,7 +2,6 @@
 # (c) LUCIEN SCHREIBER 2013 
 # VROOMGIS NEEDS wxWidgets, GEOS, GDAL
 cmake_minimum_required(VERSION 3.20)
-
 project("vroomgis")
 
 # searching PNG library before conan magic stuff
@@ -14,7 +13,13 @@ endif(UNIX AND NOT APPLE)
 # Conan setup
 # using conan_basic_setup(TARGETS) leeds to linking error on Linux
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+conan_basic_setup(KEEP_RPATHS)
+message(STATUS "Conan libs: ${CONAN_LIBS}")
+if (APPLE)
+    set(CMAKE_INSTALL_RPATH "@executable_path")
+else()
+    set(CMAKE_INSTALL_RPATH "$ORIGIN")
+endif()
 
 # Global definitions
 set(CMAKE_CXX_STANDARD 17)
