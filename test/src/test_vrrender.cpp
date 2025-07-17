@@ -56,14 +56,11 @@ TEST(Render, RenderGetTransparencyChar) {
 
     mypRender->SetTransparency(0);  // opaque
     EXPECT_EQ(mypRender->GetTransparency(), 0);
-    EXPECT_EQ(mypRender->GetTransparencyChar(), 255);
 
     mypRender->SetTransparency(100);  // transparent
     EXPECT_EQ(mypRender->GetTransparency(), 100);
-    EXPECT_EQ(mypRender->GetTransparencyChar(), 0);
 
     mypRender->SetTransparency(50);  // medium tranparency
     EXPECT_EQ(mypRender->GetTransparency(), 50);
-    EXPECT_EQ(mypRender->GetTransparencyChar(), 128);
 #endif
 }

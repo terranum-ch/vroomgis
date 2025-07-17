@@ -1,7 +1,7 @@
 # CMAKE BUILD FILE FOR CREATING A STATIC VROOMGIS Library
 # (c) LUCIEN SCHREIBER 2013 
 # VROOMGIS NEEDS wxWidgets, GEOS, GDAL
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.20)
 
 project("vroomgis")
 
@@ -17,7 +17,7 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # Global definitions
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Hide some wxWidgets-related warnings.

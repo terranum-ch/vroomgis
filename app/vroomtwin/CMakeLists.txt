@@ -1,7 +1,7 @@
 # CMAKE BUILD FILE FOR vroomTwin
 # (c) TERRANUM 2020
-cmake_minimum_required(VERSION 3.11)
-set(CMAKE_CXX_STANDARD 11)
+cmake_minimum_required(VERSION 3.20)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project("vroomTwin")
@@ -46,6 +46,23 @@ if (UNIX AND NOT APPLE)
     message(STATUS "PNG lib for vroomTwin is : ${PNG_LIBRARY}")
     target_link_libraries(vroomTwin ${PNG_LIBRARY} xkbcommon)
 endif (UNIX AND NOT APPLE)
+
+# Install step for copying *dylib into application bundle on OSX and for changing their reference from
+# absolute to relative
+IF (APPLE)
+    # change cmake_install_prefix from /usr/local to the binary directory
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
+    set(APPS "${CMAKE_INSTALL_PREFIX}/bin/vroomTwin.app")  # paths to executables
+    set(DIRS ${CMAKE_INSTALL_PREFIX}/bin/)  # paths to executables
+    INSTALL(CODE "
+   include(BundleUtilities)
+   fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
+   " COMPONENT Runtime)
+ENDIF (APPLE)
+
+install(TARGETS vroomTwin
+        BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+        RUNTIME DESTINATION bin)
 
 # Visual Leak Detector
 if (WIN32)

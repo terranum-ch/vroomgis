@@ -6,19 +6,12 @@ class vroomgis(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     requires = [
-        "wxwidgets/3.2.5@terranum-conan+wxwidgets/stable",
-        "gdal/3.8.3@terranum-conan+gdal/stable",
+        "wxwidgets/3.3.0@terranum-conan+wxwidgets/stable",
+        "gdal/3.10.3@terranum-conan+gdal/stable",
         "libdeflate/1.19",
         "proj/9.3.1",
-        "libtiff/4.6.0",
-        "sqlite3/3.44.2",
-        "libiconv/1.17",
-        "libjpeg/9e",
-        #"geos/3.12.0",
-        #"libspatialite/5.0.1",
-        #"libcurl/7.87.0",
-        #"libpng/1.6.40",
-        #"zlib/1.2.12"
+        "libtiff/4.7.0",
+        "sqlite3/3.45.0",
     ]
 
     options = {
@@ -34,7 +27,7 @@ class vroomgis(ConanFile):
 
     def requirements(self):
         if self.options.build_tests:
-            self.requires("gtest/1.11.0")
+            self.requires("gtest/1.15.0")
 
     def configure(self):
         self.options["gdal"].with_curl = True
