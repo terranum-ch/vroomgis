@@ -26,5 +26,5 @@ add_test(NAME test COMMAND ${PROGNAMETEST})
 # use system PNG for linux otherwise we have problem when displaying icons
 if (UNIX AND NOT APPLE)
     message(STATUS "PNG lib for test is : ${PNG_LIBRARY}")
-    target_link_libraries(vroomgis-tests ${PNG_LIBRARY} xkbcommon)
+    target_link_libraries(${PROGNAMETEST} ${PNG_LIBRARY} xkbcommon)
 endif (UNIX AND NOT APPLE)
