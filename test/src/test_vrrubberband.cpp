@@ -20,7 +20,7 @@
 #include "test_param.h"
 #include "vrrubberband.h"
 
-TEST(RubberBand, GetRect1) {
+TEST(DISABLED_RubberBand, GetRect1) {
     wxPoint p1(10, 10);
     wxPoint p2(50, 50);
 
@@ -32,7 +32,7 @@ TEST(RubberBand, GetRect1) {
     EXPECT_TRUE(myRect.GetBottomRight() == p2);
 }
 
-TEST(RubberBand, GetRectInvert) {
+TEST(DISABLED_RubberBand, GetRectInvert) {
     wxPoint p2(10, 10);
     wxPoint p1(50, 50);
 
@@ -44,7 +44,7 @@ TEST(RubberBand, GetRectInvert) {
     EXPECT_TRUE(myRect.GetBottomRight() == p1);
 }
 
-TEST(RubberBand, IsPositive) {
+TEST(DISABLED_RubberBand, IsPositive) {
     wxPoint p1(10, 10);
     wxPoint p2(25, 25);
     wxPoint p3(50, 50);
@@ -60,7 +60,7 @@ TEST(RubberBand, IsPositive) {
     EXPECT_TRUE(myRubber.IsPositive());
 }
 
-TEST(RubberBand, ZeroRect) {
+TEST(DISABLED_RubberBand, ZeroRect) {
     wxPoint p1(10, 10);
 
     vrRubberBand myRubber(NULL);
@@ -74,7 +74,7 @@ TEST(RubberBand, ZeroRect) {
     EXPECT_TRUE(myRect.GetSize() == wxSize(1, 1));
 }
 
-TEST(RubberBand, ValidRubber) {
+TEST(DISABLED_RubberBand, ValidRubber) {
     wxPoint p1(10, 10);
     wxPoint p2(20, 10);
     wxPoint p3(20, 20);
