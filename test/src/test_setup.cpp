@@ -16,7 +16,9 @@
  ***************************************************************************/
 
 #include <gtest/gtest.h>
-
+#ifdef __LINUX__
+        #include <gtk/gtk.h>
+#endif
 #include "vrlayer.h"
 
 class Setup : public ::testing::Test {
@@ -29,9 +31,9 @@ class Setup : public ::testing::Test {
             ASSERT_TRUE("Unable to init the wxWigets library");
         }
 
-// #ifdef __LINUX__
-//         EXPECT_TRUE(gtk_init_check(NULL, NULL));
-// #endif
+#ifdef __LINUX__
+         EXPECT_TRUE(gtk_init_check(NULL, NULL));
+#endif
     }
 };
 
