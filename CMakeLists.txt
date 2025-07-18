@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.20)
 project("vroomgis")
 
 # searching PNG library before conan magic stuff
-if(UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE)
     find_package(PNG REQUIRED)
     message(STATUS "PNG lib is : ${PNG_LIBRARY}")
-endif(UNIX AND NOT APPLE)
+endif (UNIX AND NOT APPLE)
 
 # Conan setup
 # using conan_basic_setup(TARGETS) leeds to linking error on Linux
@@ -14,9 +14,9 @@ conan_basic_setup(KEEP_RPATHS)
 message(STATUS "Conan libs: ${CONAN_LIBS}")
 if (APPLE)
     set(CMAKE_INSTALL_RPATH "@executable_path")
-else()
+else ()
     set(CMAKE_INSTALL_RPATH "$ORIGIN")
-endif()
+endif ()
 
 # Global definitions
 set(CMAKE_CXX_STANDARD 17)
@@ -35,7 +35,6 @@ if (USE_CODECOVERAGE_IDE)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
     message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 endif (USE_CODECOVERAGE_IDE)
-
 
 
 add_subdirectory(vroomgis)
