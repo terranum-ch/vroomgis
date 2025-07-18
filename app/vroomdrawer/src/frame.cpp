@@ -122,9 +122,7 @@ void vroomDrawerFrame::_CreateControls() {
     m_menubar1 = new wxMenuBar(0);
     wxMenu* myFileMenu;
     myFileMenu = new wxMenu();
-    wxMenuItem* m_menuItem1;
-    m_menuItem1 = new wxMenuItem(myFileMenu, wxID_ADD, wxString(_("Add Layer...")), wxEmptyString, wxITEM_NORMAL);
-    myFileMenu->Append(m_menuItem1);
+    myFileMenu->Append(wxID_ADD, _("Add Layer..."));
     myFileMenu->Append(ID_MENU_ADDMEMORYLAYER, _("Add memory layer..."));
 
     wxMenuItem* m_menuItem2;
@@ -349,27 +347,17 @@ bool vroomDrawerFrame::OpenLayers(const wxArrayString& names) {
     return true;
 }
 
-void vroomDrawerFrame::OnLayerAdd(wxCommandEvent& event) {
-    /*
-        wxArrayString myTestFile;
-        myTestFile.Add("/home/lucien/programmation/ColtopGIS/test_data/mntmo.c2d");
-        OpenLayers(myTestFile);
-        return;
-    */
+void vroomDrawerFrame::OnLayerAdd(wxCommandEvent& WXUNUSED(event)) {
     vrDrivers myDrivers;
     wxFileDialog myFileDlg(this, "Select GIS Layers", wxEmptyString, wxEmptyString, myDrivers.GetWildcards(),
                            wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE | wxFD_CHANGE_DIR);
-
     wxArrayString myPathsFileName;
-
-    if (myFileDlg.ShowModal() == wxID_OK) {
-        // try to open files
-
-        myFileDlg.GetPaths(myPathsFileName);
-        wxASSERT(myPathsFileName.GetCount() > 0);
-
-        OpenLayers(myPathsFileName);
+    if (myFileDlg.ShowModal() == wxID_CANCEL) {
+        return;
     }
+    myFileDlg.GetPaths(myPathsFileName);
+    wxASSERT(myPathsFileName.GetCount() > 0);
+    OpenLayers(myPathsFileName);
 }
 
 void vroomDrawerFrame::OnLayerRemove(wxCommandEvent& event) {

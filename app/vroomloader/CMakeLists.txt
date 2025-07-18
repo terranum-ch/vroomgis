@@ -13,6 +13,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 # mac specific stuff
 IF (APPLE)
     set(APP_ICON "vroomgis.icns")
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER "my.domain.style.identifier.vroomloader")
     set(MACOSX_BUNDLE_INFO_STRING "VroomGIS test Program")
     set(MACOSX_BUNDLE_ICON_FILE ${APP_ICON})
     set(MACOSX_BUNDLE_BUNDLE_NAME "vroomLoader")
