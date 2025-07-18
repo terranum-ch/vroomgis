@@ -19,7 +19,7 @@
 
 #include "vrlabel.h"
 
-class DISABLED_Label : public ::testing::Test {
+class Label : public ::testing::Test {
   protected:
     wxFont m_Fontt;
 
@@ -28,7 +28,7 @@ class DISABLED_Label : public ::testing::Test {
     }
 };
 
-TEST_F(DISABLED_Label, LabelCreate) {
+TEST_F(Label, LabelCreate) {
     // using *wxNORMAL_FONT crash !!!
     vrLabel myLabel;
 
@@ -40,7 +40,7 @@ TEST_F(DISABLED_Label, LabelCreate) {
     EXPECT_EQ(myLabel.GetColor(), *wxBLACK);
 }
 
-TEST_F(DISABLED_Label, LabelCreate2) {
+TEST_F(Label, LabelCreate2) {
     wxFont myFont2 = m_Fontt;
     myFont2.SetUnderlined(true);
 
@@ -52,7 +52,7 @@ TEST_F(DISABLED_Label, LabelCreate2) {
 #endif
 }
 
-TEST_F(DISABLED_Label, SerializeLabel) {
+TEST_F(Label, SerializeLabel) {
     // save label
     vrLabel myLabel;
     vrSerialize mySerialize;

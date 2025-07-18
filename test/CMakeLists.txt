@@ -23,7 +23,6 @@ include(GoogleTest)
 #add_test(NAME test COMMAND ${PROGNAMETEST})
 gtest_discover_tests(${PROGNAMETEST}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src
-        TEST_PREFIX "vroomgis."
         DISCOVERY_TIMEOUT 60
 )
 
