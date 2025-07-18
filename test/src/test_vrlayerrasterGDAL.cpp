@@ -25,6 +25,10 @@
 
 class LayerRasterGDAL : public ::testing::Test {
     friend class vrLayerRasterGDAL;
+    void SetUp() override {
+        GDALAllRegister();
+        OGRRegisterAll();
+    }
 };
 
 TEST_F(LayerRasterGDAL, OpenLayerRasterGDAL) {

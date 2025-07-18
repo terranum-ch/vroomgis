@@ -21,7 +21,15 @@
 #include "vrlayermanager.h"
 #include "vrlayervector.h"
 
-TEST(LayerVectorOGR, OpenLayerVectorOGR) {
+class LayerVectorOGR : public ::testing::Test {
+    void SetUp() override {
+        // init lib.
+        OGRRegisterAll();
+        GDALAllRegister();
+    }
+};
+
+TEST_F(LayerVectorOGR, OpenLayerVectorOGR) {
     // init lib.
     vrLayerManager myManager;
 
@@ -32,13 +40,13 @@ TEST(LayerVectorOGR, OpenLayerVectorOGR) {
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP), true), true);
 }
 
-TEST(LayerVectorOGR, OpenLayerVectorOGRFailled) {
+TEST_F(LayerVectorOGR, OpenLayerVectorOGRFailled) {
     vrLayerVectorOGR myLayer;
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileMisc), false), false);
     EXPECT_EQ(myLayer.IsOK(), false);
 }
 
-TEST(LayerVectorOGR, GetExtentVectorOGR) {
+TEST_F(LayerVectorOGR, GetExtentVectorOGR) {
     vrRealRect myExtent;
     EXPECT_TRUE(myExtent.IsEmpty());
 
@@ -56,7 +64,7 @@ TEST(LayerVectorOGR, GetExtentVectorOGR) {
     EXPECT_EQ((int)myExtent.GetBottom(), 114173);
 }
 
-TEST(LayerVectorOGR, GettingGeometry) {
+TEST_F(LayerVectorOGR, GettingGeometry) {
     vrLayerVectorOGR myLayer;
 
     // layer not opened
@@ -77,7 +85,7 @@ TEST(LayerVectorOGR, GettingGeometry) {
     OGRFeature::DestroyFeature(myGeom);
 }
 
-TEST(LayerVectorOGR, GettingGeometryType) {
+TEST_F(LayerVectorOGR, GettingGeometryType) {
     vrLayerVectorOGR myLayer;
 
     // layer not opened
@@ -91,7 +99,7 @@ TEST(LayerVectorOGR, GettingGeometryType) {
     EXPECT_EQ(myLayer.GetGeometryType(), wkbPolygon);
 }
 
-TEST(LayerVectorOGR, GettingNextGeometry) {
+TEST_F(LayerVectorOGR, GettingNextGeometry) {
     wxLogMessage("Testing getting next data for layer");
 
     vrLayerVectorOGR myLayer;
