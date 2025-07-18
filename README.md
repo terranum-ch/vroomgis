@@ -38,9 +38,18 @@ vroomGIS includes several sample applications that demonstrate its capabilities:
 - **vroomDrawer**: An application to draw and manipulate vector data.
 - **vroomTwin**: A tool for comparing two datasets visually.
 
-![](doc/img/vroomloader.png)
-![](doc/img/vroomdrawer.png)
-![](doc/img/vroomtwin.png)
+![](doc/img/vroomloader.jpg)
+![](doc/img/vroomdrawer.jpg)
+![](doc/img/vroomtwin.jpg)
+
+## Developper documentation
+
+The developer documentation is available in the `doc` directory. To build the documentation, you can use Doxygen.
+
+```bash
+    cd doc
+    doxygen Doxyfile
+```
 
     
 
