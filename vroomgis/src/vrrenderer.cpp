@@ -27,7 +27,7 @@
 
 bool vrRenderer::_IsCorrectRender() {
     wxASSERT(m_layer);
-    if (m_render == NULL) {
+    if (m_render == nullptr) {
         return false;
     }
 
@@ -112,7 +112,7 @@ vrRenderer::vrRenderer(vrLayer* layer, vrRender* render, vrLabel* label) {
     SetInEdition(false);
 
     // create default render and label if null
-    if (render == NULL) {
+    if (render == nullptr) {
         switch (m_layer->GetType()) {
             case vrDRIVER_VECTOR_SHP:
             case vrDRIVER_VECTOR_MEMORY:
@@ -161,7 +161,7 @@ vrRenderer::vrRenderer(vrLayer* layer, vrRender* render, vrLabel* label) {
         wxASSERT(bCorrectRender);
     }
 
-    if (label == NULL) {
+    if (label == nullptr) {
         m_label = new vrLabel();
     } else {
         m_label = label;

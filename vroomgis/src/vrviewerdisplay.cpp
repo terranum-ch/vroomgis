@@ -68,7 +68,7 @@ bool vrViewerDisplay::_DrawRoundedMessage(const wxString& text, const wxColour& 
 void vrViewerDisplay::OnPaint(wxPaintEvent& event) {
     wxPaintDC dc(this);
 
-    if (m_bmp == NULL) {
+    if (m_bmp == nullptr) {
         _DrawRoundedMessage(m_noDataText);
         return;
     }
@@ -78,7 +78,7 @@ void vrViewerDisplay::OnPaint(wxPaintEvent& event) {
     // draw overlay
     for (unsigned int i = 0; i < m_overlayArray.GetCount(); i++) {
         vrViewerOverlay* myOverlay = m_overlayArray[i];
-        if (myOverlay == NULL || !myOverlay->IsVisible()) {
+        if (myOverlay == nullptr || !myOverlay->IsVisible()) {
             continue;
         }
         myOverlay->DrawOverlay(&dc);
@@ -91,7 +91,7 @@ void vrViewerDisplay::OnSizeChange(wxSizeEvent& event) {
         return;
     }
 
-    if (m_viewerManager == NULL) {
+    if (m_viewerManager == nullptr) {
         return;
     }
 
@@ -114,7 +114,7 @@ void vrViewerDisplay::OnEraseBackground(wxPaintEvent& event) {
 void vrViewerDisplay::OnMouseDown(wxMouseEvent& event) {
     SetFocus();
     CaptureMouse();
-    if (m_tool != NULL) {
+    if (m_tool != nullptr) {
         m_tool->MouseDown(event);
     }
 }
@@ -124,23 +124,23 @@ void vrViewerDisplay::OnMouseUp(wxMouseEvent& event) {
         ReleaseMouse();
     }
 
-    if (m_tool != NULL) {
+    if (m_tool != nullptr) {
         m_tool->MouseUp(event);
     }
 }
 
 void vrViewerDisplay::OnMouseMove(wxMouseEvent& event) {
-    if (m_tool != NULL) {
+    if (m_tool != nullptr) {
         m_tool->MouseMove(event);
     }
 
-    if (m_toolSecondary != NULL) {
+    if (m_toolSecondary != nullptr) {
         m_toolSecondary->MouseMove(event);
     }
 
-    if (m_status != NULL) {
+    if (m_status != nullptr) {
         wxPoint2DDouble myCoord;
-        if (!GetCoordinate()->GetExtent().IsOk() || m_bmp == NULL) {
+        if (!GetCoordinate()->GetExtent().IsOk() || m_bmp == nullptr) {
             m_status->SetStatusText(m_statusErrText, m_statusField);
             return;
         }
@@ -151,7 +151,7 @@ void vrViewerDisplay::OnMouseMove(wxMouseEvent& event) {
 
 void vrViewerDisplay::OnMouseDClickLeft(wxMouseEvent& event) {
     SetFocus();
-    if (m_tool != NULL) {
+    if (m_tool != nullptr) {
         m_tool->MouseDClickLeft(event);
     }
 }
@@ -164,12 +164,12 @@ void vrViewerDisplay::OnMouseCaptureLost(wxMouseEvent& event) {
 }
 
 vrViewerDisplay::vrViewerDisplay() {
-    m_coordinate = NULL;
-    m_bmp = NULL;
-    m_tool = NULL;
-    m_toolSecondary = NULL;
-    m_viewerManager = NULL;
-    m_status = NULL;
+    m_coordinate = nullptr;
+    m_bmp = nullptr;
+    m_tool = nullptr;
+    m_toolSecondary = nullptr;
+    m_viewerManager = nullptr;
+    m_status = nullptr;
     m_statusField = 0;
     m_statusErrText = wxEmptyString;
     m_noDataText = wxEmptyString;
@@ -179,41 +179,41 @@ vrViewerDisplay::vrViewerDisplay() {
 vrViewerDisplay::vrViewerDisplay(wxWindow* parent, wxWindowID id, const wxColour& colour)
     : wxPanel(parent, id) {
     m_coordinate = new vrCoordinate(this);
-    m_bmp = NULL;
-    m_tool = NULL;
-    m_toolSecondary = NULL;
-    m_viewerManager = NULL;
-    m_status = NULL;
+    m_bmp = nullptr;
+    m_tool = nullptr;
+    m_toolSecondary = nullptr;
+    m_viewerManager = nullptr;
+    m_status = nullptr;
     m_statusField = 0;
     m_statusErrText = wxEmptyString;
     m_noDataText = _("No GIS Data");
     SetBackgroundColour(colour);
 
     // connect event
-    Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground), NULL, this);
-    Connect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange), NULL, this);
-    Connect(wxEVT_PAINT, wxPaintEventHandler(vrViewerDisplay::OnPaint), NULL, this);
+    Connect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground), nullptr, this);
+    Connect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange), nullptr, this);
+    Connect(wxEVT_PAINT, wxPaintEventHandler(vrViewerDisplay::OnPaint), nullptr, this);
 
     // connect mouse event
-    Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown), NULL, this);
-    Connect(wxEVT_LEFT_UP, wxMouseEventHandler(vrViewerDisplay::OnMouseUp), NULL, this);
-    Connect(wxEVT_MOTION, wxMouseEventHandler(vrViewerDisplay::OnMouseMove), NULL, this);
-    Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(vrViewerDisplay::OnMouseDClickLeft), NULL, this);
-    Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(vrViewerDisplay::OnMouseCaptureLost), NULL, this);
+    Connect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown), nullptr, this);
+    Connect(wxEVT_LEFT_UP, wxMouseEventHandler(vrViewerDisplay::OnMouseUp), nullptr, this);
+    Connect(wxEVT_MOTION, wxMouseEventHandler(vrViewerDisplay::OnMouseMove), nullptr, this);
+    Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(vrViewerDisplay::OnMouseDClickLeft), nullptr, this);
+    Connect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(vrViewerDisplay::OnMouseCaptureLost), nullptr, this);
 }
 
 vrViewerDisplay::~vrViewerDisplay() {
     // disconnect event
-    Disconnect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground), NULL, this);
-    Disconnect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange), NULL, this);
-    Disconnect(wxEVT_PAINT, wxPaintEventHandler(vrViewerDisplay::OnPaint), NULL, this);
+    Disconnect(wxEVT_ERASE_BACKGROUND, wxPaintEventHandler(vrViewerDisplay::OnEraseBackground), nullptr, this);
+    Disconnect(wxEVT_SIZE, wxSizeEventHandler(vrViewerDisplay::OnSizeChange), nullptr, this);
+    Disconnect(wxEVT_PAINT, wxPaintEventHandler(vrViewerDisplay::OnPaint), nullptr, this);
 
     // disconnect mouse event
-    Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown), NULL, this);
-    Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(vrViewerDisplay::OnMouseUp), NULL, this);
-    Disconnect(wxEVT_MOTION, wxMouseEventHandler(vrViewerDisplay::OnMouseMove), NULL, this);
-    Disconnect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(vrViewerDisplay::OnMouseDClickLeft), NULL, this);
-    Disconnect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(vrViewerDisplay::OnMouseCaptureLost), NULL, this);
+    Disconnect(wxEVT_LEFT_DOWN, wxMouseEventHandler(vrViewerDisplay::OnMouseDown), nullptr, this);
+    Disconnect(wxEVT_LEFT_UP, wxMouseEventHandler(vrViewerDisplay::OnMouseUp), nullptr, this);
+    Disconnect(wxEVT_MOTION, wxMouseEventHandler(vrViewerDisplay::OnMouseMove), nullptr, this);
+    Disconnect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(vrViewerDisplay::OnMouseDClickLeft), nullptr, this);
+    Disconnect(wxEVT_MOUSE_CAPTURE_LOST, wxMouseEventHandler(vrViewerDisplay::OnMouseCaptureLost), nullptr, this);
 
     wxDELETE(m_coordinate);
     wxDELETE(m_tool);
@@ -236,7 +236,7 @@ void vrViewerDisplay::SetBitmap(wxBitmap* bmp) {
     wxDELETE(m_bmp);
 
     // reference copy, this isn't expensive
-    if (bmp != NULL) {
+    if (bmp != nullptr) {
         m_bmp = new wxBitmap(*bmp);
     }
     _InvalidateView(true);
@@ -281,8 +281,8 @@ void vrViewerDisplay::SetToolSight() {
 void vrViewerDisplay::SetTool(vrDisplayTool* tool) {
     wxDELETE(m_tool);
 
-    wxASSERT(m_tool == NULL);
-    if (tool == NULL) {
+    wxASSERT(m_tool == nullptr);
+    if (tool == nullptr) {
         return;
     }
     m_tool = tool;
@@ -299,9 +299,9 @@ void vrViewerDisplay::SetTool(vrDisplayTool* tool) {
  *************************************************/
 void vrViewerDisplay::SetToolSecondary(vrDisplayTool* tool) {
     wxDELETE(m_toolSecondary);
-    wxASSERT(m_toolSecondary == NULL);
+    wxASSERT(m_toolSecondary == nullptr);
 
-    if (tool == NULL) {
+    if (tool == nullptr) {
         return;
     }
 
@@ -311,14 +311,14 @@ void vrViewerDisplay::SetToolSecondary(vrDisplayTool* tool) {
 vrViewerOverlay* vrViewerDisplay::GetOverlayByName(const wxString& name) {
     for (unsigned int i = 0; i < m_overlayArray.GetCount(); i++) {
         vrViewerOverlay* myOverlay = m_overlayArray[i];
-        if (myOverlay == NULL) {
+        if (myOverlay == nullptr) {
             continue;
         }
         if (myOverlay->GetName() == name) {
             return myOverlay;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void vrViewerDisplay::ClearOverlayArray() {

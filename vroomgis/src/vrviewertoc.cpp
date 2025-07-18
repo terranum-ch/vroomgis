@@ -57,7 +57,7 @@ wxMenu* vrViewerTOC::CreateContextualMenu(vrRenderer* renderer, bool usegroup) {
     myPopMenu->Enable(vrID_POPUP_BRUSH_TRANSPARENT, false);
     myPopMenu->Enable(vrID_POPUP_BRUSH_BDIAGONAL, false);
 
-    if (renderer != NULL) {
+    if (renderer != nullptr) {
         switch (renderer->GetRender()->GetType()) {
             case vrRENDER_VECTOR:
                 myPopMenu->Enable(vrID_POPUP_PEN_COLOR, true);
@@ -240,7 +240,7 @@ bool vrViewerTOC::SetColorBrush(int itemindex) {
 
 vrViewerTOC::vrViewerTOC() {
     m_freezeStatus = false;
-    m_viewerManager = NULL;
+    m_viewerManager = nullptr;
 }
 
 vrViewerTOC::~vrViewerTOC() {}
@@ -535,7 +535,7 @@ int vrViewerTOCTree::_TreeToIndex(wxTreeItemId treeitem, vrVIEWERTOC_TREEDATA_TY
 
     wxString myItemText = m_tree->GetItemText(treeitem);
     vrViewerTOCTreeData* myData = (vrViewerTOCTreeData*)m_tree->GetItemData(treeitem);
-    if (myData == NULL) {
+    if (myData == nullptr) {
         return wxNOT_FOUND;
     }
 
@@ -751,7 +751,7 @@ void vrViewerTOCTree::OnItemRightDown(wxTreeEvent& event) {
     m_tree->SelectItem(event.GetItem());
     vrViewerTOCTreeData* myItemData = (vrViewerTOCTreeData*)m_tree->GetItemData(event.GetItem());
     wxASSERT(myItemData);
-    vrRenderer* myRenderer = NULL;
+    vrRenderer* myRenderer = nullptr;
     if (myItemData->m_itemType == vrTREEDATA_TYPE_LAYER) {
         int myItemIndex = _TreeToIndex(event.GetItem(), vrTREEDATA_TYPE_LAYER);
         myRenderer = GetViewerLayerManager()->GetRenderer(myItemIndex);
@@ -879,12 +879,12 @@ void vrViewerTOCTree::OnDragStop(wxTreeEvent& event) {
         return;
     }
 
-    if (myItemStop == NULL || !myItemStop.IsOk()) {
+    if (myItemStop == nullptr || !myItemStop.IsOk()) {
         return;
     }
 
     vrViewerTOCTreeData* myDataStop = (vrViewerTOCTreeData*)m_tree->GetItemData(myItemStop);
-    if (myDataStop == NULL) {
+    if (myDataStop == nullptr) {
         return;
     }
 

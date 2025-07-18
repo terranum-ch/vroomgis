@@ -39,7 +39,7 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char** imgdata, const wxSize& out
     // create array for image data (RGBRGBRGB...)
     unsigned int myimgRGBLen = outimgpxsize.GetWidth() * outimgpxsize.GetHeight() * 3;
     *imgdata = (unsigned char*)malloc(myimgRGBLen);
-    if (*imgdata == NULL) {
+    if (*imgdata == nullptr) {
         wxLogError("Image creation failed, out of memory");
         return false;
     }
@@ -52,9 +52,9 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char** imgdata, const wxSize& out
                        readimgpxinfo.GetHeight(), mySlopeData, outimgpxsize.GetWidth(), outimgpxsize.GetHeight(),
                        GDT_Float32, 0, 0) != CE_None) {
         wxLogError("Error gettign C2D slope, maybe out of memory");
-        if (mySlopeData != NULL) {
+        if (mySlopeData != nullptr) {
             CPLFree(mySlopeData);
-            mySlopeData = NULL;
+            mySlopeData = nullptr;
         }
         return false;
     }
@@ -66,9 +66,9 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char** imgdata, const wxSize& out
                        readimgpxinfo.GetHeight(), myAspectData, outimgpxsize.GetWidth(), outimgpxsize.GetHeight(),
                        GDT_Float32, 0, 0) != CE_None) {
         wxLogError("Error gettign C2D aspect, maybe out of memory");
-        if (myAspectData != NULL) {
+        if (myAspectData != nullptr) {
             CPLFree(myAspectData);
-            myAspectData = NULL;
+            myAspectData = nullptr;
         }
         return false;
     }
@@ -91,9 +91,9 @@ bool vrLayerRasterC2D::_GetRasterData(unsigned char** imgdata, const wxSize& out
     }
 
     CPLFree(myAspectData);
-    myAspectData = NULL;
+    myAspectData = nullptr;
     CPLFree(mySlopeData);
-    mySlopeData = NULL;
+    mySlopeData = nullptr;
     return true;
 }
 

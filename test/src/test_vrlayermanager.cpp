@@ -77,7 +77,7 @@ TEST_F(LayerManager, RemoveLayer1) {
 
     // removing layer
     vrLayer* myLayer = myLayerManager.GetLayer(m_JpegName);
-    EXPECT_TRUE(myLayer != NULL);
+    EXPECT_TRUE(myLayer != nullptr);
 
     EXPECT_TRUE(myLayerManager.Close(myLayer));
 

@@ -46,7 +46,7 @@ class vrRenderer {
     bool _IsCorrectRender();
 
   public:
-    vrRenderer(vrLayer* layer, vrRender* render = NULL, vrLabel* label = NULL);
+    vrRenderer(vrLayer* layer, vrRender* render = nullptr, vrLabel* label = nullptr);
 
     virtual ~vrRenderer();
 

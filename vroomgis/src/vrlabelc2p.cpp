@@ -23,7 +23,7 @@ vrLabelC2P::vrLabelC2P(wxFont font, wxColour color)
 vrLabelC2P::~vrLabelC2P() {}
 
 bool vrLabelC2P::AddFeature(long fid, OGRGeometry* geom, const wxString& text, double rotation) {
-    if (geom == NULL) {
+    if (geom == nullptr) {
         return false;
     }
 

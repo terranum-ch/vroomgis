@@ -26,24 +26,24 @@
 vrShapeEditor::vrShapeEditor(vrViewerDisplay* display) {
     m_display = display;
     wxASSERT(m_display);
-    m_geometry = NULL;
+    m_geometry = nullptr;
     m_type = vrSHAPEEDITOR_TYPE_UNKHNOWN;
 }
 
 vrShapeEditor::~vrShapeEditor() {
-    if (m_geometry != NULL) {
+    if (m_geometry != nullptr) {
         OGRGeometryFactory::destroyGeometry(m_geometry);
-        m_geometry = NULL;
+        m_geometry = nullptr;
     }
 }
 
 bool vrShapeEditor::SetGeometry(OGRGeometry* geometry) {
-    if (geometry == NULL) {
+    if (geometry == nullptr) {
         return false;
     }
-    if (m_geometry != NULL) {
+    if (m_geometry != nullptr) {
         OGRGeometryFactory::destroyGeometry(m_geometry);
-        m_geometry = NULL;
+        m_geometry = nullptr;
     }
     m_geometry = geometry->clone();
     return true;
@@ -62,7 +62,7 @@ void vrShapeEditor::DrawShapeModify(vrRender* render) {
 
 vrShapeEditorPoint::vrShapeEditorPoint(vrViewerDisplay* display)
     : vrShapeEditor(display) {
-    if (m_geometry == NULL) {
+    if (m_geometry == nullptr) {
         m_geometry = OGRGeometryFactory::createGeometry(wkbPoint);
     }
     m_type = vrSHAPEEDITOR_TYPE_POINT;
@@ -103,7 +103,7 @@ void vrShapeEditorPoint::DrawShapeFinish(vrRender* render) {
 
 vrShapeEditorLine::vrShapeEditorLine(vrViewerDisplay* display)
     : vrShapeEditor(display) {
-    if (m_geometry == NULL) {
+    if (m_geometry == nullptr) {
         m_geometry = OGRGeometryFactory::createGeometry(wkbLineString);
     }
     m_type = vrSHAPEEDITOR_TYPE_LINE;
@@ -186,7 +186,7 @@ OGRGeometry* vrShapeEditorPolygon::GetGeometryRef() {
     OGRLinearRing* myRing = (OGRLinearRing*)m_geometry;
     if (myRing->getNumPoints() < 3) {
         wxLogError(_("Only %d vertex, unable to create polygon"), myRing->getNumPoints());
-        return NULL;
+        return nullptr;
     }
 
     OGRGeometry* myGeom = OGRGeometryFactory::createGeometry(wkbPolygon);
@@ -194,7 +194,7 @@ OGRGeometry* vrShapeEditorPolygon::GetGeometryRef() {
     myPolygonGeom->addRing(myRing);
     myPolygonGeom->closeRings();
     OGRGeometryFactory::destroyGeometry(m_geometry);
-    m_geometry = NULL;
+    m_geometry = nullptr;
     return myGeom;
 }
 

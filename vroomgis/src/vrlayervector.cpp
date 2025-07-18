@@ -40,8 +40,8 @@ bool vrLayerVector::_Intersects(const wxRect2DDouble& myPathRect, const wxRect2D
 }
 
 vrLayerVector::vrLayerVector() {
-    m_dataset = NULL;
-    m_layer = NULL;
+    m_dataset = nullptr;
+    m_layer = nullptr;
     m_objectDrawn = 0;
     m_skippedVertex = 0;
     m_drawnVertex = 0;
@@ -51,11 +51,11 @@ vrLayerVector::vrLayerVector() {
 vrLayerVector::~vrLayerVector() {}
 
 bool vrLayerVector::IsOK() {
-    if (m_dataset == NULL) {
+    if (m_dataset == nullptr) {
         wxLogError("Dataset not inited");
         return false;
     }
-    if (m_layer == NULL) {
+    if (m_layer == nullptr) {
         wxLogError("Layer Not inited");
         return false;
     }
@@ -78,14 +78,14 @@ wxFileName vrLayerVector::GetDisplayName() {
 
 OGRFeature* vrLayerVector::GetFeature(long fid) {
     if (!IsOK()) {
-        return NULL;
+        return nullptr;
     }
 
     OGRFeature* myFeature = m_layer->GetFeature(fid);
 
-    if (myFeature == NULL) {
+    if (myFeature == nullptr) {
         wxLogError("Unable to get feature with fid %d", fid);
-        return NULL;
+        return nullptr;
     }
 
     return myFeature;
@@ -101,7 +101,7 @@ long vrLayerVector::GetFeatureCount(bool onlyvisible) {
 
 OGRFeature* vrLayerVector::GetNextFeature(bool restart) {
     if (!IsOK()) {
-        return NULL;
+        return nullptr;
     }
 
     if (restart) {
@@ -109,8 +109,8 @@ OGRFeature* vrLayerVector::GetNextFeature(bool restart) {
     }
 
     OGRFeature* myFeature = m_layer->GetNextFeature();
-    if (myFeature == NULL) {
-        return NULL;
+    if (myFeature == nullptr) {
+        return nullptr;
     }
 
     return myFeature;
@@ -136,7 +136,7 @@ OGRwkbGeometryType vrLayerVector::GetGeometryType() {
     }
 
     // geometry type doesn't exists try to get it from feature 0;
-    if (m_layer == NULL) {
+    if (m_layer == nullptr) {
         wxLogError("Layer not inited, call open() first");
         return wkbUnknown;
     }
@@ -145,7 +145,7 @@ OGRwkbGeometryType vrLayerVector::GetGeometryType() {
     m_layer->ResetReading();
     OGRFeature* myFeature = m_layer->GetNextFeature();
     m_layer->ResetReading();
-    if (myFeature == NULL) {
+    if (myFeature == nullptr) {
         wxLogMessage("Unable to get geometry from feature with fid %d", 0);
         return wkbUnknown;
     }
@@ -160,7 +160,7 @@ void vrLayerVector::ClearSpatialFilter() {
         return;
     }
 
-    m_layer->SetSpatialFilter(NULL);
+    m_layer->SetSpatialFilter(nullptr);
 }
 
 bool vrLayerVector::DeleteFeature(long fid) {
@@ -185,7 +185,7 @@ void vrLayerVector::SetSelectedID(long id) {
 }
 
 bool vrLayerVector::SearchFeatures(OGRGeometry* geometry, wxArrayLong& results) {
-    // wxASSERT(geometry); NULL geometry indicates to search all features!
+    // wxASSERT(geometry); nullptr geometry indicates to search all features!
     wxASSERT(m_layer);
     results.Clear();
 
@@ -193,8 +193,8 @@ bool vrLayerVector::SearchFeatures(OGRGeometry* geometry, wxArrayLong& results) 
     m_layer->SetSpatialFilter(geometry);
 
     // searching all features
-    OGRFeature* poFeature = NULL;
-    while ((poFeature = m_layer->GetNextFeature()) != NULL) {
+    OGRFeature* poFeature = nullptr;
+    while ((poFeature = m_layer->GetNextFeature()) != nullptr) {
         results.Add(poFeature->GetFID());
         OGRFeature::DestroyFeature(poFeature);
     }
@@ -202,7 +202,7 @@ bool vrLayerVector::SearchFeatures(OGRGeometry* geometry, wxArrayLong& results) 
 }
 
 bool vrLayerVector::SetFeature(OGRFeature* feature) {
-    if (feature == NULL) {
+    if (feature == nullptr) {
         return false;
     }
 
@@ -263,7 +263,7 @@ vrLayerVectorOGR::~vrLayerVectorOGR() {
 bool vrLayerVectorOGR::Open(const wxFileName& filename, bool readwrite) {
     // try to close if open
     _Close();
-    wxASSERT(m_dataset == NULL);
+    wxASSERT(m_dataset == nullptr);
 
     m_fileName = filename;
 
@@ -275,16 +275,16 @@ bool vrLayerVectorOGR::Open(const wxFileName& filename, bool readwrite) {
 
     // m_dataset = OGRSFDriverRegistrar::Open(filename.GetFullPath(), readwrite);
     // wxLogMessage(filename.GetFullPath());
-    m_dataset = (GDALDataset*)GDALOpenEx(filename.GetFullPath(), flags, NULL, NULL, NULL);
-    if (m_dataset == NULL) {
+    m_dataset = (GDALDataset*)GDALOpenEx(filename.GetFullPath(), flags, nullptr, nullptr, nullptr);
+    if (m_dataset == nullptr) {
         wxLogError("Unable to open %s, maybe driver not registred - OGRRegisterAll()", filename.GetFullName());
         return false;
     }
 
     // try to get layer
-    wxASSERT(m_layer == NULL);
+    wxASSERT(m_layer == nullptr);
     m_layer = m_dataset->GetLayer(0);
-    if (m_layer == NULL) {
+    if (m_layer == nullptr) {
         wxLogError("Unable to get layer 0, number of layer found : %d", m_dataset->GetLayerCount());
         return false;
     }
@@ -294,7 +294,7 @@ bool vrLayerVectorOGR::Open(const wxFileName& filename, bool readwrite) {
 
 bool vrLayerVectorOGR::Create(const wxFileName& filename, int spatialtype) {
     _Close();
-    wxASSERT(m_dataset == NULL);
+    wxASSERT(m_dataset == nullptr);
 
     m_fileName = filename;
 
@@ -313,22 +313,22 @@ bool vrLayerVectorOGR::Create(const wxFileName& filename, int spatialtype) {
     // OGRSFDriver *poDriver = OGRSFDriverRegistrar::GetRegistrar()->GetDriverByName(
     //         (const char *) myDriverName.mb_str(wxConvUTF8));
 
-    if (poDriver == NULL) {
+    if (poDriver == nullptr) {
         wxLogError("%s driver not available.", myDriverName);
         return false;
     }
 
     // create dataset
-    m_dataset = poDriver->Create((const char*)filename.GetFullPath().mb_str(wxConvUTF8), 0, 0, 0, GDT_Unknown, NULL);
-    if (m_dataset == NULL) {
+    m_dataset = poDriver->Create((const char*)filename.GetFullPath().mb_str(wxConvUTF8), 0, 0, 0, GDT_Unknown, nullptr);
+    if (m_dataset == nullptr) {
         wxLogError("Creation of output file : %s failed.", filename.GetFullName());
         return false;
     }
 
     // create layer
-    m_layer = m_dataset->CreateLayer((const char*)filename.GetFullName().mb_str(wxConvUTF8), NULL,
-                                     (OGRwkbGeometryType)spatialtype, NULL);
-    if (m_layer == NULL) {
+    m_layer = m_dataset->CreateLayer((const char*)filename.GetFullName().mb_str(wxConvUTF8), nullptr,
+                                     (OGRwkbGeometryType)spatialtype, nullptr);
+    if (m_layer == nullptr) {
         wxLogError("Layer creation failed.");
         return false;
     }
@@ -337,7 +337,7 @@ bool vrLayerVectorOGR::Create(const wxFileName& filename, int spatialtype) {
 }
 
 bool vrLayerVectorOGR::CopyLayer(vrLayerVectorOGR* layer, const wxString& newlayername) {
-    if (layer == NULL) {
+    if (layer == nullptr) {
         wxLogError(_("Origin layer is empty! copying failed!"));
         return false;
     }
@@ -351,15 +351,15 @@ bool vrLayerVectorOGR::CopyLayer(vrLayerVectorOGR* layer, const wxString& newlay
         OGRLayer* myExistingLayer = m_dataset->GetLayer(i);
         if (myExistingLayer == m_layer) {
             m_dataset->DeleteLayer(i);
-            m_layer = NULL;
+            m_layer = nullptr;
         }
     }
 
-    wxASSERT(m_layer == NULL);
+    wxASSERT(m_layer == nullptr);
     wxASSERT(m_dataset);
     m_layer = m_dataset->CopyLayer(layer->GetLayerRef(), (const char*)myLayerName.mb_str(wxConvUTF8));
 
-    if (m_layer == NULL) {
+    if (m_layer == nullptr) {
         wxLogError(_("Error copying layer: %s"), myLayerName);
         return false;
     }
@@ -384,7 +384,7 @@ long vrLayerVectorOGR::AddFeature(OGRGeometry* geometry, void* data) {
     wxASSERT(m_layer);
     myFeature->SetGeometry(geometry);
 
-    if (data != NULL) {
+    if (data != nullptr) {
         wxArrayString* myArray = (wxArrayString*)data;
         wxASSERT((signed)myArray->GetCount() == myFeature->GetFieldCount());
         for (unsigned int i = 0; i < myArray->GetCount(); i++) {
@@ -405,15 +405,15 @@ long vrLayerVectorOGR::AddFeature(OGRGeometry* geometry, void* data) {
 
 bool vrLayerVectorOGR::_Close() {
     m_geometryType = wkbUnknown;
-    if (m_dataset == NULL) {
+    if (m_dataset == nullptr) {
         return false;
     }
 
     // wxLogMessage("Closing data NOW");
     GDALClose(m_dataset);
-    m_dataset = NULL;
+    m_dataset = nullptr;
     // layer destroyed with the data source
-    m_layer = NULL;
+    m_layer = nullptr;
     return true;
 }
 
@@ -451,7 +451,7 @@ void vrLayerVectorOGR::_DrawPoint(wxDC* dc, OGRFeature* feature, OGRGeometry* ge
 void vrLayerVectorOGR::_DrawLine(wxDC* dc, OGRFeature* feature, OGRGeometry* geometry, const wxRect2DDouble& coord,
                                  const vrRender* render, vrLabel* label, double pxsize) {
     OGRLineString* myLine = (OGRLineString*)geometry;
-    if (myLine == NULL) {
+    if (myLine == nullptr) {
         // line without a geometry!! corrupted line
         wxLogError(_("Object with FID: %ld has no Geometry!"), feature->GetFID());
         return;
@@ -512,7 +512,7 @@ void vrLayerVectorOGR::_DrawPolygon(wxDC* dc, OGRFeature* feature, OGRGeometry* 
     wxGraphicsPath myPath = mygdc->GetGraphicsContext()->CreatePath();
     for (int i = 0; i < iNumRing; i++) {
         wxGraphicsPath myPolyPath = mygdc->GetGraphicsContext()->CreatePath();
-        OGRLineString* myRing = NULL;
+        OGRLineString* myRing = nullptr;
         if (i == 0) {
             myRing = myPolygon->getExteriorRing();
         } else {
@@ -567,13 +567,13 @@ void vrLayerVectorOGR::_DrawPolygon(wxDC* dc, OGRFeature* feature, OGRGeometry* 
 }
 
 bool vrLayerVectorOGR::GetExtent(vrRealRect& rect) {
-    if (m_layer == NULL) {
+    if (m_layer == nullptr) {
         wxLogError("Layer isn't inited");
         return false;
     }
 
     wxASSERT(m_layer);
-    m_layer->SetSpatialFilter(NULL);
+    m_layer->SetSpatialFilter(nullptr);
     rect = vrRealRect();
     if (m_layer->GetFeatureCount() == 0) {
         rect.SetLeftBottom(wxPoint2DDouble(0.0, 0.0));
@@ -619,13 +619,13 @@ bool vrLayerVectorOGR::GetData(wxBitmap* bmp, const vrRealRect& coord, double px
         m_previousPoint = wxDefaultPosition;
 
         OGRFeature* myFeat = GetNextFeature(false);
-        if (myFeat == NULL) {
+        if (myFeat == nullptr) {
             break;
         }
 
         if (IsFeatureHidden(myFeat->GetFID())) {
             OGRFeature::DestroyFeature(myFeat);
-            myFeat = NULL;
+            myFeat = nullptr;
             continue;
         }
 
@@ -690,7 +690,7 @@ bool vrLayerVectorOGR::GetData(wxBitmap* bmp, const vrRealRect& coord, double px
 bool vrLayerVectorOGR::SetAttributeFilter(const wxString& query) {
     wxASSERT(m_layer);
     if (query == wxEmptyString) {
-        OGRErr myErr = m_layer->SetAttributeFilter(NULL);
+        OGRErr myErr = m_layer->SetAttributeFilter(nullptr);
         if (myErr != OGRERR_NONE) {
             wxLogError(_("Error cleaning attribute filter: (code %d)"), myErr);
             return false;

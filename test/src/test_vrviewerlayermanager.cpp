@@ -25,12 +25,12 @@ class ViewerLayerManager : public ::testing::Test {
     vrLayerManager* m_LayerManager;
     vrViewerLayerManager* m_ViewManager;
 
-    virtual void SetUp() {
+    void SetUp() override {
         m_LayerManager = new vrLayerManager();
-        m_ViewManager = NULL;
-        vrViewerDisplay* myDisplay = NULL;
+        m_ViewManager = nullptr;
+        vrViewerDisplay* myDisplay = nullptr;
         // will be destroyed by layermanager.
-        m_ViewManager = new vrViewerLayerManager(m_LayerManager, NULL, myDisplay);
+        m_ViewManager = new vrViewerLayerManager(m_LayerManager, nullptr, myDisplay);
 
         // try to add the viewer. But was already added by ctor.
         EXPECT_EQ(m_LayerManager->AddViewerLayerManager(m_ViewManager), false);
@@ -44,7 +44,7 @@ class ViewerLayerManager : public ::testing::Test {
 TEST_F(ViewerLayerManager, AddViewerLayerManager) {
     // adding two times the same viewermanager is not permitted
     EXPECT_FALSE(m_LayerManager->AddViewerLayerManager(m_ViewManager));
-    vrViewerLayerManager* myManager2 = new vrViewerLayerManager(m_LayerManager, NULL, NULL);
+    vrViewerLayerManager* myManager2 = new vrViewerLayerManager(m_LayerManager, nullptr, nullptr);
 
     // allready added by ctor
     EXPECT_FALSE(m_LayerManager->AddViewerLayerManager(myManager2));
@@ -53,16 +53,16 @@ TEST_F(ViewerLayerManager, AddViewerLayerManager) {
 TEST_F(ViewerLayerManager, OpenGISDataViewerManager) {
     // open data
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
-    vrLayer* myTestSHPLayer = NULL;
+    vrLayer* myTestSHPLayer = nullptr;
     myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
-    EXPECT_TRUE(myTestSHPLayer != NULL);
+    EXPECT_TRUE(myTestSHPLayer != nullptr);
     EXPECT_EQ(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
 
     // open data 2
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileJPEG)));
-    vrLayer* myTestJpegLayer = NULL;
+    vrLayer* myTestJpegLayer = nullptr;
     myTestJpegLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileJPEG));
-    EXPECT_TRUE(myTestJpegLayer != NULL);
+    EXPECT_TRUE(myTestJpegLayer != nullptr);
     EXPECT_EQ(myTestJpegLayer->GetType(), vrDRIVER_RASTER_JPEG);
 
     // add data to the viewermanager
@@ -73,9 +73,9 @@ TEST_F(ViewerLayerManager, OpenGISDataViewerManager) {
 TEST_F(ViewerLayerManager, GetRenderer) {
     // open data
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
-    vrLayer* myTestSHPLayer = NULL;
+    vrLayer* myTestSHPLayer = nullptr;
     myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
-    EXPECT_TRUE(myTestSHPLayer != NULL);
+    EXPECT_TRUE(myTestSHPLayer != nullptr);
     EXPECT_EQ(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
 
     // add data to the viewermanager
@@ -83,7 +83,7 @@ TEST_F(ViewerLayerManager, GetRenderer) {
 
     // renderer should be accessible
     vrRenderer* myRenderer = m_ViewManager->GetRenderer(0);
-    EXPECT_TRUE(myRenderer != NULL);
+    EXPECT_TRUE(myRenderer != nullptr);
     EXPECT_EQ(myRenderer->GetLayer(), myTestSHPLayer);
 
     // when adding, status should be visible
@@ -91,15 +91,15 @@ TEST_F(ViewerLayerManager, GetRenderer) {
 
     // trying to get out bounds renderer
     myRenderer = m_ViewManager->GetRenderer(12);
-    EXPECT_TRUE(myRenderer == NULL);
+    EXPECT_TRUE(myRenderer == nullptr);
 }
 
 TEST_F(ViewerLayerManager, Remove) {
     // open data
     EXPECT_TRUE(m_LayerManager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
-    vrLayer* myTestSHPLayer = NULL;
+    vrLayer* myTestSHPLayer = nullptr;
     myTestSHPLayer = m_LayerManager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
-    EXPECT_TRUE(myTestSHPLayer != NULL);
+    EXPECT_TRUE(myTestSHPLayer != nullptr);
     EXPECT_EQ(myTestSHPLayer->GetType(), vrDRIVER_VECTOR_SHP);
 
     // add data to the viewermanager
@@ -107,7 +107,7 @@ TEST_F(ViewerLayerManager, Remove) {
 
     // renderer should be accessible
     vrRenderer* myRenderer = m_ViewManager->GetRenderer(0);
-    EXPECT_TRUE(myRenderer != NULL);
+    EXPECT_TRUE(myRenderer != nullptr);
     EXPECT_EQ(myRenderer->GetLayer(), myTestSHPLayer);
 
     // testing deleting

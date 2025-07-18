@@ -22,13 +22,13 @@
 #include "vrrender.h"  // for symbology;
 
 vrLayerRaster::vrLayerRaster() {
-    m_dataset = NULL;
+    m_dataset = nullptr;
 }
 
 vrLayerRaster::~vrLayerRaster() {}
 
 bool vrLayerRaster::IsOK() {
-    if (m_dataset == NULL) {
+    if (m_dataset == nullptr) {
         wxLogError("Dataset not inited");
         return false;
     }
@@ -46,19 +46,19 @@ bool vrLayerRasterGDAL::_Close() {
     m_oneBandMax = 0;
     m_oneBandNoData = 0;
 
-    if (m_dataset == NULL) {
+    if (m_dataset == nullptr) {
         return false;
     }
 
     // wxLogMessage("Closing raster data NOW");
     GDALClose(m_dataset);
-    m_dataset = NULL;
+    m_dataset = nullptr;
     return true;
 }
 
 wxSize vrLayerRaster::GetPixelSize() {
     wxSize mySize = wxDefaultSize;
-    if (m_dataset != NULL) {
+    if (m_dataset != nullptr) {
         mySize.SetWidth(m_dataset->GetRasterXSize());
         mySize.SetHeight(m_dataset->GetRasterYSize());
     }
@@ -67,7 +67,7 @@ wxSize vrLayerRaster::GetPixelSize() {
 
 bool vrLayerRaster::GetGeoTransform(wxArrayDouble& geotransform) {
     geotransform.Clear();
-    if (m_dataset == NULL) {
+    if (m_dataset == nullptr) {
         return false;
     }
 
@@ -172,7 +172,7 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char** imgdata, const wxSize& ou
     // create array for image data (RGBRGBRGB...)
     unsigned int myimgLen = outimgpxsize.GetWidth() * outimgpxsize.GetHeight() * 3;
     *imgdata = (unsigned char*)malloc(myimgLen);
-    if (*imgdata == NULL) {
+    if (*imgdata == nullptr) {
         wxLogError("Image creation failed, out of memory");
         return false;
     }
@@ -184,8 +184,8 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char** imgdata, const wxSize& ou
         double myRange = 0;
         GDALDataType myDataType;
         int myScanSize = 0;
-        void* myScanData = NULL;
-        GDALColorTable* pal = NULL;
+        void* myScanData = nullptr;
+        GDALColorTable* pal = nullptr;
         GDALPaletteInterp pal_interp;
         GDALRasterBand* band = m_dataset->GetRasterBand(1);
 
@@ -193,11 +193,11 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char** imgdata, const wxSize& ou
             case GCI_PaletteIndex:
 
                 pal = band->GetColorTable();
-                if (pal == NULL) {
+                if (pal == nullptr) {
                     wxLogError("Couldn't find a palette for palette-based image");
-                    if (*imgdata != NULL) {
+                    if (*imgdata != nullptr) {
                         CPLFree(*imgdata);
-                        *imgdata = NULL;
+                        *imgdata = nullptr;
                     }
                     return false;
                 }
@@ -213,9 +213,9 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char** imgdata, const wxSize& ou
                                    readimgpxinfo.GetHeight(), *imgdata, outimgpxsize.GetWidth(),
                                    outimgpxsize.GetHeight(), GDT_UInt16, 3, 0) != CE_None) {
                     wxLogError("Unknown error occured while reading palette based raster %s", m_fileName.GetFullName());
-                    if (*imgdata != NULL) {
+                    if (*imgdata != nullptr) {
                         CPLFree(*imgdata);
-                        *imgdata = NULL;
+                        *imgdata = nullptr;
                     }
                     return false;
                 }
@@ -242,9 +242,9 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char** imgdata, const wxSize& ou
                 // computing statistics if not existing
                 if (!_HasStat()) {
                     if (!_ComputeStat()) {
-                        if (*imgdata != NULL) {
+                        if (*imgdata != nullptr) {
                             CPLFree(*imgdata);
-                            *imgdata = NULL;
+                            *imgdata = nullptr;
                         }
                         return false;
                     }
@@ -266,13 +266,13 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char** imgdata, const wxSize& ou
                                    outimgpxsize.GetHeight(), myDataType, 0, 0) != CE_None) {
                     // if reading doesn't work, clean and exit.
                     wxLogError("Error gettign monoband raster, maybe out of memory");
-                    if (myScanData != NULL) {
+                    if (myScanData != nullptr) {
                         CPLFree(myScanData);
-                        myScanData = NULL;
+                        myScanData = nullptr;
                     }
-                    if (*imgdata != NULL) {
+                    if (*imgdata != nullptr) {
                         CPLFree(*imgdata);
-                        *imgdata = NULL;
+                        *imgdata = nullptr;
                     }
                     return false;
                 }
@@ -294,18 +294,18 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char** imgdata, const wxSize& ou
                     *(*imgdata + i + 1) = myGrayValInt;
                     *(*imgdata + i + 2) = myGrayValInt;
                 }
-                wxASSERT(myScanData != NULL);
+                wxASSERT(myScanData != nullptr);
                 CPLFree(myScanData);
-                myScanData = NULL;
+                myScanData = nullptr;
                 break;
 
             default:  // unsupported case
 
                 wxLogError("Unsupported color interpretation %s",
                            GDALGetColorInterpretationName(band->GetColorInterpretation()));
-                if (*imgdata != NULL) {
+                if (*imgdata != nullptr) {
                     CPLFree(*imgdata);
-                    *imgdata = NULL;
+                    *imgdata = nullptr;
                 }
                 return false;
                 break;
@@ -350,9 +350,9 @@ bool vrLayerRasterGDAL::_GetRasterData(unsigned char** imgdata, const wxSize& ou
                                    readimgpxinfo.GetHeight(), *imgdata + offs, outimgpxsize.GetWidth(),
                                    outimgpxsize.GetHeight(), GDT_Byte, 3, 0) != CE_None) {
                     wxLogError(_("Unknown error while reading band %i from %s"), i, m_fileName.GetFullName());
-                    if (*imgdata != NULL) {
+                    if (*imgdata != nullptr) {
                         CPLFree(*imgdata);
-                        *imgdata = NULL;
+                        *imgdata = nullptr;
                     }
                     return false;
                 }
@@ -385,8 +385,8 @@ bool vrLayerRasterGDAL::_GetRasterNoData(unsigned char** imgdata, const wxSize& 
     /*double myRange = 0;
 
 
-    void * myScanData = NULL;
-    GDALColorTable *pal = NULL;
+    void * myScanData = nullptr;
+    GDALColorTable *pal = nullptr;
     GDALPaletteInterp pal_interp;*/
 
     GDALRasterBand* band = m_dataset->GetRasterBand(1)->GetMaskBand();
@@ -400,7 +400,7 @@ bool vrLayerRasterGDAL::_GetRasterNoData(unsigned char** imgdata, const wxSize& 
     // create array for image data (RGBRGBRGB...)
     /*unsigned int myimgLen = outimgpxsize.GetWidth() * outimgpxsize.GetHeight();
     *imgdata = (unsigned char *) malloc(myimgLen);
-    if (*imgdata == NULL) {
+    if (*imgdata == nullptr) {
         wxLogError("Image creation failed, out of memory");
         return false;
     }*/
@@ -410,7 +410,7 @@ bool vrLayerRasterGDAL::_GetRasterNoData(unsigned char** imgdata, const wxSize& 
     myDataType = band->GetRasterDataType();
     myScanSize = GDALGetDataTypeSize(myDataType) / 8;
     *imgdata = (unsigned char*)malloc(myScanSize * outimgpxsize.GetWidth() * outimgpxsize.GetHeight());
-    if (*imgdata == NULL) {
+    if (*imgdata == nullptr) {
         wxLogError("Alpha Image creation failed, out of memory");
         return false;
     }
@@ -429,9 +429,9 @@ bool vrLayerRasterGDAL::_GetRasterNoData(unsigned char** imgdata, const wxSize& 
                        myDataType, 0, 0) != CE_None) {
         // if reading doesn't work, clean and exit.
         wxLogError("Error gettign Alpha raster, maybe out of memory");
-        if (*imgdata != NULL) {
+        if (*imgdata != nullptr) {
             CPLFree(*imgdata);
-            *imgdata = NULL;
+            *imgdata = nullptr;
         }
         return false;
     }
@@ -491,7 +491,7 @@ bool vrLayerRasterGDAL::_ComputeStat() {
     }
 
     // try computing statistics (take more time...)
-    if (myRasterBand->ComputeStatistics(true, &m_oneBandMin, &m_oneBandMax, NULL, NULL, NULL, NULL) != CE_None) {
+    if (myRasterBand->ComputeStatistics(true, &m_oneBandMin, &m_oneBandMax, nullptr, nullptr, nullptr, nullptr) != CE_None) {
         wxLogWarning(_("Getting information for raster '%s' failed!\nThis image is either empty or corrupted."),
                      m_fileName.GetFullName());
         return false;
@@ -504,7 +504,7 @@ bool vrLayerRasterGDAL::_HasStat() {
 }
 
 bool vrLayerRasterGDAL::_HasExtent() {
-    if (m_dataset == NULL) {
+    if (m_dataset == nullptr) {
         wxLogError("No layer opened");
         return false;
     }
@@ -522,7 +522,7 @@ bool vrLayerRasterGDAL::_HasExtent() {
 }
 
 bool vrLayerRasterGDAL::_ComputeExtent() {
-    if (m_dataset == NULL) {
+    if (m_dataset == nullptr) {
         wxLogError("No layer opened");
         return false;
     }
@@ -617,7 +617,7 @@ bool vrLayerRasterGDAL::Create(const wxFileName& filename) {
 bool vrLayerRasterGDAL::Open(const wxFileName& filename, bool readwrite) {
     // try to close
     _Close();
-    wxASSERT(m_dataset == NULL);
+    wxASSERT(m_dataset == nullptr);
 
     // init filename and type
     m_fileName = filename;
@@ -628,7 +628,7 @@ bool vrLayerRasterGDAL::Open(const wxFileName& filename, bool readwrite) {
     if (readwrite) myAcces = GA_Update;
 
     m_dataset = (GDALDataset*)GDALOpen(filename.GetFullPath(), myAcces);
-    if (m_dataset == NULL) {
+    if (m_dataset == nullptr) {
         wxLogError("Unable to open %s, maybe driver not registered -  GDALAllRegister()\nGDAL Error: '%s'",
                    filename.GetFullName(), wxString(CPLGetLastErrorMsg()));
 
@@ -674,9 +674,9 @@ bool vrLayerRasterGDAL::GetDataThread(wxImage* bmp, const vrRealRect& coord, dou
     }
 
     // raster inside display
-    unsigned char* myimgdata = NULL;
+    unsigned char* myimgdata = nullptr;
     if (!_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()), myImgInfo, render)) {
-        wxASSERT(myimgdata == NULL);
+        wxASSERT(myimgdata == nullptr);
         return false;
     }
 
@@ -687,9 +687,9 @@ bool vrLayerRasterGDAL::GetDataThread(wxImage* bmp, const vrRealRect& coord, dou
         return false;
     }
 
-    unsigned char* mynodata = NULL;
+    unsigned char* mynodata = nullptr;
     if (_GetRasterNoData(&mynodata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()), myImgInfo, render)) {
-        wxASSERT(mynodata != NULL);
+        wxASSERT(mynodata != nullptr);
         myImg.SetAlpha(mynodata, false);
     }
 
@@ -725,11 +725,11 @@ bool vrLayerRasterGDAL::GetDataThread(wxImage* bmp, const vrRealRect& coord, dou
     // was drawn. Those are set the the user defined transparency
     char myBackgroundTransparency = 0;
     // int myUserTransparency = 255 - (render->GetTransparency() * 255 / 100);
-    unsigned char* alphachar = NULL;
+    unsigned char* alphachar = nullptr;
 
     unsigned int myimglen = bmp->GetWidth() * bmp->GetHeight();
     alphachar = (unsigned char*)malloc(myimglen);
-    if (alphachar == NULL) {
+    if (alphachar == nullptr) {
         wxLogError(_("Error creating translucency"));
         return false;
     }
@@ -784,9 +784,9 @@ bool vrLayerRasterGDAL::GetData(wxBitmap* bmp, const vrRealRect& coord, double p
     }
 
     // raster inside display
-    unsigned char* myimgdata = NULL;
+    unsigned char* myimgdata = nullptr;
     if (!_GetRasterData(&myimgdata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()), myImgInfo, render)) {
-        wxASSERT(myimgdata == NULL);
+        wxASSERT(myimgdata == nullptr);
         return false;
     }
 
@@ -797,9 +797,9 @@ bool vrLayerRasterGDAL::GetData(wxBitmap* bmp, const vrRealRect& coord, double p
         return false;
     }
 
-    unsigned char* mynodata = NULL;
+    unsigned char* mynodata = nullptr;
     if (_GetRasterNoData(&mynodata, wxSize(myImgPos.GetWidth(), myImgPos.GetHeight()), myImgInfo, render)) {
-        wxASSERT(mynodata != NULL);
+        wxASSERT(mynodata != nullptr);
         myImg.SetAlpha(mynodata, false);
     }
 
@@ -856,12 +856,12 @@ bool vrLayerRasterGDAL::GetPixelValue(double coordx, double coordy, wxArrayDoubl
     int myRasterCount = m_dataset->GetRasterCount();
     void* pData = CPLMalloc((GDALGetDataTypeSize(GDT_Float32) / 8) * myRasterCount);
 
-    if (m_dataset->RasterIO(GF_Read, pxcoordx, pxcoordy, 1, 1, pData, 1, 1, GDT_Float32, myRasterCount, NULL, 0, 0,
+    if (m_dataset->RasterIO(GF_Read, pxcoordx, pxcoordy, 1, 1, pData, 1, 1, GDT_Float32, myRasterCount, nullptr, 0, 0,
                             0) != CE_None) {
         wxLogMessage("Error reading value at pixel (%d, %d) in %s", pxcoordx, pxcoordy, m_fileName.GetFullName());
-        if (pData != NULL) {
+        if (pData != nullptr) {
             CPLFree(pData);
-            pData = NULL;
+            pData = nullptr;
         }
         return false;
     }
@@ -892,7 +892,7 @@ bool vrLayerRasterGDAL::BuildOverviews(const wxArrayInt& factors, vrOVERVIEW_TYP
     wxString myConstRRDValue = "YES";
 
     CPLSetConfigOption(myConstRRD.mb_str(), myConstRRDValue.mb_str());
-    if (m_dataset->BuildOverviews(vrOVERVIEW_TYPE_NAME[type].mb_str(), factors.GetCount(), myInts, 0, NULL, progress,
+    if (m_dataset->BuildOverviews(vrOVERVIEW_TYPE_NAME[type].mb_str(), factors.GetCount(), myInts, 0, nullptr, progress,
                                   pfProgressData) == CE_None) {
         wxDELETEA(myInts);
         return true;
@@ -932,7 +932,7 @@ bool vrLayerRasterGDAL::GetMetadata(wxArrayString& names, wxArrayString& values,
 
         if (pmyMetadata) {
             bool bHasWrongStruture = false;
-            while (*pmyMetadata != NULL) {
+            while (*pmyMetadata != nullptr) {
                 wxString myMetadataTxt(*pmyMetadata);
                 myMetadataTxt.Replace(_T("\n"), _T(" "));
 

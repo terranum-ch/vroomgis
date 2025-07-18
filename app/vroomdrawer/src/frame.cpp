@@ -180,7 +180,7 @@ vrLayer* vroomDrawerFrame::_GetMemoryLayerPoints(const wxFileName& name, int num
     vrLayerVectorOGR* myLayer = new vrLayerVectorOGR();
     if (!myLayer->Create(name, wkbPoint)) {
         wxFAIL;
-        return NULL;
+        return nullptr;
     }
 
     // adding features to the layer
@@ -188,7 +188,7 @@ vrLayer* vroomDrawerFrame::_GetMemoryLayerPoints(const wxFileName& name, int num
         OGRPoint myPt;
         myPt.setX(_GetRandomNumber(extent.GetLeft(), extent.GetRight()));
         myPt.setY(_GetRandomNumber(extent.GetBottom(), extent.GetTop()));
-        myLayer->AddFeature(&myPt, NULL);
+        myLayer->AddFeature(&myPt, nullptr);
     }
     return myLayer;
 }
@@ -229,7 +229,7 @@ vrLayer* vroomDrawerFrame::_GetMemoryLayerLine(const wxFileName& name, int numbe
     vrLayerVectorOGR* myLayer = new vrLayerVectorOGR();
     if (!myLayer->Create(name, wkbLineString)) {
         wxFAIL;
-        return NULL;
+        return nullptr;
     }
 
     // adding features to the layer
@@ -238,13 +238,13 @@ vrLayer* vroomDrawerFrame::_GetMemoryLayerLine(const wxFileName& name, int numbe
         myLine->addPoint(_GetRandomNumber(extent.GetLeft(), extent.GetRight()),
                          _GetRandomNumber(extent.GetBottom(), extent.GetTop()));
         if (myLine->getNumPoints() >= 10) {
-            myLayer->AddFeature(myLine, NULL);
+            myLayer->AddFeature(myLine, nullptr);
             OGRGeometryFactory::destroyGeometry(myLine);
             myLine = (OGRLineString*)OGRGeometryFactory::createGeometry(wkbLineString);
         }
     }
     if (myLine->getNumPoints() > 2) {
-        myLayer->AddFeature(myLine, NULL);
+        myLayer->AddFeature(myLine, nullptr);
     }
     OGRGeometryFactory::destroyGeometry(myLine);
     return myLayer;
@@ -254,7 +254,7 @@ vrLayer* vroomDrawerFrame::_GetMemoryLayerStar(const wxFileName& name, int numbe
     vrLayerVectorStar* myLayer = new vrLayerVectorStar();
     if (!myLayer->Create(name, wkbPoint)) {
         wxFAIL;
-        return NULL;
+        return nullptr;
     }
     // adding size field
     OGRFieldDefn myFieldStarSize("starsize", OFTInteger);
@@ -272,7 +272,7 @@ vrLayer* vroomDrawerFrame::_GetMemoryLayerStar(const wxFileName& name, int numbe
 }
 
 vroomDrawerFrame::vroomDrawerFrame(const wxString& title)
-    : wxFrame(NULL, wxID_ANY, title) {
+    : wxFrame(nullptr, wxID_ANY, title) {
     wxIcon myVroomGISIcon;
     myVroomGISIcon.CopyFromBitmap(*_img_vroomgis_sml);
     SetIcon(myVroomGISIcon);
@@ -290,8 +290,8 @@ vroomDrawerFrame::vroomDrawerFrame(const wxString& title)
     m_LogWnd = new wxLogWindow(this, "vroomDrawer Log", true, true);
 
     // Connect Events
-    m_DisplayCtrl->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomDrawerFrame::OnKeyDown), NULL, this);
-    m_DisplayCtrl->Connect(wxEVT_KEY_UP, wxKeyEventHandler(vroomDrawerFrame::OnKeyUp), NULL, this);
+    m_DisplayCtrl->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomDrawerFrame::OnKeyDown), nullptr, this);
+    m_DisplayCtrl->Connect(wxEVT_KEY_UP, wxKeyEventHandler(vroomDrawerFrame::OnKeyUp), nullptr, this);
 
     // VROOMGIS
     m_LayerManager = new vrLayerManager();
@@ -301,12 +301,12 @@ vroomDrawerFrame::vroomDrawerFrame(const wxString& title)
 
 vroomDrawerFrame::~vroomDrawerFrame() {
     // Disconnect Events
-    m_DisplayCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomDrawerFrame::OnKeyDown), NULL, this);
-    m_DisplayCtrl->Disconnect(wxEVT_KEY_UP, wxKeyEventHandler(vroomDrawerFrame::OnKeyUp), NULL, this);
+    m_DisplayCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomDrawerFrame::OnKeyDown), nullptr, this);
+    m_DisplayCtrl->Disconnect(wxEVT_KEY_UP, wxKeyEventHandler(vroomDrawerFrame::OnKeyUp), nullptr, this);
 
     // don't delete m_ViewerLayerManager, will be deleted by the manager
     wxDELETE(m_LayerManager);
-    delete wxLog::SetActiveTarget(NULL);
+    delete wxLog::SetActiveTarget(nullptr);
     vroomgis_clear_images();
 }
 
@@ -333,7 +333,7 @@ bool vroomDrawerFrame::OpenLayers(const wxArrayString& names) {
         wxASSERT(myLayer);
 
         // if type is DIPS
-        vrRenderVectorC2PDips* myRender = NULL;
+        vrRenderVectorC2PDips* myRender = nullptr;
         if (myLayer->GetType() == vrDRIVER_VECTOR_C2P) {
             // change default colour;
             myRender = new vrRenderVectorC2PDips(*wxBLUE);
@@ -424,7 +424,7 @@ void vroomDrawerFrame::OnKeyDown(wxKeyEvent& event) {
     }
 
     const vrDisplayTool* myTool = m_DisplayCtrl->GetTool();
-    if (myTool == NULL) {
+    if (myTool == nullptr) {
         event.Skip();
         return;
     }
@@ -442,7 +442,7 @@ void vroomDrawerFrame::OnKeyUp(wxKeyEvent& event) {
     }
 
     const vrDisplayTool* myTool = m_DisplayCtrl->GetTool();
-    if (myTool == NULL) {
+    if (myTool == nullptr) {
         event.Skip();
         return;
     }
@@ -590,9 +590,9 @@ void vroomDrawerFrame::OnMemoryLayerAdd(wxCommandEvent& event) {
     }
 
     // init random engine
-    srand((unsigned)time(NULL));
+    srand((unsigned)time(nullptr));
 
-    vrLayer* myLayer = NULL;
+    vrLayer* myLayer = nullptr;
     vrRenderVector* myRender = new vrRenderVector();
 
     switch (myDlg.GetFeatureType()) {

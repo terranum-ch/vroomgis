@@ -149,15 +149,15 @@ void vroomLoaderFrame::_CreateControls() {
 }
 
 vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
-    : wxFrame(NULL, wxID_ANY, title) {
+    : wxFrame(nullptr, wxID_ANY, title) {
     m_PerfLogFile = wxFileName(wxGetHomeDir(), "vroomgis-performance.txt");
 
     wxIcon myVroomGISIcon;
     myVroomGISIcon.CopyFromBitmap(*_img_vroomgis_sml);
     SetIcon(myVroomGISIcon);
 
-    m_DisplayValueDlg = NULL;
-    m_editor = NULL;
+    m_DisplayValueDlg = nullptr;
+    m_editor = nullptr;
 
     // MENU
     wxMenu* fileMenu = new wxMenu;
@@ -209,9 +209,9 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
     m_LogWnd = new wxLogWindow(this, "vroomLoader Log", true, true);
 
     // Connect Events
-    m_DisplayCtrl->Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(vroomLoaderFrame::OnRightClick), NULL, this);
-    m_DisplayCtrl->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomLoaderFrame::OnKeyDown), NULL, this);
-    m_DisplayCtrl->Connect(wxEVT_KEY_UP, wxKeyEventHandler(vroomLoaderFrame::OnKeyUp), NULL, this);
+    m_DisplayCtrl->Connect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(vroomLoaderFrame::OnRightClick), nullptr, this);
+    m_DisplayCtrl->Connect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomLoaderFrame::OnKeyDown), nullptr, this);
+    m_DisplayCtrl->Connect(wxEVT_KEY_UP, wxKeyEventHandler(vroomLoaderFrame::OnKeyUp), nullptr, this);
 
     // DND
     m_TocCtrl->GetControl()->SetDropTarget(new vroomDropFiles(this));
@@ -224,14 +224,14 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 
 vroomLoaderFrame::~vroomLoaderFrame() {
     // Disconnect Events
-    m_DisplayCtrl->Disconnect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(vroomLoaderFrame::OnRightClick), NULL, this);
-    m_DisplayCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomLoaderFrame::OnKeyDown), NULL, this);
-    m_DisplayCtrl->Disconnect(wxEVT_KEY_UP, wxKeyEventHandler(vroomLoaderFrame::OnKeyUp), NULL, this);
+    m_DisplayCtrl->Disconnect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(vroomLoaderFrame::OnRightClick), nullptr, this);
+    m_DisplayCtrl->Disconnect(wxEVT_KEY_DOWN, wxKeyEventHandler(vroomLoaderFrame::OnKeyDown), nullptr, this);
+    m_DisplayCtrl->Disconnect(wxEVT_KEY_UP, wxKeyEventHandler(vroomLoaderFrame::OnKeyUp), nullptr, this);
 
     // don't delete m_ViewerLayerManager, will be deleted by the manager
     wxDELETE(m_LayerManager);
 
-    delete wxLog::SetActiveTarget(NULL);
+    delete wxLog::SetActiveTarget(nullptr);
     vroomgis_clear_images();
 }
 
@@ -258,7 +258,7 @@ bool vroomLoaderFrame::OpenLayers(const wxArrayString& names) {
         wxASSERT(myLayer);
 
         // if type is DIPS
-        vrRenderVectorC2PDips* myRender = NULL;
+        vrRenderVectorC2PDips* myRender = nullptr;
         if (myLayer->GetType() == vrDRIVER_VECTOR_C2P) {
             // change default colour;
             myRender = new vrRenderVectorC2PDips(*wxBLUE);
@@ -349,7 +349,7 @@ void vroomLoaderFrame::OnKeyDown(wxKeyEvent& event) {
     }
 
     const vrDisplayTool* myTool = m_DisplayCtrl->GetTool();
-    if (myTool == NULL) {
+    if (myTool == nullptr) {
         event.Skip();
         return;
     }
@@ -367,7 +367,7 @@ void vroomLoaderFrame::OnKeyUp(wxKeyEvent& event) {
     }
 
     const vrDisplayTool* myTool = m_DisplayCtrl->GetTool();
-    if (myTool == NULL) {
+    if (myTool == nullptr) {
         event.Skip();
         return;
     }
@@ -437,7 +437,7 @@ void vroomLoaderFrame::OnMoveLayer(wxCommandEvent& event) {
 
 void vroomLoaderFrame::OnToolDisplayValue(wxCommandEvent& event) {
     m_DisplayValueDlg = (vrDisplayValueDlg*)wxWindow::FindWindowById(vlID_DISPLAY_VALUE_DLG);
-    if (m_DisplayValueDlg != NULL) {
+    if (m_DisplayValueDlg != nullptr) {
         m_DisplayValueDlg->Raise();
     } else {
         m_DisplayValueDlg = new vrDisplayValueDlg(this, m_ViewerLayerManager, vlID_DISPLAY_VALUE_DLG);
@@ -620,7 +620,7 @@ void vroomLoaderFrame::OnUpdateUIDrawMenu(wxUpdateUIEvent& event) {
 }
 
 vrRenderer* vroomLoaderFrame::_GetMemoryRenderer() {
-    vrRenderer* myMemoryRenderer = NULL;
+    vrRenderer* myMemoryRenderer = nullptr;
     for (int i = 0; i < m_ViewerLayerManager->GetCount(); i++) {
         if (m_ViewerLayerManager->GetRenderer(i)->GetLayer()->GetType() == vrDRIVER_VECTOR_MEMORY) {
             myMemoryRenderer = m_ViewerLayerManager->GetRenderer(i);
@@ -739,7 +739,7 @@ void vroomLoaderFrame::OnToolDraw(wxCommandEvent& event) {
 
 void vroomLoaderFrame::OnToolDrawAction(wxCommandEvent& event) {
     // create editor if not exists
-    if (m_editor == NULL) {
+    if (m_editor == nullptr) {
         switch (m_editTypeCtrl->GetSelection()) {
             case 1:
                 m_editor = new vrShapeEditorLine(m_DisplayCtrl);

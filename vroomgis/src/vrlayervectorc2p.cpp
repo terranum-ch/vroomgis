@@ -105,7 +105,7 @@ void vrLayerVectorC2P::_DrawPoint(wxDC* dc, OGRFeature* feature, OGRGeometry* ge
     ++m_drawnVertex;
 
     // label feature
-    if (label != NULL && label->IsActive()) {
+    if (label != nullptr && label->IsActive()) {
         OGRPoint myImgPt;
         myImgPt.setX(myPt.x);
         myImgPt.setY(myPt.y);
@@ -125,7 +125,7 @@ void vrLayerVectorC2P::_DrawPolygon(wxDC* dc, OGRFeature* feature, OGRGeometry* 
     wxGraphicsPath myPath = gdc->CreatePath();
     for (int i = 0; i < iNumRing; i++) {
         wxGraphicsPath myPolyPath = gdc->CreatePath();
-        OGRLineString* myRing = NULL;
+        OGRLineString* myRing = nullptr;
         if (i == 0) {
             myRing = myPolygon->getExteriorRing();
         } else {
@@ -186,8 +186,8 @@ void vrLayerVectorC2P::_DrawPolygon(wxDC* dc, OGRFeature* feature, OGRGeometry* 
 }
 
 vrLayerVectorC2P::vrLayerVectorC2P() {
-    wxASSERT(m_dataset == NULL);
-    wxASSERT(m_layer == NULL);
+    wxASSERT(m_dataset == nullptr);
+    wxASSERT(m_layer == nullptr);
     m_driverType = vrDRIVER_VECTOR_C2P;
     m_activeLayerIndex = CT_DIP;
 }
@@ -208,29 +208,29 @@ bool vrLayerVectorC2P::Open(const wxFileName& filename, bool readwrite) {
 
     // Need to reimplement Open to allow opening c2p files as if it was sqlite.
     _Close();
-    wxASSERT(m_dataset == NULL);
+    wxASSERT(m_dataset == nullptr);
 
     m_fileName = filename;
     GDALDriver* myDriver = GetGDALDriverManager()->GetDriverByName("SQLite");
     // OGRSFDriverRegistrar *myRegistar = OGRSFDriverRegistrar::GetRegistrar();
     // OGRSFDriver *myDriver = myRegistar->GetDriverByName("SQLite");
-    if (myDriver == NULL) {
+    if (myDriver == nullptr) {
         wxLogError(_("Unable to load SQLite Driver! GDAL is maybe not compiled with SQLite support"));
         return false;
     }
 
-    m_dataset = (GDALDataset*)GDALOpenEx(myFileName.GetFullPath(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, NULL, NULL, NULL);
-    if (m_dataset == NULL) {
+    m_dataset = (GDALDataset*)GDALOpenEx(myFileName.GetFullPath(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr);
+    if (m_dataset == nullptr) {
         wxLogError("Unable to open %s", myFileName.GetFullName());
         return false;
     }
     // m_dataset->SetDriver(myDriver);
 
     // get layer
-    wxASSERT(m_layer == NULL);
+    wxASSERT(m_layer == nullptr);
     wxLogMessage("Found %d layer", m_dataset->GetLayerCount());
     m_layer = m_dataset->GetLayer(m_activeLayerIndex);
-    if (m_layer == NULL) {
+    if (m_layer == nullptr) {
         wxLogError("Unable to get layer %d, number of layer found : %d", m_activeLayerIndex,
                    m_dataset->GetLayerCount());
         return false;
@@ -261,7 +261,7 @@ long vrLayerVectorC2P::AddFeature(OGRGeometry* geometry, void* data) {
     wxASSERT(m_layer);
     myFeature->SetGeometry(geometry);
 
-    if (data != NULL) {
+    if (data != nullptr) {
         if (m_activeLayerIndex == CT_DIP) {
             wxArrayDouble* myArray = (wxArrayDouble*)data;
             wxASSERT(myArray->GetCount() == 4);
@@ -293,13 +293,13 @@ bool vrLayerVectorC2P::DeleteFeature(long fid) {
 }
 
 bool vrLayerVectorC2P::GetExtent(vrRealRect& rect) {
-    if (m_layer == NULL) {
+    if (m_layer == nullptr) {
         wxLogError("Layer isn't inited");
         return false;
     }
 
     wxASSERT(m_layer);
-    m_layer->SetSpatialFilter(NULL);
+    m_layer->SetSpatialFilter(nullptr);
     rect = vrRealRect();
     if (m_layer->GetFeatureCount() == 0) {
         rect.SetLeftBottom(wxPoint2DDouble(0.0, 0.0));
@@ -318,7 +318,7 @@ bool vrLayerVectorC2P::GetExtent(vrRealRect& rect) {
     wxASSERT(myExtent.IsInit() == false);
     while (1) {
         OGRFeature * myFeat = m_layer->GetNextFeature();
-        if (myFeat == NULL) {
+        if (myFeat == nullptr) {
             break;
         }
 

@@ -28,12 +28,12 @@ class Renderer : public ::testing::Test {
     vrLayerManager* m_Manager;
     vrLayer* m_LayerShp;
 
-    virtual void SetUp() {
-        m_LayerShp = NULL;
+    void SetUp() override {
+        m_LayerShp = nullptr;
         m_Manager = new vrLayerManager;
         EXPECT_TRUE(m_Manager->Open(wxFileName(g_TestPath, g_TestFileSHP)));
         m_LayerShp = m_Manager->GetLayer(wxFileName(g_TestPath, g_TestFileSHP));
-        EXPECT_TRUE(m_LayerShp != NULL);
+        EXPECT_TRUE(m_LayerShp != nullptr);
     }
 
     virtual void tearDown() {
@@ -42,8 +42,8 @@ class Renderer : public ::testing::Test {
 };
 
 TEST_F(Renderer, RendererCreate) {
-    EXPECT_TRUE(m_Manager != NULL);
-    EXPECT_TRUE(m_LayerShp != NULL);
+    EXPECT_TRUE(m_Manager != nullptr);
+    EXPECT_TRUE(m_LayerShp != nullptr);
 
     vrRenderer myRenderer(m_LayerShp);
     EXPECT_EQ(myRenderer.GetLayer()->GetType(), vrDRIVER_VECTOR_SHP);

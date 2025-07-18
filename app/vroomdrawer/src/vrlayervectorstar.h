@@ -49,7 +49,7 @@ class vrLayerVectorStar : public vrLayerVectorOGR {
 
     virtual ~vrLayerVectorStar();
 
-    virtual long AddFeature(OGRGeometry* geometry, void* data = NULL);
+    virtual long AddFeature(OGRGeometry* geometry, void* data = nullptr);
 };
 
 #endif

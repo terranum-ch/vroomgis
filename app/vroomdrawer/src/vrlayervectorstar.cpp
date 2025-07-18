@@ -79,8 +79,8 @@ void vrLayerVectorStar::_CreateStarPath(wxPointList& starpoints, const wxPoint& 
 }
 
 vrLayerVectorStar::vrLayerVectorStar() {
-    wxASSERT(m_dataset == NULL);
-    wxASSERT(m_layer == NULL);
+    wxASSERT(m_dataset == nullptr);
+    wxASSERT(m_layer == nullptr);
     m_driverType = vrDRIVER_VECTOR_MEMORY;
 }
 
@@ -92,7 +92,7 @@ long vrLayerVectorStar::AddFeature(OGRGeometry* geometry, void* data) {
     wxASSERT(m_layer);
     myFeature->SetGeometry(geometry);
 
-    if (data != NULL) {
+    if (data != nullptr) {
         int* mySize = (int*)data;
         myFeature->SetField(0, *mySize);
     }

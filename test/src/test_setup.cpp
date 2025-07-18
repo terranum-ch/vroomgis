@@ -23,7 +23,7 @@
 
 class Setup : public ::testing::Test {
   protected:
-    virtual void SetUp() {
+    void SetUp() override {
         wxApp::CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
         wxInitializer initializer;
         if (!initializer) {
@@ -32,7 +32,7 @@ class Setup : public ::testing::Test {
         }
 
 // #ifdef __LINUX__
-//          EXPECT_TRUE(gtk_init_check(NULL, NULL));
+//          EXPECT_TRUE(gtk_init_check(nullptr, nullptr));
 // #endif
     }
 };

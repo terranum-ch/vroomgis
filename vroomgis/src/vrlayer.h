@@ -67,13 +67,13 @@ class vrLayer {
         return false;
     }
 
-    virtual bool GetDataThread(wxImage* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = NULL,
-                               vrLabel* label = NULL) {
+    virtual bool GetDataThread(wxImage* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = nullptr,
+                               vrLabel* label = nullptr) {
         return false;
     }
 
-    virtual bool GetData(wxBitmap* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = NULL,
-                         vrLabel* label = NULL) {
+    virtual bool GetData(wxBitmap* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = nullptr,
+                         vrLabel* label = nullptr) {
         return false;
     }
 

@@ -15,7 +15,7 @@ void vrMemoryLayerDialog::OnUpdateUIOkButton(wxUpdateUIEvent& event) {
 void vrMemoryLayerDialog::OnButtonOK(wxCommandEvent& event) {
     // check for unique memory layer name
     wxFileName myMemoryLayerName("", m_LayerNameCtrl->GetValue(), "memory");
-    if (m_layermanager->GetLayer(myMemoryLayerName) != NULL) {
+    if (m_layermanager->GetLayer(myMemoryLayerName) != nullptr) {
         if (wxMessageBox(_("This layer name is already used! Replace ?"), _("Confirm"), wxYES_NO) != wxYES) {
             return;
         }

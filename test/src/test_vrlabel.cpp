@@ -23,7 +23,7 @@ class Label : public ::testing::Test {
   protected:
     wxFont m_Fontt;
 
-    virtual void SetUp() {
+    void SetUp() override {
         m_Fontt = wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     }
 };

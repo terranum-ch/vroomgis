@@ -1,6 +1,3 @@
-# CMAKE BUILD FILE FOR CREATING A STATIC VROOMGIS Library
-# (c) LUCIEN SCHREIBER 2013 
-# VROOMGIS NEEDS wxWidgets, GEOS, GDAL
 cmake_minimum_required(VERSION 3.20)
 project("vroomgis")
 
@@ -29,6 +26,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 IF (WIN32)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 ENDIF (WIN32)
+
+## Code coverage for IDE, see https://www.jetbrains.com/help/clion/code-coverage-clion.html#compiler-flags
+SET(USE_CODECOVERAGE_IDE OFF CACHE BOOL "Should we do code coverage for IDE ?")
+if (USE_CODECOVERAGE_IDE)
+    message(STATUS "Code coverage for IDE")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
+    message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+endif (USE_CODECOVERAGE_IDE)
+
+
 
 add_subdirectory(vroomgis)
 

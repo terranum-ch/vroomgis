@@ -69,14 +69,14 @@ TEST_F(LayerVectorOGR, GettingGeometry) {
 
     // layer not opened
     OGRFeature* myFeat = myLayer.GetFeature(0);
-    EXPECT_TRUE(myFeat == NULL);
+    EXPECT_TRUE(myFeat == nullptr);
 
     EXPECT_EQ(myLayer.Open(wxFileName(g_TestPath, g_TestFileSHP2), false), true);
     EXPECT_EQ(myLayer.IsOK(), true);
 
-    OGRFeature* myGeom = NULL;
+    OGRFeature* myGeom = nullptr;
     myGeom = myLayer.GetFeature(0);
-    EXPECT_TRUE(myGeom != NULL);
+    EXPECT_TRUE(myGeom != nullptr);
 
     OGRLineString* myLine = (OGRLineString*)myGeom->GetGeometryRef();
     wxLogMessage("line returned start here : %.4f | %.4f and contain %d vertex", myLine->getX(0), myLine->getY(0),
@@ -107,13 +107,13 @@ TEST_F(LayerVectorOGR, GettingNextGeometry) {
     EXPECT_EQ(myLayer.IsOK(), true);
 
     bool restart = true;
-    OGRFeature* myFeat = NULL;
+    OGRFeature* myFeat = nullptr;
     int iCount = 0;
 
     while (1) {
         myFeat = myLayer.GetNextFeature(restart);
         restart = false;
-        if (myFeat == NULL) {
+        if (myFeat == nullptr) {
             break;
         }
 

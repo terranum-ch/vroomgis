@@ -122,16 +122,16 @@ class vrLayerRasterGDAL : public vrLayerRaster {
 
     virtual bool GetExtent(vrRealRect& rect);
 
-    virtual bool GetDataThread(wxImage* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = NULL,
-                               vrLabel* label = NULL);
+    virtual bool GetDataThread(wxImage* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = nullptr,
+                               vrLabel* label = nullptr);
 
-    virtual bool GetData(wxBitmap* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = NULL,
-                         vrLabel* label = NULL);
+    virtual bool GetData(wxBitmap* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = nullptr,
+                         vrLabel* label = nullptr);
 
     virtual bool GetPixelValue(double coordx, double coordy, wxArrayDouble& values);
 
     bool BuildOverviews(const wxArrayInt& factors, vrOVERVIEW_TYPE type = vrOVERVIEW_NEAREST,
-                        GDALProgressFunc progress = NULL, void* pfProgressData = NULL);
+                        GDALProgressFunc progress = nullptr, void* pfProgressData = nullptr);
 
     bool HasOverviews();
 

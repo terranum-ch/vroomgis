@@ -81,7 +81,7 @@ void vrViewerOverlayText::SetTextColour(wxColour value) {
 vrViewerOverlayGeomPolygon::vrViewerOverlayGeomPolygon(const wxString& name, vrViewerDisplay* viewer)
     : vrViewerOverlay(name) {
     m_display = viewer;
-    m_polygon = NULL;
+    m_polygon = nullptr;
 }
 
 vrViewerOverlayGeomPolygon::~vrViewerOverlayGeomPolygon() {
@@ -97,7 +97,7 @@ void vrViewerOverlayGeomPolygon::SetRender(vrRenderVector* value) {
 }
 
 bool vrViewerOverlayGeomPolygon::DrawOverlay(wxPaintDC* dc) {
-    if (m_polygon == NULL) {
+    if (m_polygon == nullptr) {
         return false;
     }
 

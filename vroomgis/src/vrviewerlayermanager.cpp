@@ -45,7 +45,7 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager* parent, wxWindow* win
                                            vrViewerTOC* toc) {
     // wxASSERT(viewer);
     wxASSERT(parent);
-    m_windowParent = NULL;
+    m_windowParent = nullptr;
     m_display = viewer;
     m_toc = toc;
     m_layerManager = parent;
@@ -59,13 +59,13 @@ vrViewerLayerManager::vrViewerLayerManager(vrLayerManager* parent, wxWindow* win
         m_windowParent->PushEventHandler(this);
     }
 
-    if (m_display == NULL) {
+    if (m_display == nullptr) {
         wxLogError("No display attached");
     } else {
         m_display->SetViewerLayerManager(this);
     }
 
-    if (m_toc == NULL) {
+    if (m_toc == nullptr) {
         // wxLogError("No toc defined");
     } else {
         m_toc->SetViewerLayerManager(this);
@@ -291,7 +291,7 @@ void vrViewerLayerManager::ZoomToFit(bool onlyvisible) {
 long vrViewerLayerManager::Select(const wxRect& extent, vrRenderer* selectlayer) {
     // make selection on this layer if not null, otherwise use selection from TOC
     vrRenderer* mySelectLayer = selectlayer;
-    if (selectlayer == NULL) {
+    if (selectlayer == nullptr) {
         int myIndex = m_toc->GetSelection();
         if (myIndex == wxNOT_FOUND) {
             return wxNOT_FOUND;
@@ -343,7 +343,7 @@ int vrViewerLayerManager::GetSelectionCount(int* sellayers) {
             int mySelCount = myLayer->GetSelectedIDs()->GetCount();
             if (mySelCount > 0) {
                 iTotal += mySelCount;
-                if (sellayers != NULL) {
+                if (sellayers != nullptr) {
                     *sellayers = *sellayers + 1;
                 }
             }
@@ -356,7 +356,7 @@ vrRenderer* vrViewerLayerManager::GetRenderer(const unsigned int& index) {
     // check index into limits
     if (index > m_renderers.GetCount() - 1) {
         wxLogError("Trying to Get Renderer out of bounds");
-        return NULL;
+        return nullptr;
     }
 
     vrRenderer* renderer = m_renderers.Item(index);
@@ -375,7 +375,7 @@ vrRenderer* vrViewerLayerManager::GetRenderer(const wxString& layername) {
             return m_renderers.Item(i);
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 // number of renderers
@@ -407,7 +407,7 @@ void vrViewerLayerManager::FreezeEnd() {
 }
 
 void vrViewerLayerManager::Reload() {
-    vrPerformance* myPerf = NULL;
+    vrPerformance* myPerf = nullptr;
     if (m_perfMonitorFile.IsOk()) {
         myPerf = new vrPerformance(m_perfMonitorFile.GetFullPath(),
                                    "Number of layers\tTotal Vector Objects\tDrawn Vertex\tSkipped Vertex\tWindow "
@@ -433,7 +433,7 @@ void vrViewerLayerManager::Reload() {
         return;
     }
 
-    if (myPerf != NULL) {
+    if (myPerf != nullptr) {
         myPerf->StopWork(wxString::Format("%d\t%ld\t%ld\t%ld\t%d\t%d;", myCountLayer, myVectorCount, myVertexDrawn,
                                           myVertexSkipped, m_display->GetSize().GetWidth(),
                                           m_display->GetSize().GetHeight()));
@@ -479,7 +479,7 @@ vrRenderer* vrViewerLayerManager::GetEditionRenderer() {
             return myRenderer;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void vrViewerLayerManager::StartPerfMonitor(const wxFileName& filename) {
@@ -598,7 +598,7 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible) {
     bool bHasRealCoordinates = false;
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
         vrRenderer* myRenderer = m_renderers.Item(i);
-        if (myRenderer == NULL) {
+        if (myRenderer == nullptr) {
             continue;
         }
         if (!myRenderer->GetVisible()) {
@@ -615,7 +615,7 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible) {
     vrRealRect myLayerExtent;
     for (unsigned int i = 0; i < m_renderers.GetCount(); i++) {
         vrRenderer* myRenderer = m_renderers.Item(i);
-        if (myRenderer == NULL) {
+        if (myRenderer == nullptr) {
             continue;
         }
 
@@ -638,7 +638,7 @@ bool vrViewerLayerManager::_GetLayersExtent(bool onlyvisible) {
 
 wxBitmap* vrViewerLayerManager::_MergeBitmapData() {
     if (m_images.GetCount() == 0) {
-        return NULL;
+        return nullptr;
     }
 
     wxSize mySize = m_images.Item(0)->GetSize();
@@ -730,7 +730,7 @@ int vrViewerLayerManager::_Reload(long& vectorcount, long& drawnvertex, long& sk
 
     // no visible raster!
     if (!bIsAtLeastOneVisible) {
-        m_display->SetBitmap(NULL);
+        m_display->SetBitmap(nullptr);
         wxDELETE(myBmp);
         return 0;
     }

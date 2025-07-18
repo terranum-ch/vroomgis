@@ -19,7 +19,7 @@
 #include "vrlayerraster.h"
 
 vrOperationVectorProfiler::vrOperationVectorProfiler(OGRGeometry* geometry, vrLayerRasterGDAL* raster) {
-    m_lineString = NULL;
+    m_lineString = nullptr;
     if (geometry->getGeometryType() == wkbFlatten(wkbLineString)) {
         m_lineString = static_cast<OGRLineString*>(geometry);
     }
@@ -40,11 +40,11 @@ vrOperationVectorProfiler::vrOperationVectorProfiler(OGRGeometry* geometry, vrLa
 vrOperationVectorProfiler::~vrOperationVectorProfiler() {}
 
 bool vrOperationVectorProfiler::IsOk() {
-    if (m_lineString == NULL) {
+    if (m_lineString == nullptr) {
         return false;
     }
 
-    return m_rasterLayer != NULL;
+    return m_rasterLayer != nullptr;
 }
 
 bool vrOperationVectorProfiler::DoProfile(int bandindex) {
@@ -125,8 +125,8 @@ bool vrOperationVectorProfiler::GetResultPoint(int index, OGRPoint* point) {
         return false;
     }
 
-    if (point == NULL) {
-        wxLogError(_("Point Geometry is NULL!"));
+    if (point == nullptr) {
+        wxLogError(_("Point Geometry is nullptr!"));
         return false;
     }
 
@@ -145,8 +145,8 @@ bool vrOperationVectorProfiler::GetResultLine(OGRGeometry* line) {
         return false;
     }
 
-    if (line == NULL) {
-        wxLogError(_("Line Geometry is NULL!"));
+    if (line == nullptr) {
+        wxLogError(_("Line Geometry is nullptr!"));
         return false;
     }
 

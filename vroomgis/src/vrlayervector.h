@@ -78,7 +78,7 @@ class vrLayerVector : public vrLayer {
 
     void ClearSpatialFilter();
 
-    virtual long AddFeature(OGRGeometry* geometry, void* data = NULL) {
+    virtual long AddFeature(OGRGeometry* geometry, void* data = nullptr) {
         return wxNOT_FOUND;
     }
 
@@ -170,12 +170,12 @@ class vrLayerVectorOGR : public vrLayerVector {
 
     bool AddField(OGRFieldDefn& fielddef);
 
-    virtual long AddFeature(OGRGeometry* geometry, void* data = NULL);
+    virtual long AddFeature(OGRGeometry* geometry, void* data = nullptr);
 
     virtual bool GetExtent(vrRealRect& rect);
 
-    virtual bool GetData(wxBitmap* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = NULL,
-                         vrLabel* label = NULL);
+    virtual bool GetData(wxBitmap* bmp, const vrRealRect& coord, double pxsize, const vrRender* render = nullptr,
+                         vrLabel* label = nullptr);
 
     bool SetAttributeFilter(const wxString& query);
 

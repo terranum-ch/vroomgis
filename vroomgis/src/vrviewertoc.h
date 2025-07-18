@@ -128,7 +128,7 @@ class vrViewerTOCList : public vrViewerTOC {
 
   public:
     vrViewerTOCList(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize, int n = 0, const wxString choices[] = NULL, long style = 0);
+                    const wxSize& size = wxDefaultSize, int n = 0, const wxString choices[] = nullptr, long style = 0);
 
     virtual ~vrViewerTOCList();
 

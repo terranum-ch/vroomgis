@@ -244,12 +244,12 @@ CPLErr GDALGeneric3x3Processing(GDALRasterBandH hSrcBand, GDALRasterBandH hDstBa
     int nXSize = GDALGetRasterBandXSize(hSrcBand);
     int nYSize = GDALGetRasterBandYSize(hSrcBand);
 
-    if (pfnProgress == NULL) pfnProgress = GDALDummyProgress;
+    if (pfnProgress == nullptr) pfnProgress = GDALDummyProgress;
 
     /* -------------------------------------------------------------------- */
     /*      Initialize progress counter.                                    */
     /* -------------------------------------------------------------------- */
-    if (!pfnProgress((iBand - 1) / 3.0, NULL, pProgressData)) {
+    if (!pfnProgress((iBand - 1) / 3.0, nullptr, pProgressData)) {
         CPLError(CE_Failure, CPLE_UserInterrupt, "User terminated");
         return CE_Failure;
     }
@@ -328,7 +328,7 @@ CPLErr GDALGeneric3x3Processing(GDALRasterBandH hSrcBand, GDALRasterBandH hDstBa
         if (eErr != CE_None) goto end;
 
         double dprogress = 1.0 * (iBand - 1) / 3.0 + (1.0 * (i + 1) / nYSize) / 3.0;
-        if (!pfnProgress(dprogress, NULL, pProgressData)) {
+        if (!pfnProgress(dprogress, nullptr, pProgressData)) {
             CPLError(CE_Failure, CPLE_UserInterrupt, "User terminated");
             eErr = CE_Failure;
             goto end;
@@ -340,7 +340,7 @@ CPLErr GDALGeneric3x3Processing(GDALRasterBandH hSrcBand, GDALRasterBandH hDstBa
         nLine3Off = nTemp;
     }
 
-    pfnProgress(iBand / 3, NULL, pProgressData);
+    pfnProgress(iBand / 3, nullptr, pProgressData);
     eErr = CE_None;
 
 end:
@@ -596,9 +596,9 @@ class C2DDataset : public RawDataset {
 /************************************************************************/
 
 C2DDataset::C2DDataset() {
-    fpImage = NULL;
+    fpImage = nullptr;
     m_GeoTransformValid = FALSE;
-    m_ProjValue = NULL;
+    m_ProjValue = nullptr;
 }
 
 /************************************************************************/
@@ -607,9 +607,9 @@ C2DDataset::C2DDataset() {
 
 C2DDataset::~C2DDataset() {
     FlushCache();
-    if (fpImage != NULL) VSIFCloseL(fpImage);
+    if (fpImage != nullptr) VSIFCloseL(fpImage);
 
-    if (m_ProjValue != NULL) {
+    if (m_ProjValue != nullptr) {
         delete[] m_ProjValue;
     }
 }
@@ -636,7 +636,7 @@ const char* C2DDataset::GetProjectionRef() {
 
 int C2DDataset::Identify(GDALOpenInfo* poOpenInfo) {
     // Some bytes availlable
-    if (poOpenInfo->nHeaderBytes < 3 || poOpenInfo->fp == NULL) {
+    if (poOpenInfo->nHeaderBytes < 3 || poOpenInfo->fp == nullptr) {
         return FALSE;
     }
 
@@ -645,9 +645,9 @@ int C2DDataset::Identify(GDALOpenInfo* poOpenInfo) {
 }
 
 bool C2DDataset::ReadMagicNumber(GDALOpenInfo* poOpenInfo) {
-    FILE* fp = NULL;
+    FILE* fp = nullptr;
     fp = VSIFOpenL(poOpenInfo->pszFilename, "r");
-    if (fp == NULL) {
+    if (fp == nullptr) {
         CPLError(CE_Failure, CPLE_NotSupported, "Unable to open the %s c2d file", poOpenInfo->pszFilename);
         return FALSE;
     }
@@ -667,7 +667,7 @@ bool C2DDataset::ReadMagicNumber(GDALOpenInfo* poOpenInfo) {
 
 bool C2DDataset::WriteMagicNumber(const char* pszFilename) {
     FILE* fpImage = VSIFOpenL(pszFilename, "wb");
-    if (fpImage == NULL) {
+    if (fpImage == nullptr) {
         CPLError(CE_Warning, CPLE_NotSupported, "Opening file %s for Writing magic number failed", pszFilename);
         return FALSE;
     }
@@ -678,7 +678,7 @@ bool C2DDataset::WriteMagicNumber(const char* pszFilename) {
 
 bool C2DDataset::WriteHeader(const char* pszFilename, const C2DInfo& info) {
     FILE* fpImage = VSIFOpenL(pszFilename, "ab+");
-    if (fpImage == NULL) {
+    if (fpImage == nullptr) {
         CPLError(CE_Warning, CPLE_NotSupported, "Opening file %s for Writing header failed", pszFilename);
         return FALSE;
     }
@@ -691,9 +691,9 @@ bool C2DDataset::WriteHeader(const char* pszFilename, const C2DInfo& info) {
 }
 
 bool C2DDataset::ReadHeader(const char* pszFilename, C2DInfo& info) {
-    FILE* fp = NULL;
+    FILE* fp = nullptr;
     fp = VSIFOpenL(pszFilename, "r");
-    if (fp == NULL) {
+    if (fp == nullptr) {
         CPLError(CE_Warning, CPLE_NotSupported, "Unable to open the %s c2d file", pszFilename);
         return FALSE;
     }
@@ -716,7 +716,7 @@ bool C2DDataset::ReadHeader(const char* pszFilename, C2DInfo& info) {
 
 bool C2DDataset::WriteProj(const char* pszFilename, const char* proj) {
     FILE* fpImage = VSIFOpenL(pszFilename, "ab+");
-    if (fpImage == NULL) {
+    if (fpImage == nullptr) {
         CPLError(CE_Warning, CPLE_NotSupported, "Opening file %s for Writing projection failed", pszFilename);
         return FALSE;
     }
@@ -733,9 +733,9 @@ bool C2DDataset::WriteProj(const char* pszFilename, const char* proj) {
 }
 
 bool C2DDataset::ReadProj(char* pszFilename, char** proj) {
-    FILE* fp = NULL;
+    FILE* fp = nullptr;
     fp = VSIFOpenL(pszFilename, "r");
-    if (fp == NULL) {
+    if (fp == nullptr) {
         CPLError(CE_Warning, CPLE_NotSupported, "Unable to open the %s c2d file", pszFilename);
         return FALSE;
     }
@@ -754,7 +754,7 @@ bool C2DDataset::ReadProj(char* pszFilename, char** proj) {
 }
 
 bool C2DDataset::CreateMetaData(C2DDataset* poDS, GDALDataset* poSrcDS, char** papszOptions) {
-    if (poDS == NULL || poSrcDS == NULL) {
+    if (poDS == nullptr || poSrcDS == nullptr) {
         CPLError(CE_Failure, CPLE_NotSupported, "Creating metadata failed");
         return FALSE;
     }
@@ -763,11 +763,11 @@ bool C2DDataset::CreateMetaData(C2DDataset* poDS, GDALDataset* poSrcDS, char** p
     C2DInfo myEmptyInfo;
     char myVersionChar[10] = {"\0"};
     sprintf(myVersionChar, "%d", myEmptyInfo.m_Version);
-    poDS->SetMetadataItem("C2D_VERSION", myVersionChar, NULL);
+    poDS->SetMetadataItem("C2D_VERSION", myVersionChar, nullptr);
 
     // RASTER CREATION DATE / TIME
-    time_t myTime = time(NULL);
-    poDS->SetMetadataItem("C2D_CREATION_DATE_TIME", ctime(&myTime), NULL);
+    time_t myTime = time(nullptr);
+    poDS->SetMetadataItem("C2D_CREATION_DATE_TIME", ctime(&myTime), nullptr);
 
     // ORIGIN FILE
     char** papszFileList = poSrcDS->GetFileList();
@@ -775,19 +775,19 @@ bool C2DDataset::CreateMetaData(C2DDataset* poDS, GDALDataset* poSrcDS, char** p
     if (iNumFile != 0) {
         char myCount[5] = {"\0"};
         sprintf(myCount, "%d", iNumFile);
-        poDS->SetMetadataItem("C2D_ORIGIN_FILE_COUNT", myCount, NULL);
+        poDS->SetMetadataItem("C2D_ORIGIN_FILE_COUNT", myCount, nullptr);
 
         for (int i = 1; i <= iNumFile; i++) {
             char myItemName[25] = {"0"};
             sprintf(myItemName, "C2D_ORIGIN_FILE_%02d", i);
-            poDS->SetMetadataItem(myItemName, *(papszFileList + (i - 1)), NULL);
+            poDS->SetMetadataItem(myItemName, *(papszFileList + (i - 1)), nullptr);
         }
     }
     CSLDestroy(papszFileList);
 
     // SLOPE ALGORITHM USED
     const char* pszSlopeAlg = CSLFetchNameValue(papszOptions, "ALGORITHM");
-    if (pszSlopeAlg == NULL) {
+    if (pszSlopeAlg == nullptr) {
         pszSlopeAlg = "SHARP";
     }
     poDS->SetMetadataItem("C2D_ALGORITHM", pszSlopeAlg);
@@ -801,56 +801,56 @@ bool C2DDataset::CreateMetaData(C2DDataset* poDS, GDALDataset* poSrcDS, char** p
 
 GDALDataset* C2DDataset::Open(GDALOpenInfo* poOpenInfo) {
     if (!Identify(poOpenInfo)) {
-        return NULL;
+        return nullptr;
     }
 
     C2DInfo myRasterInfo;
     if (ReadHeader(poOpenInfo->pszFilename, myRasterInfo) == FALSE) {
         CPLError(CE_Warning, CPLE_NotSupported, "Unable to read header for %s", poOpenInfo->pszFilename);
-        return NULL;
+        return nullptr;
     }
 
-    char* myProj = NULL;
+    char* myProj = nullptr;
     if (ReadProj(poOpenInfo->pszFilename, &myProj) == FALSE) {
         CPLError(CE_Warning, CPLE_NotSupported, "Unable to read projection for %s", poOpenInfo->pszFilename);
-        return NULL;
+        return nullptr;
     }
 
     // testing open the raster
     FILE* fpImage = VSIFOpenL(poOpenInfo->pszFilename, "rb");
-    if (fpImage == NULL) {
+    if (fpImage == nullptr) {
         CPLError(CE_Warning, CPLE_NotSupported, "Unable to open %s file", poOpenInfo->pszFilename);
-        return NULL;
+        return nullptr;
     }
     VSIFCloseL(fpImage);
 
     C2DDataset* poDS;
     poDS = new C2DDataset();
-    poDS->fpImage = NULL;
+    poDS->fpImage = nullptr;
     poDS->nRasterXSize = myRasterInfo.m_Width;
     poDS->nRasterYSize = myRasterInfo.m_Height;
     poDS->m_RasterInfo = myRasterInfo;
     poDS->m_GeoTransformValid = TRUE;
 
-    if (myProj != NULL) {
+    if (myProj != nullptr) {
         poDS->m_ProjValue = new char[strlen(myProj)];
         strcpy(poDS->m_ProjValue, myProj);
         delete[] myProj;
-        myProj = NULL;
+        myProj = nullptr;
     }
 
     // Take ownership of file handled from GDALOpeninfo.
     VSIFClose(poOpenInfo->fp);
-    poOpenInfo->fp = NULL;
+    poOpenInfo->fp = nullptr;
 
     if (poOpenInfo->eAccess == GA_Update)
         poDS->fpImage = VSIFOpenL(poOpenInfo->pszFilename, "rb+");
     else
         poDS->fpImage = VSIFOpenL(poOpenInfo->pszFilename, "rb");
 
-    if (poDS->fpImage == NULL) {
+    if (poDS->fpImage == nullptr) {
         CPLError(CE_Failure, CPLE_OpenFailed, "Failed to re-open %s within C2D driver.\n", poOpenInfo->pszFilename);
-        return NULL;
+        return nullptr;
     }
     poDS->eAccess = poOpenInfo->eAccess;
 
@@ -863,7 +863,7 @@ GDALDataset* C2DDataset::Open(GDALOpenInfo* poOpenInfo) {
 #endif
 
     // if projection was readed then move forward
-    if (poDS->m_ProjValue != NULL) {
+    if (poDS->m_ProjValue != nullptr) {
         iIn += sizeof(char) * strlen(poDS->m_ProjValue);
     }
 
@@ -907,17 +907,17 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
     if (nBands != 1) {
         CPLError(CE_Failure, CPLE_NotSupported,
                  "C2D driver does not support source dataset with less or more than one band.\n");
-        return NULL;
+        return nullptr;
     }
 
     GDALDataType eType = poSrcDS->GetRasterBand(1)->GetRasterDataType();
-    if (!pfnProgress(0.0, NULL, pProgressData)) {
-        return NULL;
+    if (!pfnProgress(0.0, nullptr, pProgressData)) {
+        return nullptr;
     }
 
     // Write magic number
     if (WriteMagicNumber(pszFilename) == FALSE) {
-        return NULL;
+        return nullptr;
     }
 
     // get geotransform informations
@@ -947,13 +947,13 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
     mySrcRasterInfo.m_Width = poSrcDS->GetRasterBand(1)->GetXSize();
     mySrcRasterInfo.m_Height = poSrcDS->GetRasterBand(1)->GetYSize();
     if (WriteHeader(pszFilename, mySrcRasterInfo) == FALSE) {
-        return NULL;
+        return nullptr;
     }
 
     // write proj
     const char* pSrcPrjRef = poSrcDS->GetProjectionRef();
     if (WriteProj(pszFilename, pSrcPrjRef) == FALSE) {
-        return NULL;
+        return nullptr;
     }
 
     C2DDataset* poDS = (C2DDataset*)GDALOpen(pszFilename, GA_Update);
@@ -983,13 +983,13 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
             int nTBXSize, nTBYSize;
 
             if (!pfnProgress((nBlocksDone++) / (float)nBlockTotal / 3,  /// 3 ,
-                             NULL, pProgressData)) {
+                             nullptr, pProgressData)) {
                 CPLError(CE_Failure, CPLE_UserInterrupt, "User terminated");
                 delete poDS;
 
                 GDALDriver* poC2DDriver = (GDALDriver*)GDALGetDriverByName("C2D");
                 poC2DDriver->Delete(pszFilename);
-                return NULL;
+                return nullptr;
             }
 
             nTBXSize = MIN(nBlockXSize, nXSize - iXOffset);
@@ -1000,7 +1000,7 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
 
             if (eErr != CE_None) {
                 CPLError(CE_Warning, CPLE_NotSupported, "Reading failed");
-                return NULL;
+                return nullptr;
             }
 
             eErr = poDstBand->RasterIO(GF_Write, iXOffset, iYOffset, nTBXSize, nTBYSize, pData, nTBXSize, nTBYSize,
@@ -1008,7 +1008,7 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
 
             if (eErr != CE_None) {
                 CPLError(CE_Warning, CPLE_NotSupported, "Writing failed");
-                return NULL;
+                return nullptr;
             }
         }
     }
@@ -1019,7 +1019,7 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
     RawRasterBand* poDstRawBand = (RawRasterBand*)poDS->GetRasterBand(1);
     poDstRawBand->FlushCache();
 
-    /* if( !pfnProgress( 1.0, NULL, pProgressData ) )
+    /* if( !pfnProgress( 1.0, nullptr, pProgressData ) )
      {
          CPLError( CE_Failure, CPLE_UserInterrupt,
                   "User terminated" );
@@ -1028,7 +1028,7 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
          GDALDriver *poC2DDriver =
          (GDALDriver *) GDALGetDriverByName( "C2D" );
          poC2DDriver->Delete( pszFilename );
-         return NULL;
+         return nullptr;
      }*/
 
     /* -------------------------------------------------------------------- */
@@ -1036,8 +1036,8 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
     /* -------------------------------------------------------------------- */
     GDALRasterBand* poDstBand2 = poDS->GetRasterBand(2);
 
-    pData = NULL;
-    GDALGeneric3x3ProcessingAlg pfnAlg = NULL;
+    pData = nullptr;
+    GDALGeneric3x3ProcessingAlg pfnAlg = nullptr;
 
     int dfDstNoDataValue = -9999;
     bool bDstHasNoData = TRUE;
@@ -1049,7 +1049,7 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
     pData = GDALCreateSlopeData(adfGeoTransform, scale, slopeFormat);
 
     const char* pszSlopeAlg = CSLFetchNameValue(papszOptions, "ALGORITHM");
-    if (pszSlopeAlg == NULL) {
+    if (pszSlopeAlg == nullptr) {
         pszSlopeAlg = "SHARP";
     }
 
@@ -1071,8 +1071,8 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
     /* -------------------------------------------------------------------- */
     GDALRasterBand* poDstBand3 = poDS->GetRasterBand(3);
 
-    pData = NULL;
-    pfnAlg = NULL;
+    pData = nullptr;
+    pfnAlg = nullptr;
 
     int bAngleAsAzimuth = TRUE;
     dfDstNoDataValue = -9999;
@@ -1105,7 +1105,7 @@ GDALDataset* C2DDataset::CreateCopy(const char* pszFilename, GDALDataset* poSrcD
 void GDALRegister_C2D() {
     GDALDriver* poDriver;
 
-    if (GDALGetDriverByName("C2D") == NULL) {
+    if (GDALGetDriverByName("C2D") == nullptr) {
         poDriver = new GDALDriver();
 
         poDriver->SetDescription("C2D");

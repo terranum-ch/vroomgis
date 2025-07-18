@@ -135,7 +135,7 @@ vrDisplayValueTool::vrDisplayValueTool(vrViewerDisplay* display, vrDisplayValueD
 vrDisplayValueTool::~vrDisplayValueTool() {}
 
 bool vrDisplayValueTool::MouseMove(const wxMouseEvent& event) {
-    if (m_Dlg == NULL) {
+    if (m_Dlg == nullptr) {
         return false;
     }
 

@@ -131,7 +131,7 @@ void vroomTwinFrame::_CreateControls() {
 }
 
 vroomTwinFrame::vroomTwinFrame(const wxString& title)
-    : wxFrame(NULL, wxID_ANY, title) {
+    : wxFrame(nullptr, wxID_ANY, title) {
     m_SyncroTool = true;
     // add icon (windows / linux)
     wxIcon myVroomGISIcon;
@@ -194,7 +194,7 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 vroomTwinFrame::~vroomTwinFrame() {
     // don't delete m_ViewerLayerManager, will be deleted by the manager
     wxDELETE(m_LayerManager);
-    delete wxLog::SetActiveTarget(NULL);
+    delete wxLog::SetActiveTarget(nullptr);
 
     vroomgis_clear_images();
 }
@@ -312,7 +312,7 @@ void vroomTwinFrame::OnShowLog(wxCommandEvent& event) {
 void vroomTwinFrame::OnOverlayText(wxCommandEvent& event) {
     // left panel
     vrViewerOverlayText* myLeftOverlay = (vrViewerOverlayText*)m_DisplayCtrl1->GetOverlayByName(_T("LEFT"));
-    if (myLeftOverlay == NULL) {
+    if (myLeftOverlay == nullptr) {
         vrViewerOverlayText* myNewOverlay = new vrViewerOverlayText(_T("LEFT"), _("Left panel"));
         myNewOverlay->SetVisible(false);
         m_DisplayCtrl1->GetOverlayArrayRef()->Add(myNewOverlay);
@@ -322,7 +322,7 @@ void vroomTwinFrame::OnOverlayText(wxCommandEvent& event) {
 
     // right panel
     vrViewerOverlayText* myRightOverlay = (vrViewerOverlayText*)m_DisplayCtrl2->GetOverlayByName(_T("RIGHT"));
-    if (myRightOverlay == NULL) {
+    if (myRightOverlay == nullptr) {
         vrViewerOverlayText* myNewOverlay = new vrViewerOverlayText(_T("RIGHT"), _("Right panel"));
         myNewOverlay->SetVisible(false);
         m_DisplayCtrl2->GetOverlayArrayRef()->Add(myNewOverlay);

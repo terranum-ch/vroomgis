@@ -55,13 +55,13 @@ bool vrLayerManager::Open(const wxFileName& filename, bool readwrite) {
     }
 
     // search if layer allready opened
-    if (GetLayer(filename) != NULL) {
+    if (GetLayer(filename) != nullptr) {
         wxLogMessage("Data %s allready opened", filename.GetFullName());
         return true;
     }
 
     vrDrivers myDriver;
-    vrLayer* myLayer = NULL;
+    vrLayer* myLayer = nullptr;
 
     switch (myDriver.GetType(filename.GetExt())) {
         case vrDRIVER_VECTOR_SHP:
@@ -116,11 +116,11 @@ bool vrLayerManager::Open(const wxFileName& filename, bool readwrite) {
 
 bool vrLayerManager::Add(vrLayer* layer) {
     wxASSERT(layer);
-    if (layer == NULL) {
+    if (layer == nullptr) {
         return false;
     }
 
-    if (GetLayer(layer->GetFileName()) != NULL) {
+    if (GetLayer(layer->GetFileName()) != nullptr) {
         wxLogMessage(_("Layer with same name allready exists '%s'"), layer->GetFileName().GetFullName());
         return false;
     }
@@ -167,7 +167,7 @@ bool vrLayerManager::Close(vrLayer* layer) {
 
 // return false if still in use
 bool vrLayerManager::Erase(const wxFileName& filename) {
-    if (GetLayer(filename) != NULL) {
+    if (GetLayer(filename) != nullptr) {
         wxLogError(_("Unable to Delete: '%s'. This file is still used!"), filename.GetFullName());
         return false;
     }
@@ -222,7 +222,7 @@ int vrLayerManager::GetCount() {
 }
 
 vrLayer* vrLayerManager::GetLayer(const wxFileName& filename) {
-    vrLayer* myLayer = NULL;
+    vrLayer* myLayer = nullptr;
 
     for (unsigned int i = 0; i < m_layers.GetCount(); i++) {
         // wxLogMessage("'%s' filename, '%s' layername", filename.GetFullPath(),
@@ -250,7 +250,7 @@ bool vrLayerManager::AddViewerLayerManager(vrViewerLayerManager* manager) {
 }
 
 bool vrLayerManager::RemoveViewerLayerManager(vrViewerLayerManager* manager) {
-    if (manager == NULL) {
+    if (manager == nullptr) {
         return false;
     }
 

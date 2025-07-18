@@ -28,7 +28,7 @@
 
 class vrViewerDisplay;
 
-const int vrCOORDINATE_MARGIN = 10;
+constexpr int vrCOORDINATE_MARGIN = 10;
 
 class vrCoordinate {
   private:
@@ -41,7 +41,7 @@ class vrCoordinate {
     bool _ComputePixelSize();
 
   public:
-    vrCoordinate(vrViewerDisplay* viewer);
+    explicit vrCoordinate(vrViewerDisplay* viewer);
 
     vrCoordinate(const vrCoordinate& source);
 

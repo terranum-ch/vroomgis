@@ -32,7 +32,7 @@ void vrDisplayToolMessage::_InitMembers() {
     m_rect = wxRect();
     wxASSERT(m_rect.IsEmpty());
     m_position = wxDefaultPosition;
-    m_parentManager = NULL;
+    m_parentManager = nullptr;
     m_mouseStatus = vrMOUSE_UNKNOWN;
     m_longData = wxNOT_FOUND;
 }
@@ -65,8 +65,8 @@ vrDisplayToolMessage::~vrDisplayToolMessage() {}
 vrDisplayTool::vrDisplayTool() {
     m_iD = wxNOT_FOUND;
     m_name = wxEmptyString;
-    m_rubber = NULL;
-    m_display = NULL;
+    m_rubber = nullptr;
+    m_display = nullptr;
 }
 
 vrDisplayTool::vrDisplayTool(vrViewerDisplay* display, int id, wxString name, wxCursor cursor) {
@@ -76,13 +76,13 @@ vrDisplayTool::vrDisplayTool(vrViewerDisplay* display, int id, wxString name, wx
 void vrDisplayTool::Create(vrViewerDisplay* display, int id, wxString name, wxCursor cursor) {
     wxASSERT(id != wxNOT_FOUND);
     wxASSERT(!name.IsEmpty());
-    wxASSERT(display != NULL);
+    wxASSERT(display != nullptr);
 
     m_iD = id;
     m_name = name;
     m_cursor = cursor;
     m_display = display;
-    m_rubber = NULL;
+    m_rubber = nullptr;
 }
 
 vrDisplayTool::~vrDisplayTool() {
@@ -131,7 +131,7 @@ void vrDisplayTool::SendMessage(vrDisplayToolMessage* message) {
 
     // send message to the top level window if found
     wxWindow* myTopWin = wxGetTopLevelParent(m_display);
-    if (myTopWin != NULL) {
+    if (myTopWin != nullptr) {
         myTopWin->ProcessWindowEvent(myEvt);
         return;
     }
@@ -170,7 +170,7 @@ vrDisplayToolSelect::vrDisplayToolSelect(vrViewerDisplay* display) {
 vrDisplayToolSelect::~vrDisplayToolSelect() {}
 
 bool vrDisplayToolSelect::MouseDown(const wxMouseEvent& event) {
-    wxASSERT(m_rubber == NULL);
+    wxASSERT(m_rubber == nullptr);
     m_rubber = new vrRubberBand(GetDisplay());
     wxASSERT(m_rubber);
     m_rubber->SetPointFirst(event.GetPosition());
@@ -178,7 +178,7 @@ bool vrDisplayToolSelect::MouseDown(const wxMouseEvent& event) {
 }
 
 bool vrDisplayToolSelect::MouseUp(const wxMouseEvent& event) {
-    if (m_rubber == NULL) {
+    if (m_rubber == nullptr) {
         return true;
     }
 
@@ -205,7 +205,7 @@ bool vrDisplayToolSelect::MouseUp(const wxMouseEvent& event) {
 }
 
 bool vrDisplayToolSelect::MouseMove(const wxMouseEvent& event) {
-    if (event.Dragging() && m_rubber != NULL) {
+    if (event.Dragging() && m_rubber != nullptr) {
         m_rubber->SetPointLast(event.GetPosition());
         m_rubber->Update();
     }
@@ -219,7 +219,7 @@ vrDisplayToolZoom::vrDisplayToolZoom(vrViewerDisplay* display) {
 vrDisplayToolZoom::~vrDisplayToolZoom() {}
 
 bool vrDisplayToolZoom::MouseDown(const wxMouseEvent& event) {
-    wxASSERT(m_rubber == NULL);
+    wxASSERT(m_rubber == nullptr);
     m_rubber = new vrRubberBand(GetDisplay());
     wxASSERT(m_rubber);
     m_rubber->SetPointFirst(event.GetPosition());
@@ -332,7 +332,7 @@ bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent& event) {
 vrDisplayToolPan::vrDisplayToolPan(vrViewerDisplay* display) {
     Create(display, wxID_DEFAULT, "Pan", wxCursor(wxCURSOR_HAND));
     m_point = wxDefaultPosition;
-    m_panBitmap = NULL;
+    m_panBitmap = nullptr;
 }
 
 vrDisplayToolPan::~vrDisplayToolPan() {}
@@ -341,7 +341,7 @@ bool vrDisplayToolPan::MouseDown(const wxMouseEvent& event) {
     wxASSERT(m_point == wxDefaultPosition);
     m_point = event.GetPosition();
 
-    wxASSERT(m_panBitmap == NULL);
+    wxASSERT(m_panBitmap == nullptr);
     wxBitmap* myDisplayBmpRef = GetDisplay()->GetBitmapRef();
     wxASSERT(myDisplayBmpRef);
 
@@ -351,7 +351,7 @@ bool vrDisplayToolPan::MouseDown(const wxMouseEvent& event) {
 }
 
 bool vrDisplayToolPan::MouseUp(const wxMouseEvent& event) {
-    if (m_panBitmap == NULL) {
+    if (m_panBitmap == nullptr) {
         return false;
     }
 
@@ -368,7 +368,7 @@ bool vrDisplayToolPan::MouseUp(const wxMouseEvent& event) {
 }
 
 bool vrDisplayToolPan::MouseMove(const wxMouseEvent& event) {
-    if (!event.Dragging() || m_panBitmap == NULL) {
+    if (!event.Dragging() || m_panBitmap == nullptr) {
         return false;
     }
 

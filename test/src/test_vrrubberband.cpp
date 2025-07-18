@@ -24,7 +24,7 @@ TEST(RubberBand, GetRect1) {
     wxPoint p1(10, 10);
     wxPoint p2(50, 50);
 
-    vrRubberBand myRubber(NULL);
+    vrRubberBand myRubber(nullptr);
     myRubber.SetPointFirst(p1);
     myRubber.SetPointLast(p2);
     wxRect myRect = myRubber.GetRect();
@@ -36,7 +36,7 @@ TEST(RubberBand, GetRectInvert) {
     wxPoint p2(10, 10);
     wxPoint p1(50, 50);
 
-    vrRubberBand myRubber(NULL);
+    vrRubberBand myRubber(nullptr);
     myRubber.SetPointFirst(p1);
     myRubber.SetPointLast(p2);
     wxRect myRect = myRubber.GetRect();
@@ -49,7 +49,7 @@ TEST(RubberBand, IsPositive) {
     wxPoint p2(25, 25);
     wxPoint p3(50, 50);
 
-    vrRubberBand myRubber(NULL);
+    vrRubberBand myRubber(nullptr);
     myRubber.SetPointFirst(p2);
     myRubber.SetPointLast(p3);
     EXPECT_TRUE(myRubber.IsPositive());
@@ -63,7 +63,7 @@ TEST(RubberBand, IsPositive) {
 TEST(RubberBand, ZeroRect) {
     wxPoint p1(10, 10);
 
-    vrRubberBand myRubber(NULL);
+    vrRubberBand myRubber(nullptr);
     myRubber.SetPointFirst(p1);
     myRubber.SetPointLast(p1);
     EXPECT_TRUE(myRubber.IsPositive());
@@ -79,7 +79,7 @@ TEST(RubberBand, ValidRubber) {
     wxPoint p2(20, 10);
     wxPoint p3(20, 20);
 
-    vrRubberBand myRubber(NULL);
+    vrRubberBand myRubber(nullptr);
     myRubber.SetPointFirst(p1);
     EXPECT_FALSE(myRubber.IsValid());  // not fully inited
 

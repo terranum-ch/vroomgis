@@ -32,7 +32,7 @@ TEST(Render, RenderBasic) {
 }
 
 TEST(Render, RenderPointer) {
-    vrRender* mypRender = NULL;
+    vrRender* mypRender = nullptr;
     vrRenderVector myRenderVect;
     vrRenderRaster myRenderRast;
     vrRenderRasterColtop myRenderRastc2d;
@@ -49,7 +49,7 @@ TEST(Render, RenderPointer) {
 
 TEST(Render, RenderGetTransparencyChar) {
 #ifndef __WXMSW__
-    vrRender* mypRender = NULL;
+    vrRender* mypRender = nullptr;
     vrRenderVector myRenderVect;
 
     mypRender = &myRenderVect;

@@ -82,13 +82,13 @@ class vrViewerLayerManager : public wxEvtHandler {
 
   public:
     // if wxWindow is null we cannot link to event handling
-    vrViewerLayerManager(vrLayerManager* parent, wxWindow* window, vrViewerDisplay* viewer, vrViewerTOC* toc = NULL);
+    vrViewerLayerManager(vrLayerManager* parent, wxWindow* window, vrViewerDisplay* viewer, vrViewerTOC* toc = nullptr);
 
     virtual ~vrViewerLayerManager();
 
     void InitializeExtent(const vrRealRect& extent);
 
-    bool Add(long pos, vrLayer* layer, vrRender* render = NULL, vrLabel* label = NULL, bool visible = true);
+    bool Add(long pos, vrLayer* layer, vrRender* render = nullptr, vrLabel* label = nullptr, bool visible = true);
 
     bool Move(long oldpos, long newpos);
 
@@ -100,11 +100,11 @@ class vrViewerLayerManager : public wxEvtHandler {
 
     void ZoomToFit(bool onlyvisible = false);
 
-    long Select(const wxRect& extent, vrRenderer* selectlayer = NULL);
+    long Select(const wxRect& extent, vrRenderer* selectlayer = nullptr);
 
     void ClearSelection();
 
-    int GetSelectionCount(int* sellayers = NULL);
+    int GetSelectionCount(int* sellayers = nullptr);
 
     vrRenderer* GetRenderer(const unsigned int& index);
 
