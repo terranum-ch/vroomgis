@@ -111,16 +111,15 @@ bool vrDisplayTool::MouseDClickLeft(const wxMouseEvent& event) {
     return false;
 }
 
-/***************************************************************************/ /**
- @brief Send a message to the parent
- @param void
- @param vrDisplayTool::SendMessage
- @param vrDisplayToolMessage
- @param message valid pointer, will be sent to parent throught SetClientData.
-  Should be deleted when intercepting event
- @author Lucien Schreiber (c) CREALP 2010
- @date 20 avril 2010
-  *******************************************************************************/
+/**
+ * @brief Sends a message to the parent window or the display.
+ *
+ * This method creates a wxCommandEvent using the event type from the message,
+ * attaches the message as client data, and tries to send the event to the top-level window.
+ * If no parent window is found, the event is sent to the display.
+ *
+ * @param message Valid pointer to a vrDisplayToolMessage to send. This pointer should be deleted when the event is intercepted.
+ */
 void vrDisplayTool::SendMessage(vrDisplayToolMessage* message) {
     wxASSERT(m_display);
     wxASSERT(message);
