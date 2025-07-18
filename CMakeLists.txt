@@ -43,7 +43,7 @@ option(BUILD_TESTS "Do you want to build the tests (recommended) ?" ON)
 option(BUILD_APPS "Do you want to build the apps ?" ON)
 
 # Visual Leak Detector
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/build/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 if (WIN32)
     option(USE_VLD "Sould we use Visual Leak Detector (https://vld.codeplex.com) ?" OFF)
     if (USE_VLD)
@@ -56,6 +56,7 @@ endif (WIN32)
 if (BUILD_TESTS)
     enable_testing()
     add_subdirectory(test)
+    add_subdirectory(test/app/drawspeedtest)
 endif ()
 
 if (BUILD_APPS)
