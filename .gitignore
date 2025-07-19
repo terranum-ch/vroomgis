@@ -31,3 +31,6 @@ cache_build.txt
 cache_test.txt
 bin/*
 cmake-build-*
+
+# ignore the vroomgis version file
+vroomgis/src/vrversion.h

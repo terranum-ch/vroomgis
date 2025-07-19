@@ -277,7 +277,7 @@ vroomDrawerFrame::vroomDrawerFrame(const wxString& title)
 
     // STATUS BAR
     CreateStatusBar(2);
-    SetStatusText("Welcome to vroomDrawer");
+    SetStatusText("Welcome to vroomDrawer v" + vrVersion::GetVersion() + "(" + vrVersion::GetGitHash() + ")");
 
     // CONTROLS
     _CreateControls();

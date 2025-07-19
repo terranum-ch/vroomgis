@@ -9,7 +9,7 @@
 
 #include <wx/mstream.h>
 
-#include "vroomgis.h"
+//#include "vroomgis.h"
 
 wxBitmap* _img_vroomgis;
 wxBitmap* _img_vroomgis_sml;

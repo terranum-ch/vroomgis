@@ -33,14 +33,16 @@
 #include "vrlayermanager.h"
 #include "vrviewerdisplay.h"
 #include "vrviewertoc.h"
+#include "vrversion.h"
 
-// #include "vrdriver.h"
-// #include "vrlabel.h"
-// #include "vrlayer.h"
-// #include "vrlayerraster.h"
-// #include "vrlayervector.h"
-// #include "vrrender.h"
-// #include "vrrenderer.h"
-// #include "vrviewerlayermanager.h"
+// \class vrVersion
+// \brief Provides versioning information for the VROOMGIS engine.
+class vrVersion {
+        public:
+        static wxString GetVersion() {
+                return wxString::Format(_T("%s.%s.%s"), vroomgis_MAJOR_VERSION, vroomgis_MINOR_VERSION, GIT_NUMBER);
+        }
+        static wxString GetGitHash() { return wxString(GIT_REV); }
+};
 
 #endif

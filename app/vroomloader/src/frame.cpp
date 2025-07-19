@@ -199,7 +199,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
 
     // STATUS BAR
     CreateStatusBar(2);
-    SetStatusText("Welcome to vroomLoader");
+    SetStatusText("Welcome to vroomLoader v." + vrVersion::GetVersion() + "(" + vrVersion::GetGitHash() + ")");
 
     // CONTROLS
     _CreateControls();

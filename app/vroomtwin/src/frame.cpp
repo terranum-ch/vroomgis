@@ -172,7 +172,7 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
 
     // STATUS BAR
     CreateStatusBar(2);
-    SetStatusText("Welcome to vroomTwin");
+    SetStatusText("Welcome to vroomTwin v." + vrVersion::GetVersion() + "(" + vrVersion::GetGitHash() + ")");
 
     // CONTROLS
     _CreateControls();
