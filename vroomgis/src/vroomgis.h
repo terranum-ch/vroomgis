@@ -40,9 +40,9 @@
 class vrVersion {
         public:
         static wxString GetVersion() {
-                return wxString::Format(_T("%s.%s.%s"), vroomgis_MAJOR_VERSION, vroomgis_MINOR_VERSION, GIT_NUMBER);
+                return wxString::Format(_T("%s.%s.%s"), vroomgis_MAJOR_VERSION, vroomgis_MINOR_VERSION, VR_GIT_NUMBER);
         }
-        static wxString GetGitHash() { return wxString(GIT_REV); }
+        static wxString GetGitHash() { return wxString(VR_GIT_REV); }
 };
 
 #endif

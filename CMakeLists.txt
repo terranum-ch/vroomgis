@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project("vroomgis")
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # searching PNG library before conan magic stuff
 if (UNIX AND NOT APPLE)
