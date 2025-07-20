@@ -29,7 +29,6 @@
 #include "vrdisplaytool.h"
 #include "vrdisplayvalue.h"  // for displaying raster values
 #include "vrlayervector.h"
-#include "vroomgis_bmp.h"
 #include "vrrendervectorc2p.h"
 #include "vrshapeeditor.h"
 
@@ -39,10 +38,7 @@ bool vroomLoader::OnInit() {
     if (!wxApp::OnInit()) return false;
 
     wxInitAllImageHandlers();
-    vroomgis_initialize_images();
-
     vroomLoaderFrame* frame = new vroomLoaderFrame("vroomLoader");
-    // frame->CenterOnScreen(wxBOTH);
     frame->SetSize(50, 50, 800, 500);
     frame->Show(true);
 
@@ -156,7 +152,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
     m_PerfLogFile = wxFileName(wxGetHomeDir(), "vroomgis-performance.txt");
 
     wxIcon myVroomGISIcon;
-    myVroomGISIcon.CopyFromBitmap(vrBitmaps::GetLogoBitmap());
+    myVroomGISIcon.CopyFromBitmap(vrBitmaps::GetLogo());
     SetIcon(myVroomGISIcon);
 
     m_DisplayValueDlg = nullptr;
@@ -235,7 +231,6 @@ vroomLoaderFrame::~vroomLoaderFrame() {
     wxDELETE(m_LayerManager);
 
     delete wxLog::SetActiveTarget(nullptr);
-    vroomgis_clear_images();
 }
 
 void vroomLoaderFrame::OnQuit(wxCommandEvent& event) {

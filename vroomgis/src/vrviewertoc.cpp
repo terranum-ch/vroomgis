@@ -21,10 +21,10 @@
 #include <wx/numdlg.h>    // number entry dialog
 #include <wx/renderer.h>  // wxRenderNative
 
+#include "vrbitmaps.h"
 #include "vrevent.h"
 #include "vrlayer.h"
 #include "vrlayervector.h"
-#include "vroomgis_bmp.h"
 #include "vrrender.h"
 #include "vrrendervectorc2p.h"
 #include "vrviewerlayermanager.h"
@@ -568,8 +568,8 @@ void vrViewerTOCTree::_InitBitmapList() {
         myDC.SelectObject(wxNullBitmap);
     }
 
-    wxBitmap myGroupBmp(*_img_tree_folder_on);
-    wxBitmap myGroupBmpOff(*_img_tree_folder_off);
+    wxBitmap myGroupBmp = vrBitmaps::GetTocBitmap(vrBitmaps::FOLDER);
+    wxBitmap myGroupBmpOff = vrBitmaps::GetTocBitmap(vrBitmaps::FOLDER);
 
     images->Add(myUnCheckBmp);
     images->Add(myCheckBmp);

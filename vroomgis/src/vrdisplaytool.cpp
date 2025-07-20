@@ -16,7 +16,7 @@
 
 #include "vrdisplaytool.h"
 
-#include "../art/vroomgis_bmp.h"
+#include "vrbitmaps.h"
 #include "vrcoordinate.h"
 #include "vrevent.h"
 #include "vrrubberband.h"
@@ -212,7 +212,7 @@ bool vrDisplayToolSelect::MouseMove(const wxMouseEvent& event) {
 }
 
 vrDisplayToolZoom::vrDisplayToolZoom(vrViewerDisplay* display) {
-    Create(display, wxID_ZOOM_IN, "Zoom", wxCursor(_img_cursor_zoomin->ConvertToImage()));
+    Create(display, wxID_ZOOM_IN, "Zoom", wxCursor(vrBitmaps::GetCursorBitmap(vrBitmaps::ZOOM_IN)));
 }
 
 vrDisplayToolZoom::~vrDisplayToolZoom() {}
@@ -278,7 +278,7 @@ bool vrDisplayToolZoom::MouseMove(const wxMouseEvent& event) {
 
 vrDisplayToolZoomOut::vrDisplayToolZoomOut(vrViewerDisplay* display)
     : vrDisplayToolZoom(display) {
-    Create(display, wxID_ZOOM_OUT, "Zoom out", wxCursor(_img_cursor_zoomout->ConvertToImage()));
+    Create(display, wxID_ZOOM_OUT, "Zoom out", wxCursor(vrBitmaps::GetCursorBitmap(vrBitmaps::ZOOM_OUT)));
 }
 
 vrDisplayToolZoomOut::~vrDisplayToolZoomOut() {}
@@ -329,7 +329,7 @@ bool vrDisplayToolZoomOut::MouseUp(const wxMouseEvent& event) {
  @date 28 avril 2010
   *******************************************************************************/
 vrDisplayToolPan::vrDisplayToolPan(vrViewerDisplay* display) {
-    Create(display, wxID_DEFAULT, "Pan", wxCursor(wxCURSOR_HAND));
+    Create(display, wxID_DEFAULT, "Pan", wxCursor(vrBitmaps::GetCursorBitmap(vrBitmaps::HAND)));
     m_point = wxDefaultPosition;
     m_panBitmap = nullptr;
 }
@@ -472,7 +472,7 @@ bool vrDisplayToolSight::MouseMove(const wxMouseEvent& event) {
  @date 30 mars 2012
  *****************************************************************************************/
 vrDisplayToolEdit::vrDisplayToolEdit(vrViewerDisplay* display, int toolid) {
-    wxImage myEditCursorImg = _img_cursor_editing->ConvertToImage();
+    wxImage myEditCursorImg = vrBitmaps::GetCursorBitmap(vrBitmaps::VERTEX_EDIT).ConvertToImage();
     myEditCursorImg.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, 8);
     myEditCursorImg.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, 8);
     Create(display, toolid, "Editing", wxCursor(myEditCursorImg));

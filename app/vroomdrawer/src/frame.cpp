@@ -22,9 +22,7 @@
 #include <wx/filepicker.h>
 #include <wx/msgdlg.h>
 
-#include "../../../vroomgis/art/vroomgis_bmp.cpp"
-#include "../../../vroomgis/art/vroomgis_toolbmp.cpp"
-#include "../art/vroomdrawer_toolbmp.h"
+
 #include "frame.h"
 #include "frameabout.h"
 #include "tmlog.h"  // for double logging process
@@ -33,6 +31,7 @@
 #include "vrlayervectorstar.h"
 #include "vrmemorylayerdialog.h"
 #include "vrrendervectorc2p.h"
+#include "vroomdrawer_toolbmp.h"
 
 IMPLEMENT_APP(vroomDrawer);
 
@@ -51,10 +50,6 @@ bool vroomDrawer::OnInit() {
     }
 
     wxInitAllImageHandlers();
-    vroomgis_initialize_images();
-    vroomgis_initialize_images_toolbar();
-    vroomdrawer_initialize_images();
-
     vroomDrawerFrame* frame = new vroomDrawerFrame("vroomDrawer");
     frame->SetSize(50, 50, 800, 500);
     frame->Show(true);
@@ -204,22 +199,22 @@ void vroomDrawerFrame::_CreateToolbar() {
     m_toolBar1 = this->CreateToolBar(myStyle, wxID_ANY);
     m_toolBar1->SetToolBitmapSize(wxSize(32, 32));
     wxString mySelectName = _("Select");
-    m_toolBar1->AddTool(ID_MENU_SELECT, mySelectName, wxBitmap(*_img_toolbar_select), wxNullBitmap, wxITEM_NORMAL,
+    m_toolBar1->AddTool(ID_MENU_SELECT, mySelectName, vrBitmaps::GetToolbarBitmap(vrBitmaps::SELECT), wxNullBitmap, wxITEM_NORMAL,
                         mySelectName, wxEmptyString);
     wxString myZoom2Name = _("Zoom");
-    m_toolBar1->AddTool(wxID_ZOOM_IN, myZoom2Name, wxBitmap(*_img_toolbar_zoom), wxNullBitmap, wxITEM_NORMAL,
+    m_toolBar1->AddTool(wxID_ZOOM_IN, myZoom2Name, vrBitmaps::GetToolbarBitmap(vrBitmaps::ZOOM), wxNullBitmap, wxITEM_NORMAL,
                         myZoom2Name, wxEmptyString);
     wxString myPanName = _("Pan");
-    m_toolBar1->AddTool(ID_MENU_PAN, myPanName, wxBitmap(*_img_toolbar_pan), wxNullBitmap, wxITEM_NORMAL, myPanName,
+    m_toolBar1->AddTool(ID_MENU_PAN, myPanName, vrBitmaps::GetToolbarBitmap(vrBitmaps::PAN), wxNullBitmap, wxITEM_NORMAL, myPanName,
                         wxEmptyString);
     wxString myDataManagerName = _("Data Manager");
     wxString myZoomName = _("Zoom to fit");
-    m_toolBar1->AddTool(wxID_ZOOM_FIT, myZoomName, wxBitmap(*_img_toolbar_zoomfull), wxNullBitmap, wxITEM_NORMAL,
+    m_toolBar1->AddTool(wxID_ZOOM_FIT, myZoomName, vrBitmaps::GetToolbarBitmap(vrBitmaps::ZOOM_FIT), wxNullBitmap, wxITEM_NORMAL,
                         myZoomName, wxEmptyString);
 
     m_toolBar1->AddSeparator();
     wxString myAddName = _("Add memory layer...");
-    m_toolBar1->AddTool(ID_MENU_ADDMEMORYLAYER, myAddName, wxBitmap(*_img_toolbar_add_memory), wxNullBitmap,
+    m_toolBar1->AddTool(ID_MENU_ADDMEMORYLAYER, myAddName, vroomDrawerBitmaps::GetToolbarBitmap(vroomDrawerBitmaps::ADD_MEMORY), wxNullBitmap,
                         wxITEM_NORMAL, myAddName, wxEmptyString);
 
     m_toolBar1->Realize();
@@ -274,7 +269,7 @@ vrLayer* vroomDrawerFrame::_GetMemoryLayerStar(const wxFileName& name, int numbe
 vroomDrawerFrame::vroomDrawerFrame(const wxString& title)
     : wxFrame(nullptr, wxID_ANY, title) {
     wxIcon myVroomGISIcon;
-    myVroomGISIcon.CopyFromBitmap(vrBitmaps::GetLogoBitmap());
+    myVroomGISIcon.CopyFromBitmap(vrBitmaps::GetLogo());
     SetIcon(myVroomGISIcon);
 
     // STATUS BAR
@@ -307,7 +302,6 @@ vroomDrawerFrame::~vroomDrawerFrame() {
     // don't delete m_ViewerLayerManager, will be deleted by the manager
     wxDELETE(m_LayerManager);
     delete wxLog::SetActiveTarget(nullptr);
-    vroomgis_clear_images();
 }
 
 void vroomDrawerFrame::OnQuit(wxCommandEvent& event) {

@@ -23,7 +23,7 @@ FrameAbout::FrameAbout(wxWindow* parent, wxWindowID id, const wxString& title, c
 
     // Get a random colour for the logo
     wxColour random_colour = wxColour(rand() % 256, rand() % 256, rand() % 256);
-    m_ctrl_bmp->SetBitmap(vrBitmaps::GetLogoBitmap(wxSize(64, 64), random_colour));
+    m_ctrl_bmp->SetBitmap(vrBitmaps::GetLogo(wxSize(64, 64), random_colour));
     Layout();
     GetSizer()->Fit(this);
 }

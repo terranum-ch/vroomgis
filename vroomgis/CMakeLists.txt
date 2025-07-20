@@ -30,8 +30,7 @@ set(VROOMGIS_SRC_FILES
         "src/vrviewerlayermanager.cpp"
         "src/vrvieweroverlay.cpp"
         "src/vrviewertoc.cpp"
-        "art/vroomgis_bmp.cpp"
-        "art/vroomgis_toolbmp.cpp")
+)
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/art")

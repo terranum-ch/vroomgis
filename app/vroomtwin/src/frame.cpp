@@ -24,7 +24,6 @@
 #include <wx/generic/aboutdlgg.h>
 #include <wx/aboutdlg.h>
 
-#include "../../../vroomgis/art/vroomgis_bmp.cpp"
 #include "frame.h"
 #include "tmlog.h"  // for double logging process
 #include "vrbitmaps.h"
@@ -67,8 +66,6 @@ bool vroomTwin::OnInit() {
     if (!wxApp::OnInit()) return false;
 
     wxImage::AddHandler(new wxPNGHandler);
-    vroomgis_initialize_images();
-
     vroomTwinFrame* frame = new vroomTwinFrame("vroomTwin");
     frame->SetSize(50, 50, 800, 500);
     frame->Show(true);
@@ -138,7 +135,7 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
     m_SyncroTool = true;
     // add icon (windows / linux)
     wxIcon myVroomGISIcon;
-    myVroomGISIcon.CopyFromBitmap(vrBitmaps::GetLogoBitmap());
+    myVroomGISIcon.CopyFromBitmap(vrBitmaps::GetLogo());
     SetIcon(myVroomGISIcon);
 
     // MENU
@@ -198,8 +195,6 @@ vroomTwinFrame::~vroomTwinFrame() {
     // don't delete m_ViewerLayerManager, will be deleted by the manager
     wxDELETE(m_LayerManager);
     delete wxLog::SetActiveTarget(nullptr);
-
-    vroomgis_clear_images();
 }
 
 void vroomTwinFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {
