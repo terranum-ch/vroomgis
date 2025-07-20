@@ -19,10 +19,13 @@
 #include <vld.h>  // Visual Leak Detector (https://vld.codeplex.com/)
 #endif
 
+#include <wx/aboutdlg.h>
+#include <wx/generic/aboutdlgg.h>
 #include <wx/msgdlg.h>
 
 #include "frame.h"
 #include "tmlog.h"  // for double logging process
+#include "vrbitmaps.h"
 #include "vrdisplaytool.h"
 #include "vrdisplayvalue.h"  // for displaying raster values
 #include "vrlayervector.h"
@@ -153,7 +156,7 @@ vroomLoaderFrame::vroomLoaderFrame(const wxString& title)
     m_PerfLogFile = wxFileName(wxGetHomeDir(), "vroomgis-performance.txt");
 
     wxIcon myVroomGISIcon;
-    myVroomGISIcon.CopyFromBitmap(*_img_vroomgis_sml);
+    myVroomGISIcon.CopyFromBitmap(vrBitmaps::GetLogoBitmap());
     SetIcon(myVroomGISIcon);
 
     m_DisplayValueDlg = nullptr;
@@ -240,8 +243,13 @@ void vroomLoaderFrame::OnQuit(wxCommandEvent& event) {
 }
 
 void vroomLoaderFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
-    wxMessageDialog myDlg(this, "Dummy about dialog.");
-    myDlg.ShowModal();
+    wxIcon about_icon;
+    wxAboutDialogInfo aboutInfo;
+    aboutInfo.SetName("vroomLoader");
+    aboutInfo.SetVersion(vrVersion::GetVersion());
+    aboutInfo.SetDescription("A simple loader for vroomGIS layers.");
+    aboutInfo.SetCopyright("(C) 2025 Terranum");
+    wxAboutBox(aboutInfo, this);
 }
 
 bool vroomLoaderFrame::OpenLayers(const wxArrayString& names) {

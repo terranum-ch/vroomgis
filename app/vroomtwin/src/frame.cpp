@@ -21,10 +21,13 @@
 
 #include <wx/filepicker.h>
 #include <wx/msgdlg.h>
+#include <wx/generic/aboutdlgg.h>
+#include <wx/aboutdlg.h>
 
 #include "../../../vroomgis/art/vroomgis_bmp.cpp"
 #include "frame.h"
 #include "tmlog.h"  // for double logging process
+#include "vrbitmaps.h"
 
 BEGIN_EVENT_TABLE(vroomTwinFrame, wxFrame)
 EVT_MENU(wxID_EXIT, vroomTwinFrame::OnQuit)
@@ -135,7 +138,7 @@ vroomTwinFrame::vroomTwinFrame(const wxString& title)
     m_SyncroTool = true;
     // add icon (windows / linux)
     wxIcon myVroomGISIcon;
-    myVroomGISIcon.CopyFromBitmap(*_img_vroomgis_sml);
+    myVroomGISIcon.CopyFromBitmap(vrBitmaps::GetLogoBitmap());
     SetIcon(myVroomGISIcon);
 
     // MENU
@@ -204,8 +207,13 @@ void vroomTwinFrame::OnQuit(wxCommandEvent& WXUNUSED(event)) {
 }
 
 void vroomTwinFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
-    wxMessageDialog myDlg(this, "Dummy about dialog.");
-    myDlg.ShowModal();
+    wxIcon about_icon;
+    wxAboutDialogInfo aboutInfo;
+    aboutInfo.SetName("vroomTwin");
+    aboutInfo.SetVersion(vrVersion::GetVersion());
+    aboutInfo.SetDescription("A simple twin viewer for vroomGIS layers.");
+    aboutInfo.SetCopyright("(C) 2025 Terranum");
+    wxAboutBox(aboutInfo, this);
 }
 
 bool vroomTwinFrame::OpenLayers(const wxArrayString& names) {

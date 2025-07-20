@@ -28,6 +28,7 @@
 #include "frame.h"
 #include "frameabout.h"
 #include "tmlog.h"  // for double logging process
+#include "vrbitmaps.h"
 #include "vrlayervector.h"
 #include "vrlayervectorstar.h"
 #include "vrmemorylayerdialog.h"
@@ -273,7 +274,7 @@ vrLayer* vroomDrawerFrame::_GetMemoryLayerStar(const wxFileName& name, int numbe
 vroomDrawerFrame::vroomDrawerFrame(const wxString& title)
     : wxFrame(nullptr, wxID_ANY, title) {
     wxIcon myVroomGISIcon;
-    myVroomGISIcon.CopyFromBitmap(*_img_vroomgis_sml);
+    myVroomGISIcon.CopyFromBitmap(vrBitmaps::GetLogoBitmap());
     SetIcon(myVroomGISIcon);
 
     // STATUS BAR
