@@ -1,7 +1,9 @@
 message(STATUS "Building vroomDrawer Application")
 
 #search source and headers files
-set(SRC_FILES "src/frame.cpp"
+set(SRC_FILES
+        "src/frame.cpp"
+        "src/frameabout.cpp"
         "src/vrlayervectorstar.cpp"
         "src/vrmemorylayerdialog.cpp"
         "art/vroomdrawer_toolbmp.cpp"

@@ -26,6 +26,7 @@
 #include "../../../vroomgis/art/vroomgis_toolbmp.cpp"
 #include "../art/vroomdrawer_toolbmp.h"
 #include "frame.h"
+#include "frameabout.h"
 #include "tmlog.h"  // for double logging process
 #include "vrlayervector.h"
 #include "vrlayervectorstar.h"
@@ -313,8 +314,8 @@ void vroomDrawerFrame::OnQuit(wxCommandEvent& event) {
 }
 
 void vroomDrawerFrame::OnAbout(wxCommandEvent& WXUNUSED(event)) {
-    wxMessageDialog myDlg(this, "Dummy about dialog.");
-    myDlg.ShowModal();
+    FrameAbout about_dlg(this);
+    about_dlg.ShowModal();
 }
 
 bool vroomDrawerFrame::OpenLayers(const wxArrayString& names) {

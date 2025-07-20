@@ -3,6 +3,7 @@
 
 set(VROOMGIS_SRC_FILES
         "src/tmpercent.cpp"
+        "src/vrbitmaps.cpp"
         "src/vrcoordinate.cpp"
         "src/vrdisplaytool.cpp"
         "src/vrdriver.cpp"
