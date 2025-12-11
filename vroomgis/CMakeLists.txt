@@ -36,7 +36,17 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/art")
 
 add_library(vroomgis STATIC ${VROOMGIS_SRC_FILES})
-target_link_libraries(vroomgis ${CONAN_LIBS})
+
+if (BUILD_VROOMGIS_WITH_CONAN)
+    target_link_libraries(vroomgis ${CONAN_LIBS})
+else (BUILD_VROOMGIS_WITH_CONAN)
+    find_package(wxWidgets CONFIG REQUIRED)
+    find_package(PROJ CONFIG REQUIRED)
+    find_package(GDAL CONFIG REQUIRED)
+    find_package(PNG CONFIG REQUIRED)
+    find_package(GEOS CONFIG REQUIRED)
+    target_link_libraries(vroomgis wx::core wx::base wx::net GDAL::GDAL GEOS::geos_c PROJ::proj)
+endif (BUILD_VROOMGIS_WITH_CONAN)
 
 if (UNIX AND NOT APPLE)
     message(STATUS "PNG_LIBRARY for vroomgis: ${PNG_LIBRARY}")
