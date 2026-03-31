@@ -43,6 +43,7 @@ else (BUILD_VROOMGIS_WITH_CONAN)
     find_package(PROJ CONFIG REQUIRED)
     find_package(GDAL CONFIG REQUIRED)
     find_package(PNG CONFIG REQUIRED)
+    find_package(GEOS CONFIG REQUIRED)
     # Try to find wxWidgets, with fallback to FetchContent targets
     if (NOT wxWidgets_FOUND)
         find_package(wxWidgets CONFIG QUIET)
