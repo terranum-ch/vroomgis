@@ -9,10 +9,15 @@ if (UNIX AND NOT APPLE)
 endif (UNIX AND NOT APPLE)
 
 # Conan setup
+option(BUILD_VROOMGIS_WITH_CONAN "Do you want to use Conan ?" ON)
+
 # using conan_basic_setup(TARGETS) leeds to linking error on Linux
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(KEEP_RPATHS)
-message(STATUS "Conan libs: ${CONAN_LIBS}")
+if(BUILD_VROOMGIS_WITH_CONAN)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup(KEEP_RPATHS)
+    message(STATUS "Conan libs: ${CONAN_LIBS}")
+endif()
+
 if (APPLE)
     set(CMAKE_INSTALL_RPATH "@executable_path")
 else ()
