@@ -9,15 +9,25 @@ vroomGIS is an open source GIS toolkit. vroomGIS is written in C++ and uses the 
 
 ## Building vroomGIS
 
-vroomGIS uses [Conan](https://conan.io) and [CMake](https://cmake.org) as its construction system. Once these two programs have been installed, 
-vroomGIS can be built using the following commands:
+vroomGIS uses [Conan 2](https://conan.io) and [CMake](https://cmake.org).
+From the repository root, install the dependencies and build using:
 
 ```bash
-    mkdir cmake-build
-    cd cmake-build
-    conan install .. --build=missing
-    conan build .. 
+conan install . --build=missing --build='~gdal/*'
+conan build .
 ```
+
+The GDAL exclusion requires an available GDAL binary; other missing dependencies
+are built from source. With CMake 3.23 or newer, the generated presets can also be
+used directly after installation:
+
+```bash
+cmake --preset conan-release
+cmake --build --preset conan-release
+```
+
+Conan supplies `CMakeToolchain` and `CMakeDeps`; CMake links the imported package
+targets instead of loading the Conan 1 `conanbuildinfo.cmake` file.
 
 `conan install` supports the following options:
 
@@ -28,7 +38,9 @@ vroomGIS can be built using the following commands:
 
 ## Running the tests
 
-vroomGIS includes a series of unit tests to ensure code quality. These can be launched with the command: `ctest`.
+Run the tests from the repository root with `ctest --preset conan-release --output-on-failure`.
+The GUI tests need a display. On a headless Linux machine with Xvfb installed, use
+`xvfb-run -a ctest --preset conan-release --output-on-failure`.
 
 ## Sample applications
 
@@ -52,5 +64,4 @@ The developer documentation is available in the `doc` directory. To build the do
 ```
 
     
-
 

@@ -31,10 +31,10 @@ add_executable(vroomLoader MACOSX_BUNDLE WIN32 ${SRC_FILES})
 target_link_libraries(vroomLoader vroomgis)
 
 # use system PNG for linux otherwise we have problem when displaying icons
-if (UNIX AND NOT APPLE)
+if (NOT BUILD_VROOMGIS_WITH_CONAN AND UNIX AND NOT APPLE)
     message(STATUS "PNG lib for vroomLoader is : ${PNG_LIBRARY}")
     target_link_libraries(vroomLoader ${PNG_LIBRARY} xkbcommon)
-endif (UNIX AND NOT APPLE)
+endif (NOT BUILD_VROOMGIS_WITH_CONAN AND UNIX AND NOT APPLE)
 
 # Install step for copying *dylib into application bundle on OSX and for changing their reference from
 # absolute to relative

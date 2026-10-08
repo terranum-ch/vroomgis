@@ -919,7 +919,7 @@ bool vrLayerRasterGDAL::GetMetadata(wxArrayString& names, wxArrayString& values,
 
     // get metadata for dataset and then for each band
     for (unsigned int i = 0; i < m_dataset->GetRasterCount() + 1; i++) {
-        char** pmyMetadata;
+        const char* const* pmyMetadata;
         if (i == 0) {
             pmyMetadata = m_dataset->GetMetadata(domain);
         } else {

@@ -1,12 +1,12 @@
 from conan import ConanFile
-from conan.tools.cmake import CMake, cmake_layout
+from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
 
 
 class vroomgis(ConanFile):
     name = "anote"
     version = "1.2"
     settings = "os", "compiler", "build_type", "arch"
-    generators = "CMakeDeps", "CMakeToolchain"
+    generators = "CMakeDeps"
 
     # requires = [
     #     "wxwidgets/3.3.3",
@@ -24,6 +24,7 @@ class vroomgis(ConanFile):
     default_options = {
         "build_tests": True,
         "build_apps": True,
+        "libmount/*:shared": True, # sinon conflit avec libgdal
     }
 
 
@@ -34,14 +35,26 @@ class vroomgis(ConanFile):
         # Alignement sur le binaire GDAL de ConanCenter.
         self.requires("arrow/19.0.1", override=True)
         self.requires("boost/1.90.0", override=True)
-        self.requires("libcurl/8.20.0", override=True)
+        self.requires("libcurl/8.20.0")
         self.requires("expat/2.8.1", override=True)
+
+        # vroomDrawer's About dialog includes these libraries' version headers.
+        if self.options.build_apps:
+            self.requires("geos/3.12.0")
+            self.requires("proj/9.3.1")
 
         if self.options.build_tests:
             self.requires("gtest/1.18.0")
 
     def layout(self):
         cmake_layout(self)
+
+    def generate(self):
+        toolchain = CMakeToolchain(self)
+        toolchain.variables["BUILD_VROOMGIS_WITH_CONAN"] = True
+        toolchain.variables["BUILD_TESTS"] = bool(self.options.build_tests)
+        toolchain.variables["BUILD_APPS"] = bool(self.options.build_apps)
+        toolchain.generate()
 
     def build(self):
         cmake = CMake(self)

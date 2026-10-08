@@ -16,6 +16,8 @@
 
 #include "vroperationvectorprofiler.h"
 
+#include <algorithm>
+
 #include "vrlayerraster.h"
 
 vrOperationVectorProfiler::vrOperationVectorProfiler(OGRGeometry* geometry, vrLayerRasterGDAL* raster) {
@@ -69,7 +71,7 @@ bool vrOperationVectorProfiler::DoProfile(int bandindex) {
 
     int myPointX = wxRound(fabs(dx / m_pixelWidth));
     int myPointY = wxRound(fabs(dy / m_pixelHeight));
-    int iNbPoints = MAX(myPointX, myPointY);
+    int iNbPoints = std::max(myPointX, myPointY);
 
     if (myPointX == 0 && myPointY == 0) {
         wxLogError(_("Unable to create profile, line is too small"));

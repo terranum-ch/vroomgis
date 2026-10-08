@@ -1,22 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
 project("vroomgis")
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# searching PNG library before conan magic stuff
-if (UNIX AND NOT APPLE)
-    find_package(PNG REQUIRED)
-    message(STATUS "PNG lib is : ${PNG_LIBRARY}")
-endif (UNIX AND NOT APPLE)
-
-# Conan setup
 option(BUILD_VROOMGIS_WITH_CONAN "Do you want to use Conan ?" ON)
 
-# using conan_basic_setup(TARGETS) leeds to linking error on Linux
-if(BUILD_VROOMGIS_WITH_CONAN)
-    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-    conan_basic_setup(KEEP_RPATHS)
-    message(STATUS "Conan libs: ${CONAN_LIBS}")
-endif()
+# Conan 2 supplies package configs through the CMakeToolchain passed at configure time.
+# Keep the system PNG workaround only for builds without Conan.
+if (NOT BUILD_VROOMGIS_WITH_CONAN AND UNIX AND NOT APPLE)
+    find_package(PNG REQUIRED)
+endif ()
 
 if (APPLE)
     set(CMAKE_INSTALL_RPATH "@executable_path")

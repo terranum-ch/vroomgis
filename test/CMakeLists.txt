@@ -35,7 +35,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/vroomgis/src)
 
 add_executable(Unittest ${src_tests})
-target_link_libraries(Unittest vroomgis)
+find_package(GTest CONFIG REQUIRED)
+target_link_libraries(Unittest vroomgis GTest::gtest)
 
 include(GoogleTest)
 gtest_discover_tests(Unittest
@@ -44,7 +45,7 @@ gtest_discover_tests(Unittest
 )
 
 # use system PNG for linux otherwise we have problem when displaying icons
-if (UNIX AND NOT APPLE)
+if (NOT BUILD_VROOMGIS_WITH_CONAN AND UNIX AND NOT APPLE)
     message(STATUS "PNG lib for test is : ${PNG_LIBRARY}")
     target_link_libraries(Unittest ${PNG_LIBRARY} xkbcommon)
-endif (UNIX AND NOT APPLE)
+endif (NOT BUILD_VROOMGIS_WITH_CONAN AND UNIX AND NOT APPLE)

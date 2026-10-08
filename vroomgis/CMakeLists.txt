@@ -32,13 +32,14 @@ set(VROOMGIS_SRC_FILES
         "src/vrviewertoc.cpp"
 )
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/art")
-
 add_library(vroomgis STATIC ${VROOMGIS_SRC_FILES})
+target_include_directories(vroomgis PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(vroomgis PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/art")
 
 if (BUILD_VROOMGIS_WITH_CONAN)
-    target_link_libraries(vroomgis ${CONAN_LIBS})
+    find_package(wxWidgets CONFIG REQUIRED)
+    find_package(GDAL CONFIG REQUIRED)
+    target_link_libraries(vroomgis PUBLIC wxWidgets::wxWidgets GDAL::GDAL)
 else (BUILD_VROOMGIS_WITH_CONAN)
     find_package(PROJ CONFIG REQUIRED)
     find_package(GDAL CONFIG REQUIRED)
@@ -62,20 +63,20 @@ else (BUILD_VROOMGIS_WITH_CONAN)
 
     # Link libraries - try the standard names first, fallback to FetchContent targets
     if (TARGET wx::core)
-        target_link_libraries(vroomgis wx::core wx::base wx::net GDAL::GDAL GEOS::geos_c PROJ::proj)
+        target_link_libraries(vroomgis PUBLIC wx::core wx::base wx::net GDAL::GDAL GEOS::geos_c PROJ::proj)
     elseif (TARGET wxcore)
-        target_link_libraries(vroomgis wxcore wxbase wxnet GDAL::GDAL GEOS::geos_c PROJ::proj)
+        target_link_libraries(vroomgis PUBLIC wxcore wxbase wxnet GDAL::GDAL GEOS::geos_c PROJ::proj)
     else()
         message(FATAL_ERROR "No wxWidgets targets found to link against")
     endif()
 endif (BUILD_VROOMGIS_WITH_CONAN)
 
-if (UNIX AND NOT APPLE)
+if (NOT BUILD_VROOMGIS_WITH_CONAN AND UNIX AND NOT APPLE)
     message(STATUS "PNG_LIBRARY for vroomgis: ${PNG_LIBRARY}")
-    target_link_libraries(vroomgis ${PNG_LIBRARY} xkbcommon)
-endif (UNIX AND NOT APPLE)
+    target_link_libraries(vroomgis PUBLIC ${PNG_LIBRARY} xkbcommon)
+endif (NOT BUILD_VROOMGIS_WITH_CONAN AND UNIX AND NOT APPLE)
 
 # USED FOR PERFORMANCE UNDER WINDOWS
 IF (WIN32)
-    target_link_libraries(vroomgis "psapi")
+    target_link_libraries(vroomgis PRIVATE "psapi")
 ENDIF (WIN32)

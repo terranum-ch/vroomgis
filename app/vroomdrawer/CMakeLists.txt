@@ -31,13 +31,23 @@ IF (APPLE)
 ENDIF (APPLE)
 
 add_executable(vroomDrawer MACOSX_BUNDLE WIN32 ${SRC_FILES})
-target_link_libraries(vroomDrawer vroomgis)
+# The About dialog reads version headers from these dependencies directly.
+if (BUILD_VROOMGIS_WITH_CONAN)
+    find_package(geos CONFIG REQUIRED)
+    find_package(proj CONFIG REQUIRED)
+    find_package(CURL CONFIG REQUIRED)
+else ()
+    find_package(GEOS CONFIG REQUIRED)
+    find_package(PROJ CONFIG REQUIRED)
+    find_package(CURL REQUIRED)
+endif ()
+target_link_libraries(vroomDrawer vroomgis GEOS::geos_c PROJ::proj CURL::libcurl)
 
 # use system PNG for linux otherwise we have problem when displaying icons
-if (UNIX AND NOT APPLE)
+if (NOT BUILD_VROOMGIS_WITH_CONAN AND UNIX AND NOT APPLE)
     message(STATUS "PNG lib for vroomDrawer is : ${PNG_LIBRARY}")
     target_link_libraries(vroomDrawer ${PNG_LIBRARY} xkbcommon)
-endif (UNIX AND NOT APPLE)
+endif (NOT BUILD_VROOMGIS_WITH_CONAN AND UNIX AND NOT APPLE)
 
 # Install step for copying *dylib into application bundle on OSX and for changing their reference from
 # absolute to relative
