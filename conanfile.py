@@ -31,12 +31,11 @@ class vroomgis(ConanFile):
         self.requires("wxwidgets/3.3.3")
         self.requires("gdal/3.13.0")
 
-        # Override specific dependencies with custom versions
+        # Alignement sur le binaire GDAL de ConanCenter.
         self.requires("arrow/19.0.1", override=True)
+        self.requires("boost/1.90.0", override=True)
         self.requires("libcurl/8.20.0", override=True)
-
-        if self.settings.os == "Macos":
-            self.requires("boost/1.90.0", override=True)
+        self.requires("expat/2.8.1", override=True)
 
         if self.options.build_tests:
             self.requires("gtest/1.18.0")
